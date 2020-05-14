@@ -27,6 +27,9 @@ jobs:
       - restore_cache:
           keys:
             - v1-root-npm-{{ checksum "package-lock.json" }}
+      - restore_cache:
+          keys:
+            - v1-cli-npm-{{ checksum "packages/cli/package-lock.json" }}
       - run: npm ci
       - save_cache:
           key: v1-root-npm-{{ checksum "package-lock.json" }}
@@ -37,8 +40,12 @@ jobs:
           key: v1-npm-cache-{{ .Environment.CIRCLE_SHA1 }}
           paths:
             - node_modules
-            # TODO: once packages are added, include their `node_modules` too:
-            # - packages/*/node_modules
+            - packages/cli/node_modules
+      - save_cache:
+          key: v1-cli-npm-{{ checksum "packages/cli/package-lock.json" }}
+          paths:
+            - packages/cli/node_modules
+
   lint:
     <<: *defaults
     steps:
