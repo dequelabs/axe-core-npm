@@ -3,7 +3,7 @@ version: 2.1
 defaults: &defaults
   docker:
     - image: circleci/node:12-browsers
-  working_directory: ~/attest-node-suite
+  working_directory: ~/axe-core-npm
 
 commands:
   configure_npm:
