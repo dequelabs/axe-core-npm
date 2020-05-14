@@ -1,0 +1,77 @@
+{
+  "name": "@axe-core/pupeeteer",
+  "version": "4.0.0-pre.0",
+  "description": "Provides a chainable axe API for Puppeteer and automatically injects into all frames",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/dequelabs/axe-core-npm.git"
+  },
+  "main": "dist/index.js",
+  "typings": "dist/index.d.ts",
+  "scripts": {
+    "build": "tsc",
+    "test": "mocha",
+    "coverage": "nyc mocha",
+    "prepublishOnly": "npm run build"
+  },
+  "author": "Adam Cutler",
+  "license": "MPL-2.0",
+  "devDependencies": {
+    "@types/chai": "^4.1.7",
+    "@types/express": "^4.16.0",
+    "@types/mocha": "^5.2.5",
+    "@types/node": "^12.7.5",
+    "@types/puppeteer": "^1.10.0",
+    "@types/sinon": "^7.0.13",
+    "@types/test-listen": "^1.1.0",
+    "chai": "^4.2.0",
+    "express": "^4.16.4",
+    "husky": "^1.2.0",
+    "lint-staged": "^9.2.5",
+    "mocha": "^5.2.0",
+    "nyc": "^14.1.1",
+    "puppeteer": "^1.10.0",
+    "sinon": "^7.3.2",
+    "source-map-support": "^0.5.9",
+    "test-listen": "^1.1.0",
+    "ts-node": "^8.3.0",
+    "tslint-no-unused-expression-chai": "^0.1.4",
+    "typescript": "^3.1.6"
+  },
+  "dependencies": {
+    "axe-core": "^3.5.3"
+  },
+  "peerDependencies": {
+    "puppeteer": "^1.10.0 || ^2.0.0"
+  },
+  "engines": {
+    "node": ">=6.4.0"
+  },
+  "nyc": {
+    "require": [
+      "ts-node/register"
+    ],
+    "extension": [
+      ".ts",
+      ".tsx"
+    ],
+    "include": [
+      "src"
+    ],
+    "exclude": [
+      "**/*.d.ts",
+      "src/browser.ts"
+    ],
+    "all": true,
+    "instrument": true,
+    "sourceMap": true,
+    "reporter": [
+      "text-summary",
+      "html"
+    ],
+    "statements": 85,
+    "branches": 85,
+    "functions": 85,
+    "lines": 85
+  }
+}
