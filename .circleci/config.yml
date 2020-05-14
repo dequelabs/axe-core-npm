@@ -27,7 +27,7 @@ jobs:
       - restore_cache:
           keys:
             - v1-root-npm-{{ checksum "package-lock.json" }}
-      - run: npm install --ci
+      - run: npm ci
       - save_cache:
           key: v1-root-npm-{{ checksum "package-lock.json" }}
           paths:
