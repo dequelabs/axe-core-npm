@@ -1,0 +1,56 @@
+version: 2.1
+
+defaults: &defaults
+  docker:
+    - image: circleci/node:12-browsers
+  working_directory: ~/axe-core-npm
+
+commands:
+  configure_npm:
+    description: 'Configure the npm client'
+    steps:
+      - run: npm config set "//registry.npmjs.org/:_authToken" $NPM_AUTH
+
+  restore_dependency_cache:
+    description: 'Restore the dependency cache'
+    steps:
+      - restore_cache:
+          keys:
+            - v1-npm-cache-{{ .Environment.CIRCLE_SHA1 }}
+
+jobs:
+  dependencies:
+    <<: *defaults
+    steps:
+      - checkout
+      - configure_npm
+      - restore_cache:
+          keys:
+            - v1-root-npm-{{ checksum "package-lock.json" }}
+      - run: npm ci
+      - save_cache:
+          key: v1-root-npm-{{ checksum "package-lock.json" }}
+          paths:
+            - node_modules
+      - run: npm run bootstrap
+      - save_cache:
+          key: v1-npm-cache-{{ .Environment.CIRCLE_SHA1 }}
+          paths:
+            - node_modules
+            # TODO: once packages are added, include their `node_modules` too:
+            # - packages/*/node_modules
+  lint:
+    <<: *defaults
+    steps:
+      - checkout
+      - restore_dependency_cache
+      - run: npm run lint
+
+workflows:
+  version: 2
+  build_and_test:
+    jobs:
+      - dependencies
+      - lint:
+          requires:
+            - dependencies
