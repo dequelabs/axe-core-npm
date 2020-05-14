@@ -1,0 +1,3 @@
+exclude:
+  # Prevent axe-linter from linting changelogs, as they're generated files.
+  - '**/*/CHANGELOG.md'
