@@ -19,7 +19,6 @@ commands:
             - v1-npm-cache-{{ .Environment.CIRCLE_SHA1 }}
 
 jobs:
-  # Fetch and cache dependencies.
   dependencies:
     <<: *defaults
     steps:
