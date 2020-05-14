@@ -19,22 +19,22 @@ This module uses a chainable API to assist in injecting, configuring and analyzi
 Here is an example of a script that will drive Puppeteer to this repository, perform analysis and then log results to the console.
 
 ```js
-const { AxePuppeteer } = require('axe-puppeteer')
-const puppeteer = require('puppeteer')
+const { AxePuppeteer } = require('axe-puppeteer');
+const puppeteer = require('puppeteer');
 
-;(async () => {
-  const browser = await puppeteer.launch()
-  const page = await browser.newPage()
-  await page.setBypassCSP(true)
+(async () => {
+  const browser = await puppeteer.launch();
+  const page = await browser.newPage();
+  await page.setBypassCSP(true);
 
-  await page.goto('https://dequeuniversity.com/demo/mars/')
+  await page.goto('https://dequeuniversity.com/demo/mars/');
 
-  const results = await new AxePuppeteer(page).analyze()
-  console.log(results)
+  const results = await new AxePuppeteer(page).analyze();
+  console.log(results);
 
-  await page.close()
-  await browser.close()
-})()
+  await page.close();
+  await browser.close();
+})();
 ```
 
 Note: Usage examples make use of ES2017 async/await. Use of `await` can only be done in a function
@@ -53,20 +53,20 @@ An alternate constructor is available which opens a page and performs the CSP by
 It closes the page after `analyze` is called.
 
 ```js
-const { loadPage } = require('axe-puppeteer')
-const puppeteer = require('puppeteer')
+const { loadPage } = require('axe-puppeteer');
+const puppeteer = require('puppeteer');
 
-;(async () => {
-  const browser = await puppeteer.launch()
+(async () => {
+  const browser = await puppeteer.launch();
   const axeBuilder = await loadPage(
     browser,
     'https://dequeuniversity.com/demo/mars/'
-  )
-  const results = await axeBuilder.analyze()
-  console.log(results)
+  );
+  const results = await axeBuilder.analyze();
+  console.log(results);
 
-  await browser.close()
-})()
+  await browser.close();
+})();
 ```
 
 ### AxePuppeteer(page: Frame | Page[, axeSource: string])
@@ -75,14 +75,14 @@ Constructor for the AxePuppeteer helper.
 You must pass an instance of a Puppeteer `Frame` or `Page` as the first argument. Cannot be called without the `new` keyword.
 
 ```js
-const builder = new AxePuppeteer(page)
+const builder = new AxePuppeteer(page);
 ```
 
 If you wish to run a specific version of axe-core, you can pass the source `axe-core` source file in as a string. Doing so will mean axe-puppeteer runs this version of axe-core, instead of the one installed as a dependency of axe-puppeteer.
 
 ```js
-const axeSource = fs.readFileSync('./axe-3.0.js', 'utf8')
-const builder = new AxePuppeteer(page, axeSource)
+const axeSource = fs.readFileSync('./axe-3.0.js', 'utf8');
+const builder = new AxePuppeteer(page, axeSource);
 ```
 
 Note that you might need to bypass the Content Security Policy in some cases.
@@ -92,7 +92,7 @@ Note that you might need to bypass the Content Security Policy in some cases.
 Adds a CSS selector to the list of elements to include in analysis
 
 ```js
-new AxePuppeteer(page).include('.results-panel')
+new AxePuppeteer(page).include('.results-panel');
 ```
 
 ### AxePuppeteer#exclude(selector: string | string[])
@@ -100,9 +100,7 @@ new AxePuppeteer(page).include('.results-panel')
 Add a CSS selector to the list of elements to exclude from analysis
 
 ```js
-new AxePuppeteer(page)
-  .include('.results-panel')
-  .exclude('.results-panel h2')
+new AxePuppeteer(page).include('.results-panel').exclude('.results-panel h2');
 ```
 
 ### AxePuppeteer#options(options: Axe.RunOptions)
@@ -114,7 +112,7 @@ for information on its structure.
 ```js
 new AxePuppeteer(page).options({
   checks: { 'valid-lang': ['orcish'] }
-})
+});
 ```
 
 ### AxePuppeteer#withRules(rules: string | string[])
@@ -122,11 +120,11 @@ new AxePuppeteer(page).options({
 Limits analysis to only those with the specified rule IDs. Accepts a String of a single rule ID or an Array of multiple rule IDs. **Subsequent calls to `AxePuppeteer#options`, `AxePuppeteer#withRules` or `AxePuppeteer#withRules` will override specified options.**
 
 ```js
-new AxePuppeteer(page).withRules('html-lang')
+new AxePuppeteer(page).withRules('html-lang');
 ```
 
 ```js
-new AxePuppeteer(page).withRules(['html-lang', 'image-alt'])
+new AxePuppeteer(page).withRules(['html-lang', 'image-alt']);
 ```
 
 ### AxePuppeteer#withTags(tags: string | string[])
@@ -134,11 +132,11 @@ new AxePuppeteer(page).withRules(['html-lang', 'image-alt'])
 Limits analysis to only those with the specified rule IDs. Accepts a String of a single tag or an Array of multiple tags. **Subsequent calls to `AxePuppeteer#options`, `AxePuppeteer#withRules` or `AxePuppeteer#withRules` will override specified options.**
 
 ```js
-new AxePuppeteer(page).withTags('wcag2a')
+new AxePuppeteer(page).withTags('wcag2a');
 ```
 
 ```js
-new AxePuppeteer(page).withTags(['wcag2a', 'wcag2aa'])
+new AxePuppeteer(page).withTags(['wcag2a', 'wcag2aa']);
 ```
 
 ### AxePuppeteer#disableRules(rules: string | string[])
@@ -146,7 +144,7 @@ new AxePuppeteer(page).withTags(['wcag2a', 'wcag2aa'])
 Skips verification of the rules provided. Accepts a String of a single rule ID or an Array of multiple rule IDs. **Subsequent calls to `AxePuppeteer#options`, `AxePuppeteer#disableRules` will override specified options.**
 
 ```js
-new AxePuppeteer(page).disableRules('color-contrast')
+new AxePuppeteer(page).disableRules('color-contrast');
 ```
 
 or use it combined with some specified tags:
@@ -154,7 +152,7 @@ or use it combined with some specified tags:
 ```js
 new AxePuppeteer(page)
   .withTags(['wcag2a', 'wcag2aa'])
-  .disableRules('color-contrast')
+  .disableRules('color-contrast');
 ```
 
 ### AxePuppeteer#configure(config: Axe.Spec)
@@ -165,11 +163,9 @@ Inject an axe configuration object to modify the ruleset before running Analyze.
 const config = {
   checks: [Object],
   rules: [Object]
-}
-const results = await new AxePuppeteer(page)
-  .configure(config)
-  .analyze()
-console.log(results)
+};
+const results = await new AxePuppeteer(page).configure(config).analyze();
+console.log(results);
 ```
 
 ### AxePuppeteer#analyze([callback: (Error | null[, Object]) => void])
@@ -181,21 +177,21 @@ Using the returned promise (optional):
 ```js
 new AxePuppeteer(page)
   .analyze()
-  .then(function(results) {
-    console.log(results)
+  .then(function (results) {
+    console.log(results);
   })
   .catch(err => {
     // Handle error somehow
-  })
+  });
 ```
 
 Using a callback function
 
 ```js
-new AxePuppeteer(page).analyze(function(err, results) {
+new AxePuppeteer(page).analyze(function (err, results) {
   if (err) {
     // Handle error somehow
   }
-  console.log(results)
-})
+  console.log(results);
+});
 ```

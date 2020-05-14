@@ -1,28 +1,28 @@
-import * as Axe from 'axe-core'
-import { Browser, Page } from 'puppeteer'
-import { AxePuppeteer } from './axePuppeteer'
-import { AnalyzeCB, IPageOptions } from './types'
+import * as Axe from 'axe-core';
+import { Browser, Page } from 'puppeteer';
+import { AxePuppeteer } from './axePuppeteer';
+import { AnalyzeCB, IPageOptions } from './types';
 
 // An instance of AxePuppeteer that owns a page and thus closes it after running axe.
 class OwningAxePuppeteer extends AxePuppeteer {
-  private page: Page
+  private page: Page;
 
   constructor(page: Page, source?: string) {
-    super(page, source)
-    this.page = page
+    super(page, source);
+    this.page = page;
   }
 
-  public async analyze(): Promise<Axe.AxeResults>
+  public async analyze(): Promise<Axe.AxeResults>;
   public async analyze<T extends AnalyzeCB>(
     callback?: T
-  ): Promise<Axe.AxeResults | null>
+  ): Promise<Axe.AxeResults | null>;
   public async analyze<T extends AnalyzeCB>(
     callback?: T
   ): Promise<Axe.AxeResults | null> {
     try {
-      return await super.analyze(callback)
+      return await super.analyze(callback);
     } finally {
-      await this.page.close()
+      await this.page.close();
     }
   }
 }
@@ -32,10 +32,10 @@ export async function loadPage(
   url: string,
   pageOpts: IPageOptions = {}
 ) {
-  const page = await browser.newPage()
-  await page.setBypassCSP(true)
+  const page = await browser.newPage();
+  await page.setBypassCSP(true);
 
-  await page.goto(url, pageOpts.opts)
+  await page.goto(url, pageOpts.opts);
 
-  return new OwningAxePuppeteer(page, pageOpts.source)
+  return new OwningAxePuppeteer(page, pageOpts.source);
 }
