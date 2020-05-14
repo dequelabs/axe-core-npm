@@ -19,6 +19,15 @@ module.exports = {
   },
   env: {
     node: true,
-    browser: true
-  }
+    browser: true,
+    es6: true
+  },
+  overrides: [
+    {
+      files: '*.js',
+      rules: {
+        '@typescript-eslint/explicit-function-return-type': 0
+      }
+    }
+  ]
 };
