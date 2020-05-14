@@ -8,7 +8,7 @@ Previous versions of this program were maintained at [dequelabs/axe-cli](https:/
 
 Install [Node.js](https://docs.npmjs.com/getting-started/installing-node) if you haven't already. This project requires Node 6+. By default, axe-cli runs Chrome in headless mode, which requires Chrome 59 or up.
 
-Install axe CLI globally: `npm install @axe-devtools/cli -g`
+Install axe CLI globally: `npm install @axe-core/cli -g`
 
 Lastly, install the webdrivers of the browsers you wish to use. A webdriver is a driver for your web browsers. It allows other programs on your machine to open a browser and operate it. Current information about available webdrivers can be found at [selenium-webdriver project](https://www.npmjs.com/package/selenium-webdriver). Alternatively, you could use [Webdriver manager](https://www.npmjs.com/package/webdriver-manager)
 
