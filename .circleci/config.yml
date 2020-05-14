@@ -40,22 +40,18 @@ jobs:
             - node_modules
       - run: npm run bootstrap
       - save_cache:
-          key: v1-npm-cache-{{ .Environment.CIRCLE_SHA1 }}
-          paths:
-            - node_modules
-            - packages/cli/node_modules
-      - save_cache:
           key: v1-cli-npm-{{ checksum "packages/cli/package-lock.json" }}
           paths:
             - packages/cli/node_modules
       - save_cache:
+          key: v1-puppeteer-npm-{{ checksum "packages/puppeteer/package-lock.json" }}
+          paths:
+            - packages/puppeteer/node_modules
+      - save_cache:
           key: v1-npm-cache-{{ .Environment.CIRCLE_SHA1 }}
           paths:
             - node_modules
-            - packages/puppeteer/node_modules
-      - save_cache:
-          key: v1-puppeteer-npm-{{ checksum "packages/puppeteer/package-lock.json" }}
-          paths:
+            - packages/cli/node_modules
             - packages/puppeteer/node_modules
 
   lint:
