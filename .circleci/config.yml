@@ -46,6 +46,13 @@ jobs:
       - restore_dependency_cache
       - run: npm run lint
 
+  cli:
+    <<: *defaults
+    steps:
+      - checkout
+      - restore_dependency_cache
+      - run: npm run test --prefix=packages/cli
+
 workflows:
   version: 2
   build_and_test:
@@ -54,3 +61,6 @@ workflows:
       - lint:
           requires:
             - dependencies
+      - cli:
+          requires:
+            - lint
