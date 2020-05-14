@@ -77,7 +77,7 @@ jobs:
     steps:
       - checkout
       - restore_dependency_cache
-      - run: npm run test --prefix-packages/puppeteer
+      - run: npm run test --prefix=packages/puppeteer
 
 workflows:
   version: 2
