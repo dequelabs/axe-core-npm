@@ -175,13 +175,13 @@ export class AxePuppeteer {
       this.axeOptions = {};
     }
 
-    // eslint-disable-next-line @typescript-eslint/class-name-casing
-    interface iRulesObj {
+    // eslint-disable-next-line @typescript-eslint/interface-name-prefix
+    interface IRulesObj {
       [id: string]: {
         enabled: boolean;
       };
     }
-    const newRules: iRulesObj = {};
+    const newRules: IRulesObj = {};
     for (const rule of rules) {
       newRules[rule] = {
         enabled: false
