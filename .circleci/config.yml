@@ -33,6 +33,9 @@ jobs:
       - restore_cache:
           keys:
             - v1-puppeteer-npm-{{ checksum "packages/puppeteer/package-lock.json" }}
+      - restore_cache:
+          keys:
+            - v1-webdriverjs-npm-{{ checksum "packages/webdriverjs/package-lock.json" }}
       - run: npm ci
       - save_cache:
           key: v1-root-npm-{{ checksum "package-lock.json" }}
@@ -48,11 +51,16 @@ jobs:
           paths:
             - packages/puppeteer/node_modules
       - save_cache:
+          key: v1-webdriverjs-npm-{{ checksum "packages/webdriverjs/package-lock.json" }}
+          paths:
+            - packages/webdriverjs/node_modules
+      - save_cache:
           key: v1-npm-cache-{{ .Environment.CIRCLE_SHA1 }}
           paths:
             - node_modules
             - packages/cli/node_modules
             - packages/puppeteer/node_modules
+            - packages/webdriverjs/node_modules
 
   lint:
     <<: *defaults
@@ -76,6 +84,13 @@ jobs:
       - run: npm run build --prefix=packages/puppeteer
       - run: npm run coverage --prefix=packages/puppeteer
 
+  webdriverjs:
+    <<: *defaults
+    steps:
+      - checkout
+      - restore_dependency_cache
+      - run: npm run test --prefix=packages/webdriverjs
+
 workflows:
   version: 2
   build_and_test:
@@ -88,5 +103,8 @@ workflows:
           requires:
             - lint
       - puppeteer:
+          requires:
+            - lint
+      - webdriverjs:
           requires:
             - lint
