@@ -1,0 +1,3 @@
+rules:
+  # Disables a11y issues for testing
+  html-has-lang: false 
