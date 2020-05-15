@@ -52,8 +52,7 @@
     "test:sauce": "mocha test/sauce/*.js --require babel-register",
     "coverage": "nyc npm run test:unit",
     "build": "babel lib --out-dir dist",
-    "prepublishOnly": "npm run build",
-    "release": "standard-version"
+    "prepublishOnly": "npm run build"
   },
   "peerDependencies": {
     "selenium-webdriver": ">= 2.53.1"
@@ -72,8 +71,7 @@
     "nyc": "^14.1.1",
     "proxyquire": "^2.1.1",
     "selenium-webdriver": "^3.6.0",
-    "sinon": "^7.3.2",
-    "standard-version": "^7.0.0"
+    "sinon": "^7.3.2"
   },
   "dependencies": {
     "axe-core": "^3.4.1",

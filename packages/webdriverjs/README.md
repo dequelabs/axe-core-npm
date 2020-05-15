@@ -1,6 +1,6 @@
 # @axe-core/webdriverjs
 
-Provides a chainable aXe API for Selenium's WebDriverJS and automatically injects into all frames.
+Provides a chainable axe API for Selenium's WebDriverJS and automatically injects into all frames.
 
 Previous versions of this program were maintained at [dequelabs/axe-webdriverjs](https://github.com/dequelabs/axe-webdriverjs).
 
@@ -12,7 +12,7 @@ Install [Node.js](https://docs.npmjs.com/getting-started/installing-node) if you
 
 Install Selenium Webdriver: `npm install selenium-webdriver --no-save`
 
-Install axe-webdriverjs and its dependencies: `npm install @axe-core/webdriverjs`
+Install @axe-core/webdriverjs and its dependencies: `npm install @axe-core/webdriverjs`
 
 ## Usage
 
