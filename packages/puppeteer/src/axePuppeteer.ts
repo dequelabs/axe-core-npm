@@ -175,7 +175,6 @@ export class AxePuppeteer {
       this.axeOptions = {};
     }
 
-    // eslint-disable-next-line @typescript-eslint/interface-name-prefix
     interface IRulesObj {
       [id: string]: {
         enabled: boolean;

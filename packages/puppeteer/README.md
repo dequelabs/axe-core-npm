@@ -10,7 +10,7 @@ Install [Node.js](https://docs.npmjs.com/getting-started/installing-node) if you
 
 Install Puppeteer: `npm install puppeteer --no-save`
 
-Install axe-puppeteer and its dependencies: `npm install axe-puppeteer`
+Install axe-puppeteer and its dependencies: `npm install @axe-core/puppeteer`
 
 ## Usage
 
@@ -19,7 +19,7 @@ This module uses a chainable API to assist in injecting, configuring and analyzi
 Here is an example of a script that will drive Puppeteer to this repository, perform analysis and then log results to the console.
 
 ```js
-const { AxePuppeteer } = require('axe-puppeteer');
+const { AxePuppeteer } = require('@axe-core/puppeteer');
 const puppeteer = require('puppeteer');
 
 (async () => {
@@ -53,7 +53,7 @@ An alternate constructor is available which opens a page and performs the CSP by
 It closes the page after `analyze` is called.
 
 ```js
-const { loadPage } = require('axe-puppeteer');
+const { loadPage } = require('@axe-core/puppeteer');
 const puppeteer = require('puppeteer');
 
 (async () => {
