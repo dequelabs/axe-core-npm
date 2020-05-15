@@ -26,7 +26,7 @@ function injectAxeChild(frame: Frame, source?: string): Array<Promise<void>> {
     .map(subFrame => injectAxeChild(subFrame, source))
     .reduce((acc, arr) => acc.concat(arr), []);
 
-  const reportError = () => {
+  const reportError = (): void => {
     // tslint:disable-next-line:no-console
     console.error(`Failed to inject axe-core into frame (${frame.url()})`);
   };
@@ -72,7 +72,7 @@ function getFrame(pageFrame: Page | Frame): Frame {
   return pageFrame;
 }
 
-async function ensureFrameReady(frame: Frame) {
+async function ensureFrameReady(frame: Frame): Promise<void> {
   // Wait so that we know there is an execution context.
   // Assume that if we have an html node we have an execution context.
   await frame.waitForSelector('html');

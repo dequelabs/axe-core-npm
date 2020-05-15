@@ -10,12 +10,13 @@ declare global {
     axe: typeof Axe;
   }
 }
+
 // Defined at top-level to clarify that it can't capture variables from outer scope.
 export function runAxe(
   config?: Axe.Spec,
   context?: Axe.ElementContext,
   options?: Axe.RunOptions
-) {
+): Promise<Axe.AxeResults> {
   if (config) {
     window.axe.configure(config);
   }
@@ -34,6 +35,6 @@ export function runAxe(
   return window.axe.run(context || document, options || {});
 }
 
-export function pageIsLoaded() {
+export function pageIsLoaded(): boolean {
   return document.readyState === 'complete';
 }

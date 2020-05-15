@@ -26,7 +26,7 @@ async function expectAsync(fn: () => Promise<any>): Promise<ExpectAssertion> {
   }
 }
 
-async function expectAsyncToNotThrow(fn: () => Promise<any>) {
+async function expectAsyncToNotThrow(fn: () => Promise<any>): Promise<void> {
   const expectResult = await expectAsync(fn);
   // tslint:disable-next-line:no-unused-expression-chai
   expectResult.to.not.throw;
@@ -399,7 +399,7 @@ describe('AxePuppeteer', function () {
       const config: Axe.Spec = {
         checks: [
           {
-            evaluate: () => false,
+            evaluate: (): false => false,
             id: 'foo'
           }
         ],
