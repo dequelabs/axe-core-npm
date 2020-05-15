@@ -1,27 +1,24 @@
-var runWebdriver = require('../run-webdriver');
-var assert = require('chai').assert;
-var host = 'localhost';
-var AxeBuilder = require('../../lib');
-var path = require('path');
-var { createServer } = require('http-server');
+const runWebdriver = require('../run-webdriver');
+const assert = require('chai').assert;
+let host = 'localhost';
+const AxeBuilder = require('../../lib');
+const path = require('path');
+const { createServer } = require('http-server');
 
 if (process.env.REMOTE_TESTSERVER_HOST) {
   host = process.env.REMOTE_TESTSERVER_HOST;
 }
 
-var shadowSupported;
+let shadowSupported;
 
-describe('shadow-dom.html', function() {
+describe('shadow-dom.html', function () {
   this.timeout(10000);
 
-  var driver;
-  var server;
-  before(function(done) {
+  let driver;
+  let server;
+  before(function (done) {
     driver = runWebdriver();
-    driver
-      .manage()
-      .timeouts()
-      .setScriptTimeout(10000);
+    driver.manage().timeouts().setScriptTimeout(10000);
 
     server = createServer({
       root: path.resolve(__dirname, '../..'),
@@ -33,36 +30,36 @@ describe('shadow-dom.html', function() {
       }
       driver
         .get('http://' + host + ':9876/test/fixtures/shadow-dom.html')
-        .then(function() {
+        .then(function () {
           driver
-            .executeAsyncScript(function(callback) {
+            .executeAsyncScript(function (callback) {
               /* eslint-env browser */
-              var script = document.createElement('script');
+              const script = document.createElement('script');
               script.innerHTML =
                 "var shadowSupport = document.body && typeof document.body.attachShadow === 'function';";
               document.documentElement.appendChild(script);
               // eslint-disable-next-line no-undef
               callback(shadowSupport);
             })
-            .then(function(shadowSupport) {
+            .then(function (shadowSupport) {
               shadowSupported = shadowSupport;
               done();
             })
-            .catch(function() {
+            .catch(function () {
               done();
             });
         });
     });
   });
 
-  after(function(done) {
+  after(function (done) {
     server.close();
-    driver.quit().then(function() {
+    driver.quit().then(function () {
       done();
     });
   });
 
-  it('should find violations', function(done) {
+  it('should find violations', function (done) {
     if (shadowSupported) {
       AxeBuilder(driver)
         .options({
@@ -73,7 +70,7 @@ describe('shadow-dom.html', function() {
           }
         })
         .analyze()
-        .then(function(results) {
+        .then(function (results) {
           assert.lengthOf(results.violations, 2);
           assert.equal(results.violations[0].id, 'aria-roles');
           assert.equal(results.violations[1].id, 'aria-valid-attr');

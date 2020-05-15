@@ -1,6 +1,6 @@
-var deprecate = require('depd')('axe-webdriverjs');
-var AxeInjector = require('./axe-injector');
-var normalizeContext = require('./normalize-context');
+const deprecate = require('depd')('axe-webdriverjs');
+const AxeInjector = require('./axe-injector');
+const normalizeContext = require('./normalize-context');
 
 /**
  * Constructor for chainable WebDriver API
@@ -25,7 +25,7 @@ function AxeBuilder(driver, source, builderOptions = {}) {
  * @param  {String} selector CSS selector of the element to include
  * @return {AxeBuilder}
  */
-AxeBuilder.prototype.include = function(selector) {
+AxeBuilder.prototype.include = function (selector) {
   this._includes.push(Array.isArray(selector) ? selector : [selector]);
   return this;
 };
@@ -35,7 +35,7 @@ AxeBuilder.prototype.include = function(selector) {
  * @param  {String} selector CSS selector of the element to exclude
  * @return {AxeBuilder}
  */
-AxeBuilder.prototype.exclude = function(selector) {
+AxeBuilder.prototype.exclude = function (selector) {
   this._excludes.push(Array.isArray(selector) ? selector : [selector]);
   return this;
 };
@@ -45,7 +45,7 @@ AxeBuilder.prototype.exclude = function(selector) {
  * @param  {Object} options Options object
  * @return {AxeBuilder}
  */
-AxeBuilder.prototype.options = function(options) {
+AxeBuilder.prototype.options = function (options) {
   this._options = options;
   return this;
 };
@@ -55,7 +55,7 @@ AxeBuilder.prototype.options = function(options) {
  * @param {Array|String} rules Array of rule IDs, or a single rule ID as a string
  * @return {AxeBuilder}
  */
-AxeBuilder.prototype.withRules = function(rules) {
+AxeBuilder.prototype.withRules = function (rules) {
   rules = Array.isArray(rules) ? rules : [rules];
   this._options = this._options || {};
   this._options.runOnly = {
@@ -71,7 +71,7 @@ AxeBuilder.prototype.withRules = function(rules) {
  * @param {Array|String} rules Array of tags, or a single tag as a string
  * @return {AxeBuilder}
  */
-AxeBuilder.prototype.withTags = function(tags) {
+AxeBuilder.prototype.withTags = function (tags) {
   tags = Array.isArray(tags) ? tags : [tags];
   this._options = this._options || {};
   this._options.runOnly = {
@@ -87,13 +87,13 @@ AxeBuilder.prototype.withTags = function(tags) {
  * @param {Array|String} rules Array of rule IDs, or a single rule ID as a string
  * @return {AxeBuilder}
  */
-AxeBuilder.prototype.disableRules = function(rules) {
+AxeBuilder.prototype.disableRules = function (rules) {
   rules = Array.isArray(rules) ? rules : [rules];
   this._options = this._options || {};
   this._options.rules = {};
 
   rules.forEach(
-    function(rulesConfiguration, ruleToDisable) {
+    function (rulesConfiguration, ruleToDisable) {
       rulesConfiguration[ruleToDisable] = {
         enabled: false
       };
@@ -107,7 +107,7 @@ AxeBuilder.prototype.disableRules = function(rules) {
  * Configure aXe before running analyze. *Does not chain.*
  * @param  {Object} config Configuration object to use in analysis
  */
-AxeBuilder.prototype.configure = function(config) {
+AxeBuilder.prototype.configure = function (config) {
   if (typeof config !== 'object') {
     throw new Error(
       'AxeBuilder needs an object to configure. See axe-core configure API.'
@@ -126,15 +126,15 @@ AxeBuilder.prototype.configure = function(config) {
  * @param  {Function} [callback] Function to execute when analysis completes
  * @return {Promise}
  */
-AxeBuilder.prototype.analyze = function(callback) {
-  var context = normalizeContext(this._includes, this._excludes),
+AxeBuilder.prototype.analyze = function (callback) {
+  const context = normalizeContext(this._includes, this._excludes),
     driver = this._driver,
     options = this._options,
     config = this._config,
     source = this._source;
 
   // Check if the provided `callback` uses the old argument signature (an arity of 1). If it does, provide a helpful deprecation warning.
-  var isOldAPI = callback && callback.length === 1;
+  const isOldAPI = callback && callback.length === 1;
   if (isOldAPI) {
     deprecate(
       'Error must be handled as the first argument of axe.analyze. See: #83'
@@ -142,7 +142,7 @@ AxeBuilder.prototype.analyze = function(callback) {
   }
 
   return new Promise((resolve, reject) => {
-    var injector = new AxeInjector({
+    const injector = new AxeInjector({
       driver,
       axeSource: source,
       config,
@@ -151,20 +151,21 @@ AxeBuilder.prototype.analyze = function(callback) {
     injector.inject(() => {
       driver
         .executeAsyncScript(
-          function(context, options, config) {
+          function (context, options, config) {
             /* eslint-env browser */
             if (config !== null) {
               window.axe.configure(config);
             }
             window.axe
               .run(context || document, options || {})
+              // eslint-disable-next-line prefer-rest-params
               .then(arguments[arguments.length - 1]);
           },
           context,
           options,
           config
         )
-        .then(function(results) {
+        .then(function (results) {
           if (callback) {
             // If using the old API, provide the `results` as the first and only argument. Otherwise, provide `null` indicating no errors were encountered.
             if (isOldAPI) {

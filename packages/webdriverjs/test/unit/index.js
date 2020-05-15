@@ -1,86 +1,86 @@
-var assert = require('chai').assert;
-var proxyquire = require('proxyquire');
-var Builder = require('../../lib/index');
+const assert = require('chai').assert;
+const proxyquire = require('proxyquire');
+const Builder = require('../../lib/index');
 
-describe('Builder', function() {
-  describe('constructor', function() {
-    it('should assign driver to this._driver', function() {
+describe('Builder', function () {
+  describe('constructor', function () {
+    it('should assign driver to this._driver', function () {
       assert.equal(new Builder('bob')._driver, 'bob');
     });
 
-    it('should define this._includes as an empty array', function() {
-      var includes = new Builder('bob')._includes;
+    it('should define this._includes as an empty array', function () {
+      const includes = new Builder('bob')._includes;
       assert.isArray(includes);
       assert.lengthOf(includes, 0);
     });
 
-    it('should define this._excludes as an empty array', function() {
-      var excludes = new Builder('bob')._excludes;
+    it('should define this._excludes as an empty array', function () {
+      const excludes = new Builder('bob')._excludes;
       assert.isArray(excludes);
       assert.lengthOf(excludes, 0);
     });
 
-    it('should define this._options as null', function() {
+    it('should define this._options as null', function () {
       assert.isNull(new Builder()._options);
     });
 
-    it('should define this._config as null', function() {
+    it('should define this._config as null', function () {
       assert.isNull(new Builder()._config);
     });
 
-    it('should still work even if not used with new keyword', function() {
+    it('should still work even if not used with new keyword', function () {
       assert.instanceOf(Builder(), Builder);
     });
   });
 
-  describe('include', function() {
-    it('should push onto _includes', function() {
-      var builder = new Builder();
+  describe('include', function () {
+    it('should push onto _includes', function () {
+      const builder = new Builder();
       builder.include('.bob');
       assert.lengthOf(builder._includes, 1);
       assert.lengthOf(builder._includes[0], 1);
       assert.equal(builder._includes[0][0], '.bob');
     });
 
-    it('should return itself', function() {
+    it('should return itself', function () {
       assert.instanceOf(new Builder().include('.bob'), Builder);
     });
   });
 
-  describe('exclude', function() {
-    it('should push onto _excludes', function() {
-      var builder = new Builder();
+  describe('exclude', function () {
+    it('should push onto _excludes', function () {
+      const builder = new Builder();
       builder.exclude('.bob');
       assert.lengthOf(builder._excludes, 1);
       assert.lengthOf(builder._excludes[0], 1);
       assert.equal(builder._excludes[0][0], '.bob');
     });
 
-    it('should return itself', function() {
+    it('should return itself', function () {
       assert.instanceOf(new Builder().exclude('.bob'), Builder);
     });
   });
 
-  describe('options', function() {
-    it('should clobber _options with provided parameter', function() {
-      var builder = new Builder();
+  describe('options', function () {
+    it('should clobber _options with provided parameter', function () {
+      const builder = new Builder();
       builder.options('bob');
       assert.equal(builder._options, 'bob');
       builder.options('fred');
       assert.equal(builder._options, 'fred');
     });
 
-    it('should return itself', function() {
+    it('should return itself', function () {
       assert.instanceOf(new Builder().options('bob'), Builder);
     });
   });
 
-  describe('disableRules', function() {
-    it('should properly populate _options.rules with the provided parameter', function() {
-      var builder = new Builder();
-      var colorRule = 'color-contrast';
-      var landmarkRule = 'landmark';
-      var expectedInternalState = {};
+  describe('disableRules', function () {
+    it('should properly populate _options.rules with the provided parameter', function () {
+      const builder = new Builder();
+      const colorRule = 'color-contrast';
+      const landmarkRule = 'landmark';
+      let expectedInternalState = {};
 
       builder.disableRules(colorRule);
       expectedInternalState[colorRule] = {
@@ -103,14 +103,14 @@ describe('Builder', function() {
       assert.deepEqual(builder._options.rules, expectedInternalState);
     });
 
-    it('should return itself', function() {
+    it('should return itself', function () {
       assert.instanceOf(new Builder().disableRules('color-contrast'), Builder);
     });
   });
 
-  describe('configure', function() {
-    it('should take a config object to customize aXe', function(done) {
-      var catsConfig = {
+  describe('configure', function () {
+    it('should take a config object to customize aXe', function (done) {
+      const catsConfig = {
         checks: {
           id: 'cats',
           options: ['cats'],
@@ -136,53 +136,53 @@ describe('Builder', function() {
           }
         }
       };
-      var Builder = proxyquire('../../lib/index', {
-        './axe-injector': function() {
+      const Builder = proxyquire('../../lib/index', {
+        './axe-injector': function () {
           return { inject: cb => cb(null, 'source-code') };
         }
       });
 
       new Builder({
-        executeAsyncScript: function(callback, context, options, config) {
+        executeAsyncScript: function (callback, context, options, config) {
           assert.equal(config, catsConfig);
 
           return {
-            then: function(cb) {
+            then: function (cb) {
               cb('results');
             }
           };
         }
       })
         .configure(catsConfig)
-        .analyze(function(err, results) {
+        .analyze(function (err, results) {
           assert.isNull(err);
           assert.equal(results, 'results');
           done();
         });
     });
 
-    it('should throw a useful error', function(done) {
-      var builder = new Builder();
+    it('should throw a useful error', function (done) {
+      const builder = new Builder();
 
-      assert.throws(function() {
+      assert.throws(function () {
         builder.configure('cats');
       });
 
-      assert.throws(function() {
+      assert.throws(function () {
         builder.configure(undefined);
       });
       done();
     });
   });
 
-  describe('analyze', function() {
-    it('should normalize context', function(done) {
-      var normalized = false;
-      var Builder = proxyquire('../../lib/index', {
-        './axe-injector': function() {
+  describe('analyze', function () {
+    it('should normalize context', function (done) {
+      let normalized = false;
+      const Builder = proxyquire('../../lib/index', {
+        './axe-injector': function () {
           return { inject: cb => cb(null, 'source-code') };
         },
-        './normalize-context': function(include, exclude) {
+        './normalize-context': function (include, exclude) {
           normalized = true;
           assert.deepEqual(include, [['.joe']]);
           assert.deepEqual(exclude, [['.fred'], ['.bob']]);
@@ -191,9 +191,9 @@ describe('Builder', function() {
       });
 
       new Builder({
-        executeAsyncScript: function() {
+        executeAsyncScript: function () {
           return {
-            then: function(cb) {
+            then: function (cb) {
               cb(null);
             }
           };
@@ -203,16 +203,16 @@ describe('Builder', function() {
         .exclude('.fred')
         .exclude('.bob')
         .analyze()
-        .then(function() {
+        .then(function () {
           assert.isTrue(normalized);
           done();
         });
     });
 
-    it('should inject into the page under test', function() {
-      var called = false;
-      var Builder = proxyquire('../../lib/index', {
-        './axe-injector': function() {
+    it('should inject into the page under test', function () {
+      let called = false;
+      const Builder = proxyquire('../../lib/index', {
+        './axe-injector': function () {
           return {
             inject(cb) {
               called = true;
@@ -225,83 +225,83 @@ describe('Builder', function() {
       assert.isTrue(called);
     });
 
-    it('should call axe.run with given parameters', function(done) {
-      var Builder = proxyquire('../../lib/index', {
-        './axe-injector': function() {
+    it('should call axe.run with given parameters', function (done) {
+      const Builder = proxyquire('../../lib/index', {
+        './axe-injector': function () {
           return { inject: cb => cb(null, 'source-code') };
         },
-        './normalize-context': function() {
+        './normalize-context': function () {
           return 'normalized';
         }
       });
 
       new Builder({
-        executeAsyncScript: function(callback, context, options) {
+        executeAsyncScript: function (callback, context, options) {
           assert.equal(context, 'normalized');
           assert.deepEqual(options, { foo: 'bar' });
 
           return {
-            then: function(cb) {
+            then: function (cb) {
               cb('results');
             }
           };
         }
       })
         .options({ foo: 'bar' })
-        .analyze(function(err, results) {
+        .analyze(function (err, results) {
           assert.isNull(err);
           assert.equal(results, 'results');
           done();
         });
     });
 
-    it('should pass results to .then() instead of a callback', function(done) {
-      var Builder = proxyquire('../../lib/index', {
-        './axe-injector': function() {
+    it('should pass results to .then() instead of a callback', function (done) {
+      const Builder = proxyquire('../../lib/index', {
+        './axe-injector': function () {
           return { inject: cb => cb(null, 'source-code') };
         }
       });
 
       new Builder({
-        executeAsyncScript: function() {
+        executeAsyncScript: function () {
           return {
-            then: function(cb) {
+            then: function (cb) {
               cb('results');
             }
           };
         }
       })
         .analyze()
-        .then(function(results) {
+        .then(function (results) {
           assert.equal(results, 'results');
           done();
         });
     });
 
-    it('should execute callback before .then()', function(done) {
-      var Builder = proxyquire('../../lib/index', {
-        './axe-injector': function() {
+    it('should execute callback before .then()', function (done) {
+      const Builder = proxyquire('../../lib/index', {
+        './axe-injector': function () {
           return { inject: cb => cb(null, 'source-code') };
         }
       });
-      var called = false;
+      let called = false;
 
       new Builder({
-        executeAsyncScript: function() {
+        executeAsyncScript: function () {
           return {
-            then: function(cb) {
+            then: function (cb) {
               cb('results');
             }
           };
         }
       })
-        .analyze(function(err, results) {
+        .analyze(function (err, results) {
           assert.isNull(err);
           assert.equal(results, 'results');
           assert.equal(called, false);
           called = true;
         })
-        .then(function() {
+        .then(function () {
           assert.equal(called, true);
           done();
         });

@@ -123,7 +123,9 @@ describe('AxeInjector', () => {
         driver: new MockWebDriver({
           switchTo() {
             return {
-              defaultContent() {},
+              defaultContent() {
+                // Noop
+              },
               frame(frame) {
                 switched |= frame == 1;
               }

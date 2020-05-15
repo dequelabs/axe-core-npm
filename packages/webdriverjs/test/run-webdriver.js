@@ -1,11 +1,11 @@
-var WebDriver = require('selenium-webdriver');
-var chromeCapabilities = WebDriver.Capabilities.chrome();
+const WebDriver = require('selenium-webdriver');
+const chromeCapabilities = WebDriver.Capabilities.chrome();
 
 function runWebdriver() {
-  var webdriver;
+  let webdriver;
   // Adding this should fix the weird CI failing issue
   // https://github.com/SeleniumHQ/selenium/issues/4961
-  var chromeOptions = {
+  const chromeOptions = {
     args: ['--no-sandbox', '--headless', '--disable-gpu']
   };
   chromeCapabilities.set('chromeOptions', chromeOptions);

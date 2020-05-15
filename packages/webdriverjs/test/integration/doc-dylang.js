@@ -3,26 +3,26 @@
  * axe-core >= 2.0.0, hence the temporary conditional check for a local version
  * of axe-core
  */
-var runWebdriver = require('../run-webdriver');
-var json = require('../fixtures/custom-rule-config.json');
-var assert = require('chai').assert;
-var AxeBuilder = require('../../lib');
-var host = 'localhost';
-var path = require('path');
-var { createServer } = require('http-server');
+const runWebdriver = require('../run-webdriver');
+const json = require('../fixtures/custom-rule-config.json');
+const assert = require('chai').assert;
+const AxeBuilder = require('../../lib');
+let host = 'localhost';
+const path = require('path');
+const { createServer } = require('http-server');
 
-var axe = require('axe-core');
+const axe = require('axe-core');
 
 if (process.env.REMOTE_TESTSERVER_HOST) {
   host = process.env.REMOTE_TESTSERVER_HOST;
 }
 
-describe('doc-dylang.html', function() {
+describe('doc-dylang.html', function () {
   this.timeout(10000);
 
-  var driver;
-  var server;
-  before(function(done) {
+  let driver;
+  let server;
+  before(function (done) {
     driver = runWebdriver();
 
     server = createServer({
@@ -35,26 +35,26 @@ describe('doc-dylang.html', function() {
       }
       driver
         .get('http://' + host + ':9876/test/fixtures/doc-dylang.html')
-        .then(function() {
+        .then(function () {
           done();
         });
     });
   });
 
-  after(function(done) {
+  after(function (done) {
     server.close();
-    driver.quit().then(function() {
+    driver.quit().then(function () {
       done();
     });
   });
 
-  it('should find violations with customized helpUrl', function(done) {
-    var src = axe.source;
+  it('should find violations with customized helpUrl', function (done) {
+    const src = axe.source;
     AxeBuilder(driver, src)
       .configure(json)
       .withRules(['dylang'])
       .analyze()
-      .then(function(results) {
+      .then(function (results) {
         assert.lengthOf(results.violations, 1);
         assert.equal(results.violations[0].id, 'dylang');
         assert.notEqual(

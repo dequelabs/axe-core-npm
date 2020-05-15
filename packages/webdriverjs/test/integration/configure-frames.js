@@ -1,26 +1,23 @@
-var runWebdriver = require('../run-webdriver');
-var assert = require('chai').assert;
-var host = 'localhost';
-var json = require('../fixtures/custom-rule-config.json');
-var AxeBuilder = require('../../lib');
-var path = require('path');
-var { createServer } = require('http-server');
+const runWebdriver = require('../run-webdriver');
+const assert = require('chai').assert;
+let host = 'localhost';
+const json = require('../fixtures/custom-rule-config.json');
+const AxeBuilder = require('../../lib');
+const path = require('path');
+const { createServer } = require('http-server');
 
 if (process.env.REMOTE_TESTSERVER_HOST) {
   host = process.env.REMOTE_TESTSERVER_HOST;
 }
 
-describe('outer-configure-frame.html', function() {
+describe('outer-configure-frame.html', function () {
   this.timeout(10000);
 
-  var server;
-  var driver;
-  before(function(done) {
+  let server;
+  let driver;
+  before(function (done) {
     driver = runWebdriver();
-    driver
-      .manage()
-      .timeouts()
-      .setScriptTimeout(10000);
+    driver.manage().timeouts().setScriptTimeout(10000);
 
     server = createServer({
       root: path.resolve(__dirname, '../..'),
@@ -34,18 +31,18 @@ describe('outer-configure-frame.html', function() {
         .get(
           'http://' + host + ':9876/test/fixtures/outer-configure-frame.html'
         )
-        .then(function() {
+        .then(function () {
           done();
         });
     });
   });
 
-  after(function() {
+  after(function () {
     server.close();
     driver.quit();
   });
 
-  it('should find configured violations in all frames', function(done) {
+  it('should find configured violations in all frames', function (done) {
     AxeBuilder(driver)
       .options({
         rules: {
@@ -57,7 +54,7 @@ describe('outer-configure-frame.html', function() {
       })
       .configure(json)
       .analyze()
-      .then(function(results) {
+      .then(function (results) {
         assert.equal(results.violations[0].id, 'dylang');
         // the second violation is in a frame
         assert.equal(results.violations[0].nodes.length, 2);
@@ -67,17 +64,14 @@ describe('outer-configure-frame.html', function() {
   });
 });
 
-describe('sandbox-outer-configure-frame.html', function() {
+describe('sandbox-outer-configure-frame.html', function () {
   this.timeout(10000);
 
-  var server;
-  var driver;
-  before(function(done) {
+  let server;
+  let driver;
+  before(function (done) {
     driver = runWebdriver();
-    driver
-      .manage()
-      .timeouts()
-      .setScriptTimeout(10000);
+    driver.manage().timeouts().setScriptTimeout(10000);
 
     server = createServer({
       root: path.resolve(__dirname, '../..'),
@@ -93,19 +87,19 @@ describe('sandbox-outer-configure-frame.html', function() {
             host +
             ':9876/test/fixtures/sandbox-outer-configure-frame.html'
         )
-        .then(function() {
+        .then(function () {
           done();
         });
     });
   });
 
-  after(function() {
+  after(function () {
     server.close();
     driver.quit();
   });
 
-  it('should find configured violations in all frames', function(done) {
-    var axeBuilder = new AxeBuilder(driver, null, { noSandbox: true });
+  it('should find configured violations in all frames', function (done) {
+    const axeBuilder = new AxeBuilder(driver, null, { noSandbox: true });
     axeBuilder
       .options({
         rules: {
@@ -117,7 +111,7 @@ describe('sandbox-outer-configure-frame.html', function() {
       })
       .configure(json)
       .analyze()
-      .then(function(results) {
+      .then(function (results) {
         assert.equal(results.violations[0].id, 'dylang');
         // the second violation is in a frame
         assert.equal(results.violations[0].nodes.length, 2);
@@ -127,17 +121,14 @@ describe('sandbox-outer-configure-frame.html', function() {
   });
 });
 
-describe('sandbox-nested-configure-frame.html', function() {
+describe('sandbox-nested-configure-frame.html', function () {
   this.timeout(10000);
 
-  var server;
-  var driver;
-  before(function(done) {
+  let server;
+  let driver;
+  before(function (done) {
     driver = runWebdriver();
-    driver
-      .manage()
-      .timeouts()
-      .setScriptTimeout(10000);
+    driver.manage().timeouts().setScriptTimeout(10000);
 
     server = createServer({
       root: path.resolve(__dirname, '../..'),
@@ -153,19 +144,19 @@ describe('sandbox-nested-configure-frame.html', function() {
             host +
             ':9876/test/fixtures/sandbox-nested-configure-frame.html'
         )
-        .then(function() {
+        .then(function () {
           done();
         });
     });
   });
 
-  after(function() {
+  after(function () {
     server.close();
     driver.quit();
   });
 
-  it('should find configured violations in all frames', function(done) {
-    var axeBuilder = new AxeBuilder(driver, null, { noSandbox: true });
+  it('should find configured violations in all frames', function (done) {
+    const axeBuilder = new AxeBuilder(driver, null, { noSandbox: true });
     axeBuilder
       .options({
         rules: {
@@ -177,7 +168,7 @@ describe('sandbox-nested-configure-frame.html', function() {
       })
       .configure(json)
       .analyze()
-      .then(function(results) {
+      .then(function (results) {
         assert.equal(results.violations[0].id, 'dylang');
         // the third violation is in a frame of a frame
         assert.deepEqual(results.violations[0].nodes[2].target, [

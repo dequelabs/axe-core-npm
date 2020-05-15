@@ -1,25 +1,22 @@
-var runWebdriver = require('../run-webdriver');
-var assert = require('chai').assert;
-var host = 'localhost';
-var AxeBuilder = require('../../lib');
-var path = require('path');
-var { createServer } = require('http-server');
+const runWebdriver = require('../run-webdriver');
+const assert = require('chai').assert;
+let host = 'localhost';
+const AxeBuilder = require('../../lib');
+const path = require('path');
+const { createServer } = require('http-server');
 
 if (process.env.REMOTE_TESTSERVER_HOST) {
   host = process.env.REMOTE_TESTSERVER_HOST;
 }
 
-describe('outer-frame.html', function() {
+describe('outer-frame.html', function () {
   this.timeout(10000);
 
-  var driver;
-  var server;
-  before(function(done) {
+  let driver;
+  let server;
+  before(function (done) {
     driver = runWebdriver();
-    driver
-      .manage()
-      .timeouts()
-      .setScriptTimeout(500);
+    driver.manage().timeouts().setScriptTimeout(500);
 
     server = createServer({
       root: path.resolve(__dirname, '../..'),
@@ -31,22 +28,22 @@ describe('outer-frame.html', function() {
       }
       driver
         .get('http://' + host + ':9876/test/fixtures/outer-frame.html')
-        .then(function() {
+        .then(function () {
           done();
         });
     });
   });
 
-  after(function() {
+  after(function () {
     server.close();
     driver.quit();
   });
 
-  it('should find violations', function(done) {
+  it('should find violations', function (done) {
     AxeBuilder(driver)
       .withRules('html-lang-valid')
       .analyze()
-      .then(function(results) {
+      .then(function (results) {
         assert.lengthOf(results.violations, 1, 'violations');
         assert.equal(results.violations[0].id, 'html-lang-valid');
         assert.lengthOf(
@@ -67,28 +64,28 @@ describe('outer-frame.html', function() {
       });
   });
 
-  it('should accept options', function(done) {
+  it('should accept options', function (done) {
     AxeBuilder(driver)
       .include('body')
       .options({ checks: { 'valid-lang': { options: ['bobbert'] } } })
       .withRules('html-lang-valid')
       .analyze()
-      .then(function(results) {
+      .then(function (results) {
         assert.lengthOf(results.violations, 0);
         assert.lengthOf(results.passes, 1);
         done();
       });
   });
 
-  it('should not find violations when the rule is disabled', function(done) {
+  it('should not find violations when the rule is disabled', function (done) {
     AxeBuilder(driver)
       .options({ rules: { 'html-lang-valid': { enabled: false } } })
       .analyze()
-      .then(function(results) {
-        results.violations.forEach(function(violation) {
+      .then(function (results) {
+        results.violations.forEach(function (violation) {
           assert.notEqual(violation.id, 'html-lang-valid');
         });
-        results.passes.forEach(function(violation) {
+        results.passes.forEach(function (violation) {
           assert.notEqual(violation.id, 'html-lang-valid');
         });
         done();
