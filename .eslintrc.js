@@ -10,7 +10,8 @@ module.exports = {
     'plugin:react/recommended'
   ],
   rules: {
-    '@typescript-eslint/camelcase': 'off'
+    '@typescript-eslint/camelcase': 'off',
+    '@typescript-eslint/interface-name-prefix': 'off'
   },
   settings: {
     react: {
@@ -26,7 +27,7 @@ module.exports = {
     {
       files: '*.js',
       rules: {
-        '@typescript-eslint/explicit-function-return-type': 0
+        '@typescript-eslint/explicit-function-return-type': 'off'
       }
     }
   ]
