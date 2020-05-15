@@ -36,6 +36,9 @@ jobs:
       - restore_cache:
           keys:
             - v1-webdriverjs-npm-{{ checksum "packages/webdriverjs/package-lock.json" }}
+      - restore_cache:
+          keys:
+            - v1-webdriverio-npm-{{ checksum "packages/webdriverio/package-lock.json" }}
       - run: npm ci
       - save_cache:
           key: v1-root-npm-{{ checksum "package-lock.json" }}
@@ -55,12 +58,17 @@ jobs:
           paths:
             - packages/webdriverjs/node_modules
       - save_cache:
+          key: v1-webdriverio-npm-{{ checksum "packages/webdriverio/package-lock.json" }}
+          paths:
+            - packages/webdriverio/node_modules
+      - save_cache:
           key: v1-npm-cache-{{ .Environment.CIRCLE_SHA1 }}
           paths:
             - node_modules
             - packages/cli/node_modules
             - packages/puppeteer/node_modules
             - packages/webdriverjs/node_modules
+            - packages/webdriverio/node_modules
 
   lint:
     <<: *defaults
@@ -91,6 +99,13 @@ jobs:
       - restore_dependency_cache
       - run: npm run test --prefix=packages/webdriverjs
 
+  webdriverio:
+    <<: *defaults
+    steps: 
+      - checkout
+      - restore_dependency_cache
+      - run: npm run test --prefix=packages/webdriverio
+
 workflows:
   version: 2
   build_and_test:
@@ -106,5 +121,8 @@ workflows:
           requires:
             - lint
       - webdriverjs:
+          requires:
+            - lint
+      - webdriverio:
           requires:
             - lint
