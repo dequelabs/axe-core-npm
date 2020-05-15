@@ -1,0 +1,89 @@
+{
+  "name": "@axe-core/webdriverjs",
+  "version": "4.0.0-pre.0",
+  "description": "Provides a method to inject and analyze web pages using aXe",
+  "license": "MPL-2.0",
+  "main": "dist/index.js",
+  "contributors": [
+    {
+      "name": "Dylan Barrell",
+      "organization": "Deque Systems, Inc.",
+      "url": "http://github.com/dylanb/"
+    },
+    {
+      "name": "Marcy Sutton",
+      "organization": "Deque Systems, Inc.",
+      "url": "http://github.com/marcysutton/"
+    },
+    {
+      "name": "Wilco Fiers",
+      "organization": "Deque Systems, Inc.",
+      "url": "http://github.com/wilcofiers/"
+    },
+    {
+      "name": "David Sturley",
+      "organization": "Deque Systems, Inc.",
+      "url": "http://deque.com/"
+    }
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/dequelabs/axe-core-npm.git"
+  },
+  "keywords": [
+    "a11y",
+    "unit",
+    "testing",
+    "tdd",
+    "bdd",
+    "accessibility",
+    "aXe",
+    "selenium",
+    "webdriver",
+    "webdriverjs"
+  ],
+  "engines": {
+    "node": ">=4"
+  },
+  "scripts": {
+    "test": "npm run test:unit && npm run test:integration",
+    "test:unit": "mocha test/unit/*.js --require babel-register",
+    "test:integration": "mocha test/integration/*.js --require babel-register",
+    "test:sauce": "mocha test/sauce/*.js --require babel-register",
+    "coverage": "nyc npm run test:unit",
+    "build": "babel lib --out-dir dist",
+    "prepublishOnly": "npm run build",
+    "release": "standard-version"
+  },
+  "peerDependencies": {
+    "selenium-webdriver": ">= 2.53.1"
+  },
+  "devDependencies": {
+    "babel-cli": "^6.26.0",
+    "babel-core": "^6.26.3",
+    "babel-eslint": "^10.0.3",
+    "babel-plugin-transform-runtime": "^6.23.0",
+    "babel-preset-env": "^1.7.0",
+    "babel-register": "^6.26.0",
+    "chai": "^4.2.0",
+    "chromedriver": "latest",
+    "http-server": "^0.11.1",
+    "mocha": "^6.2.0",
+    "nyc": "^14.1.1",
+    "proxyquire": "^2.1.1",
+    "selenium-webdriver": "^3.6.0",
+    "sinon": "^7.3.2",
+    "standard-version": "^7.0.0"
+  },
+  "dependencies": {
+    "axe-core": "^3.4.1",
+    "babel-runtime": "^6.26.0",
+    "depd": "^2.0.0"
+  },
+  "nyc": {
+    "reporter": [
+      "text",
+      "html"
+    ]
+  }
+}

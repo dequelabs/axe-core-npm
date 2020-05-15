@@ -1,0 +1,15 @@
+<!doctype html>
+<html lang="en">
+<head>
+	<title>Test</title>
+</head>
+<body>
+	<div id="fixture"></div>
+	<iframe src="shadow-dom-frame.html" title="Shadow DOM frame"></iframe>
+	<script>
+		var element = document.getElementById('fixture');
+		var shadowRoot = element.attachShadow({mode: 'open'});
+		shadowRoot.innerHTML = '<div role="bananas">Text</div>';
+	</script>
+</body>
+</html>

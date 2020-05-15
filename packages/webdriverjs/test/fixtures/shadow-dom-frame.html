@@ -1,0 +1,14 @@
+<!doctype html>
+<html lang="en">
+<head>
+	<title>Test</title>
+</head>
+<body>
+	<div id="fixture"></div>
+	<script>
+		var element = document.getElementById('fixture');
+		var shadowRoot = element.attachShadow({mode: 'open'});
+		shadowRoot.innerHTML = '<div aria-role="2bananas">Text</div>';
+	</script>
+</body>
+</html>
