@@ -96,7 +96,7 @@ class AxeInjector {
     return new Promise((resolve, reject) => {
       /* eslint-disable no-undef */
       this.driver
-        .executeAsyncScript(function(callback) {
+        .executeAsyncScript(function (callback) {
           const iframes = Array.from(
             document.querySelectorAll('iframe[sandbox]')
           );

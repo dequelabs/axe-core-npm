@@ -24,20 +24,16 @@ Here is an example of a script that will drive Selenium to this repository, perf
 var AxeBuilder = require('@axe-core/webdriverjs');
 var WebDriver = require('selenium-webdriver');
 
-var driver = new WebDriver.Builder()
-  .forBrowser('firefox')
-  .build();
+var driver = new WebDriver.Builder().forBrowser('firefox').build();
 
-driver
-  .get('https://dequeuniversity.com/demo/mars/')
-  .then(function() {
-    AxeBuilder(driver).analyze(function(err, results) {
-      if (err) {
-        // Handle error somehow
-      }
-      console.log(results);
-    });
+driver.get('https://dequeuniversity.com/demo/mars/').then(function () {
+  AxeBuilder(driver).analyze(function (err, results) {
+    if (err) {
+      // Handle error somehow
+    }
+    console.log(results);
   });
+});
 ```
 
 ### AxeBuilder(driver:WebDriver[, axeSource:string])
@@ -60,8 +56,7 @@ var builder = AxeBuilder(driver, axeSource);
 Adds a CSS selector to the list of elements to include in analysis
 
 ```javascript
-AxeBuilder(driver)
-  .include('.results-panel');
+AxeBuilder(driver).include('.results-panel');
 ```
 
 ### AxeBuilder#exclude(selector:String)
@@ -69,9 +64,7 @@ AxeBuilder(driver)
 Add a CSS selector to the list of elements to exclude from analysis
 
 ```javascript
-AxeBuilder(driver)
-  .include('.results-panel')
-  .exclude('.results-panel h2');
+AxeBuilder(driver).include('.results-panel').exclude('.results-panel h2');
 ```
 
 ### AxeBuilder#options(options:Object)
@@ -79,8 +72,7 @@ AxeBuilder(driver)
 Specifies options to be used by `axe.a11yCheck`. **Will override any other configured options, including calls to `withRules` and `withTags`.** See [axe-core API documentation](https://github.com/dequelabs/axe-core/blob/master/doc/API.md) for information on its structure.
 
 ```javascript
-AxeBuilder(driver)
-  .options({ checks: { 'valid-lang': ['orcish'] } });
+AxeBuilder(driver).options({ checks: { 'valid-lang': ['orcish'] } });
 ```
 
 ### AxeBuilder#withRules(rules:Mixed)
@@ -88,13 +80,11 @@ AxeBuilder(driver)
 Limits analysis to only those with the specified rule IDs. Accepts a String of a single rule ID or an Array of multiple rule IDs. **Subsequent calls to `AxeBuilder#options`, `AxeBuilder#withRules` or `AxeBuilder#withRules` will override specified options.**
 
 ```javascript
-AxeBuilder(driver)
-  .withRules('html-lang');
+AxeBuilder(driver).withRules('html-lang');
 ```
 
 ```javascript
-AxeBuilder(driver)
-  .withRules(['html-lang', 'image-alt']);
+AxeBuilder(driver).withRules(['html-lang', 'image-alt']);
 ```
 
 ### AxeBuilder#withTags(tags:Mixed)
@@ -102,13 +92,11 @@ AxeBuilder(driver)
 Limits analysis to only those with the specified rule IDs. Accepts a String of a single tag or an Array of multiple tags. **Subsequent calls to `AxeBuilder#options`, `AxeBuilder#withRules` or `AxeBuilder#withRules` will override specified options.**
 
 ```javascript
-AxeBuilder(driver)
-  .withTags('wcag2a');
+AxeBuilder(driver).withTags('wcag2a');
 ```
 
 ```javascript
-AxeBuilder(driver)
-  .withTags(['wcag2a', 'wcag2aa']);
+AxeBuilder(driver).withTags(['wcag2a', 'wcag2aa']);
 ```
 
 ### AxeBuilder#disableRules(rules:Mixed)
@@ -116,8 +104,7 @@ AxeBuilder(driver)
 Skips verification of the rules provided. Accepts a String of a single rule ID or an Array of multiple rule IDs. **Subsequent calls to `AxeBuilder#options`, `AxeBuilder#disableRules` will override specified options.**
 
 ```javascript
-AxeBuilder(driver)
-  .disableRules('color-contrast');
+AxeBuilder(driver).disableRules('color-contrast');
 ```
 
 or use it combined with some specified tags:
@@ -142,7 +129,7 @@ var config = {
 };
 AxeBuilder(driver)
   .configure(config)
-  .analyze(function(err, results) {
+  .analyze(function (err, results) {
     if (err) {
       // Handle error somehow
     }
@@ -155,13 +142,12 @@ AxeBuilder(driver)
 Performs analysis and passes any encountered error and/or the result object to the provided callback function or promise function. **Does not chain as the operation is asynchronous**
 
 ```javascript
-AxeBuilder(driver)
-  .analyze(function(err, results) {
-    if (err) {
-      // Handle error somehow
-    }
-    console.log(results);
-  });
+AxeBuilder(driver).analyze(function (err, results) {
+  if (err) {
+    // Handle error somehow
+  }
+  console.log(results);
+});
 ```
 
 Using the returned promise (optional):
@@ -169,7 +155,7 @@ Using the returned promise (optional):
 ```javascript
 AxeBuilder(driver)
   .analyze()
-  .then(function(results) {
+  .then(function (results) {
     console.log(results);
   })
   .catch(err => {
