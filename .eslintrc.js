@@ -38,6 +38,14 @@ module.exports = {
         'prefer-spread': 'off',
         'prefer-rest-params': 'off'
       }
+    },
+    {
+      files: 'packages/reporter-earl/**/*.ts',
+      rules: {
+        '@typescript-eslint/no-explicit-any': 'off',
+        'no-debugger': 'off',
+        'no-empty-pattern': 'off'
+      }
     }
   ]
 };
