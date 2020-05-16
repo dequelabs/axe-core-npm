@@ -1,4 +1,3 @@
-const { describe, beforeEach, test, expect } = require('jest');
 const bindings = require('../lib/bindings');
 
 let browser = {};
