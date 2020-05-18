@@ -101,11 +101,11 @@ jobs:
       - run: npm run coverage --prefix=packages/puppeteer
 
   webdriverjs:
-    <<: *defaults
-    steps: 
-      - checkout
-      - restore_dependency_cache
-      - run: npm run test --prefix=packages/webdriverjs
+      <<: *defaults
+      steps: 
+        - checkout
+        - restore_dependency_cache
+        - run: npm run test --prefix=packages/webdriverjs
 
   webdriverio:
     <<: *defaults
@@ -113,13 +113,45 @@ jobs:
       - checkout
       - restore_dependency_cache
       - run: npm run test --prefix=packages/webdriverio
-
   reporter-earl:
     <<: *defaults
     steps: 
       - checkout
       - restore_dependency_cache
       - run: npm run test --prefix=packages/reporter-earl
+
+  canary_release:
+    <<: *defaults
+    steps:
+      - checkout
+      - configure_npm
+      - restore_dependency_cache
+      # Make sure the working tree is clean
+      - run: git reset --hard HEAD
+      - run: >-
+          npx lerna publish prepatch \
+          --no-verify-access \
+          --no-git-tag-version \
+          --no-push \
+          --dist-tag=next \
+          --pre-dist-tag=next \
+          --exact \
+          --preid=${CIRCLE_SHA1:0:8} \
+          --force-publish \
+          --yes
+
+  production_release:
+    <<: *defaults
+    steps:
+      - checkout
+      - configure_npm
+      - restore_dependency_cache
+      # Make sure the working tree is clean
+      - run: git reset --hard HEAD
+      - run: >-
+          npx lerna publish \
+            --force-publish='*' \
+            --yes
 
 workflows:
   version: 2
@@ -144,3 +176,29 @@ workflows:
       - reporter-earl:
           requires:
             - lint
+      - canary_release:
+          context: html-tools
+          requires:
+            - dependencies
+            - lint
+            - cli
+            - puppeteer
+            - webdriverjs
+            - webdriverio
+            - reporter-earl
+          filters:
+            branches:
+              only: develop
+      - production_release:
+          context: html-tools
+          requires:
+            - dependencies
+            - lint
+            - cli
+            - puppeteer
+            - webdriverjs
+            - webdriverio
+            - reporter-earl
+          filters:
+            branches:
+              only: master
