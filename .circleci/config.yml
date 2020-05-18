@@ -76,6 +76,49 @@ jobs:
       - run: npm run build --prefix=packages/puppeteer
       - run: npm run coverage --prefix=packages/puppeteer
 
+  canary_release:
+    <<: *defaults
+    steps:
+      - checkout
+      - configure_npm
+      - restore_dependency_cache
+      - run: npx jfrog rt config --interactive=false --apikey=$ARTIFACTORY_API_KEY_PUBLIC --url=https://agora.dequecloud.com/artifactory
+      - run: npm whoami
+      - run: git diff --quiet || echo 'Working tree has been changed'
+      - run: git diff --stat
+      # Make sure the working tree is clean
+      - run: git reset --hard HEAD
+      - run: >-
+          npx lerna publish \
+            --no-verify-access \
+            --no-git-tag-version \
+            --no-push \
+            --npm-tag=next \
+            --exact \
+            --cd-version=prerelease \
+            --preid=${CIRCLE_SHA1:0:8} \
+            --force-publish \
+            --yes
+
+  production_release:
+    <<: *defaults
+    steps:
+      - checkout
+      - configure_npm
+      - restore_dependency_cache
+      - run: npx jfrog rt config --interactive=false --apikey=$ARTIFACTORY_API_KEY_PUBLIC --url=https://agora.dequecloud.com/artifactory
+      - run: npm whoami
+      - run: git diff --quiet || echo 'Working tree has been changed'
+      - run: git diff --stat
+      # Make sure the working tree is clean
+      - run: git reset --hard HEAD
+      - run: >-
+          npx lerna publish from-package \
+            --no-verify-access \
+            --no-git-tag-version \
+            --no-push \
+            --yes
+
 workflows:
   version: 2
   build_and_test:
@@ -90,3 +133,29 @@ workflows:
       - puppeteer:
           requires:
             - lint
+      - canary_release:
+          context: html-tools
+          requires:
+            - dependencies
+            - lint
+            - cli
+            - puppeteer
+            - webdriverjs
+            - webdriverio
+            - reporter-earl
+          filters:
+            branches:
+              only: develop
+      - production_release:
+          context: html-tools
+          requires:
+            - dependencies
+            - lint
+            - cli
+            - puppeteer
+            - webdriverjs
+            - webdriverio
+            - reporter-earl
+          filters:
+            branches:
+              only: master
