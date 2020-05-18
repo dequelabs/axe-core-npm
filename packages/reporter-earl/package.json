@@ -1,5 +1,5 @@
 {
-  "name": "axe-reporter-earl",
+  "name": "@axe-core/reporter-earl",
   "version": "4.0.0-pre.0",
   "description": "A EARL+JSON-LD reporter for axe-core",
   "main": "dist/axeReporterEarl.js",
