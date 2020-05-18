@@ -31,7 +31,7 @@ export async function loadPage(
   browser: Browser,
   url: string,
   pageOpts: IPageOptions = {}
-) {
+): Promise<OwningAxePuppeteer> {
   const page = await browser.newPage();
   await page.setBypassCSP(true);
 
