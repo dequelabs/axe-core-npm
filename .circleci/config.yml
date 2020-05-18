@@ -128,17 +128,7 @@ jobs:
       - restore_dependency_cache
       # Make sure the working tree is clean
       - run: git reset --hard HEAD
-      - run: >-
-          npx lerna publish prepatch \
-          --no-verify-access \
-          --no-git-tag-version \
-          --no-push \
-          --dist-tag=next \
-          --pre-dist-tag=next \
-          --exact \
-          --preid=${CIRCLE_SHA1:0:8} \
-          --force-publish \
-          --yes
+      - run: npx lerna publish prepatch --no-verify-access --no-git-tag-version --no-push --dist-tag=next --pre-dist-tag=next --exact --preid=${CIRCLE_SHA1:0:8} --force-publish --yes
 
   production_release:
     <<: *defaults
@@ -148,10 +138,7 @@ jobs:
       - restore_dependency_cache
       # Make sure the working tree is clean
       - run: git reset --hard HEAD
-      - run: >-
-          npx lerna publish \
-            --force-publish='*' \
-            --yes
+      - run: npx lerna publish --force-publish='*' --yes
 
 workflows:
   version: 2
