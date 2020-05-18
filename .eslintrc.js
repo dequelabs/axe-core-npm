@@ -30,22 +30,6 @@ module.exports = {
         '@typescript-eslint/explicit-function-return-type': 'off',
         '@typescript-eslint/no-var-requires': 'off'
       }
-    },
-    {
-      files: 'packages/webdriverio/**/*.js',
-      rules: {
-        '@typescript-eslint/no-empty-function': 'off',
-        'prefer-spread': 'off',
-        'prefer-rest-params': 'off'
-      }
-    },
-    {
-      files: 'packages/reporter-earl/**/*.ts',
-      rules: {
-        '@typescript-eslint/no-explicit-any': 'off',
-        'no-debugger': 'off',
-        'no-empty-pattern': 'off'
-      }
     }
   ]
 };
