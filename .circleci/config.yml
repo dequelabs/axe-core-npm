@@ -99,29 +99,32 @@ jobs:
         - restore_dependency_cache
         - run: npm run test --prefix=packages/webdriverjs
 
+  webdriverio:
+    <<: *defaults
+    steps: 
+      - checkout
+      - restore_dependency_cache
+      - run: npm run test --prefix=packages/webdriverio
+
   canary_release:
     <<: *defaults
     steps:
       - checkout
       - configure_npm
       - restore_dependency_cache
-      - run: npx jfrog rt config --interactive=false --apikey=$ARTIFACTORY_API_KEY_PUBLIC --url=https://agora.dequecloud.com/artifactory
-      - run: npm whoami
-      - run: git diff --quiet || echo 'Working tree has been changed'
-      - run: git diff --stat
       # Make sure the working tree is clean
       - run: git reset --hard HEAD
       - run: >-
-          npx lerna publish \
-            --no-verify-access \
-            --no-git-tag-version \
-            --no-push \
-            --npm-tag=next \
-            --exact \
-            --cd-version=prerelease \
-            --preid=${CIRCLE_SHA1:0:8} \
-            --force-publish \
-            --yes
+          npx lerna publish prepatch \
+          --no-verify-access \
+          --no-git-tag-version \
+          --no-push \
+          --dist-tag=next \
+          --pre-dist-tag=next \
+          --exact \
+          --preid=${CIRCLE_SHA1:0:8} \
+          --force-publish \
+          --yes
 
   production_release:
     <<: *defaults
@@ -129,25 +132,12 @@ jobs:
       - checkout
       - configure_npm
       - restore_dependency_cache
-      - run: npx jfrog rt config --interactive=false --apikey=$ARTIFACTORY_API_KEY_PUBLIC --url=https://agora.dequecloud.com/artifactory
-      - run: npm whoami
-      - run: git diff --quiet || echo 'Working tree has been changed'
-      - run: git diff --stat
       # Make sure the working tree is clean
       - run: git reset --hard HEAD
       - run: >-
-          npx lerna publish from-package \
-            --no-verify-access \
-            --no-git-tag-version \
-            --no-push \
+          npx lerna publish \
+            --force-publish='*' \
             --yes
-
-  webdriverio:
-    <<: *defaults
-    steps: 
-      - checkout
-      - restore_dependency_cache
-      - run: npm run test --prefix=packages/webdriverio
 
 workflows:
   version: 2
