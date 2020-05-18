@@ -167,17 +167,16 @@ workflows:
           context: html-tools
           requires:
             - dependencies
-            # - lint
-            # - cli
-            # - puppeteer
-            # - webdriverjs
-            # - webdriverio
-            # - reporter-earl
+            - lint
+            - cli
+            - puppeteer
+            - webdriverjs
+            - webdriverio
+            - reporter-earl
           filters:
             branches:
               only: 
                 - develop
-                - fix-release-script # TODO: remove after testing
       - production_release:
           context: html-tools
           requires:
