@@ -167,12 +167,12 @@ workflows:
           context: html-tools
           requires:
             - dependencies
-            - lint
-            - cli
-            - puppeteer
-            - webdriverjs
-            - webdriverio
-            - reporter-earl
+            # - lint
+            # - cli
+            # - puppeteer
+            # - webdriverjs
+            # - webdriverio
+            # - reporter-earl
           filters:
             branches:
               only: 
