@@ -9,7 +9,7 @@ commands:
   configure_npm:
     description: 'Configure the npm client'
     steps:
-      - run: npm config set "//registry.npmjs.org/:_authToken" $NPM_AUTH
+      - run: npm config set "//registry.npmjs.org/:_authToken" $NPM_AUTH_PUBLIC
 
   restore_dependency_cache:
     description: 'Restore the dependency cache'
