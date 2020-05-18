@@ -39,6 +39,9 @@ jobs:
       - restore_cache:
           keys:
             - v1-webdriverio-npm-{{ checksum "packages/webdriverio/package-lock.json" }}
+      - restore_cache:
+          keys:
+            - v1-reporter-earl-npm-{{ checksum "packages/reporter-earl/package-lock.json" }}
       - run: npm ci
       - save_cache:
           key: v1-root-npm-{{ checksum "package-lock.json" }}
@@ -62,6 +65,10 @@ jobs:
           paths:
             - packages/webdriverio/node_modules
       - save_cache:
+          key: v1-reporter-earl-npm-{{ checksum "packages/reporter-earl/package-lock.json" }}
+          paths:
+            - packages/reporter-earl/node_modules
+      - save_cache:
           key: v1-npm-cache-{{ .Environment.CIRCLE_SHA1 }}
           paths:
             - node_modules
@@ -69,6 +76,7 @@ jobs:
             - packages/puppeteer/node_modules
             - packages/webdriverjs/node_modules
             - packages/webdriverio/node_modules
+            - packages/reporter-earl/node_modules
 
   lint:
     <<: *defaults
@@ -105,6 +113,12 @@ jobs:
       - checkout
       - restore_dependency_cache
       - run: npm run test --prefix=packages/webdriverio
+  reporter-earl:
+    <<: *defaults
+    steps: 
+      - checkout
+      - restore_dependency_cache
+      - run: npm run test --prefix=packages/reporter-earl
 
   canary_release:
     <<: *defaults
@@ -157,6 +171,9 @@ workflows:
           requires:
             - lint
       - webdriverio:
+          requires:
+            - lint
+      - reporter-earl:
           requires:
             - lint
       - canary_release:
