@@ -4,6 +4,7 @@ const assert = require('chai').assert;
 const testPages = require('../lib/axe-test-urls');
 
 describe('testPages', function () {
+  this.timeout(10000)
   let config, mockDriver;
 
   beforeEach(() => {
