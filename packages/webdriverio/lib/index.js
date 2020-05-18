@@ -1,4 +1,4 @@
-const AxeBuilder = require('axe-webdriverjs');
+const AxeBuilder = require('@axe-core/webdriverjs');
 const bindings = require('./bindings');
 
 class AxeWebDriverIOBuilder extends AxeBuilder {
