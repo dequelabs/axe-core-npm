@@ -9,7 +9,7 @@ commands:
   configure_npm:
     description: 'Configure the npm client'
     steps:
-      - run: npm config set "//registry.npmjs.org/:_authToken" $NPM_AUTH
+      - run: npm config set "//registry.npmjs.org/:_authToken" $NPM_AUTH_PUBLIC
 
   restore_dependency_cache:
     description: 'Restore the dependency cache'
@@ -101,21 +101,21 @@ jobs:
       - run: npm run coverage --prefix=packages/puppeteer
 
   webdriverjs:
-      <<: *defaults
-      steps: 
-        - checkout
-        - restore_dependency_cache
-        - run: npm run test --prefix=packages/webdriverjs
+    <<: *defaults
+    steps:
+      - checkout
+      - restore_dependency_cache
+      - run: npm run test --prefix=packages/webdriverjs
 
   webdriverio:
     <<: *defaults
-    steps: 
+    steps:
       - checkout
       - restore_dependency_cache
       - run: npm run test --prefix=packages/webdriverio
   reporter-earl:
     <<: *defaults
-    steps: 
+    steps:
       - checkout
       - restore_dependency_cache
       - run: npm run test --prefix=packages/reporter-earl
@@ -128,17 +128,7 @@ jobs:
       - restore_dependency_cache
       # Make sure the working tree is clean
       - run: git reset --hard HEAD
-      - run: >-
-          npx lerna publish prepatch \
-          --no-verify-access \
-          --no-git-tag-version \
-          --no-push \
-          --dist-tag=next \
-          --pre-dist-tag=next \
-          --exact \
-          --preid=${CIRCLE_SHA1:0:8} \
-          --force-publish \
-          --yes
+      - run: npx lerna publish prepatch --no-verify-access --no-git-tag-version --no-push --canary --dist-tag=next --exact --force-publish --yes
 
   production_release:
     <<: *defaults
@@ -148,10 +138,7 @@ jobs:
       - restore_dependency_cache
       # Make sure the working tree is clean
       - run: git reset --hard HEAD
-      - run: >-
-          npx lerna publish \
-            --force-publish='*' \
-            --yes
+      - run: npx lerna publish --force-publish='*' --yes
 
 workflows:
   version: 2
@@ -188,7 +175,8 @@ workflows:
             - reporter-earl
           filters:
             branches:
-              only: develop
+              only: 
+                - develop
       - production_release:
           context: html-tools
           requires:
