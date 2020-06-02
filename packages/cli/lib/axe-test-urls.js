@@ -2,16 +2,10 @@
 
 const WebDriver = require('selenium-webdriver');
 const AxeBuilder = require('axe-webdriverjs');
-const { startDriver, stopDriver } = require('./webdriver');
+const { stopDriver } = require('./webdriver');
 
 function testPages(urls, config, events) {
   const driver = config.driver;
-  // Setup webdriver
-  if (!driver) {
-    return startDriver(config).then(function (config) {
-      return testPages(urls, config, events);
-    });
-  }
 
   // End of the line, no more page left
   if (urls.length === 0) {
