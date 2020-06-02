@@ -27,8 +27,7 @@ function testPages(urls, config, events) {
       events.onTestStart(currentUrl);
     }
     if (config.timer) {
-      console.log(' ');
-      console.time('page load time');
+      events.startTimer('page load time');
     }
 
     driver
@@ -52,15 +51,11 @@ function testPages(urls, config, events) {
       })
       .then(() => {
         if (config.timer) {
-          console.timeEnd('page load time');
+          events.startTimer('page load time');
         }
 
         if (config.loadDelay > 0) {
-          console.log(
-            'Waiting for ' +
-              config.loadDelay +
-              ' milliseconds after page load...'
-          );
+          events.waitingMessage(config.loadDelay)
         }
         return new Promise(function (resolve) {
           setTimeout(resolve, config.loadDelay);
@@ -87,13 +82,13 @@ function testPages(urls, config, events) {
           axe.disableRules(config.disable);
         }
         if (config.timer) {
-          console.time('axe-core execution time');
+          events.startTimer('axe-core execution time');
         }
 
         // Run axe
         axe.analyze(function (err, results) {
           if (config.timer) {
-            console.timeEnd('axe-core execution time');
+            events.endTimer('axe-core execution time');
           }
 
           if (err) {

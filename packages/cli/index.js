@@ -80,7 +80,6 @@ program
     '--chromedriver-path <path>',
     'Absolute path to the desired chromedriver executable'
   )
-  // .option('-c, --config <file>', 'Path to custom axe configuration')
   .parse(process.argv);
 
 const silentMode = !!program.stdout;
@@ -134,6 +133,30 @@ if (urls.length === 0) {
 
 // Run axe inside the pages
 axeTestUrls(urls, program, {
+  /**
+   * Start a timer with a message
+   */
+  startTimer: function (message) {
+    console.time(message);
+  },
+
+  /**
+   * End timer with a message
+   */
+  endTimer: function (message) {
+    console.timeEnd(message);
+  },
+
+  /**
+   * Message of how long to wait after a page is loaded
+   */
+
+  waitingMessage: function (loadDelayTime) {
+    console.log(
+      'Waiting for ' + loadDelayTime + ' milliseconds after page load...'
+    );
+  },
+
   /**
    * Inform the user what page is tested
    */
