@@ -6,6 +6,9 @@
   "bin": {
     "axe": "axe-cli"
   },
+  "publishConfig": {
+    "access": "public"
+  },
   "engines": {
     "node": ">=8"
   },
