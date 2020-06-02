@@ -5,6 +5,9 @@
   "license": "MPL-2.0",
   "main": "lib/index.js",
   "types": "lib/index.d.ts",
+  "publishConfig": {
+    "access": "public"
+  },
   "contributors": [
     {
       "name": "Sushil Nagi",
