@@ -136,7 +136,6 @@ axeTestUrls(urls, program, {
   /**
    * Start a timer with a message
    */
-
   startTimer: function (message) {
     console.time(message);
   },
