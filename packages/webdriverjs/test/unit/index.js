@@ -323,22 +323,11 @@ describe('Builder', function () {
       });
 
       describe('and provided a callback', () => {
-        describe('with an arity of 1', () => {
-          it('should provide results as the first argument', done => {
-            builder.analyze(results => {
-              assert.strictEqual(results.yay, 'heh');
-              done();
-            });
-          });
-        });
-
-        describe('with an arity of 2', () => {
-          it('should provide results as the second argument', done => {
-            builder.analyze((err, results) => {
-              assert.isNull(err);
-              assert.strictEqual(results.yay, 'heh');
-              done();
-            });
+        it('should provide results as the second argument', done => {
+          builder.analyze((err, results) => {
+            assert.isNull(err);
+            assert.strictEqual(results.yay, 'heh');
+            done();
           });
         });
       });
@@ -378,64 +367,25 @@ describe('Builder', function () {
       });
 
       describe('with a callback', () => {
-        describe('an arity of 1', () => {
-          // HACK: remove all unhandled rejection listeners to ensure ours fires.
-          let unhandledRejectionListeners;
-
-          before(() => {
-            unhandledRejectionListeners = process.listeners(
-              'unhandledRejection'
-            );
-            process.removeAllListeners('unhandledRejection');
-          });
-
-          after(() => {
-            for (const listener of unhandledRejectionListeners) {
-              process.on('unhandledRejection', listener);
-            }
-          });
-
-          it('should throw the error', done => {
-            let didThrowError = false;
-            process.once('unhandledRejection', err => {
-              assert.strictEqual(err.message, 'boom!');
-              didThrowError = true;
-            });
-
-            builder.analyze(results => {
-              // Do nothing.
-              assert.isNull(results);
-            });
-
-            // Allow the Promise to resolve. This prevents a race condition.
-            setImmediate(() => {
-              assert.isTrue(didThrowError);
-              done();
-            });
+        it('should provide the error as the first argument', done => {
+          builder.analyze((err, results) => {
+            assert.strictEqual(err.message, 'boom!');
+            assert.isNull(results);
+            done();
           });
         });
 
-        describe('an arity of 2', () => {
-          it('should provide the error as the first argument', done => {
-            builder.analyze((err, results) => {
-              assert.strictEqual(err.message, 'boom!');
-              assert.isNull(results);
-              done();
-            });
-          });
-
-          describe('and a .catch()', () => {
-            it('should not reject the wrapping Promise', done => {
-              builder
-                .analyze((err, results) => {
-                  assert.strictEqual(err.message, 'boom!');
-                  assert.isNull(results);
-                  done();
-                })
-                .catch(err => {
-                  assert.fail(`Rejected the promise: ${err.message}`);
-                });
-            });
+        describe('and a .catch()', () => {
+          it('should not reject the wrapping Promise', done => {
+            builder
+              .analyze((err, results) => {
+                assert.strictEqual(err.message, 'boom!');
+                assert.isNull(results);
+                done();
+              })
+              .catch(err => {
+                assert.fail(`Rejected the promise: ${err.message}`);
+              });
           });
         });
       });
