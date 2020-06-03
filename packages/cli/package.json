@@ -2,7 +2,7 @@
   "name": "@axe-core/cli",
   "version": "4.0.0-pre.0",
   "description": "A CLI for accessibility testing using axe-core",
-  "main": "index.js",
+  "main": "lib/axe-test-urls.js",
   "bin": {
     "axe": "axe-cli"
   },
