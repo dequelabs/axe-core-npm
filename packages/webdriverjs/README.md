@@ -163,8 +163,6 @@ AxeBuilder(driver)
   });
 ```
 
-_NOTE: to maintain backwards compatibility, the `analyze` function will also accept a callback which takes a single `results` argument. However, if an error is encountered during analysis, the error will be raised which will cause the **process to crash**. ⚠️ This functionality will be removed in the next major release.⚠️_
-
 ## Examples
 
 This project has a couple integrations that demonstrate the ability and use of this module:
