@@ -2,18 +2,12 @@
   "name": "@axe-core/cli",
   "version": "4.0.0-pre.0",
   "description": "A CLI for accessibility testing using axe-core",
-  "main": "lib/axe-test-urls.js",
+  "main": "dist/lib/axe-test-urls.js",
   "bin": {
     "axe": "axe-cli"
   },
-  "publishConfig": {
-    "access": "public"
-  },
-  "engines": {
-    "node": ">=8"
-  },
   "scripts": {
-    "test": "mocha test/*.js"
+    "build": "tsc"
   },
   "repository": {
     "type": "git",
@@ -32,17 +26,24 @@
     "organization": "Deque Systems, Inc.",
     "url": "http://github.com/wilcofiers/"
   },
+  "license": "MPL-2.0",
   "dependencies": {
-    "axe-core": "^3.2.2",
-    "axe-webdriverjs": "^2.2.0",
-    "chromedriver": "latest",
-    "colors": "^1.3.3",
-    "commander": "^2.19.0",
-    "selenium-webdriver": "^3.6.0"
+    "axe-core": "^3.5.4",
+    "axe-webdriverjs": "^2.3.0",
+    "chromedriver": "^83.0.0",
+    "colors": "^1.4.0",
+    "commander": "^5.1.0",
+    "selenium-webdriver": "^4.0.0-alpha.7"
   },
   "devDependencies": {
+    "@types/axe-webdriverjs": "^2.1.0",
+    "@types/chai": "^4.2.11",
+    "@types/chromedriver": "^81.0.0",
+    "@types/mocha": "^7.0.2",
+    "@types/node": "^14.0.11",
+    "@types/selenium-webdriver": "^4.0.9",
     "chai": "^4.2.0",
-    "mocha": "^5.1.0",
-    "node-static": "^0.7.11"
+    "mocha": "^7.2.0",
+    "ts-node": "^8.10.2"
   }
 }
