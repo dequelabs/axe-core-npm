@@ -1,4 +1,3 @@
-const deprecate = require('depd')('axe-webdriverjs');
 const AxeInjector = require('./axe-injector');
 const normalizeContext = require('./normalize-context');
 
@@ -133,14 +132,6 @@ AxeBuilder.prototype.analyze = function (callback) {
     config = this._config,
     source = this._source;
 
-  // Check if the provided `callback` uses the old argument signature (an arity of 1). If it does, provide a helpful deprecation warning.
-  const isOldAPI = callback && callback.length === 1;
-  if (isOldAPI) {
-    deprecate(
-      'Error must be handled as the first argument of axe.analyze. See: #83'
-    );
-  }
-
   return new Promise((resolve, reject) => {
     const injector = new AxeInjector({
       driver,
@@ -167,24 +158,14 @@ AxeBuilder.prototype.analyze = function (callback) {
         )
         .then(function (results) {
           if (callback) {
-            // If using the old API, provide the `results` as the first and only argument. Otherwise, provide `null` indicating no errors were encountered.
-            if (isOldAPI) {
-              callback(results);
-            } else {
-              callback(null, results);
-            }
+            callback(null, results);
           }
           resolve(results);
         })
         .catch(err => {
           // When using a callback, do *not* reject the wrapping Promise. This prevents having to handle the same error twice.
           if (callback) {
-            // If using the old API, throw this error (and unfortunately crash the process), since there is no way to handle it. Otherwise, provide the error as the first argument ("error-back" style).
-            if (isOldAPI) {
-              throw err;
-            } else {
-              callback(err, null);
-            }
+            callback(err, null);
           } else {
             reject(err);
           }
