@@ -84,7 +84,7 @@ describe('startDriver', () => {
     assert.deepEqual(chromeOptions.args, ['--headless']);	
   });	
 
-  it.only('sets the --chrome-options flag with no-sandbox', async () => {	
+  it('sets the --chrome-options flag with no-sandbox', async () => {	
     browser = 'chrome-headless';	
     config.chromeOptions = ['--no-sandbox'];	
     await startDriver(config);	
