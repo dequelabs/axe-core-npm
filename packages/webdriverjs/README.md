@@ -27,7 +27,7 @@ var WebDriver = require('selenium-webdriver');
 var driver = new WebDriver.Builder().forBrowser('firefox').build();
 
 driver.get('https://dequeuniversity.com/demo/mars/').then(function () {
-  AxeBuilder(driver).analyze(function (err, results) {
+  new AxeBuilder(driver).analyze(function (err, results) {
     if (err) {
       // Handle error somehow
     }
@@ -38,17 +38,17 @@ driver.get('https://dequeuniversity.com/demo/mars/').then(function () {
 
 ### AxeBuilder(driver:WebDriver[, axeSource:string])
 
-Constructor for the AxeBuilder helper. You must pass an instance of selenium-webdriver as the first and only argument. Can be called with or without the `new` keyword.
+Constructor for the AxeBuilder helper. You must pass an instance of selenium-webdriver as the first and only argument.
 
 ```javascript
-var builder = AxeBuilder(driver);
+var builder = new AxeBuilder(driver);
 ```
 
 If you wish to run a specific version of axe-core, you can pass the source axe-core source file in as a string. Doing so will mean axe-webdriverjs runs this version of axe-core, instead of the one installed as a dependency of axe-webdriverjs.
 
 ```javascript
 var axeSource = fs.readFileSync('./axe-1.0.js', 'utf8');
-var builder = AxeBuilder(driver, axeSource);
+var builder = new AxeBuilder(driver, axeSource);
 ```
 
 ### AxeBuilder#include(selector:String)
@@ -56,7 +56,7 @@ var builder = AxeBuilder(driver, axeSource);
 Adds a CSS selector to the list of elements to include in analysis
 
 ```javascript
-AxeBuilder(driver).include('.results-panel');
+new AxeBuilder(driver).include('.results-panel');
 ```
 
 ### AxeBuilder#exclude(selector:String)
@@ -64,7 +64,7 @@ AxeBuilder(driver).include('.results-panel');
 Add a CSS selector to the list of elements to exclude from analysis
 
 ```javascript
-AxeBuilder(driver).include('.results-panel').exclude('.results-panel h2');
+new AxeBuilder(driver).include('.results-panel').exclude('.results-panel h2');
 ```
 
 ### AxeBuilder#options(options:Object)
@@ -72,7 +72,7 @@ AxeBuilder(driver).include('.results-panel').exclude('.results-panel h2');
 Specifies options to be used by `axe.a11yCheck`. **Will override any other configured options, including calls to `withRules` and `withTags`.** See [axe-core API documentation](https://github.com/dequelabs/axe-core/blob/master/doc/API.md) for information on its structure.
 
 ```javascript
-AxeBuilder(driver).options({ checks: { 'valid-lang': ['orcish'] } });
+new AxeBuilder(driver).options({ checks: { 'valid-lang': ['orcish'] } });
 ```
 
 ### AxeBuilder#withRules(rules:Mixed)
@@ -80,11 +80,11 @@ AxeBuilder(driver).options({ checks: { 'valid-lang': ['orcish'] } });
 Limits analysis to only those with the specified rule IDs. Accepts a String of a single rule ID or an Array of multiple rule IDs. **Subsequent calls to `AxeBuilder#options`, `AxeBuilder#withRules` or `AxeBuilder#withRules` will override specified options.**
 
 ```javascript
-AxeBuilder(driver).withRules('html-lang');
+new AxeBuilder(driver).withRules('html-lang');
 ```
 
 ```javascript
-AxeBuilder(driver).withRules(['html-lang', 'image-alt']);
+new AxeBuilder(driver).withRules(['html-lang', 'image-alt']);
 ```
 
 ### AxeBuilder#withTags(tags:Mixed)
@@ -92,11 +92,11 @@ AxeBuilder(driver).withRules(['html-lang', 'image-alt']);
 Limits analysis to only those with the specified rule IDs. Accepts a String of a single tag or an Array of multiple tags. **Subsequent calls to `AxeBuilder#options`, `AxeBuilder#withRules` or `AxeBuilder#withRules` will override specified options.**
 
 ```javascript
-AxeBuilder(driver).withTags('wcag2a');
+new AxeBuilder(driver).withTags('wcag2a');
 ```
 
 ```javascript
-AxeBuilder(driver).withTags(['wcag2a', 'wcag2aa']);
+new AxeBuilder(driver).withTags(['wcag2a', 'wcag2aa']);
 ```
 
 ### AxeBuilder#disableRules(rules:Mixed)
@@ -104,13 +104,13 @@ AxeBuilder(driver).withTags(['wcag2a', 'wcag2aa']);
 Skips verification of the rules provided. Accepts a String of a single rule ID or an Array of multiple rule IDs. **Subsequent calls to `AxeBuilder#options`, `AxeBuilder#disableRules` will override specified options.**
 
 ```javascript
-AxeBuilder(driver).disableRules('color-contrast');
+new AxeBuilder(driver).disableRules('color-contrast');
 ```
 
 or use it combined with some specified tags:
 
 ```javascript
-AxeBuilder(driver)
+new AxeBuilder(driver)
   .withTags(['wcag2a', 'wcag2aa'])
   .disableRules('color-contrast');
 ```
@@ -127,14 +127,13 @@ var config = {
   checks: [Object],
   rules: [Object]
 };
-AxeBuilder(driver)
-  .configure(config)
-  .analyze(function (err, results) {
-    if (err) {
-      // Handle error somehow
-    }
-    console.log(results);
-  });
+
+new AxeBuilder(driver).configure(config).analyze(function (err, results) {
+  if (err) {
+    // Handle error somehow
+  }
+  console.log(results);
+});
 ```
 
 ### AxeBuilder#analyze(callback:Function)
@@ -142,7 +141,7 @@ AxeBuilder(driver)
 Performs analysis and passes any encountered error and/or the result object to the provided callback function or promise function. **Does not chain as the operation is asynchronous**
 
 ```javascript
-AxeBuilder(driver).analyze(function (err, results) {
+new AxeBuilder(driver).analyze(function (err, results) {
   if (err) {
     // Handle error somehow
   }
@@ -153,7 +152,7 @@ AxeBuilder(driver).analyze(function (err, results) {
 Using the returned promise (optional):
 
 ```javascript
-AxeBuilder(driver)
+new AxeBuilder(driver)
   .analyze()
   .then(function (results) {
     console.log(results);

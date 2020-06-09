@@ -50,7 +50,7 @@ describe('doc-dylang.html', function () {
 
   it('should find violations with customized helpUrl', function (done) {
     const src = axe.source;
-    AxeBuilder(driver, src)
+    new AxeBuilder(driver, src)
       .configure(json)
       .withRules(['dylang'])
       .analyze()
