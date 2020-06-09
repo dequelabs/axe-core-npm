@@ -8,7 +8,7 @@ const version = require('./package.json').version;
 const axeTestUrls = require('./lib/axe-test-urls');
 const saveOutcome = require('./lib/save-outcome');
 const utils = require('./lib/utils');
-const { startDriver } = require('./webdriver');
+const { startDriver } = require('./lib/webdriver');
 
 program
   .version(version)

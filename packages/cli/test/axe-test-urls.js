@@ -15,7 +15,10 @@ describe('testPages', function () {
       wait: async arg => arg,
       switchTo: () => ({ defaultContent: () => {} }),
       findElements: async () => [],
-      quit: async arg => arg
+      quit: async arg => arg,
+      manage: () => ({
+        setTimeouts: async arg => arg
+      })
     };
     config = { driver: mockDriver };
   });

@@ -2,14 +2,14 @@
 
 const WebDriver = require('selenium-webdriver');
 const AxeBuilder = require('axe-webdriverjs');
-const { stopDriver } = require('./webdriver');
 
 function testPages(urls, config, events) {
   const driver = config.driver;
-
+  const scriptTimeout = (config.timeout || 20) * 1000.0;
+  driver.manage().setTimeouts({ script: scriptTimeout });
   // End of the line, no more page left
   if (urls.length === 0) {
-    stopDriver(config);
+    driver.quit();
     return Promise.resolve([]);
   }
 
