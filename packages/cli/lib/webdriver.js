@@ -4,8 +4,6 @@ const chrome = require('selenium-webdriver/chrome');
 
 function startDriver(config) {
   let builder;
-  const scriptTimeout = (config.timeout || 20) * 1000.0;
-
   if (config.browser === 'chrome-headless') {
     // Tell selenium use the driver in node_modules
     const service = new chrome.ServiceBuilder(
@@ -27,23 +25,12 @@ function startDriver(config) {
   } else {
     builder = new Builder().forBrowser(config.browser);
   }
-
   // Launch a browser
   config.driver = builder.build();
   config.builder = builder;
-
   return config.driver
-    .manage()
-    .timeouts()
-    .setScriptTimeout(scriptTimeout)
-    .then(() => config);
-}
-
-function stopDriver(config) {
-  config.driver.quit();
 }
 
 module.exports = {
-  startDriver,
-  stopDriver
+  startDriver
 };

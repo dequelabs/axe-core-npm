@@ -5,7 +5,7 @@ const chrome = require('selenium-webdriver/chrome');
 const http = require('http');
 const nodeStatic = require('node-static');
 const axeTestUrls = require('../lib/axe-test-urls');
-const { startDriver, stopDriver } = require('../lib/webdriver');
+const { startDriver } = require('../lib/webdriver');
 
 describe('integrations', function () {
   let program, urls, server;
@@ -36,7 +36,7 @@ describe('integrations', function () {
   });
 
   afterEach(async () => {
-    stopDriver(program);
+    program.driver.quit()
 
     const service = chrome.getDefaultService();
     if (service.isRunning()) {
