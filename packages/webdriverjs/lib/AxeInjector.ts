@@ -1,7 +1,28 @@
-const { StaleElementReferenceError } = require('selenium-webdriver').error;
+import { error, WebDriver, WebElement } from 'selenium-webdriver';
+import { Spec as AxeConfig } from 'axe-core';
+
+const { StaleElementReferenceError } = error;
+
+interface Params {
+  driver: WebDriver;
+  config: AxeConfig;
+  axeSource?: string | null;
+  options?: Options;
+}
+
+export interface Options {
+  noSandbox?: boolean;
+  logIframeErrors?: boolean;
+}
 
 class AxeInjector {
-  constructor({ driver, config, axeSource = null, options = {} }) {
+  private driver: WebDriver;
+  private axeSource: string;
+  private config: string;
+  private options: Options;
+  private didLogError: boolean;
+
+  constructor({ driver, config, axeSource = null, options = {} }: Params) {
     this.driver = driver;
     this.axeSource = axeSource || require('axe-core').source;
     this.config = config ? JSON.stringify(config) : '';
@@ -25,7 +46,7 @@ class AxeInjector {
   }
 
   // Single-shot error handler. Ensures we don't log more than once.
-  errorHandler(err) {
+  private errorHandler(err: Error): void {
     // We've already "warned" the user. No need to do it again (mostly for backwards compatiability)
     if (this.didLogError) {
       return;
@@ -50,7 +71,7 @@ class AxeInjector {
   }
 
   // Get axe-core source (and configuration)
-  get script() {
+  private get script(): string {
     return `
       ${this.axeSource}
       ${this.config ? `axe.configure(${this.config})` : ''}
@@ -59,7 +80,7 @@ class AxeInjector {
   }
 
   // Inject into the provided `frame` and its child `frames`
-  async handleFrame(framePath) {
+  private async handleFrame(framePath: WebElement[]): Promise<void> {
     // Move back to the top-most frame
     await this.driver.switchTo().defaultContent();
     // Switch context to the frame and inject our `script` into it
@@ -89,40 +110,47 @@ class AxeInjector {
     }
   }
 
-  async sandboxBuster() {
+  private async sandboxBuster(): Promise<void> {
     // outer promise needed because `executeAsyncScript`
     // does not return a "real promise" (ManagedPromise)
     // and we want to await it.
     return new Promise((resolve, reject) => {
       /* eslint-disable no-undef */
       this.driver
-        .executeAsyncScript(function (callback) {
-          const iframes = Array.from(
+        .executeAsyncScript(function (callback: () => void) {
+          const iframes: HTMLIFrameElement[] = Array.from(
             document.querySelectorAll('iframe[sandbox]')
           );
-          const removeSandboxAttr = clone => attr => {
+
+          const removeSandboxAttr = (clone: HTMLIFrameElement) => (
+            attr: Attr
+          ): void => {
             if (attr.name === 'sandbox') return;
             clone.setAttribute(attr.name, attr.value);
           };
-          const replaceSandboxedIframe = iframe => {
+
+          const replaceSandboxedIframe = (
+            iframe: HTMLIFrameElement
+          ): Promise<void> => {
             const clone = document.createElement('iframe');
-            const promise = new Promise(
-              iframeLoaded => (clone.onload = iframeLoaded)
-            );
+            const promise = new Promise<void>(iframeLoaded => {
+              clone.onload = (): void => iframeLoaded();
+            });
             Array.from(iframe.attributes).forEach(removeSandboxAttr(clone));
-            iframe.parentElement.replaceChild(clone, iframe);
+            iframe.parentElement?.replaceChild(clone, iframe);
             return promise;
           };
+
           Promise.all(iframes.map(replaceSandboxedIframe)).then(callback);
         })
         /* eslint-enable no-undef */
         // resolve the outer promise
-        .then(resolve)
-        .catch(e => reject(e));
+        .then(() => resolve())
+        .catch((err: Error) => reject(err));
     });
   }
   // Inject into all frames.
-  async injectIntoAllFrames() {
+  private async injectIntoAllFrames(): Promise<void> {
     // Ensure we're "starting" our loop at the top-most frame
     await this.driver.switchTo().defaultContent();
 
@@ -152,7 +180,7 @@ class AxeInjector {
   }
 
   // Inject axe, invoking the provided callback when done
-  inject(callback) {
+  public inject(callback: (err?: Error) => void): void {
     this.injectIntoAllFrames()
       .then(() => callback())
       .catch(e => {
@@ -165,4 +193,4 @@ class AxeInjector {
   }
 }
 
-module.exports = AxeInjector;
+export default AxeInjector;

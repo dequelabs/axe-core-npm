@@ -61,6 +61,11 @@
     "selenium-webdriver": ">= 2.53.1"
   },
   "devDependencies": {
+    "@types/chai": "^4.2.11",
+    "@types/mocha": "^7.0.2",
+    "@types/node": "^14.0.12",
+    "@types/selenium-webdriver": "^4.0.9",
+    "@types/sinon": "^9.0.4",
     "babel-cli": "^6.26.0",
     "babel-core": "^6.26.3",
     "babel-eslint": "^10.0.3",
@@ -74,7 +79,9 @@
     "nyc": "^14.1.1",
     "proxyquire": "^2.1.1",
     "selenium-webdriver": "^3.6.0",
-    "sinon": "^7.3.2"
+    "sinon": "^7.3.2",
+    "ts-node": "^8.10.2",
+    "typescript": "^3.9.5"
   },
   "dependencies": {
     "axe-core": "^3.4.1",
