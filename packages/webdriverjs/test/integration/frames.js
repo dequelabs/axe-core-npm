@@ -40,7 +40,7 @@ describe('outer-frame.html', function () {
   });
 
   it('should find violations', function (done) {
-    AxeBuilder(driver)
+    new AxeBuilder(driver)
       .withRules('html-lang-valid')
       .analyze()
       .then(function (results) {
@@ -65,7 +65,7 @@ describe('outer-frame.html', function () {
   });
 
   it('should accept options', function (done) {
-    AxeBuilder(driver)
+    new AxeBuilder(driver)
       .include('body')
       .options({ checks: { 'valid-lang': { options: ['bobbert'] } } })
       .withRules('html-lang-valid')
@@ -78,7 +78,7 @@ describe('outer-frame.html', function () {
   });
 
   it('should not find violations when the rule is disabled', function (done) {
-    AxeBuilder(driver)
+    new AxeBuilder(driver)
       .options({ rules: { 'html-lang-valid': { enabled: false } } })
       .analyze()
       .then(function (results) {

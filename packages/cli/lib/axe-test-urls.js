@@ -57,7 +57,7 @@ function testPages(urls, config, events) {
       })
       .then(() => {
         // Set everything up
-        const axe = AxeBuilder(driver, config.axeSource);
+        const axe = new AxeBuilder(driver, config.axeSource);
 
         if (Array.isArray(config.include)) {
           config.include.forEach(include => axe.include(include));

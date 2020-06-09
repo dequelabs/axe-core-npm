@@ -41,7 +41,7 @@ describe('doc-lang.html', function () {
   });
 
   it('should find violations', function (done) {
-    AxeBuilder(driver)
+    new AxeBuilder(driver)
       .withRules('html-has-lang')
       .analyze()
       .then(function (results) {
@@ -53,7 +53,7 @@ describe('doc-lang.html', function () {
   });
 
   it('should not find violations when given context (document level rule)', function (done) {
-    AxeBuilder(driver)
+    new AxeBuilder(driver)
       .include('body')
       .withRules('html-has-lang')
       .analyze()
@@ -65,7 +65,7 @@ describe('doc-lang.html', function () {
   });
 
   it('should not find violations when the rule is disabled', function (done) {
-    AxeBuilder(driver)
+    new AxeBuilder(driver)
       .options({ rules: { 'html-has-lang': { enabled: false } } })
       .analyze()
       .then(function (results) {

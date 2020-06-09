@@ -28,8 +28,9 @@ describe('Builder', function () {
       assert.isNull(new Builder()._config);
     });
 
-    it('should still work even if not used with new keyword', function () {
-      assert.instanceOf(Builder(), Builder);
+    // https://github.com/dequelabs/html-team-proposals/pull/149
+    it('should not work when instantiated without `new`', function () {
+      assert.throws(() => Builder());
     });
   });
 
