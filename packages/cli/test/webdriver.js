@@ -1,7 +1,7 @@
 'use strict';
 
 const assert = require('chai').assert;
-const { startDriver, stopDriver } = require('../lib/webdriver');
+const { startDriver } = require('../lib/webdriver');
 const chromedriver = require('chromedriver');
 const chrome = require('selenium-webdriver/chrome');
 const path = require('path');
@@ -18,7 +18,6 @@ describe('startDriver', () => {
   });
 
   afterEach(async () => {
-    stopDriver(config);
     const service = chrome.getDefaultService();
     if (service.isRunning()) {
       await service.stop();
@@ -76,8 +75,8 @@ describe('startDriver', () => {
 
   it('sets the --headless flag with chrome-headless', async () => {
     browser = 'chrome-headless';
-    const { builder } = await startDriver(config);
-    const capabilities = await builder.getCapabilities();
+    await startDriver(config);
+    const capabilities = await config.builder.getCapabilities();
     const chromeOptions = capabilities.get('chromeOptions');
 
     assert.isObject(chromeOptions);
@@ -87,22 +86,11 @@ describe('startDriver', () => {
   it('sets the --chrome-options flag with no-sandbox', async () => {
     browser = 'chrome-headless';
     config.chromeOptions = ['--no-sandbox'];
-    const { builder } = await startDriver(config);
-    const capabilities = await builder.getCapabilities();
+    await startDriver(config);
+    const capabilities = await config.builder.getCapabilities();
     const chromeOptions = capabilities.get('chromeOptions');
 
     assert.isArray(chromeOptions.args);
     assert.deepEqual(chromeOptions.args, ['--headless', '--no-sandbox']);
-  });
-});
-
-describe('stopDriver', () => {
-  it('calls browser.quit', () => {
-    let called = 0;
-    stopDriver({
-      browser: 'chrome-headless',
-      driver: { quit: () => called++ }
-    });
-    assert.equal(called, 1);
   });
 });

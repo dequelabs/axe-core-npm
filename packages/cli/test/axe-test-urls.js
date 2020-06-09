@@ -4,7 +4,7 @@ const assert = require('chai').assert;
 const testPages = require('../lib/axe-test-urls');
 
 describe('testPages', function () {
-  this.timeout(10000)
+  this.timeout(10000);
   let config, mockDriver;
 
   beforeEach(() => {
@@ -15,7 +15,10 @@ describe('testPages', function () {
       wait: async arg => arg,
       switchTo: () => ({ defaultContent: () => {} }),
       findElements: async () => [],
-      quit: async arg => arg
+      quit: async arg => arg,
+      manage: () => ({
+        setTimeouts: async arg => arg
+      })
     };
     config = { driver: mockDriver };
   });

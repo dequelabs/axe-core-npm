@@ -43,7 +43,7 @@ describe('outer-configure-frame.html', function () {
   });
 
   it('should find configured violations in all frames', function (done) {
-    AxeBuilder(driver)
+    new AxeBuilder(driver)
       .options({
         rules: {
           'landmark-one-main': { enabled: false },

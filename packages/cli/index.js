@@ -8,7 +8,7 @@ const version = require('./package.json').version;
 const axeTestUrls = require('./lib/axe-test-urls');
 const saveOutcome = require('./lib/save-outcome');
 const utils = require('./lib/utils');
-const { startDriver, stopDriver } = require('./webdriver');
+const { startDriver } = require('./lib/webdriver');
 
 program
   .version(version)
@@ -87,7 +87,7 @@ const silentMode = !!program.stdout;
 
 program.browser = utils.parseBrowser(program.browser);
 program.axeSource = utils.getAxeSource(program.axeSource);
-program.driver = startDriver(program)
+program.driver = startDriver(program);
 
 if (!program.axeSource) {
   console.error(error('Unable to find the axe-core source file.'));
