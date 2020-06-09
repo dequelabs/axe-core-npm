@@ -49,7 +49,7 @@ function testPages(urls, config, events) {
         }
 
         if (config.loadDelay > 0) {
-          events.waitingMessage(config.loadDelay)
+          events.waitingMessage(config.loadDelay);
         }
         return new Promise(function (resolve) {
           setTimeout(resolve, config.loadDelay);
@@ -57,7 +57,7 @@ function testPages(urls, config, events) {
       })
       .then(() => {
         // Set everything up
-        const axe = AxeBuilder(driver, config.axeSource);
+        const axe = new AxeBuilder(driver, config.axeSource);
 
         if (Array.isArray(config.include)) {
           config.include.forEach(include => axe.include(include));
