@@ -6,10 +6,6 @@ const normalizeContext = require('./normalize-context');
  * @param {WebDriver} driver WebDriver instance to analyze
  */
 function AxeBuilder(driver, source, builderOptions = {}) {
-  if (!(this instanceof AxeBuilder)) {
-    return new AxeBuilder(driver, source);
-  }
-
   this._driver = driver;
   this._source = source || null;
   this._includes = [];

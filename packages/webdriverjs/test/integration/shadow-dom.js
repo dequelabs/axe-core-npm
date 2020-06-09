@@ -61,7 +61,7 @@ describe('shadow-dom.html', function () {
 
   it('should find violations', function (done) {
     if (shadowSupported) {
-      AxeBuilder(driver)
+      new AxeBuilder(driver)
         .options({
           rules: {
             'landmark-one-main': { enabled: false },
