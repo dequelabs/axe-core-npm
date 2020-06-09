@@ -72,4 +72,26 @@ describe('startDriver', () => {
     assert.notEqual(config.chromedriverPath, chromedriver.path);
     assert.equal(service.executable_, config.chromedriverPath);
   });
+
+
+  it('sets the --headless flag with chrome-headless', async () => {	
+    browser = 'chrome-headless';	
+    await startDriver(config);	
+    const capabilities = await config.builder.getCapabilities();	
+    const chromeOptions = capabilities.get('chromeOptions');	
+
+    assert.isObject(chromeOptions);	
+    assert.deepEqual(chromeOptions.args, ['--headless']);	
+  });	
+
+  it.only('sets the --chrome-options flag with no-sandbox', async () => {	
+    browser = 'chrome-headless';	
+    config.chromeOptions = ['--no-sandbox'];	
+    await startDriver(config);	
+    const capabilities = await config.builder.getCapabilities();	
+    const chromeOptions = capabilities.get('chromeOptions');	
+
+    assert.isArray(chromeOptions.args);	
+    assert.deepEqual(chromeOptions.args, ['--headless', '--no-sandbox']);	
+  });	
 });
