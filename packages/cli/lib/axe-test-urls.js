@@ -49,7 +49,7 @@ function testPages(urls, config, events) {
         }
 
         if (config.loadDelay > 0) {
-          events.waitingMessage(config.loadDelay)
+          events.waitingMessage(config.loadDelay);
         }
         return new Promise(function (resolve) {
           setTimeout(resolve, config.loadDelay);
