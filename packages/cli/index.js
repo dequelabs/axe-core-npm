@@ -87,7 +87,7 @@ const silentMode = !!program.stdout;
 
 program.browser = utils.parseBrowser(program.browser);
 program.axeSource = utils.getAxeSource(program.axeSource);
-program.driver = startDriver(program)
+program.driver = startDriver(program);
 
 if (!program.axeSource) {
   console.error(error('Unable to find the axe-core source file.'));
