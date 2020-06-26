@@ -3,8 +3,8 @@
 const WebDriver = require('selenium-webdriver');
 const AxeBuilder = require('axe-webdriverjs');
 
-function testPages(urls, config, events) {
-  const driver = config.driver;
+async function testPages(urls, config, events) {
+  const driver = await config.driver;
   const scriptTimeout = (config.timeout || 20) * 1000.0;
   driver.manage().setTimeouts({ script: scriptTimeout });
   // End of the line, no more page left
@@ -12,7 +12,7 @@ function testPages(urls, config, events) {
     driver.quit();
     return Promise.resolve([]);
   }
-
+  
   return new Promise((resolve, reject) => {
     // Grab the first item on the URL list
     const currentUrl = urls[0].replace(/[,;]$/, '');
