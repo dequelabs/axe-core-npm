@@ -49,6 +49,7 @@ async function injectAxeChild(frame: Frame, {source, selector}: IInjectAxeArgs):
   // Just print diagnostic if a child frame fails to load.
   // Don't fully error since we aren't the top-level frame
   injections.push(injectP.catch(reportError));
+  // Fix return type since we don't care about the value
   return Promise.all(injections).then(() => undefined);
 }
 
@@ -69,6 +70,7 @@ async function injectAxe(frame: Frame, {source, selector}: IInjectAxeArgs): Prom
   }
 
   injections.push(injectP);
+  // Fix return type since we don't care about the value
   return Promise.all(injections).then(() => undefined);
 }
 
