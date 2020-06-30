@@ -12,7 +12,7 @@ async function testPages(urls, config, events) {
     driver.quit();
     return Promise.resolve([]);
   }
-  
+
   return new Promise((resolve, reject) => {
     // Grab the first item on the URL list
     const currentUrl = urls[0].replace(/[,;]$/, '');
