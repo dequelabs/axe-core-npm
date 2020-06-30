@@ -22,14 +22,14 @@ function startDriver(config) {
     builder = new Builder()
       .forBrowser('chrome')
       .withCapabilities(chromeCapabilities)
-      .setChromeOptions(new chrome.Options().headless())
+      .setChromeOptions(new chrome.Options().headless());
   } else {
     builder = new Builder().forBrowser(config.browser);
   }
   // Launch a browser
-  config.driver = builder.build();  
+  config.driver = builder.build();
   config.builder = builder;
-  return config.driver    
+  return config.driver;
 }
 
 module.exports = {

@@ -36,12 +36,12 @@ describe('integrations', function () {
   });
 
   afterEach(async () => {
-    program.driver.quit()
-
+    await program.driver.quit()
+    await new Promise(resolve => setTimeout(resolve, 100))
     const service = chrome.getDefaultService();
     if (service.isRunning()) {
       await service.stop();
-
+      
       // An unfortunately hacky way to clean up
       // the service. Stop will shut it down,
       // but it doesn't reset the local state
