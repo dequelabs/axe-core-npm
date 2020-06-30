@@ -3,8 +3,8 @@
 const WebDriver = require('selenium-webdriver');
 const AxeBuilder = require('axe-webdriverjs');
 
-async function testPages(urls, config, events) {
-  const driver = await config.driver;
+function testPages(urls, config, events) {
+  const driver = config.driver;
   const scriptTimeout = (config.timeout || 20) * 1000.0;
   driver.manage().setTimeouts({ script: scriptTimeout });
   // End of the line, no more page left

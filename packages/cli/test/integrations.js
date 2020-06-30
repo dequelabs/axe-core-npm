@@ -37,6 +37,7 @@ describe('integrations', function () {
 
   afterEach(async () => {
     await program.driver.quit();
+    // adds a 100 ms wait to allow the service to stop
     await new Promise(resolve => setTimeout(resolve, 100));
     const service = chrome.getDefaultService();
     if (service.isRunning()) {
