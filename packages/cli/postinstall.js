@@ -19,7 +19,7 @@ if (adtExist) {
     path.join(process.cwd(), 'node_modules', '.bin', 'axe')
   )
 
-  if (axeSymlink.match(/s*?(@axe-core)/g)) {
+  if (axeSymlink.match(/\s*?(@axe-core)/g)) {
     const axeCoreCliPath = path.join(
       process.cwd(),
       'node_modules',
