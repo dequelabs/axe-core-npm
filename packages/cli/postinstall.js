@@ -34,7 +34,7 @@ if (adtExist) {
     fs.unlinkSync(axeCoreCliPath)
     fs.symlinkSync(adtRelativePath, axeCoreCliPath)
     console.warn(
-      'Please make sure to uninstall @axe-devtools/cli in favor of having @axe-core/cli'
+      'Please make sure to uninstall @axe-core/cli in favor of having @axe-devtools/cli'
     )
   }
 }
