@@ -13,6 +13,7 @@ function arrayify<T>(src: T | T[]): T[] {
 interface IInjectAxeArgs {
   source?: string;
   selector: string;
+  logOnError?: boolean;
 }
 
 function injectAxeModule(frame: Frame): Promise<void> {
@@ -25,12 +26,12 @@ function injectAxeString(frame: Frame, source: string): Promise<void> {
   return frame.evaluate(source);
 }
 
-async function injectAxeChild(frame: Frame, {source, selector}: IInjectAxeArgs): Promise<void> {
+async function injectAxe(frame: Frame, {source, selector, logOnError}: IInjectAxeArgs): Promise<void> {
   const frames = await frame.$$(selector);
   const injections = [];
   for (const frameElement of frames) {
     const subFrame = await frameElement.contentFrame();
-    const p = injectAxeChild(subFrame as Frame, { source, selector });
+    const p = injectAxe(subFrame as Frame, { source, selector, logOnError: true});
     injections.push(p);
   }
 
@@ -46,27 +47,10 @@ async function injectAxeChild(frame: Frame, {source, selector}: IInjectAxeArgs):
     injectP = injectAxeString(frame, source);
   }
 
-  // Just print diagnostic if a child frame fails to load.
-  // Don't fully error since we aren't the top-level frame
-  injections.push(injectP.catch(reportError));
-  // Fix return type since we don't care about the value
-  return Promise.all(injections).then(() => undefined);
-}
-
-async function injectAxe(frame: Frame, {source, selector}: IInjectAxeArgs): Promise<void> {
-  const frames = await frame.$$(selector);
-  const injections = [];
-  for (const frameElement of frames) {
-    const subFrame = await frameElement.contentFrame();
-    const p = injectAxeChild(subFrame as Frame, { source, selector });
-    injections.push(p);
-  }
-
-  let injectP: Promise<void>;
-  if (!source) {
-    injectP = injectAxeModule(frame);
-  } else {
-    injectP = injectAxeString(frame, source);
+  if (logOnError) {
+    // Just print diagnostic if a child frame fails to load.
+    // Don't fully error since we aren't the top-level frame
+    injectP = injectP.catch(reportError);
   }
 
   injections.push(injectP);
