@@ -55,8 +55,7 @@
     "test:sauce": "mocha test/sauce/*.js --require babel-register",
     "coverage": "nyc npm run test:unit",
     "build": "babel lib --out-dir dist",
-    "prepublishOnly": "npm run build",
-    "postinstall": "./error-handling.js"
+    "prepublishOnly": "npm run build"
   },
   "peerDependencies": {
     "selenium-webdriver": ">= 2.53.1"
