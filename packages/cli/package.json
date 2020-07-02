@@ -14,7 +14,7 @@
   },
   "scripts": {
     "test": "mocha test/*.js",
-    "postinstall": "./postinstall.js"
+    "postinstall": "node postinstall.js"
   },
   "repository": {
     "type": "git",
