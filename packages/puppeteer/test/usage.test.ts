@@ -527,6 +527,28 @@ describe('AxePuppeteer', function () {
     });
   });
 
+  describe('disableFrame', function() {
+    it('disables the given rule(s)', async function() {
+      await this.page.goto(this.fixtureFileURL('nested-frames.html'))
+
+      const results = await new AxePuppeteer(this.page)
+        // Disable the `region` rule
+        .disableFrame("#topLevel")
+        .analyze()
+
+      const flatResults = [
+        ...results.passes,
+        ...results.incomplete,
+        ...results.inapplicable,
+        ...results.violations
+      ]
+
+
+      expect(results.violations.find((r: Axe.Result) => r.id === 'label'))
+        .to.be.undefined
+    })
+  })
+
   describe("when given a page that hasn't loaded", function () {
     it('gives a helpful error', async function () {
       let addr = '';

@@ -1,5 +1,5 @@
 import * as Axe from 'axe-core';
-import { Frame, JSONObject, Page } from 'puppeteer';
+import { ElementHandle, Frame, JSONObject, Page } from 'puppeteer';
 import { pageIsLoaded, runAxe } from './browser';
 import { AnalyzeCB } from './types';
 
@@ -8,6 +8,12 @@ function arrayify<T>(src: T | T[]): T[] {
     return [src];
   }
   return src;
+}
+
+interface IInjectAxeArgs {
+  source?: string;
+  selector: string;
+  logOnError?: boolean;
 }
 
 function injectAxeModule(frame: Frame): Promise<void> {
@@ -20,11 +26,14 @@ function injectAxeString(frame: Frame, source: string): Promise<void> {
   return frame.evaluate(source);
 }
 
-function injectAxeChild(frame: Frame, source?: string): Array<Promise<void>> {
-  const injections = frame
-    .childFrames()
-    .map(subFrame => injectAxeChild(subFrame, source))
-    .reduce((acc, arr) => acc.concat(arr), []);
+async function injectAxe(frame: Frame, {source, selector, logOnError}: IInjectAxeArgs): Promise<void> {
+  const frames = await frame.$$(selector);
+  const injections = [];
+  for (const frameElement of frames) {
+    const subFrame = await frameElement.contentFrame();
+    const p = injectAxe(subFrame as Frame, { source, selector, logOnError: true});
+    injections.push(p);
+  }
 
   const reportError = (): void => {
     // tslint:disable-next-line:no-console
@@ -38,26 +47,14 @@ function injectAxeChild(frame: Frame, source?: string): Array<Promise<void>> {
     injectP = injectAxeString(frame, source);
   }
 
-  // Just print diagnostic if a child frame fails to load.
-  // Don't fully error since we aren't the top-level frame
-  injections.push(injectP.catch(reportError));
-  return injections;
-}
-
-function injectAxe(frame: Frame, source?: string): Promise<void> {
-  const injections = frame
-    .childFrames()
-    .map(subFrame => injectAxeChild(subFrame, source))
-    .reduce((acc, arr) => acc.concat(arr), []);
-
-  let injectP: Promise<void>;
-  if (!source) {
-    injectP = injectAxeModule(frame);
-  } else {
-    injectP = injectAxeString(frame, source);
+  if (logOnError) {
+    // Just print diagnostic if a child frame fails to load.
+    // Don't fully error since we aren't the top-level frame
+    injectP = injectP.catch(reportError);
   }
 
   injections.push(injectP);
+  // Fix return type since we don't care about the value
   return Promise.all(injections).then(() => undefined);
 }
 
@@ -111,6 +108,7 @@ export class AxePuppeteer {
   private excludes: string[][];
   private axeOptions: Axe.RunOptions | null;
   private config: Axe.Spec | null;
+  private disabledFrameSelectors: string[];
 
   constructor(pageFrame: Page | Frame, source?: string) {
     this.frame = getFrame(pageFrame);
@@ -119,6 +117,7 @@ export class AxePuppeteer {
     this.excludes = [];
     this.axeOptions = null;
     this.config = null;
+    this.disabledFrameSelectors = [];
   }
 
   public include(selector: string | string[]): this {
@@ -203,6 +202,11 @@ export class AxePuppeteer {
     return this;
   }
 
+  public disableFrame(selector: string): this {
+    this.disabledFrameSelectors.push(selector);
+    return this;
+  }
+
   public async analyze(): Promise<Axe.AxeResults>;
   public async analyze<T extends AnalyzeCB>(
     callback?: T
@@ -213,7 +217,7 @@ export class AxePuppeteer {
     try {
       await ensureFrameReady(this.frame);
 
-      await injectAxe(this.frame, this.source);
+      await injectAxe(this.frame, { source: this.source, selector: this.iframeSelector()});
 
       const context = normalizeContext(this.includes, this.excludes);
       const axeResults = await this.frame.evaluate(
@@ -234,5 +238,13 @@ export class AxePuppeteer {
       }
       throw err;
     }
+  }
+
+  private iframeSelector(): string {
+    let selector = 'iframe';
+    for (const disabledFrameSelector of this.disabledFrameSelectors) {
+      selector += `:not(${disabledFrameSelector})`;
+    }
+    return selector;
   }
 }
