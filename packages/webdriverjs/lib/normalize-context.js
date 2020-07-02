@@ -5,7 +5,7 @@
  * @param  {Array} exclude Array of selectors to exclude
  * @return {Object}
  */
-exports = module.exports = function (include, exclude) {
+module.exports = function (include, exclude) {
   if (!exclude.length) {
     if (!include.length) {
       return null;
