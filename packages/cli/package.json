@@ -13,7 +13,8 @@
     "node": ">=8"
   },
   "scripts": {
-    "test": "mocha test/*.js"
+    "test": "mocha test/*.js",
+    "postinstall": "node postinstall.js"
   },
   "repository": {
     "type": "git",
