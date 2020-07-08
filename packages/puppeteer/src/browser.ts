@@ -22,7 +22,7 @@ export function runAxe(
   }
 
   // This prevents axe from running in iframes.
-  // TODO: Uncomment when that is fixed in axe-core
+  // TODO: Uncomment when that is fixed in axe-core https://github.com/dequelabs/axe-core/issues/2340
   // const brandingConfig = {
   //   branding: {
   //     application: 'axe-puppeteer'
