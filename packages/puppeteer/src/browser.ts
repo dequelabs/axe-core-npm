@@ -21,16 +21,14 @@ export function runAxe(
     window.axe.configure(config);
   }
 
-  const brandingConfig = {
-    branding: {
-      application: 'axe-puppeteer'
-    }
-  };
-  // Cast needed since we only set `branding.application` and `branding` expects
-  // to also have a `brand` field.
-  // We don't set `brand` since `axe-webdriverjs` doesn't.
-  // TODO: Once axe-core 3.1.3 is released remove the cast (as that release fixes the types)
-  window.axe.configure(brandingConfig as Axe.Spec);
+  // This prevents axe from running in iframes.
+  // TODO: Uncomment when that is fixed in axe-core https://github.com/dequelabs/axe-core/issues/2340
+  // const brandingConfig = {
+  //   branding: {
+  //     application: 'axe-puppeteer'
+  //   }
+  // };
+  // window.axe.configure(brandingConfig);
 
   return window.axe.run(context || document, options || {});
 }
