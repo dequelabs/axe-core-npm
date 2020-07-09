@@ -163,6 +163,25 @@ describe('AxePuppeteer', function () {
     expect(calledSpies).to.have.lengthOf(4);
   });
 
+  it('runs in nested frames', async function() {
+    await this.page.goto(this.fixtureFileURL('nested-frames.html'))
+
+    const results = await new AxePuppeteer(this.page)
+      .analyze()
+
+    const flatResults = [
+      ...results.passes,
+      ...results.incomplete,
+      ...results.inapplicable,
+      ...results.violations
+    ]
+
+
+    expect(results.violations.find((r: Axe.Result) => r.id === 'label'))
+      .to.not.be.undefined
+  })
+
+
   it('injects custom axe source into nexted frames', async function () {
     const axeSource = `
       window.axe = {
