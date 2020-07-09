@@ -147,19 +147,16 @@ class AxeBuilder {
       injector.inject(() => {
         driver
           .executeAsyncScript(
-            function (context, options, config) {
-              /* eslint-env browser */
-              if (config !== null) {
-                window.axe.configure(config);
-              }
-              window.axe
-                .run(context || document, options || {})
-                // eslint-disable-next-line prefer-rest-params
-                .then(arguments[arguments.length - 1]);
-            },
-            context,
-            options,
-            config
+            `
+            var callback = arguments[arguments.length - 1];
+            var context = ${JSON.stringify(context)} || document;
+            var options = ${JSON.stringify(options)} || {};
+            var config = ${JSON.stringify(config)} || null;
+            if (config) {
+              window.axe.configure(config);
+            }
+            window.axe.run(context, options).then(callback);
+          `
           )
           .then(function (results) {
             if (callback) {
