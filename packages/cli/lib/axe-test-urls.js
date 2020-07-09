@@ -28,13 +28,14 @@ function testPages(urls, config, events) {
       .get(currentUrl)
       .then(function () {
         // Wait for the page to be loaded
-        return driver.executeAsyncScript(function (callback) {
-          const script = document.createElement('script');
-          script.innerHTML =
-            'document.documentElement.classList.add("deque-axe-is-ready");';
+        // https://github.com/vercel/pkg/issues/676 
+        return driver.executeAsyncScript(`
+          const callback = arguments[arguments.length-1]
+          const script = document.createElement('script')
+          script.innerHTML = 'document.documentElement.classList.add("deque-axe-is-ready");'
           document.documentElement.appendChild(script);
           callback();
-        });
+      `);
       })
       .then(function () {
         return driver.wait(
