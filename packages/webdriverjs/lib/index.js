@@ -149,9 +149,9 @@ class AxeBuilder {
           .executeAsyncScript(
             `
             var callback = arguments[arguments.length - 1];
-            var context = ${JSON.stringify(context)} || document;
-            var options = ${JSON.stringify(options)} || {};
-            var config = ${JSON.stringify(config)} || null;
+            const context = ${JSON.stringify(context)} || document;
+            const options = ${JSON.stringify(options)} || {};
+            const config = ${JSON.stringify(config)} || null;
             if (config) {
               window.axe.configure(config);
             }
