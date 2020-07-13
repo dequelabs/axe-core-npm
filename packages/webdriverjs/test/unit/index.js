@@ -110,7 +110,7 @@ describe('Builder', function () {
   });
 
   describe('configure', function () {
-    it('should take a config object to customize aXe', function (done) {
+    it('should take a config object to customize axe', function (done) {
       const catsConfig = {
         checks: {
           id: 'cats',
@@ -144,8 +144,10 @@ describe('Builder', function () {
       });
 
       new Builder({
-        executeAsyncScript: function (callback, context, options, config) {
-          assert.equal(config, catsConfig);
+        executeAsyncScript: function (callback) {
+          // Since we are stringifying executeAsyncScript we need to see if config gets passed into executeAsyncScript
+          const [cats] = callback.match(/\s*("options":\s*\["cats"])/g);
+          assert.equal(cats, '"options":["cats"]');
 
           return {
             then: function (cb) {
@@ -237,9 +239,13 @@ describe('Builder', function () {
       });
 
       new Builder({
-        executeAsyncScript: function (callback, context, options) {
+        executeAsyncScript: function (callback) {
+          // Since we are stringifying executeAsyncScript we need to see if config gets passed into executeAsyncScript
+          const [context, options] = callback.match(
+            /\s*(normalized)|({"foo":"bar"})/g
+          );
           assert.equal(context, 'normalized');
-          assert.deepEqual(options, { foo: 'bar' });
+          assert.deepEqual(JSON.parse(options), { foo: 'bar' });
 
           return {
             then: function (cb) {
