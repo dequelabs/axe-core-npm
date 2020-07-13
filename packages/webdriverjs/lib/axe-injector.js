@@ -96,6 +96,8 @@ class AxeInjector {
     return new Promise((resolve, reject) => {
       /* eslint-disable no-undef */
       this.driver
+        // https://github.com/vercel/pkg/issues/676
+        // we need to pass a string vs a function so we manually stringified the function
         .executeAsyncScript(
           `
           var callback = arguments[arguments.length - 1];

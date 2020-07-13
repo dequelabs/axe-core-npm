@@ -146,9 +146,11 @@ class AxeBuilder {
       });
       injector.inject(() => {
         driver
+          // https://github.com/vercel/pkg/issues/676
+          // we need to pass a string vs a function so we manually stringified the function
           .executeAsyncScript(
             `
-            var callback = arguments[arguments.length - 1];
+            const callback = arguments[arguments.length - 1];
             const context = ${JSON.stringify(context)} || document;
             const options = ${JSON.stringify(options)} || {};
             const config = ${JSON.stringify(config)} || null;
