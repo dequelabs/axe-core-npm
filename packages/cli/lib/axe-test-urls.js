@@ -27,8 +27,8 @@ function testPages(urls, config, events) {
     driver
       .get(currentUrl)
       .then(function () {
-        // Wait for the page to be loaded
-        // https://github.com/vercel/pkg/issues/676 
+        // https://github.com/vercel/pkg/issues/676
+        // we need to pass a string vs a function so we manually stringified the function
         return driver.executeAsyncScript(`
           const callback = arguments[arguments.length-1]
           const script = document.createElement('script')
