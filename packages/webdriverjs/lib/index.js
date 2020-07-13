@@ -146,20 +146,19 @@ class AxeBuilder {
       });
       injector.inject(() => {
         driver
+          // https://github.com/vercel/pkg/issues/676
+          // we need to pass a string vs a function so we manually stringified the function
           .executeAsyncScript(
-            function (context, options, config) {
-              /* eslint-env browser */
-              if (config !== null) {
-                window.axe.configure(config);
-              }
-              window.axe
-                .run(context || document, options || {})
-                // eslint-disable-next-line prefer-rest-params
-                .then(arguments[arguments.length - 1]);
-            },
-            context,
-            options,
-            config
+            `
+            const callback = arguments[arguments.length - 1];
+            const context = ${JSON.stringify(context)} || document;
+            const options = ${JSON.stringify(options)} || {};
+            const config = ${JSON.stringify(config)} || null;
+            if (config) {
+              window.axe.configure(config);
+            }
+            window.axe.run(context, options).then(callback);
+          `
           )
           .then(function (results) {
             if (callback) {

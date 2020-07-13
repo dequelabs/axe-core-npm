@@ -96,17 +96,21 @@ class AxeInjector {
     return new Promise((resolve, reject) => {
       /* eslint-disable no-undef */
       this.driver
-        .executeAsyncScript(function (callback) {
-          const iframes = Array.from(
+        // https://github.com/vercel/pkg/issues/676
+        // we need to pass a string vs a function so we manually stringified the function
+        .executeAsyncScript(
+          `
+          var callback = arguments[arguments.length - 1];
+          var iframes = Array.from(
             document.querySelectorAll('iframe[sandbox]')
           );
-          const removeSandboxAttr = clone => attr => {
+          var removeSandboxAttr = clone => attr => {
             if (attr.name === 'sandbox') return;
             clone.setAttribute(attr.name, attr.value);
           };
-          const replaceSandboxedIframe = iframe => {
-            const clone = document.createElement('iframe');
-            const promise = new Promise(
+          var replaceSandboxedIframe = iframe => {
+            var clone = document.createElement('iframe');
+            var promise = new Promise(
               iframeLoaded => (clone.onload = iframeLoaded)
             );
             Array.from(iframe.attributes).forEach(removeSandboxAttr(clone));
@@ -114,7 +118,8 @@ class AxeInjector {
             return promise;
           };
           Promise.all(iframes.map(replaceSandboxedIframe)).then(callback);
-        })
+        `
+        )
         /* eslint-enable no-undef */
         // resolve the outer promise
         .then(resolve)
