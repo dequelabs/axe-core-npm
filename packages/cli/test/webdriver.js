@@ -73,25 +73,35 @@ describe('startDriver', () => {
     assert.equal(service.executable_, config.chromedriverPath);
   });
 
+  it('sets the --headless flag with chrome-headless', async () => {
+    browser = 'chrome-headless';
+    await startDriver(config);
+    const capabilities = await config.builder.getCapabilities();
+    const chromeOptions = capabilities.get('chromeOptions');
 
-  it('sets the --headless flag with chrome-headless', async () => {	
-    browser = 'chrome-headless';	
-    await startDriver(config);	
-    const capabilities = await config.builder.getCapabilities();	
-    const chromeOptions = capabilities.get('chromeOptions');	
+    assert.isObject(chromeOptions);
+    assert.deepEqual(chromeOptions.args, ['--headless']);
+  });
 
-    assert.isObject(chromeOptions);	
-    assert.deepEqual(chromeOptions.args, ['--headless']);	
-  });	
+  it('sets the --chrome-options flag with no-sandbox', async () => {
+    browser = 'chrome-headless';
+    config.chromeOptions = ['--no-sandbox'];
+    await startDriver(config);
+    const capabilities = await config.builder.getCapabilities();
+    const chromeOptions = capabilities.get('chromeOptions');
 
-  it('sets the --chrome-options flag with no-sandbox', async () => {	
-    browser = 'chrome-headless';	
-    config.chromeOptions = ['--no-sandbox'];	
-    await startDriver(config);	
-    const capabilities = await config.builder.getCapabilities();	
-    const chromeOptions = capabilities.get('chromeOptions');	
+    assert.isArray(chromeOptions.args);
+    assert.deepEqual(chromeOptions.args, ['--headless', '--no-sandbox']);
+  });
 
-    assert.isArray(chromeOptions.args);	
-    assert.deepEqual(chromeOptions.args, ['--headless', '--no-sandbox']);	
-  });	
+  it('sets the --timeout flag', async () => {
+    browser = 'chrome-headless';
+    config.timeout = 10000;
+    await startDriver(config);
+    await config.builder;
+    const timeoutValue = await config.driver.manage().getTimeouts();
+
+    assert.isObject(timeoutValue);
+    assert.deepEqual(timeoutValue.script, 10000000);
+  });
 });
