@@ -30,8 +30,8 @@ function testPages(urls, config, events) {
         // https://github.com/vercel/pkg/issues/676
         // we need to pass a string vs a function so we manually stringified the function
         return driver.executeAsyncScript(`
-          const callback = arguments[arguments.length-1]
-          const script = document.createElement('script')
+          const callback = arguments[arguments.length - 1];
+          const script = document.createElement('script');
           script.innerHTML = 'document.documentElement.classList.add("deque-axe-is-ready");'
           document.documentElement.appendChild(script);
           callback();
