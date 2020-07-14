@@ -26,14 +26,15 @@ function testPages(urls, config, events) {
     driver
       .get(currentUrl)
       .then(function () {
-        // Wait for the page to be loaded
-        return driver.executeAsyncScript(function (callback) {
+        // https://github.com/vercel/pkg/issues/676
+        // we need to pass a string vs a function so we manually stringified the function
+        return driver.executeAsyncScript(`
+          const callback = arguments[arguments.length - 1];
           const script = document.createElement('script');
-          script.innerHTML =
-            'document.documentElement.classList.add("deque-axe-is-ready");';
+          script.innerHTML = 'document.documentElement.classList.add("deque-axe-is-ready");'
           document.documentElement.appendChild(script);
           callback();
-        });
+      `);
       })
       .then(function () {
         return driver.wait(
