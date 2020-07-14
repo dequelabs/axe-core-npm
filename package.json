@@ -6,7 +6,7 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "fmt": "prettier --write *.{md,js,json} 'packages/**/*.{js,ts,tsx,html,json,md,css}'",
     "lint": "eslint *.js 'packages/**/*.{js,ts,tsx}'",
-    "bootstrap": "lerna bootstrap --ci"
+    "bootstrap": "lerna bootstrap"
   },
   "devDependencies": {
     "@typescript-eslint/eslint-plugin": "^2.33.0",
