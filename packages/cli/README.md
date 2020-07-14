@@ -20,7 +20,7 @@ After installing, you can now run the `axe` command in your CLI, followed by the
 axe https://www.deque.com
 ```
 
-You can run multiple pages at once, simply add more URLs to the command. Keep in mind that axe-cli is not a crawler, so if you find yourself testing dozens of pages at once, you may want to consider switching over to something like [axe-webdriverjs](https://www.npmjs.com/package/axe-webdriverjs). If you do not specify the protocol, http will be used by default:
+You can run multiple pages at once, simply add more URLs to the command. Keep in mind that axe-cli is not a crawler, so if you find yourself testing dozens of pages at once, you may want to consider switching over to something like [@axe-core/webdriverjs](https://www.npmjs.com/package/@axe-core/webdriverjs). If you do not specify the protocol, http will be used by default:
 
 ```
 axe www.deque.com, dequeuniversity.com
