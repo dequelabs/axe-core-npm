@@ -5,8 +5,7 @@ const AxeBuilder = require('axe-webdriverjs');
 
 function testPages(urls, config, events) {
   const driver = config.driver;
-  const scriptTimeout = (config.timeout || 20) * 1000.0;
-  driver.manage().setTimeouts({ script: scriptTimeout });
+
   // End of the line, no more page left
   if (urls.length === 0) {
     driver.quit();
