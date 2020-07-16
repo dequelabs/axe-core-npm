@@ -1,4 +1,4 @@
 {
-  "packages": ["packages/*"],
+  "packages": ["packages/*", "packages/react/example"],
   "version": "4.0.0-pre.0"
 }

@@ -1,4 +1,11 @@
 node_modules
 dist
 __tests__
-coverage
+
+packages/react/coverage
+packages/react/example/node_modules
+packages/react/example/build
+packages/react/example/dist
+packages/react/dist
+packages/react/test/index.js
+packages/react/cypress/screenshots
