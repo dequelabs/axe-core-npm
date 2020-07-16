@@ -89,7 +89,7 @@ jobs:
             - packages/reporter-earl/node_modules
             - packages/react/node_modules
             - packages/react/example/node_modules
-            - packages/react/.cache
+            - ~/.cache
 
   lint:
     <<: *defaults
