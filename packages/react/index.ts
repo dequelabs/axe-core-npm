@@ -50,7 +50,7 @@ const cache: { [key: string]: string } = {};
 // @see https://davidwalsh.name/javascript-debounce-function
 function debounce(func: Function, wait: number, immediate?: boolean): Function {
   let _timeout;
-  return function (...args): void {
+  return function(...args): void {
     const later = (): void => {
       _timeout = null;
       if (!immediate) func.apply(this, args);
@@ -203,7 +203,7 @@ function checkAndReport(node: Node, timeout: number): Promise<void> {
             n = document;
           }
         }
-        axeCore.run(n, { reporter: 'v2' }, function (
+        axeCore.run(n, { reporter: 'v2' }, function(
           error: Error,
           results: axeCore.AxeResults
         ) {
@@ -355,7 +355,7 @@ function reactAxe(
   if (!_createElement) {
     _createElement = React.createElement;
 
-    React.createElement = function (...args): React.Component {
+    React.createElement = function(...args): React.Component {
       const reactEl = _createElement.apply(this, args);
 
       if (reactEl._owner && reactEl._owner._instance) {

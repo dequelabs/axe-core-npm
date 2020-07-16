@@ -29,7 +29,7 @@ const services = [
 
 // Render the ServiceChooser component, and pass the array of services
 
-document.addEventListener('DOMContentLoaded', function () {
+document.addEventListener('DOMContentLoaded', function() {
   const mountNode = document.querySelector('#container');
   mountNode &&
     ReactDOM.render(
