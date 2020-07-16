@@ -5,9 +5,6 @@ defaults: &defaults
     - image: circleci/node:12-browsers
   working_directory: ~/axe-core-npm
 
-orbs:
-  cypress: cypress-io/cypress@1.25.0
-
 commands:
   configure_npm:
     description: 'Configure the npm client'
@@ -89,7 +86,6 @@ jobs:
             - packages/reporter-earl/node_modules
             - packages/react/node_modules
             - packages/react/example/node_modules
-            - ~/.cache
 
   lint:
     <<: *defaults
@@ -138,10 +134,10 @@ jobs:
 
   react:
     <<: *defaults
-    executor: cypress/base-10
     steps:
       - checkout
       - restore_dependency_cache
+      - run: npm install cypress --prefix=packages/react
       - run: npm run build --prefix=packages/react
       - run: npm run test --prefix=packages/react
 
