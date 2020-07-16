@@ -34,8 +34,8 @@
     "url": "http://github.com/wilcofiers/"
   },
   "dependencies": {
+    "@axe-core/webdriverjs": "4.0.0-pre.0",
     "axe-core": "^3.2.2",
-    "axe-webdriverjs": "^2.2.0",
     "chromedriver": "latest",
     "colors": "^1.4.0",
     "commander": "^2.19.0",

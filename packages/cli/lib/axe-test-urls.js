@@ -1,7 +1,7 @@
 'use strict';
 
 const WebDriver = require('selenium-webdriver');
-const AxeBuilder = require('axe-webdriverjs');
+const AxeBuilder = require('@axe-core/webdriverjs');
 
 function testPages(urls, config, events) {
   const driver = config.driver;
