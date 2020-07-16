@@ -11,7 +11,7 @@ Previous versions of this program were maintained at [dequelabs/react-axe](https
 Install the module from NPM or elsewhere
 
 ```sh
-npm install --save-dev react-axe
+npm install --save-dev @axe-core/react
 ```
 
 ## Initialize the module

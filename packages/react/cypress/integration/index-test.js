@@ -1,7 +1,6 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-
-const axe = require('../../dist/index');
+import Axe from '../..';
 
 function filterLogs(args, type) {
   let filtered = [];
