@@ -1,6 +1,6 @@
 import * as Axe from 'axe-core';
 import { ElementHandle, Frame, JSONObject, Page } from 'puppeteer';
-import { pageIsLoaded, runAxe } from './browser';
+import { pageIsLoaded, runAxe, configureAxe } from './browser';
 import { AnalyzeCB } from './types';
 
 function arrayify<T>(src: T | T[]): T[] {
@@ -11,27 +11,28 @@ function arrayify<T>(src: T | T[]): T[] {
 }
 
 interface IInjectAxeArgs {
-  source?: string;
+  source?: string | Function;
   selector: string;
   logOnError?: boolean;
+  args?: any[];
 }
 
-function injectAxeModule(frame: Frame): Promise<void> {
+function injectJSModule(frame: Frame): Promise<void> {
   return frame.addScriptTag({
     path: require.resolve('axe-core')
   });
 }
 
-function injectAxeString(frame: Frame, source: string): Promise<void> {
-  return frame.evaluate(source);
+function injectJSSource(frame: Frame, source: string | Function, args: any[] = []): Promise<void> {
+  return frame.evaluate(source as any, ...args);
 }
 
-async function injectAxe(frame: Frame, {source, selector, logOnError}: IInjectAxeArgs): Promise<void> {
+async function injectJS(frame: Frame, {source, selector, logOnError, args}: IInjectAxeArgs): Promise<void> {
   const frames = await frame.$$(selector);
   const injections = [];
   for (const frameElement of frames) {
     const subFrame = await frameElement.contentFrame();
-    const p = injectAxe(subFrame as Frame, { source, selector, logOnError: true});
+    const p = injectJS(subFrame as Frame, { source, selector, args, logOnError: true});
     injections.push(p);
   }
 
@@ -42,9 +43,9 @@ async function injectAxe(frame: Frame, {source, selector, logOnError}: IInjectAx
 
   let injectP: Promise<void>;
   if (!source) {
-    injectP = injectAxeModule(frame);
+    injectP = injectJSModule(frame);
   } else {
-    injectP = injectAxeString(frame, source);
+    injectP = injectJSSource(frame, source, args);
   }
 
   if (logOnError) {
@@ -217,12 +218,13 @@ export class AxePuppeteer {
     try {
       await ensureFrameReady(this.frame);
 
-      await injectAxe(this.frame, { source: this.source, selector: this.iframeSelector()});
+      await injectJS(this.frame, { source: this.source, selector: this.iframeSelector()});
+
+      await injectJS(this.frame, { source: configureAxe, selector: this.iframeSelector(), args: [this.config] });
 
       const context = normalizeContext(this.includes, this.excludes);
       const axeResults = await this.frame.evaluate(
         runAxe,
-        this.config as JSONObject,
         context as JSONObject,
         this.axeOptions as JSONObject
       );

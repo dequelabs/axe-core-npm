@@ -182,7 +182,7 @@ describe('AxePuppeteer', function () {
   })
 
 
-  it('injects custom axe source into nexted frames', async function () {
+  it('injects custom axe source into nested frames', async function () {
     const axeSource = `
       window.axe = {
         run: () => Promise.resolve({}),
