@@ -8,6 +8,7 @@ import Puppeteer from 'puppeteer';
 import * as sinon from 'sinon';
 import testListen from 'test-listen';
 import AxePuppeteer, { loadPage } from '../src/index';
+import { customConfig } from './utils';
 
 type SinonSpy = sinon.SinonSpy;
 type Frame = Puppeteer.Frame;
@@ -169,18 +170,10 @@ describe('AxePuppeteer', function () {
     const results = await new AxePuppeteer(this.page)
       .analyze()
 
-    const flatResults = [
-      ...results.passes,
-      ...results.incomplete,
-      ...results.inapplicable,
-      ...results.violations
-    ]
-
 
     expect(results.violations.find((r: Axe.Result) => r.id === 'label'))
       .to.not.be.undefined
   })
-
 
   it('injects custom axe source into nested frames', async function () {
     const axeSource = `
