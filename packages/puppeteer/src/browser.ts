@@ -13,26 +13,25 @@ declare global {
 
 // Defined at top-level to clarify that it can't capture variables from outer scope.
 export function runAxe(
-  config?: Axe.Spec,
   context?: Axe.ElementContext,
   options?: Axe.RunOptions
 ): Promise<Axe.AxeResults> {
-  if (config) {
-    window.axe.configure(config);
-  }
-
-  // This prevents axe from running in iframes.
-  // TODO: Uncomment when that is fixed in axe-core https://github.com/dequelabs/axe-core/issues/2340
-  // const brandingConfig = {
-  //   branding: {
-  //     application: 'axe-puppeteer'
-  //   }
-  // };
-  // window.axe.configure(brandingConfig);
-
   return window.axe.run(context || document, options || {});
 }
 
 export function pageIsLoaded(): boolean {
   return document.readyState === 'complete';
+}
+
+export function configureAxe(config?: Axe.Spec) {
+  if (config) {
+    window.axe.configure(config);
+  }
+
+  const brandingConfig = {
+    branding: {
+      application: 'axe-puppeteer'
+    }
+  };
+  window.axe.configure(brandingConfig);
 }
