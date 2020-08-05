@@ -1,5 +1,5 @@
 {
-  "name": "@axe-core/pupeeteer",
+  "name": "@axe-core/puppeteer",
   "version": "4.0.0-pre.0",
   "description": "Provides a chainable axe API for Puppeteer and automatically injects into all frames",
   "repository": {
@@ -42,7 +42,7 @@
     "typescript": "^3.1.6"
   },
   "dependencies": {
-    "axe-core": "^3.5.3"
+    "axe-core": "^4.0.1"
   },
   "peerDependencies": {
     "puppeteer": "^1.10.0 || ^2.0.0"
