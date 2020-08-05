@@ -2,7 +2,7 @@
 
 ## Why?
 
-All of the @axe-core/packages that utliize axe-core should match major and minor versions with the @axe-core/package (ie: @axe-core/cli v3.5 should use axe-core v3.5).
+All of the @axe-core/packages that utilize axe-core should match major and minor versions with the @axe-core/package (ie: @axe-core/cli v3.5 should use axe-core v3.5).
 
 ## How?
 
