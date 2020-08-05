@@ -35,7 +35,7 @@
   },
   "dependencies": {
     "@axe-core/webdriverjs": "4.0.0-pre.0",
-    "axe-core": "^4.0.0-canary.83056ad",
+    "axe-core": "^4.0.1",
     "chromedriver": "latest",
     "colors": "^1.4.0",
     "commander": "^2.19.0",
