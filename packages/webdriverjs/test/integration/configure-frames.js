@@ -49,7 +49,8 @@ describe('outer-configure-frame.html', function () {
           'landmark-one-main': { enabled: false },
           'page-has-heading-one': { enabled: false },
           region: { enabled: false },
-          'html-lang-valid': { enabled: false }
+          'html-lang-valid': { enabled: false },
+          bypass: { enabled: false }
         }
       })
       .configure(json)
@@ -106,7 +107,8 @@ describe('sandbox-outer-configure-frame.html', function () {
           'landmark-one-main': { enabled: false },
           'page-has-heading-one': { enabled: false },
           region: { enabled: false },
-          'html-lang-valid': { enabled: false }
+          'html-lang-valid': { enabled: false },
+          bypass: { enabled: false }
         }
       })
       .configure(json)
@@ -163,7 +165,8 @@ describe('sandbox-nested-configure-frame.html', function () {
           'landmark-one-main': { enabled: false },
           'page-has-heading-one': { enabled: false },
           region: { enabled: false },
-          'html-lang-valid': { enabled: false }
+          'html-lang-valid': { enabled: false },
+          bypass: { enabled: false }
         }
       })
       .configure(json)
