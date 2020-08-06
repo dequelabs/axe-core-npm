@@ -1,8 +1,4 @@
 {
-<<<<<<< HEAD
-  "packages": ["packages/*", "packages/react/example"],
-=======
-  "packages": ["packages/*", "axe_core_test"],
->>>>>>> develop
+  "packages": ["packages/*", "packages/react/example", "axe_core_test"],
   "version": "4.0.0-pre.0"
 }
