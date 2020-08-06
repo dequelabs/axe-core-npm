@@ -15,8 +15,6 @@
   "scripts": {
     "build": "tsc",
     "prepare": "npm run build",
-    "install:example": "cd example && npm install",
-    "pretest": "npm run install:example",
     "test": "tsc && npm run test:types && npm run test:cypress",
     "test:types": "cd test && tsc",
     "test:cypress": "start-server-and-test start-server http://localhost:8080 test:run",
