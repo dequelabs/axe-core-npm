@@ -45,12 +45,14 @@ jobs:
       - restore_cache:
           keys:
             - v1-react-npm-{{ checksum "packages/react/package-lock.json" }}
-      - run: npm ci
+      - restore_cache:
+          keys:
+            - v1-axe-core-test-npm-{{ checksum "axe_core_test/package-lock.json" }}
+      - run: npm run bootstrap -- --ci
       - save_cache:
           key: v1-root-npm-{{ checksum "package-lock.json" }}
           paths:
             - node_modules
-      - run: npm run bootstrap -- --ci
       - save_cache:
           key: v1-cli-npm-{{ checksum "packages/cli/package-lock.json" }}
           paths:
@@ -76,6 +78,10 @@ jobs:
           paths:
             - packages/react/node_modules
       - save_cache:
+          key: v1-axe-core-test-npm-{{ checksum "axe_core_test/package-lock.json" }}
+          paths:
+            - axe_core_test/node_modules
+      - save_cache:
           key: v1-npm-cache-{{ .Environment.CIRCLE_SHA1 }}
           paths:
             - node_modules
@@ -86,6 +92,7 @@ jobs:
             - packages/reporter-earl/node_modules
             - packages/react/node_modules
             - packages/react/example/node_modules
+            - axe_core_test/node_modules
 
   lint:
     <<: *defaults
@@ -141,6 +148,13 @@ jobs:
       - run: npm run build --prefix=packages/react
       - run: npm run test --prefix=packages/react
 
+  axe-core-test:
+    <<: *defaults
+    steps:
+      - checkout
+      - restore_dependency_cache
+      - run: npm run test --prefix=axe_core_test
+
   canary_release:
     <<: *defaults
     steps:
@@ -189,6 +203,9 @@ workflows:
           requires:
             - lint
       - react:
+          requires:
+            - lint
+      - axe-core-test:
           requires:
             - lint
       - canary_release:

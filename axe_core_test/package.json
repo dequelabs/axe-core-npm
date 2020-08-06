@@ -1,0 +1,12 @@
+{
+  "name": "axe_core_test",
+  "private": true,
+  "description": "Validate axe-core version with package version",
+  "scripts": {
+    "test": "mocha *.test.js"
+  },
+  "devDependencies": {
+    "chai": "^4.2.0",
+    "mocha": "^8.1.1"
+  }
+}
