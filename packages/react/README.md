@@ -19,11 +19,11 @@ npm install --save-dev @axe-core/react
 Call the exported function passing in the React and ReactDOM objects as well as a timing delay in milliseconds that will be observed between each component change and the time the analysis starts.
 
 ```js
-var React = require('react');
-var ReactDOM = require('react-dom');
+const React = require('react');
+const ReactDOM = require('react-dom');
 
 if (process.env.NODE_ENV !== 'production') {
-  var axe = require('@axe-core/react');
+  const axe = require('@axe-core/react');
   axe(React, ReactDOM, 1000);
 }
 ```
@@ -49,7 +49,7 @@ With version 3.0.0, @axe-core/react now runs accessibility tests inside of open 
 There is a fourth optional argument that is a configuration object for axe-core. Read about the object here: https://github.com/dequelabs/axe-core/blob/master/doc/API.md#api-name-axeconfigure
 
 ```js
-var config = {
+const config = {
   rules: [
     {
       id: 'skip-link',
@@ -64,7 +64,7 @@ axe(React, ReactDOM, 1000, config);
 Axe-core's context object can be given as a fifth optional argument to specify which element should (and which should not) be tested. Read more from the Axe-core documentation: https://github.com/dequelabs/axe-core/blob/master/doc/API.md#context-parameter
 
 ```js
-var context = {
+const context = {
   include: [['#preview']]
 };
 

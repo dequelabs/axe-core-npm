@@ -1,6 +1,6 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import axe from '../../dist/index';
+import axe from '@axe-core/react';
 
 function filterLogs(args, type) {
   let filtered = [];
