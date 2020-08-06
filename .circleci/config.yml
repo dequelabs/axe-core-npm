@@ -44,14 +44,15 @@ jobs:
             - v1-reporter-earl-npm-{{ checksum "packages/reporter-earl/package-lock.json" }}
       - restore_cache:
           keys:
+            - v1-react-npm-{{ checksum "packages/react/package-lock.json" }}
+      - restore_cache:
+          keys:
             - v1-axe-core-test-npm-{{ checksum "axe_core_test/package-lock.json" }}
-      
-      - run: npm ci
+      - run: npm run bootstrap -- --ci
       - save_cache:
           key: v1-root-npm-{{ checksum "package-lock.json" }}
           paths:
             - node_modules
-      - run: npm run bootstrap -- --ci
       - save_cache:
           key: v1-cli-npm-{{ checksum "packages/cli/package-lock.json" }}
           paths:
@@ -73,6 +74,10 @@ jobs:
           paths:
             - packages/reporter-earl/node_modules
       - save_cache:
+          key: v1-react-npm-{{ checksum "packages/react/package-lock.json" }}
+          paths:
+            - packages/react/node_modules
+      - save_cache:
           key: v1-axe-core-test-npm-{{ checksum "axe_core_test/package-lock.json" }}
           paths:
             - axe_core_test/node_modules
@@ -85,6 +90,8 @@ jobs:
             - packages/webdriverjs/node_modules
             - packages/webdriverio/node_modules
             - packages/reporter-earl/node_modules
+            - packages/react/node_modules
+            - packages/react/example/node_modules
             - axe_core_test/node_modules
 
   lint:
@@ -124,12 +131,22 @@ jobs:
       - checkout
       - restore_dependency_cache
       - run: npm run test --prefix=packages/webdriverio
+
   reporter-earl:
     <<: *defaults
     steps:
       - checkout
       - restore_dependency_cache
       - run: npm run test --prefix=packages/reporter-earl
+
+  react:
+    <<: *defaults
+    steps:
+      - checkout
+      - restore_dependency_cache
+      - run: npm install cypress --prefix=packages/react
+      - run: npm run build --prefix=packages/react
+      - run: npm run test --prefix=packages/react
 
   axe-core-test:
     <<: *defaults
@@ -147,6 +164,8 @@ jobs:
       # Make sure the working tree is clean
       - run: git reset --hard HEAD
       - run: npx lerna publish prepatch --no-verify-access --no-git-tag-version --no-push --canary --dist-tag=next --exact --force-publish --yes
+      # Verify that @axe-core/react has all requires files
+      - run: ./axe-core-npm/packages/react/verify-release.sh post
 
   production_release:
     <<: *defaults
@@ -157,6 +176,8 @@ jobs:
       # Make sure the working tree is clean
       - run: git reset --hard HEAD
       - run: npx lerna publish --force-publish='*' --yes
+      # Verify that @axe-core/react has all requires files
+      - run: ./axe-core-npm/packages/react/verify-release.sh post
 
 workflows:
   version: 2
@@ -181,6 +202,9 @@ workflows:
       - reporter-earl:
           requires:
             - lint
+      - react:
+          requires:
+            - lint
       - axe-core-test:
           requires:
             - lint
@@ -194,6 +218,7 @@ workflows:
             - webdriverjs
             - webdriverio
             - reporter-earl
+            - react
           filters:
             branches:
               only: 
@@ -208,6 +233,7 @@ workflows:
             - webdriverjs
             - webdriverio
             - reporter-earl
+            - react
           filters:
             branches:
               only: master
