@@ -1,7 +1,7 @@
 /* eslint-disable no-undef */
 import React from 'react';
 import ReactDOM from 'react-dom';
-import axe from '@axe-core/react';
+import axe from '../../dist/index';
 
 function filterLogs(args, type) {
   let filtered = [];
