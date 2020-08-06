@@ -1,10 +1,10 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-
+import axe from '@axe-core/react'
 import GlobalHeader from './globalHeader';
 import ServiceChooser from './serviceChooser';
 
-const axe = require('../../dist/index.js');
+
 const axeConf = {
   rules: [
     { id: 'heading-order', enabled: true },

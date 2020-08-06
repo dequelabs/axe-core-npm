@@ -10,7 +10,7 @@ reactAxe(React, ReactDOM, 1000, {
   checks: [
     {
       id: 'my-check',
-      // eslint-disable-next-line @typescript-eslint/no-empty-function
+      // eslint-disable-next-line @typescript-eslint/explicit-function-return-type, @typescript-eslint/no-empty-function
       evaluate() {}
     }
   ],
@@ -42,4 +42,5 @@ reactAxe(
 );
 
 // return type
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 const promise: Promise<void> = reactAxe(React, ReactDOM, 1000);
