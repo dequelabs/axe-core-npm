@@ -17,6 +17,15 @@ commands:
       - restore_cache:
           keys:
             - v1-npm-cache-{{ .Environment.CIRCLE_SHA1 }}
+  
+  verify_axe_core_react:
+    description: 'Verify that @axe-core/react has all requires files'
+    steps:
+      - run: 
+          name: Run verify release script
+          command: |
+            cd ~/axe-core-npm/packages/react
+            bash verify-release.sh post
 
 jobs:
   dependencies:
