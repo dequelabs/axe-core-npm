@@ -2,7 +2,7 @@ const chromedriver = require('chromedriver');
 const { Builder, Capabilities } = require('selenium-webdriver');
 const chrome = require('selenium-webdriver/chrome');
 
-async function startDriver(config) {
+function startDriver(config) {
   const scriptTimeout = (config.timeout || 20) * 1000.0;
   let builder;
 
@@ -29,8 +29,7 @@ async function startDriver(config) {
   // Launch a browser
   config.driver = builder.build();
   config.builder = builder;
-
-  await config.driver.manage().setTimeouts({ script: scriptTimeout })
+  config.driver.manage().setTimeouts({ script: scriptTimeout })
   return config.driver;
 }
 

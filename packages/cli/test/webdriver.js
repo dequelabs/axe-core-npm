@@ -18,6 +18,7 @@ describe('startDriver', () => {
   });
 
   afterEach(async () => {
+    config.driver.quit()
     const service = chrome.getDefaultService();
     if (service.isRunning()) {
       await service.stop();
