@@ -174,7 +174,7 @@ jobs:
       - run: git reset --hard HEAD
       - run: npx lerna publish prepatch --no-verify-access --no-git-tag-version --no-push --canary --dist-tag=next --exact --force-publish --yes
       # Verify that @axe-core/react has all requires files
-      - run: ./axe-core-npm/packages/react/verify-release.sh post
+      - verify_axe_core_react
 
   production_release:
     <<: *defaults
@@ -186,7 +186,7 @@ jobs:
       - run: git reset --hard HEAD
       - run: npx lerna publish --force-publish='*' --yes
       # Verify that @axe-core/react has all requires files
-      - run: ./axe-core-npm/packages/react/verify-release.sh post
+      - verify_axe_core_react
 
 workflows:
   version: 2
