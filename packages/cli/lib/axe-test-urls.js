@@ -4,7 +4,7 @@ const WebDriver = require('selenium-webdriver');
 const AxeBuilder = require('@axe-core/webdriverjs');
 
 async function testPages(urls, config, events) {
-  const driver = config.driver;
+  const driver = await config.driver;
   // End of the line, no more page left
   if (urls.length === 0) {
     driver.quit();

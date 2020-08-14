@@ -31,7 +31,7 @@ describe('integrations', function () {
     program = {
       browser: 'chrome-headless'
     };
-    await startDriver(program);
+    program.driver = await startDriver(program);
     urls = ['http://localhost:8182/test/testpage.html'];
   });
 
