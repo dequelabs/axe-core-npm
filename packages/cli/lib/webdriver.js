@@ -27,11 +27,10 @@ async function startDriver(config) {
     builder = new Builder().forBrowser(config.browser);
   }
   // Launch a browser
-  config.driver = builder.build();
   config.builder = builder;
-
-  await config.driver.manage().setTimeouts({ script: scriptTimeout })
-  return config.driver;
+  const driver = builder.build();
+  await driver.manage().setTimeouts({ script: scriptTimeout })
+  return driver;
 }
 
 module.exports = {
