@@ -4,7 +4,7 @@ const execa = require('execa');
 const CLI = path.resolve(__dirname, '../', 'axe-cli');
 
 const runCLI = async (...args) => {
-  const result = await execa.node(CLI, [...args]);
+  const result = await execa(CLI, [...args]);
   return result;
 };
 
