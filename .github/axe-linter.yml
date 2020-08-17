@@ -6,3 +6,4 @@ exclude:
   - packages/react/example/**/*
   - packages/react/cypress/**/*
   - packages/cli/test/**/*
+  - packages/cli/testutils/**/*
