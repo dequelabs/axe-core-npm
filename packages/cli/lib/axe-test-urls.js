@@ -3,15 +3,15 @@
 const WebDriver = require('selenium-webdriver');
 const AxeBuilder = require('@axe-core/webdriverjs');
 
-function testPages(urls, config, events) {
-  const driver = config.driver;
-
+async function testPages(urls, config, events) {
+  //selenium.dev/selenium/docs/api/javascript/module/selenium-webdriver/index_exports_ThenableWebDriver.html
+  // We tried to use the non-thenable webdriver and failed the unit test for startDriver() even after we tried to make it work
+  const driver = await config.driver;
   // End of the line, no more page left
   if (urls.length === 0) {
     driver.quit();
     return Promise.resolve([]);
   }
-
   return new Promise((resolve, reject) => {
     // Grab the first item on the URL list
     const currentUrl = urls[0].replace(/[,;]$/, '');

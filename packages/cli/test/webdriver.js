@@ -31,10 +31,10 @@ describe('startDriver', () => {
   });
 
   it('creates a driver', async () => {
-    await startDriver(config);
+    const driver = await startDriver(config);
 
-    assert.isObject(config.driver);
-    assert.isFunction(config.driver.manage);
+    assert.isObject(driver);
+    assert.isFunction(driver.manage);
   });
 
   xit('sets the config.browser as the browser', done => {
@@ -49,8 +49,8 @@ describe('startDriver', () => {
 
   it('sets the browser as chrome with chrome-headless', async () => {
     browser = 'chrome-headless';
-    await startDriver(config);
-    const capabilities = await config.driver.getCapabilities();
+    const driver = await startDriver(config);
+    const capabilities = await driver.getCapabilities();
 
     assert.equal(capabilities.get('browserName'), 'chrome');
   });
@@ -97,9 +97,9 @@ describe('startDriver', () => {
   it('sets the --timeout flag', async () => {
     browser = 'chrome-headless';
     config.timeout = 10000;
-    await startDriver(config);
+    const driver = await startDriver(config);
     await config.builder;
-    const timeoutValue = await config.driver.manage().getTimeouts();
+    const timeoutValue = await driver.manage().getTimeouts();
 
     assert.isObject(timeoutValue);
     assert.deepEqual(timeoutValue.script, 10000000);
