@@ -5,3 +5,4 @@ exclude:
   - packages/react/CHANGELOG.md
   - packages/react/example/**/*
   - packages/react/cypress/**/*
+  - packages/cli/test/**/*
