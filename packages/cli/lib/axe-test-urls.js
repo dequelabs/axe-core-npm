@@ -4,6 +4,8 @@ const WebDriver = require('selenium-webdriver');
 const AxeBuilder = require('@axe-core/webdriverjs');
 
 async function testPages(urls, config, events) {
+  //selenium.dev/selenium/docs/api/javascript/module/selenium-webdriver/index_exports_ThenableWebDriver.html
+  // We tried to use the non-thenable webdriver and failed the unit test for startDriver() even after we tried to make it work
   const driver = await config.driver;
   // End of the line, no more page left
   if (urls.length === 0) {
