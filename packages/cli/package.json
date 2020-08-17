@@ -43,7 +43,9 @@
   },
   "devDependencies": {
     "chai": "^4.2.0",
+    "execa": "^4.0.3",
     "mocha": "^5.1.0",
-    "node-static": "^0.7.11"
+    "node-static": "^0.7.11",
+    "tempy": "^0.6.0"
   }
 }
