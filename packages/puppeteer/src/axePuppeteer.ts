@@ -23,40 +23,54 @@ function injectJSModule(frame: Frame): Promise<void> {
   });
 }
 
-function injectJSSource(frame: Frame, source: string | Function, args: any[] = []): Promise<void> {
+function injectJSSource(
+  frame: Frame,
+  source: string | Function,
+  args: any[] = []
+): Promise<void> {
   return frame.evaluate(source as any, ...args);
 }
 
-async function injectJS(frame: Frame, {source, selector, logOnError, args}: IInjectAxeArgs): Promise<void> {
-  const frames = await frame.$$(selector);
-  const injections = [];
-  for (const frameElement of frames) {
-    const subFrame = await frameElement.contentFrame();
-    const p = injectJS(subFrame as Frame, { source, selector, args, logOnError: true});
-    injections.push(p);
+async function injectJS(
+  frame: Frame,
+  { source, selector, logOnError, args }: IInjectAxeArgs
+): Promise<void> {
+  if (frame) {
+    const frames = await frame.$$(selector);
+    const injections = [];
+    for (const frameElement of frames) {
+      const subFrame = await frameElement.contentFrame();
+      const p = injectJS(subFrame as Frame, {
+        source,
+        selector,
+        args,
+        logOnError: true
+      });
+      injections.push(p);
+    }
+
+    const reportError = (): void => {
+      // tslint:disable-next-line:no-console
+      console.error(`Failed to inject axe-core into frame (${frame.url()})`);
+    };
+
+    let injectP: Promise<void>;
+    if (!source) {
+      injectP = injectJSModule(frame);
+    } else {
+      injectP = injectJSSource(frame, source, args);
+    }
+
+    if (logOnError) {
+      // Just print diagnostic if a child frame fails to load.
+      // Don't fully error since we aren't the top-level frame
+      injectP = injectP.catch(reportError);
+    }
+
+    injections.push(injectP);
+    // Fix return type since we don't care about the value
+    return Promise.all(injections).then(() => undefined);
   }
-
-  const reportError = (): void => {
-    // tslint:disable-next-line:no-console
-    console.error(`Failed to inject axe-core into frame (${frame.url()})`);
-  };
-
-  let injectP: Promise<void>;
-  if (!source) {
-    injectP = injectJSModule(frame);
-  } else {
-    injectP = injectJSSource(frame, source, args);
-  }
-
-  if (logOnError) {
-    // Just print diagnostic if a child frame fails to load.
-    // Don't fully error since we aren't the top-level frame
-    injectP = injectP.catch(reportError);
-  }
-
-  injections.push(injectP);
-  // Fix return type since we don't care about the value
-  return Promise.all(injections).then(() => undefined);
 }
 
 function isPage(pageFrame: Page | Frame): pageFrame is Page {
@@ -218,9 +232,16 @@ export class AxePuppeteer {
     try {
       await ensureFrameReady(this.frame);
 
-      await injectJS(this.frame, { source: this.source, selector: this.iframeSelector()});
+      await injectJS(this.frame, {
+        source: this.source,
+        selector: this.iframeSelector()
+      });
 
-      await injectJS(this.frame, { source: configureAxe, selector: this.iframeSelector(), args: [this.config] });
+      await injectJS(this.frame, {
+        source: configureAxe,
+        selector: this.iframeSelector(),
+        args: [this.config]
+      });
 
       const context = normalizeContext(this.includes, this.excludes);
       const axeResults = await this.frame.evaluate(
