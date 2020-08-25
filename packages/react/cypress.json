@@ -1,0 +1,6 @@
+{
+  "fileServerFolder": "example",
+  "pluginsFile": false,
+  "video": false,
+  "defaultCommandTimeout": 10000
+}

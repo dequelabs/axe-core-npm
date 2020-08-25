@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>List Item Test</title>
+  </head>
+  <body>
+    <main>
+      <h1>Page heading</h1>
+      <ul id="list">
+        <p>Item One</p>
+        <p>Item Two</p>
+      </ul>
+
+      <div id="shadow-root"></div>
+    </main>
+    <script>
+      document
+        .querySelector('#shadow-root')
+        .attachShadow({ mode: 'open' }).innerHTML =
+        '    <ul id="shadow-list">' +
+        '      <p>Item One</p>' +
+        '      <p>Item Two</p>' +
+        '    </ul>';
+    </script>
+  </body>
+</html>

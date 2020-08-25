@@ -1,0 +1,9 @@
+node_modules
+dist
+__tests__
+coverage
+
+packages/react/example/build
+packages/react/test/index.js
+packages/react/cypress/screenshots
+packages/react/verify-release-*

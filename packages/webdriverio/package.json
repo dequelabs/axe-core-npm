@@ -1,0 +1,51 @@
+{
+  "name": "@axe-core/webdriverio",
+  "version": "4.0.0",
+  "description": "Provides a method to integrate axe with webdriverio to inject and analyze web pages using axe",
+  "license": "MPL-2.0",
+  "private": true,
+  "main": "lib/index.js",
+  "types": "lib/index.d.ts",
+  "publishConfig": {
+    "access": "public"
+  },
+  "contributors": [
+    {
+      "name": "Sushil Nagi",
+      "url": "http://github.com/snagi"
+    }
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/dequelabs/axe-core-npm.git"
+  },
+  "keywords": [
+    "a11y",
+    "unit",
+    "testing",
+    "tdd",
+    "bdd",
+    "accessibility",
+    "aXe",
+    "selenium",
+    "webdriver",
+    "webdriverio"
+  ],
+  "scripts": {
+    "test": "jest"
+  },
+  "peerDependencies": {
+    "webdriverio": ">= 4.10.0"
+  },
+  "devDependencies": {
+    "@types/axe-webdriverjs": "^2.0.0",
+    "jest": "^24.3.0",
+    "webdriverio": ">= 4.10.0"
+  },
+  "dependencies": {
+    "@axe-core/webdriverjs": "^4.0.0"
+  },
+  "optionalDependencies": {
+    "@types/axe-webdriverjs": "^2.0.0"
+  }
+}

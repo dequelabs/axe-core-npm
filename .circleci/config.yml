@@ -1,0 +1,252 @@
+version: 2.1
+
+defaults: &defaults
+  docker:
+    - image: circleci/node:12-browsers
+  working_directory: ~/axe-core-npm
+
+commands:
+  configure_npm:
+    description: 'Configure the npm client'
+    steps:
+      - run: npm config set "//registry.npmjs.org/:_authToken" $NPM_AUTH_PUBLIC
+
+  restore_dependency_cache:
+    description: 'Restore the dependency cache'
+    steps:
+      - restore_cache:
+          keys:
+            - v1-npm-cache-{{ .Environment.CIRCLE_SHA1 }}
+  
+  verify_axe_core_react:
+    description: 'Verify that @axe-core/react has all requires files'
+    steps:
+      - run: 
+          name: Run verify release script
+          command: |
+            cd ~/axe-core-npm/packages/react
+            bash verify-release.sh post
+
+jobs:
+  dependencies:
+    <<: *defaults
+    steps:
+      - checkout
+      - configure_npm
+      - restore_cache:
+          keys:
+            - v1-root-npm-{{ checksum "package-lock.json" }}
+      - restore_cache:
+          keys:
+            - v1-cli-npm-{{ checksum "packages/cli/package-lock.json" }}
+      - restore_cache:
+          keys:
+            - v1-puppeteer-npm-{{ checksum "packages/puppeteer/package-lock.json" }}
+      - restore_cache:
+          keys:
+            - v1-webdriverjs-npm-{{ checksum "packages/webdriverjs/package-lock.json" }}
+      - restore_cache:
+          keys:
+            - v1-webdriverio-npm-{{ checksum "packages/webdriverio/package-lock.json" }}
+      - restore_cache:
+          keys:
+            - v1-reporter-earl-npm-{{ checksum "packages/reporter-earl/package-lock.json" }}
+      - restore_cache:
+          keys:
+            - v1-react-npm-{{ checksum "packages/react/package-lock.json" }}
+      - restore_cache:
+          keys:
+            - v1-axe-core-test-npm-{{ checksum "axe_core_test/package-lock.json" }}
+      # Install and cache each package's dependencies.
+      - run:
+          name: Install top-level dependencies
+          command: npm ci
+      - save_cache:
+          key: v1-root-npm-{{ checksum "package-lock.json" }}
+          paths:
+            - node_modules
+      - run: npm run bootstrap -- --ci
+      - save_cache:
+          key: v1-cli-npm-{{ checksum "packages/cli/package-lock.json" }}
+          paths:
+            - packages/cli/node_modules
+      - save_cache:
+          key: v1-puppeteer-npm-{{ checksum "packages/puppeteer/package-lock.json" }}
+          paths:
+            - packages/puppeteer/node_modules
+      - save_cache:
+          key: v1-webdriverjs-npm-{{ checksum "packages/webdriverjs/package-lock.json" }}
+          paths:
+            - packages/webdriverjs/node_modules
+      - save_cache:
+          key: v1-webdriverio-npm-{{ checksum "packages/webdriverio/package-lock.json" }}
+          paths:
+            - packages/webdriverio/node_modules
+      - save_cache:
+          key: v1-reporter-earl-npm-{{ checksum "packages/reporter-earl/package-lock.json" }}
+          paths:
+            - packages/reporter-earl/node_modules
+      - save_cache:
+          key: v1-react-npm-{{ checksum "packages/react/package-lock.json" }}
+          paths:
+            - packages/react/node_modules
+      - save_cache:
+          key: v1-axe-core-test-npm-{{ checksum "axe_core_test/package-lock.json" }}
+          paths:
+            - axe_core_test/node_modules
+      - save_cache:
+          key: v1-npm-cache-{{ .Environment.CIRCLE_SHA1 }}
+          paths:
+            - node_modules
+            - packages/cli/node_modules
+            - packages/puppeteer/node_modules
+            - packages/webdriverjs/node_modules
+            - packages/webdriverio/node_modules
+            - packages/reporter-earl/node_modules
+            - packages/react/node_modules
+            - packages/react/example/node_modules
+            - axe_core_test/node_modules
+
+  lint:
+    <<: *defaults
+    steps:
+      - checkout
+      - restore_dependency_cache
+      - run: npm run lint
+
+  cli:
+    <<: *defaults
+    steps:
+      - checkout
+      - restore_dependency_cache
+      # Re-build packages, ensuring packages/webdriverjs/dist exists.
+      - run: npx lerna run prepare
+      - run: npm run test --prefix=packages/cli
+
+  puppeteer:
+    <<: *defaults
+    steps:
+      - checkout
+      - restore_dependency_cache
+      - run: npm run build --prefix=packages/puppeteer
+      - run: npm run coverage --prefix=packages/puppeteer
+
+  webdriverjs:
+    <<: *defaults
+    steps:
+      - checkout
+      - restore_dependency_cache
+      - run: npm run test --prefix=packages/webdriverjs
+
+  webdriverio:
+    <<: *defaults
+    steps:
+      - checkout
+      - restore_dependency_cache
+      - run: npm run test --prefix=packages/webdriverio
+
+  reporter-earl:
+    <<: *defaults
+    steps:
+      - checkout
+      - restore_dependency_cache
+      - run: npm run test --prefix=packages/reporter-earl
+
+  react:
+    <<: *defaults
+    steps:
+      - checkout
+      - restore_dependency_cache
+      - run: npm install cypress --prefix=packages/react
+      - run: npm run build --prefix=packages/react
+      - run: npm run test --prefix=packages/react
+
+  axe-core-test:
+    <<: *defaults
+    steps:
+      - checkout
+      - restore_dependency_cache
+      - run: npm run test --prefix=axe_core_test
+
+  canary_release:
+    <<: *defaults
+    steps:
+      - checkout
+      - configure_npm
+      - restore_dependency_cache
+      # Make sure the working tree is clean
+      - run: git reset --hard HEAD
+      - run: npx lerna publish prepatch --no-verify-access --no-git-tag-version --no-push --canary --dist-tag=next --exact --force-publish --yes
+      # Verify that @axe-core/react has all requires files
+      - verify_axe_core_react
+
+  production_release:
+    <<: *defaults
+    steps:
+      - checkout
+      - configure_npm
+      - restore_dependency_cache
+      # Make sure the working tree is clean
+      - run: git reset --hard HEAD
+      - run: npx lerna publish --force-publish='*' --yes
+      # Verify that @axe-core/react has all requires files
+      - verify_axe_core_react
+
+workflows:
+  version: 2
+  build_and_test:
+    jobs:
+      - dependencies
+      - lint:
+          requires:
+            - dependencies
+      - cli:
+          requires:
+            - lint
+      - puppeteer:
+          requires:
+            - lint
+      - webdriverjs:
+          requires:
+            - lint
+      - webdriverio:
+          requires:
+            - lint
+      - reporter-earl:
+          requires:
+            - lint
+      - react:
+          requires:
+            - lint
+      - axe-core-test:
+          requires:
+            - lint
+      - canary_release:
+          context: html-tools
+          requires:
+            - dependencies
+            - lint
+            - cli
+            - puppeteer
+            - webdriverjs
+            - webdriverio
+            - reporter-earl
+            - react
+          filters:
+            branches:
+              only: 
+                - develop
+      - production_release:
+          context: html-tools
+          requires:
+            - dependencies
+            - lint
+            - cli
+            - puppeteer
+            - webdriverjs
+            - webdriverio
+            - reporter-earl
+            - react
+          filters:
+            branches:
+              only: master

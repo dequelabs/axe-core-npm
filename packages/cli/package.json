@@ -1,0 +1,51 @@
+{
+  "name": "@axe-core/cli",
+  "version": "4.0.0",
+  "description": "A CLI for accessibility testing using axe-core",
+  "main": "lib/index.js",
+  "bin": {
+    "axe": "axe-cli"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "engines": {
+    "node": ">=8"
+  },
+  "scripts": {
+    "test": "mocha test/*.js",
+    "postinstall": "node postinstall.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/dequelabs/axe-core-npm.git"
+  },
+  "keywords": [
+    "axe-core",
+    "accessibility",
+    "a11y",
+    "wcag",
+    "cli",
+    "testing"
+  ],
+  "author": {
+    "name": "Wilco Fiers",
+    "organization": "Deque Systems, Inc.",
+    "url": "http://github.com/wilcofiers/"
+  },
+  "dependencies": {
+    "@axe-core/webdriverjs": "^4.0.0",
+    "axe-core": "^4.0.1",
+    "chromedriver": "latest",
+    "colors": "^1.4.0",
+    "commander": "^2.19.0",
+    "selenium-webdriver": "^3.6.0"
+  },
+  "devDependencies": {
+    "chai": "^4.2.0",
+    "execa": "^4.0.3",
+    "mocha": "^5.1.0",
+    "node-static": "^0.7.11",
+    "tempy": "^0.6.0"
+  }
+}
