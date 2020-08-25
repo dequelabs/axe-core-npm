@@ -3,7 +3,6 @@
   "version": "4.0.0-pre.0",
   "description": "Provides a method to inject and analyze web pages using aXe",
   "license": "MPL-2.0",
-  "private": true,
   "main": "dist/index.js",
   "publishConfig": {
     "access": "public"
