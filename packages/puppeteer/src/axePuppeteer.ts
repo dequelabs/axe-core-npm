@@ -32,7 +32,7 @@ function injectJSSource(
 }
 
 async function injectJS(
-  frame: Frame,
+  frame: Frame | undefined,
   { source, selector, logOnError, args }: IInjectAxeArgs
 ): Promise<void> {
   if (!frame) {
