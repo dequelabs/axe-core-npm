@@ -1,6 +1,6 @@
 {
   "name": "@axe-core/webdriverio",
-  "version": "4.0.0-pre.0",
+  "version": "4.0.0",
   "description": "Provides a method to integrate axe with webdriverio to inject and analyze web pages using axe",
   "license": "MPL-2.0",
   "private": true,
@@ -43,7 +43,7 @@
     "webdriverio": ">= 4.10.0"
   },
   "dependencies": {
-    "@axe-core/webdriverjs": "4.0.0-pre.0"
+    "@axe-core/webdriverjs": "^4.0.0"
   },
   "optionalDependencies": {
     "@types/axe-webdriverjs": "^2.0.0"
