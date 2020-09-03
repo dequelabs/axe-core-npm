@@ -114,7 +114,7 @@ axe www.deque.com --axe-source ./axe.nl.js
 
 ## Different browsers
 
-Axe-cli can run in a variety of web browsers. By default axe-cli uses Chrome in headless mode. But axe-cli is equally capable of testing pages using other web browsers. **Running in another browser requires that browser's webdriver to be available on your PATH**. You can find a list of available webdrivers and how to install them at: https://seleniumhq.github.io/docs/wd.html
+Axe-cli can run in a variety of web browsers. By default axe-cli uses Chrome in headless mode. But axe-cli is equally capable of testing pages using other web browsers. **Running in another browser requires that browser's webdriver to be available on your PATH**. You can find a list of available webdrivers and how to install them at: https://www.selenium.dev/documentation/en/webdriver/
 
 To run axe-cli using another browser, pass it in as the `--browser` option:
 
