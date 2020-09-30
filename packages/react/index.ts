@@ -50,7 +50,7 @@ const cache: { [key: string]: string } = {};
 // @see https://davidwalsh.name/javascript-debounce-function
 function debounce(func: Function, wait: number, immediate?: boolean): Function {
   let _timeout;
-  return function(...args): void {
+  return function (...args): void {
     const later = (): void => {
       _timeout = null;
       if (!immediate) func.apply(this, args);
@@ -203,7 +203,7 @@ function checkAndReport(node: Node, timeout: number): Promise<void> {
             n = document;
           }
         }
-        axeCore.run(n, { reporter: 'v2' }, function(
+        axeCore.run(n, { reporter: 'v2' }, function (
           error: Error,
           results: axeCore.AxeResults
         ) {
@@ -329,24 +329,39 @@ function addComponent(component: any): void {
 }
 
 /**
+ * To support paramater of type runOnly
+ */
+interface ReactSpec extends axeCore.Spec {
+  runOnly?: string[];
+}
+
+/**
  * Run axe against all changes made in a React app.
  * @parma {React} _React React instance
  * @param {ReactDOM} _ReactDOM ReactDOM instance
  * @param {Number} _timeout debounce timeout in milliseconds
- * @parma {Spec} conf axe.configure Spec object
+ * @parma {Spec} conf React axe.configure Spec object
  * @param {ElementContext} _context axe ElementContent object
  */
 function reactAxe(
   _React: typeof React,
   _ReactDOM: typeof ReactDOM,
   _timeout: number,
-  conf?: axeCore.Spec,
+  conf?: reactSpec,
   _context?: axeCore.ElementContext
 ): Promise<void> {
   React = _React;
   ReactDOM = _ReactDOM;
   timeout = _timeout;
   context = _context;
+
+  const runOnly = conf['runOnly'];
+  if (runOnly) {
+    conf['rules'] = axeCore
+      .getRules(runOnly)
+      .map(rule => ({ ...rule, id: rule.ruleId, enabled: true }));
+    conf['disableOtherRules'] = true;
+  }
 
   if (conf) {
     axeCore.configure(conf);
@@ -355,7 +370,7 @@ function reactAxe(
   if (!_createElement) {
     _createElement = React.createElement;
 
-    React.createElement = function(...args): React.Component {
+    React.createElement = function (...args): React.Component {
       const reactEl = _createElement.apply(this, args);
 
       if (reactEl._owner && reactEl._owner._instance) {
