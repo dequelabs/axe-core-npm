@@ -45,7 +45,7 @@
     "axe-core": "^4.0.1"
   },
   "peerDependencies": {
-    "puppeteer": "^1.10.0 || ^2.0.0"
+    "puppeteer": ">=1.10.0"
   },
   "engines": {
     "node": ">=6.4.0"
