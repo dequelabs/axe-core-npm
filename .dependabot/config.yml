@@ -31,11 +31,6 @@ update_configs:
     default_labels:
       - "axe_api_deps_bot"
   - package_manager: "javascript"
-    directory: "/packages/webdriverio"
-    update_schedule: "weekly"
-    default_labels:
-      - "axe_api_deps_bot"
-  - package_manager: "javascript"
     directory: "/packages/webdriverjs"
     update_schedule: "weekly"
     default_labels:
