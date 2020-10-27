@@ -57,11 +57,15 @@ jobs:
       - restore_cache:
           keys:
             - v1-axe-core-test-npm-{{ checksum "axe_core_test/package-lock.json" }}
-      - run: npm run bootstrap -- --ci
+      # Install and cache each package's dependencies.
+      - run:
+          name: Install top-level dependencies
+          command: npm ci
       - save_cache:
           key: v1-root-npm-{{ checksum "package-lock.json" }}
           paths:
             - node_modules
+      - run: npm run bootstrap -- --ci
       - save_cache:
           key: v1-cli-npm-{{ checksum "packages/cli/package-lock.json" }}
           paths:
