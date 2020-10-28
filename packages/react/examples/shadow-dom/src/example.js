@@ -1,9 +1,8 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import axe from '@axe-core/react'
+import axe from '@axe-core/react';
 import GlobalHeader from './globalHeader';
 import ServiceChooser from './serviceChooser';
-
 
 const axeConf = {
   rules: [
@@ -29,7 +28,7 @@ const services = [
 
 // Render the ServiceChooser component, and pass the array of services
 
-document.addEventListener('DOMContentLoaded', function() {
+document.addEventListener('DOMContentLoaded', function () {
   const mountNode = document.querySelector('#container');
   mountNode &&
     ReactDOM.render(
