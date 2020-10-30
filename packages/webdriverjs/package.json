@@ -71,7 +71,7 @@
     "chromedriver": "latest",
     "http-server": "^0.11.1",
     "mocha": "^6.2.0",
-    "nyc": "^14.1.1",
+    "nyc": "^15.1.0",
     "proxyquire": "^2.1.1",
     "selenium-webdriver": "^3.6.0",
     "sinon": "^7.3.2"
