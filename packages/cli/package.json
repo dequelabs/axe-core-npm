@@ -38,7 +38,7 @@
     "axe-core": "^4.0.1",
     "chromedriver": "latest",
     "colors": "^1.4.0",
-    "commander": "^2.19.0",
+    "commander": "^6.2.0",
     "selenium-webdriver": "^3.6.0"
   },
   "devDependencies": {
