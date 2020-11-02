@@ -26,7 +26,7 @@
   "author": "Wilco Fiers",
   "license": "MPL-2.0",
   "devDependencies": {
-    "@types/clone": "^0.1.30",
+    "@types/clone": "^2.1.0",
     "@types/jest": "^23.3.9",
     "@types/jsonld": "github:types/jsonld",
     "@types/node": "^10.12.0",
