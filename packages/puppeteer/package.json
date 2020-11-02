@@ -28,7 +28,7 @@
     "@types/mocha": "^5.2.5",
     "@types/node": "^12.7.5",
     "@types/puppeteer": "^1.10.0",
-    "@types/sinon": "^7.0.13",
+    "@types/sinon": "^9.0.8",
     "@types/test-listen": "^1.1.0",
     "chai": "^4.2.0",
     "express": "^4.16.4",
