@@ -18,7 +18,7 @@
     "test": "tsc && npm run test:types && npm run test:cypress",
     "test:types": "cd test && tsc",
     "test:cypress": "start-server-and-test start-server http://localhost:8080 test:run",
-    "start-server": "cd example && npm run start",
+    "start-server": "cd examples/shadow-dom && npm run start",
     "test:run": "cypress run",
     "test:debug": "cypress open"
   },
