@@ -4,8 +4,8 @@
   "license": "MPL-2.0",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "fmt": "prettier --write *.{md,js,json} 'packages/**/*.{js,ts,tsx,html,json,md,css}'",
-    "lint": "eslint *.js 'packages/**/*.{js,ts,tsx}'",
+    "fmt": "prettier --write *.{md,js,json} \"packages/**/*.{js,ts,tsx,html,json,md,css}\"",
+    "lint": "eslint *.js \"packages/**/*.{js,ts,tsx}\"",
     "bootstrap": "lerna bootstrap"
   },
   "devDependencies": {
