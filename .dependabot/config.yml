@@ -5,33 +5,54 @@ update_configs:
     update_schedule: "weekly"
     default_labels:
       - "axe_api_deps_bot"
+    allowed_updates:
+      - match:
+          update_type: "security"
   - package_manager: "javascript"
     directory: "/axe_core_test"
     update_schedule: "weekly"
     default_labels:
       - "axe_api_deps_bot"
+    allowed_updates:
+      - match:
+          update_type: "security"
   - package_manager: "javascript"
     directory: "/packages/cli"
     update_schedule: "weekly"
     default_labels:
       - "axe_api_deps_bot"
+    allowed_updates:
+      - match:
+          update_type: "security"
   - package_manager: "javascript"
     directory: "/packages/puppeteer"
     update_schedule: "weekly"
     default_labels:
       - "axe_api_deps_bot"
+    allowed_updates:
+      - match:
+          update_type: "security"
   - package_manager: "javascript"
     directory: "/packages/react"
     update_schedule: "weekly"
     default_labels:
       - "axe_api_deps_bot"
+    allowed_updates:
+      - match:
+          update_type: "security"
   - package_manager: "javascript"
     directory: "/packages/reporter-earl"
     update_schedule: "weekly"
     default_labels:
       - "axe_api_deps_bot"
+    allowed_updates:
+      - match:
+          update_type: "security"
   - package_manager: "javascript"
     directory: "/packages/webdriverjs"
     update_schedule: "weekly"
     default_labels:
       - "axe_api_deps_bot"
+    allowed_updates:
+      - match:
+          update_type: "security"
