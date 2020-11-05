@@ -16,7 +16,7 @@ commands:
     steps:
       - restore_cache:
           keys:
-            - v1-npm-cache-{{ .Environment.CIRCLE_SHA1 }}
+            - v2-npm-cache-{{ .Environment.CIRCLE_SHA1 }}
   
   verify_axe_core_react:
     description: 'Verify that @axe-core/react has all requires files'
@@ -95,7 +95,7 @@ jobs:
           paths:
             - axe_core_test/node_modules
       - save_cache:
-          key: v1-npm-cache-{{ .Environment.CIRCLE_SHA1 }}
+          key: v2-npm-cache-{{ .Environment.CIRCLE_SHA1 }}
           paths:
             - node_modules
             - packages/cli/node_modules
@@ -104,7 +104,8 @@ jobs:
             - packages/webdriverio/node_modules
             - packages/reporter-earl/node_modules
             - packages/react/node_modules
-            - packages/react/example/node_modules
+            - packages/react/examples/next.js/node_modules
+            - packages/react/examples/shadow-dom/node_modules
             - axe_core_test/node_modules
 
   lint:
