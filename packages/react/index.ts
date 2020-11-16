@@ -347,7 +347,7 @@ function reactAxe(
   _React: typeof React,
   _ReactDOM: typeof ReactDOM,
   _timeout: number,
-  conf?: reactSpec,
+  conf?: ReactSpec,
   _context?: axeCore.ElementContext
 ): Promise<void> {
   React = _React;
