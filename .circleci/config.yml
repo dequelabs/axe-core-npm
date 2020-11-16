@@ -234,6 +234,11 @@ workflows:
       - axe-core-test:
           requires:
             - lint
+          filters:
+            branches:
+              only:
+              - /^release.*/
+              - master
       - canary_release:
           context: html-tools
           requires:
