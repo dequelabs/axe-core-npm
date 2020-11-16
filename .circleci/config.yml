@@ -237,7 +237,7 @@ workflows:
           filters:
             branches:
               only:
-              - /^release.*/
+              - /^release*/
               - master
       - canary_release:
           context: html-tools
