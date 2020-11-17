@@ -24,6 +24,11 @@ reactAxe(React, ReactDOM, 1000, {
 
 const context = document.createElement('div');
 
+// readOnly feature
+reactAxe(React, ReactDOM, 1000, {
+  runOnly: ['wcag2aa', 'wcag2a']
+});
+
 // axe-core context: Node
 reactAxe(React, ReactDOM, 1000, {}, context);
 
