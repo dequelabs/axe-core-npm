@@ -6,7 +6,7 @@ Previous versions of this program were maintained at [dequelabs/axe-puppeteer](h
 
 ## Getting Started
 
-Install [Node.js](https://docs.npmjs.com/getting-started/installing-node) if you haven't already. For running axe-puppeteer tests read more about [setting up your environment](CONTRIBUTING.md).
+Install [Node.js](https://docs.npmjs.com/getting-started/installing-node) if you haven't already.
 
 Install Puppeteer: `npm install puppeteer --no-save`
 
