@@ -16,7 +16,7 @@ commands:
     steps:
       - restore_cache:
           keys:
-            - v1-npm-cache-{{ .Environment.CIRCLE_SHA1 }}
+            - v2-npm-cache-{{ .Environment.CIRCLE_SHA1 }}
   
   verify_axe_core_react:
     description: 'Verify that @axe-core/react has all requires files'
@@ -95,7 +95,7 @@ jobs:
           paths:
             - axe_core_test/node_modules
       - save_cache:
-          key: v1-npm-cache-{{ .Environment.CIRCLE_SHA1 }}
+          key: v2-npm-cache-{{ .Environment.CIRCLE_SHA1 }}
           paths:
             - node_modules
             - packages/cli/node_modules
@@ -104,7 +104,8 @@ jobs:
             - packages/webdriverio/node_modules
             - packages/reporter-earl/node_modules
             - packages/react/node_modules
-            - packages/react/example/node_modules
+            - packages/react/examples/next.js/node_modules
+            - packages/react/examples/shadow-dom/node_modules
             - axe_core_test/node_modules
 
   lint:
@@ -176,7 +177,16 @@ jobs:
       - restore_dependency_cache
       # Make sure the working tree is clean
       - run: git reset --hard HEAD
-      - run: npx lerna publish prepatch --no-verify-access --no-git-tag-version --no-push --canary --dist-tag=next --exact --force-publish --yes
+      - run: >- 
+            npx lerna publish prepatch \
+              --no-verify-access \
+              --no-git-tag-version \
+              --no-push \
+              --canary \
+              --dist-tag=next \
+              --exact \
+              --force-publish \
+              --yes
       # Verify that @axe-core/react has all requires files
       - verify_axe_core_react
 
@@ -188,7 +198,10 @@ jobs:
       - restore_dependency_cache
       # Make sure the working tree is clean
       - run: git reset --hard HEAD
-      - run: npx lerna publish --force-publish='*' --yes
+      - run: >-
+          npx lerna publish from-package \
+            --force-publish='*' \
+            --yes
       # Verify that @axe-core/react has all requires files
       - verify_axe_core_react
 
@@ -221,6 +234,11 @@ workflows:
       - axe-core-test:
           requires:
             - lint
+          filters:
+            branches:
+              only:
+              - /^release*/
+              - master
       - canary_release:
           context: html-tools
           requires:

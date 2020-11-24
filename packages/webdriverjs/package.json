@@ -1,6 +1,6 @@
 {
   "name": "@axe-core/webdriverjs",
-  "version": "4.0.0",
+  "version": "4.1.0",
   "description": "Provides a method to inject and analyze web pages using aXe",
   "license": "MPL-2.0",
   "main": "dist/index.js",
@@ -77,7 +77,7 @@
     "sinon": "^7.3.2"
   },
   "dependencies": {
-    "axe-core": "^4.0.1",
+    "axe-core": "^4.1.1",
     "babel-runtime": "^6.26.0"
   },
   "nyc": {

@@ -1,6 +1,6 @@
 {
   "name": "@axe-core/puppeteer",
-  "version": "4.0.0",
+  "version": "4.1.0",
   "description": "Provides a chainable axe API for Puppeteer and automatically injects into all frames",
   "repository": {
     "type": "git",
@@ -34,7 +34,7 @@
     "express": "^4.16.4",
     "mocha": "^5.2.0",
     "nyc": "^14.1.1",
-    "puppeteer": "^1.10.0",
+    "puppeteer": "^5.3.1",
     "sinon": "^7.3.2",
     "source-map-support": "^0.5.9",
     "test-listen": "^1.1.0",
@@ -42,10 +42,10 @@
     "typescript": "^3.1.6"
   },
   "dependencies": {
-    "axe-core": "^4.0.1"
+    "axe-core": "^4.1.1"
   },
   "peerDependencies": {
-    "puppeteer": "^1.10.0 || ^2.0.0"
+    "puppeteer": ">=1.10.0 < 6"
   },
   "engines": {
     "node": ">=6.4.0"
