@@ -17,15 +17,6 @@ commands:
       - restore_cache:
           keys:
             - v2-npm-cache-{{ .Environment.CIRCLE_SHA1 }}
-  
-  verify_axe_core_react:
-    description: 'Verify that @axe-core/react has all requires files'
-    steps:
-      - run: 
-          name: Run verify release script
-          command: |
-            cd ~/axe-core-npm/packages/react
-            bash verify-release.sh post
 
 jobs:
   dependencies:
@@ -187,8 +178,6 @@ jobs:
               --exact \
               --force-publish \
               --yes
-      # Verify that @axe-core/react has all requires files
-      - verify_axe_core_react
 
   production_release:
     <<: *defaults
@@ -202,8 +191,6 @@ jobs:
           npx lerna publish from-package \
             --force-publish='*' \
             --yes
-      # Verify that @axe-core/react has all requires files
-      - verify_axe_core_react
 
 workflows:
   version: 2
