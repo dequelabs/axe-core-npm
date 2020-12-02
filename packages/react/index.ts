@@ -355,7 +355,7 @@ function reactAxe(
   timeout = _timeout;
   context = _context;
 
-  const runOnly = conf['runOnly'];
+  const runOnly = (conf || {})['runOnly'];
   if (runOnly) {
     conf['rules'] = axeCore
       .getRules(runOnly)
