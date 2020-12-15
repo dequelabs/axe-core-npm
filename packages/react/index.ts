@@ -8,6 +8,7 @@ const cancelIdleCallback = rIC.cancel;
 
 let React;
 let ReactDOM;
+let logger;
 
 // contrasted against Chrome default color of #ffffff
 const lightTheme = {
@@ -222,41 +223,7 @@ function checkAndReport(node: Node, timeout: number): Promise<void> {
           });
 
           if (results.violations.length) {
-            console.group('%cNew axe issues', serious);
-            results.violations.forEach(result => {
-              let fmt: string;
-              switch (result.impact) {
-                case 'critical':
-                  fmt = critical;
-                  break;
-                case 'serious':
-                  fmt = serious;
-                  break;
-                case 'moderate':
-                  fmt = moderate;
-                  break;
-                case 'minor':
-                  fmt = minor;
-                  break;
-                default:
-                  fmt = minor;
-                  break;
-              }
-              console.groupCollapsed(
-                '%c%s: %c%s %s',
-                fmt,
-                result.impact,
-                defaultReset,
-                result.help,
-                result.helpUrl
-              );
-              result.nodes.forEach(node => {
-                failureSummary(node, 'any');
-                failureSummary(node, 'none');
-              });
-              console.groupEnd();
-            });
-            console.groupEnd();
+            logger(results);
           }
 
           resolve();
@@ -329,6 +296,48 @@ function addComponent(component: any): void {
 }
 
 /**
+ * Log axe violations to console.
+ * @param {AxeResults} results
+ */
+function logToConsole(results: axeCore.AxeResults): void {
+  console.group('%cNew axe issues', serious);
+  results.violations.forEach(result => {
+    let fmt: string;
+    switch (result.impact) {
+      case 'critical':
+        fmt = critical;
+        break;
+      case 'serious':
+        fmt = serious;
+        break;
+      case 'moderate':
+        fmt = moderate;
+        break;
+      case 'minor':
+        fmt = minor;
+        break;
+      default:
+        fmt = minor;
+        break;
+    }
+    console.groupCollapsed(
+      '%c%s: %c%s %s',
+      fmt,
+      result.impact,
+      defaultReset,
+      result.help,
+      result.helpUrl
+    );
+    result.nodes.forEach(node => {
+      failureSummary(node, 'any');
+      failureSummary(node, 'none');
+    });
+    console.groupEnd();
+  });
+  console.groupEnd();
+}
+
+/**
  * To support paramater of type runOnly
  */
 interface ReactSpec extends axeCore.Spec {
@@ -348,12 +357,14 @@ function reactAxe(
   _ReactDOM: typeof ReactDOM,
   _timeout: number,
   conf?: ReactSpec,
-  _context?: axeCore.ElementContext
+  _context?: axeCore.ElementContext,
+  _logger?: (results: axeCore.AxeResults) => void
 ): Promise<void> {
   React = _React;
   ReactDOM = _ReactDOM;
   timeout = _timeout;
   context = _context;
+  logger = _logger || logToConsole;
 
   const runOnly = conf['runOnly'];
   if (runOnly) {
