@@ -7,7 +7,7 @@ class AxeInjector {
     this.config = config ? JSON.stringify(config) : '';
     this.options = options;
 
-    // default is set to true so it does not rewrite iframes in the DOM
+    // default is set to false so it does not rewrite iframes in the DOM
     // validates the value being passed to sandbox as a boolean
     this.options.noSandbox =
       typeof this.options.noSandbox === 'boolean'
