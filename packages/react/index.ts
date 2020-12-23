@@ -366,7 +366,7 @@ function reactAxe(
   context = _context;
   logger = _logger || logToConsole;
 
-  const runOnly = conf['runOnly'];
+  const runOnly = (conf || {})['runOnly'];
   if (runOnly) {
     conf['rules'] = axeCore
       .getRules(runOnly)
