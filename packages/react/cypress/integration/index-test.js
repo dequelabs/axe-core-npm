@@ -63,4 +63,54 @@ describe('React-axe', function () {
       });
     });
   });
+
+  it('should run react-axe without config provided', function (done) {
+    cy.visit('http://localhost:8080').then(function (win) {
+      const groupCollapsed = cy.spy(win.console, 'groupCollapsed');
+      const colorMessage = 'Elements must have sufficient color contrast';
+
+      let serviceChooser;
+      cy.document()
+        .shadowGet('#service-chooser')
+        .shadowFirst()
+        .then(function (node) {
+          serviceChooser = node[0];
+        });
+
+      axe(React, ReactDOM, 0).then(function () {
+        expect(filterLogs(groupCollapsed.args, colorMessage)).to.equal(
+          colorMessage
+        );
+        expect(filterLogs(groupCollapsed.args, serviceChooser)).to.equal(
+          serviceChooser
+        );
+        done();
+      });
+    });
+  });
+
+  it('should run react-axe when config is undefined', function (done) {
+    cy.visit('http://localhost:8080').then(function (win) {
+      const groupCollapsed = cy.spy(win.console, 'groupCollapsed');
+      const colorMessage = 'Elements must have sufficient color contrast';
+
+      let serviceChooser;
+      cy.document()
+        .shadowGet('#service-chooser')
+        .shadowFirst()
+        .then(function (node) {
+          serviceChooser = node[0];
+        });
+
+      axe(React, ReactDOM, 0, undefined).then(function () {
+        expect(filterLogs(groupCollapsed.args, colorMessage)).to.equal(
+          colorMessage
+        );
+        expect(filterLogs(groupCollapsed.args, serviceChooser)).to.equal(
+          serviceChooser
+        );
+        done();
+      });
+    });
+  });
 });
