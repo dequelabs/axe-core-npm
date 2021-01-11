@@ -168,7 +168,7 @@ or use it combined with some specified tags:
 ```js
 new AxePuppeteer(page)
   .withTags(['wcag2a', 'wcag2aa'])
-  .disableRules('color-contrast');
+  .disableFrame('color-contrast');
 ```
 
 ### AxePuppeteer#configure(config: Axe.Spec)
