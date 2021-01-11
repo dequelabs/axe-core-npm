@@ -160,7 +160,7 @@ new AxePuppeteer(page)
 Skips specific frame with selector provided. Accepts a String of a single selector. **Subsequent calls to `AxePuppeteer#options`, `AxePuppeteer#disableFrame` will override specified options.**
 
 ```js
-new AxePuppeteer(page).disableFrame('color-contrast');
+new AxePuppeteer(page).disableFrame('#my-frame');
 ```
 
 or use it combined with some specified tags:
@@ -168,7 +168,7 @@ or use it combined with some specified tags:
 ```js
 new AxePuppeteer(page)
   .withTags(['wcag2a', 'wcag2aa'])
-  .disableFrame('color-contrast');
+  .disableFrame('#my-frame');
 ```
 
 ### AxePuppeteer#configure(config: Axe.Spec)
