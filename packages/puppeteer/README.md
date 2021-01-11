@@ -155,6 +155,22 @@ new AxePuppeteer(page)
   .disableRules('color-contrast');
 ```
 
+### AxePuppeteer#disableFrame(selector: string)
+
+Skips specific frame with selector provided. Accepts a String of a single selector. **Subsequent calls to `AxePuppeteer#options`, `AxePuppeteer#disableFrame` will override specified options.**
+
+```js
+new AxePuppeteer(page).disableFrame('color-contrast');
+```
+
+or use it combined with some specified tags:
+
+```js
+new AxePuppeteer(page)
+  .withTags(['wcag2a', 'wcag2aa'])
+  .disableRules('color-contrast');
+```
+
 ### AxePuppeteer#configure(config: Axe.Spec)
 
 Inject an axe configuration object to modify the ruleset before running Analyze. Subsequent calls to this method will invalidate previous ones by calling `axe.configure` and replacing the config object. See [axe-core API documentation](https://github.com/dequelabs/axe-core/blob/master/doc/API.md#api-name-axeconfigure) for documentation on the object structure.
