@@ -15,6 +15,11 @@ module.exports = function saveOutcome(outcome, fileName, dir) {
     }
 
     const filePath = path.join(dir, fileName);
+
+    if (!fs.existsSync(filePath)) {
+      fs.mkdirSync(dir, { recursive: true });
+    }
+
     fs.writeFile(filePath, JSON.stringify(outcome, null, '  '), 'utf8', err => {
       if (err) {
         reject(err);
