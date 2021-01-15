@@ -2,6 +2,7 @@
 import axeCore = require('axe-core');
 import rIC = require('requestidlecallback');
 import after = require('./after');
+import { isEmpty } from 'ramda';
 
 const requestIdleCallback = rIC.request;
 const cancelIdleCallback = rIC.cancel;
@@ -347,7 +348,7 @@ function reactAxe(
   _React: typeof React,
   _ReactDOM: typeof ReactDOM,
   _timeout: number,
-  conf?: ReactSpec,
+  conf = {} as ReactSpec,
   _context?: axeCore.ElementContext
 ): Promise<void> {
   React = _React;
@@ -355,7 +356,7 @@ function reactAxe(
   timeout = _timeout;
   context = _context;
 
-  const runOnly = (conf || {})['runOnly'];
+  const runOnly = conf['runOnly'];
   if (runOnly) {
     conf['rules'] = axeCore
       .getRules(runOnly)
@@ -363,7 +364,7 @@ function reactAxe(
     conf['disableOtherRules'] = true;
   }
 
-  if (conf) {
+  if (!isEmpty(conf)) {
     axeCore.configure(conf);
   }
 
