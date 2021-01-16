@@ -2,7 +2,6 @@
 import axeCore = require('axe-core');
 import rIC = require('requestidlecallback');
 import after = require('./after');
-import { isEmpty } from 'ramda';
 
 const requestIdleCallback = rIC.request;
 const cancelIdleCallback = rIC.cancel;
@@ -364,7 +363,7 @@ function reactAxe(
     conf['disableOtherRules'] = true;
   }
 
-  if (!isEmpty(conf)) {
+  if (Object.keys(conf).length > 0) {
     axeCore.configure(conf);
   }
 
