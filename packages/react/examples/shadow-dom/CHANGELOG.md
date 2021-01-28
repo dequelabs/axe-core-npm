@@ -3,6 +3,13 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [4.1.1](http://dequelabs/axe-core-npm/compare/v4.0.0...v4.1.1) (2021-01-28)
+
+### Bug Fixes
+
+- **react:** Add example using Next.js ([#109](http://dequelabs/axe-core-npm/issues/109)) ([bd009d9](http://dequelabs/axe-core-npm/commits/bd009d9578d9b2704e258ade932fdbbe0a7a571a)), closes [#103](http://dequelabs/axe-core-npm/issues/103)
+- **react:** Prevent config TypeError ([708c463](http://dequelabs/axe-core-npm/commits/708c46366d5f2069a4f25238beb32299abc962b9))
+
 # [4.1.0](https://github.com/dequelabs/axe-core-npm/compare/v4.0.0...v4.1.0) (2020-11-20)
 
 ### Bug Fixes

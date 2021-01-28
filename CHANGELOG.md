@@ -3,6 +3,19 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [4.1.1](http://dequelabs/axe-core-npm/compare/v4.0.0...v4.1.1) (2021-01-28)
+
+### Bug Fixes
+
+- **cli:** create a directory when one does not exist ([#187](http://dequelabs/axe-core-npm/issues/187)) ([814cabf](http://dequelabs/axe-core-npm/commits/814cabf1082a758940b0a7917a1993fdd1d013af))
+- **react:** Add example using Next.js ([#109](http://dequelabs/axe-core-npm/issues/109)) ([bd009d9](http://dequelabs/axe-core-npm/commits/bd009d9578d9b2704e258ade932fdbbe0a7a571a)), closes [#103](http://dequelabs/axe-core-npm/issues/103)
+- **react:** handle undefined config ([#183](http://dequelabs/axe-core-npm/issues/183)) ([6326e13](http://dequelabs/axe-core-npm/commits/6326e131bf62968d5a8180595c1b0b049844ca05))
+- **react:** Prevent config TypeError ([708c463](http://dequelabs/axe-core-npm/commits/708c46366d5f2069a4f25238beb32299abc962b9))
+
+### Features
+
+- **react:** add support for runOnly. ([#101](http://dequelabs/axe-core-npm/issues/101)) ([cfadde3](http://dequelabs/axe-core-npm/commits/cfadde3eebf74d26e0fb3768b84e953e92f0bf99))
+
 # [4.1.0](https://github.com/dequelabs/axe-core-npm/compare/v4.0.0...v4.1.0) (2020-11-20)
 
 ## Bug Fixes
