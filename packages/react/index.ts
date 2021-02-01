@@ -347,7 +347,7 @@ function reactAxe(
   _React: typeof React,
   _ReactDOM: typeof ReactDOM,
   _timeout: number,
-  conf?: ReactSpec,
+  conf = {} as ReactSpec,
   _context?: axeCore.ElementContext
 ): Promise<void> {
   React = _React;
@@ -363,7 +363,7 @@ function reactAxe(
     conf['disableOtherRules'] = true;
   }
 
-  if (conf) {
+  if (Object.keys(conf).length > 0) {
     axeCore.configure(conf);
   }
 

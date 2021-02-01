@@ -35,6 +35,12 @@ reactAxe(React, ReactDOM, 1000, {}, context);
 // axe-core context: string
 reactAxe(React, ReactDOM, 1000, {}, '#container');
 
+// context/config: undefined
+reactAxe(React, ReactDOM, 1000, undefined, undefined);
+
+// context/config: null
+reactAxe(React, ReactDOM, 1000);
+
 // axe-core context: ContextObject
 reactAxe(
   React,
