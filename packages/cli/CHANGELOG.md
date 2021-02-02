@@ -3,6 +3,13 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [4.1.1](https://github.com/dequelabs/axe-core-npm/compare/v4.0.0...v4.1.1) (2021-01-28)
+
+### Bug Fixes
+
+- **cli:** create a directory when one does not exist ([#187](https://github.com/dequelabs/axe-core-npm/issues/187)) ([814cabf](https://github.com/dequelabs/axe-core-npm/commit/814cabf1082a758940b0a7917a1993fdd1d013af))
+- **react:** Prevent config TypeError ([708c463](https://github.com/dequelabs/axe-core-npm/commit/708c46366d5f2069a4f25238beb32299abc962b9))
+
 # [4.1.0](https://github.com/dequelabs/axe-core-npm/compare/v4.0.0...v4.1.0) (2020-11-20)
 
 **Note:** Version bump only for package @axe-core/cli
