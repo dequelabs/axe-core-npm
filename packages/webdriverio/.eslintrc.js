@@ -1,7 +1,10 @@
 module.exports = {
-  rules: {
-    '@typescript-eslint/no-explicit-any': 'off',
-    'prefer-spread': 'off',
-    'prefer-rest-params': 'off'
-  }
+  overrides: [
+    {
+      files: ['*.test.ts', '*.test.tsx'],
+      rules: {
+        '@typescript-eslint/no-explicit-any': 'off'
+      }
+    }
+  ]
 };
