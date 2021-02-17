@@ -413,29 +413,29 @@ describe('@axe-core/webdriverio', () => {
       remote = webdriverio.remote(options);
     });
 
-    afterEach(async () => {
-      remote.then((client: webdriverio.BrowserObject) =>
-        sync(() => {
-          client.deleteSession();
-          server.close();
-        })
-      );
+    afterEach(function (done) {
+      remote
+        .then((client: webdriverio.BrowserObject) =>
+          sync(() => {
+            client.deleteSession();
+            server.close();
+          })
+        )
+        .then(() => done());
     });
 
     it('analyze', function (done) {
       remote.then((client: webdriverio.BrowserObject) =>
         sync(() => {
           client.url(`${addr}/index.html`);
-          new AxeBuilder({ client })
-            .analyze((error, results) => {
-              assert.isNotNull(results);
-              assert.isArray(results?.violations);
-              assert.isArray(results?.incomplete);
-              assert.isArray(results?.passes);
-              assert.isArray(results?.inapplicable);
-            })
-            .then(() => done());
-        })
+          new AxeBuilder({ client }).analyze((error, results) => {
+            assert.isNotNull(results);
+            assert.isArray(results?.violations);
+            assert.isArray(results?.incomplete);
+            assert.isArray(results?.passes);
+            assert.isArray(results?.inapplicable);
+          });
+        }).then(() => done())
       );
     });
   });
