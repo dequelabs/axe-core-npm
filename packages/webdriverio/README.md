@@ -122,7 +122,7 @@ Performs analysis and passes any encountered error and/or the result object.
 ```js
 new AxeBuilder({ client }).analyze((err, results) => {
   if (err) {
-    // Do something with error (╯°□°)╯︵ ┻━┻
+    // Do something with error
   }
   console.log(results);
 });
@@ -135,6 +135,6 @@ new AxeBuilder({ client })
     console.log(results);
   })
   .catch(e => {
-    // Do something with error (╯°□°)╯︵ ┻━┻
+    // Do something with error
   });
 ```
