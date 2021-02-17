@@ -1,15 +1,7 @@
 module.exports = {
   rules: {
-    '@typescript-eslint/no-empty-function': 'off',
+    '@typescript-eslint/no-explicit-any': 'off',
     'prefer-spread': 'off',
     'prefer-rest-params': 'off'
-  },
-  overrides: [
-    {
-      files: 'tests/**/*.js',
-      env: {
-        jest: true
-      }
-    }
-  ]
+  }
 };
