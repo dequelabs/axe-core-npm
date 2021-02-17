@@ -16,9 +16,9 @@ import AxeBuilder from '.';
 import { logOrRethrowError } from './utils';
 
 const connectToChromeDriver = (port: number): Promise<void> => {
+  let socket: net.Socket;
   return new Promise((resolve, reject) => {
     // eslint-disable-next-line prefer-const
-    let socket: net.Socket;
 
     // Give up after 1s
     const timer = setTimeout(() => {
@@ -27,9 +27,9 @@ const connectToChromeDriver = (port: number): Promise<void> => {
     }, 1000);
 
     const connectionListener = (): void => {
-      resolve();
       clearTimeout(timer);
       socket.destroy();
+      return resolve();
     };
 
     socket = net.createConnection(
@@ -417,22 +417,24 @@ describe('@axe-core/webdriverio', () => {
       remote.then((client: webdriverio.BrowserObject) =>
         sync(() => {
           client.deleteSession();
+          server.close();
         })
       );
-      server.close();
     });
 
-    it('analyze', async () => {
+    it('analyze', function (done) {
       remote.then((client: webdriverio.BrowserObject) =>
         sync(() => {
           client.url(`${addr}/index.html`);
-          new AxeBuilder({ client }).analyze((error, results) => {
-            assert.isNotNull(results);
-            assert.isArray(results?.violations);
-            assert.isArray(results?.incomplete);
-            assert.isArray(results?.passes);
-            assert.isArray(results?.inapplicable);
-          });
+          new AxeBuilder({ client })
+            .analyze((error, results) => {
+              assert.isNotNull(results);
+              assert.isArray(results?.violations);
+              assert.isArray(results?.incomplete);
+              assert.isArray(results?.passes);
+              assert.isArray(results?.inapplicable);
+            })
+            .then(() => done());
         })
       );
     });
