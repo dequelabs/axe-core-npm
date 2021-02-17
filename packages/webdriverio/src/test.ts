@@ -427,20 +427,21 @@ describe('@axe-core/webdriverio', () => {
     });
 
     it('analyze', function (done) {
-      remote.then((client: wdio.BrowserObject) =>
-        sync(() => {
-          client.url(`${addr}/index.html`);
-          new AxeBuilder({ client }).analyze((error, results) => {
-            assert.isNotNull(results);
-            assert.isArray(results?.violations);
-            assert.isArray(results?.incomplete);
-            assert.isArray(results?.passes);
-            assert.isArray(results?.inapplicable);
-          });
-        })
-          .then(() => done())
-          .catch((e: Error) => done(e))
-      );
+      remote
+        .then((client: wdio.BrowserObject) =>
+          sync(() => {
+            client.url(`${addr}/index.html`);
+            new AxeBuilder({ client }).analyze((error, results) => {
+              assert.isNotNull(results);
+              assert.isArray(results?.violations);
+              assert.isArray(results?.incomplete);
+              assert.isArray(results?.passes);
+              assert.isArray(results?.inapplicable);
+            });
+          })
+        )
+        .then(() => done())
+        .catch((e: Error) => done(e));
     });
   });
 });
