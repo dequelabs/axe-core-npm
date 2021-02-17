@@ -1,6 +1,7 @@
 import 'mocha';
 import * as webdriverio from 'webdriverio';
 const sync = require('@wdio/sync').default;
+import * as wdio from '@wdio/sync';
 import * as express from 'express';
 import * as sinon from 'sinon';
 import * as chromedriver from 'chromedriver';
@@ -415,17 +416,18 @@ describe('@axe-core/webdriverio', () => {
 
     afterEach(function (done) {
       remote
-        .then((client: webdriverio.BrowserObject) =>
+        .then((client: wdio.BrowserObject) =>
           sync(() => {
             client.deleteSession();
             server.close();
           })
         )
-        .then(() => done());
+        .then(() => done())
+        .catch((e: Error) => done(e));
     });
 
     it('analyze', function (done) {
-      remote.then((client: webdriverio.BrowserObject) =>
+      remote.then((client: wdio.BrowserObject) =>
         sync(() => {
           client.url(`${addr}/index.html`);
           new AxeBuilder({ client }).analyze((error, results) => {
@@ -435,7 +437,9 @@ describe('@axe-core/webdriverio', () => {
             assert.isArray(results?.passes);
             assert.isArray(results?.inapplicable);
           });
-        }).then(() => done())
+        })
+          .then(() => done())
+          .catch((e: Error) => done(e))
       );
     });
   });
