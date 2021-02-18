@@ -104,7 +104,7 @@ describe('@axe-core/webdriverio', () => {
       it('throws a useful error when not given a valid client', () => {
         assert.throws(
           () => new AxeBuilder({ client: () => 'foobar' } as any),
-          /An instantiated webdriverio client of v5 or v6 is required/
+          /An instantiated WebdriverIO client greater than v5 is required/
         );
       });
 

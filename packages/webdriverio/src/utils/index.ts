@@ -1,18 +1,19 @@
-import type { BrowserObject } from 'webdriverio';
 import type { AxeResults, ElementContext } from 'axe-core';
+import * as webdriverio from 'webdriverio';
 import type {
   AnalyzePageParams,
   AnalyzePageResponse,
-  DoneFunction
+  DoneFunction,
+  BrowserObject
 } from '../types';
 
 /**
  * Validates that the client provided is WebdriverIO v5 or v6.
- * @param {any} client
- * @returns {BrowserObject}
+ * @param {BrowserObject} client
+ * @returns {boolean}
  */
 
-export const isWebdriverClient = (client: any): client is BrowserObject => {
+export const isWebdriverClient = (client: BrowserObject): boolean => {
   if (!client || typeof client !== 'object') {
     return false;
   }
@@ -68,8 +69,8 @@ export const normalizeContext = (
 export const analyzePage = (
   analyzeContext: AnalyzePageParams,
   done: DoneFunction
-): AnalyzePageResponse => {
-  const axeCore = (window as any).axe;
+): AnalyzePageResponse | Promise<void> => {
+  const axeCore = window.axe;
   const { options, context } = analyzeContext;
 
   // Add webdriverio branding
@@ -93,7 +94,7 @@ export const analyzePage = (
 
 export const logOrRethrowError = (error: Error): void => {
   if (
-    (error as any).seleniumStack?.type === 'StaleElementReference' ||
+    error?.seleniumStack?.type === 'StaleElementReference' ||
     error.name === 'stale element reference'
   ) {
     console.error(

@@ -59,7 +59,7 @@ Constructor for the AxeBuilder helper. You must pass an instance of WebdriverIO 
 const builder = new AxeBuilder({ client });
 ```
 
-## AxeBuilder#include(selector: String)
+### AxeBuilder#include(selector: String)
 
 Adds a CSS selector to the list of elements to include in analysis
 
@@ -67,23 +67,23 @@ Adds a CSS selector to the list of elements to include in analysis
 new AxeBuilder({ client }).include('.results-panel');
 ```
 
-## AxeBuilder#exclude(selector: String)
+### AxeBuilder#exclude(selector: String)
 
 Add a CSS selector to the list of elements to exclude from analysis
 
 ```js
-new AxeBuilder({ client }).include('.some-element').exclude('.another-element');
+new AxeBuilder({ client }).exclude('.another-element');
 ```
 
-## AxeBuilder#options(options: [axe.RunOptions](https://github.com/dequelabs/axe-core/blob/develop/doc/API.md#options-parameter))
+### AxeBuilder#options(options: [axe.RunOptions](https://github.com/dequelabs/axe-core/blob/develop/doc/API.md#options-parameter))
 
-Specifies options to be used by `axe.a11yCheck`. Will override any other configured options. including calls to `AxeBuilder#withRules()` and `AxeBuilder#withTags()`. See [axe-core API documentation](https://github.com/dequelabs/axe-core/blob/master/doc/API.md) for information on its structure.
+Specifies options to be used by `axe.run`. Will override any other configured options. including calls to `AxeBuilder#withRules()` and `AxeBuilder#withTags()`. See [axe-core API documentation](https://github.com/dequelabs/axe-core/blob/master/doc/API.md) for information on its structure.
 
 ```js
 new AxeBuilder({ client }).options({ checks: { 'valid-lang': ['orcish'] } });
 ```
 
-## AxeBuilder#withRules(rules: String|Array)
+### AxeBuilder#withRules(rules: String|Array)
 
 Limits analysis to only those with the specified rule IDs. Accepts a String of a single rule ID or an Array of multiple rule IDs. Subsequent calls to `AxeBuilder#options`, `AxeBuilder#withRules` or `AxeBuilder#withRules` will override specified options.
 
@@ -95,7 +95,7 @@ new AxeBuilder({ client }).withRules('html-lang');
 new AxeBuilder({ client }).withRules(['html-lang', 'image-alt']);
 ```
 
-## AxeBuilder#withTags(tags: String|Array)
+### AxeBuilder#withTags(tags: String|Array)
 
 Limits analysis to only those with the specified rule IDs. Accepts a String of a single tag or an Array of multiple tags. Subsequent calls to `AxeBuilder#options`, `AxeBuilder#withRules` or `AxeBuilder#withRules` will override specified options.
 
@@ -107,7 +107,7 @@ new AxeBuilder({ client }).withTags('wcag2a');
 new AxeBuilder({ client }).withTags(['wcag2a', 'wcag2aa']);
 ```
 
-## AxeBuilder#disableRules(rules: String|Array)
+### AxeBuilder#disableRules(rules: String|Array)
 
 Skips verification of the rules provided. Accepts a String of a single rule ID or an Array of multiple rule IDs. Subsequent calls to `AxeBuilder#options`, `AxeBuilder#disableRules` will override specified options.
 
@@ -115,7 +115,7 @@ Skips verification of the rules provided. Accepts a String of a single rule ID o
 new AxeBuilder({ client }).disableRules('color-contrast');
 ```
 
-## AxeBuilder#analyze(): Promise<axe.Results | Error>
+### AxeBuilder#analyze(): Promise<axe.Results | Error>
 
 Performs analysis and passes any encountered error and/or the result object.
 

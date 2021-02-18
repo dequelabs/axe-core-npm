@@ -1,4 +1,5 @@
 import type { AxeResults, ElementContext, RunOptions, Spec } from 'axe-core';
+import * as axe from 'axe-core';
 import {
   BrowserObject as BrowserObjectSync,
   Element as ElementSync,
@@ -38,4 +39,15 @@ export type CallbackFunction = (
 
 export interface Options {
   client: BrowserObject;
+}
+
+declare global {
+  interface Window {
+    axe: typeof axe;
+  }
+  interface Error {
+    seleniumStack?: {
+      type?: 'StaleElementReference';
+    };
+  }
 }

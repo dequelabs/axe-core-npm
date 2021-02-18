@@ -25,7 +25,7 @@ export default class AxeBuilder {
   constructor({ client }: Options) {
     assert(
       isWebdriverClient(client),
-      'An instantiated webdriverio client of v5 or v6 is required.'
+      'An instantiated WebdriverIO client greater than v5 is required'
     );
     this.client = client;
     this.axeSource = source;
