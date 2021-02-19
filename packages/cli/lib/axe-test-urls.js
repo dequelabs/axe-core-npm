@@ -1,7 +1,7 @@
 'use strict';
 
 const WebDriver = require('selenium-webdriver');
-const AxeBuilder = require('@axe-core/webdriverjs');
+const AxeBuilder = require('@axe-core/webdriverjs').default;
 
 async function testPages(urls, config, events) {
   //selenium.dev/selenium/docs/api/javascript/module/selenium-webdriver/index_exports_ThenableWebDriver.html
@@ -57,7 +57,7 @@ async function testPages(urls, config, events) {
       })
       .then(() => {
         // Set everything up
-        const axe = new AxeBuilder(driver, config.axeSource);
+        const axe = new AxeBuilder({ driver, axeSource: config.axeSource });
 
         if (Array.isArray(config.include)) {
           config.include.forEach(include => axe.include(include));

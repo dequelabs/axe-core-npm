@@ -13,7 +13,8 @@
     "prebuild": "rimraf dist",
     "build": "tsc",
     "test": "mocha --timeout 60000 -r ts-node/register 'src/test/test.ts'",
-    "coverage": "nyc npm run test"
+    "coverage": "nyc npm run test",
+    "prepare": "npm run build"
   },
   "keywords": [
     "a11y",
