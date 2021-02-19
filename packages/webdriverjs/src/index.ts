@@ -5,7 +5,7 @@ import type { CallbackFunction, BuilderOptions } from './types';
 import { normalizeContext } from './utils';
 import AxeInjector from './axe-injector';
 
-class AxeBuilder {
+export default class AxeBuilder {
   private driver: WebDriver;
   private axeSource: string;
   private includes: string[];
@@ -195,5 +195,5 @@ class AxeBuilder {
 
 exports = module.exports = AxeBuilder;
 
-// Enable ESM/TS imports while we wait for a SEMVER major release.
-export { AxeBuilder as default };
+// TypeScript/ES6 module support (see #74).
+exports.default = AxeBuilder;
