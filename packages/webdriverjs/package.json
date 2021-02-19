@@ -2,13 +2,14 @@
   "name": "@axe-core/webdriverjs",
   "version": "4.1.1",
   "description": "Provides a method to inject and analyze web pages using axe",
-  "author": "Michael Siek<me@michaelsiek.com>",
+  "contributors": [
+    {
+      "name": "Michael Siek (me@michaelsiek.com)"
+    }
+  ],
   "license": "MPL-2.0",
   "main": "dist/index.js",
   "typings": "dist/index.d.ts",
-  "files": [
-    "dist/index.d.ts"
-  ],
   "scripts": {
     "prebuild": "rimraf dist",
     "build": "tsc",
