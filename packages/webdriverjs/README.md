@@ -21,13 +21,13 @@ This module uses a chainable API to assist in injecting, configuring, and analyz
 Here is an example of a script that will drive WebdriverJS to a page, perform an analysis, and then log results to the console.
 
 ```js
-const AxeBuilder = require('@axe-core/webdriverjs').default;
+const AxeBuilder = require('@axe-core/webdriverjs');
 const WebDriver = require('selenium-webdriver');
 
 const driver = new WebDriver.Builder().forBrowser('firefox').build();
 
 driver.get('https://dequeuniversity.com/demo/mars/').then(() => {
-  new AxeBuilder({ driver }).analyze((err, results) => {
+  new AxeBuilder(driver).analyze((err, results) => {
     if (err) {
       // Handle error somehow
     }
@@ -41,14 +41,14 @@ driver.get('https://dequeuniversity.com/demo/mars/').then(() => {
 Constructor for the AxeBuilder helper. You must pass an instance of WebdriverJS as the first argument.
 
 ```js
-const builder = new AxeBuilder({ driver });
+const builder = new AxeBuilder(driver);
 ```
 
 If you wish to run a specific version of [axe-core](https://github.com/dequelabs/axe-core), you can pass the source of axe-core source file in as a string. Doing so will mean `@axe-core/webdriverjs` run this version of axe-core, instead of the one installed as a dependency of `@axe-core/webdriverjs`.
 
 ```js
 const axeSource = fs.readFileSync('./axe-1.0.js', { encoding: 'utf-8' });
-const builder = new AxeBuilder({ driver, axeSource });
+const builder = new AxeBuilder(driver, axeSource);
 ```
 
 ### AxeBuilder#include(selector: String)
@@ -56,7 +56,7 @@ const builder = new AxeBuilder({ driver, axeSource });
 Adds a CSS selector to the list of elements to include in analysis
 
 ```js
-new AxeBuilder({ driver }).include('.results-panel');
+new AxeBuilder(driver).include('.results-panel');
 ```
 
 ### AxeBuilder#exclude(selector: String)
@@ -64,7 +64,7 @@ new AxeBuilder({ driver }).include('.results-panel');
 Add a CSS selector to the list of elements to exclude from analysis
 
 ```js
-new AxeBuilder({ driver }).include('.some-element').exclude('.another-element');
+new AxeBuilder(driver).include('.some-element').exclude('.another-element');
 ```
 
 ### AxeBuilder#options(options: [axe.RunOptions](https://github.com/dequelabs/axe-core/blob/develop/doc/API.md#options-parameter))
@@ -72,7 +72,7 @@ new AxeBuilder({ driver }).include('.some-element').exclude('.another-element');
 Specifies options to be used by `axe.run`. Will override any other configured options. including calls to `AxeBuilder#withRules()` and `AxeBuilder#withTags()`. See [axe-core API documentation](https://github.com/dequelabs/axe-core/blob/master/doc/API.md) for information on its structure.
 
 ```js
-new AxeBuilder({ driver }).options({ checks: { 'valid-lang': ['orcish'] } });
+new AxeBuilder(driver).options({ checks: { 'valid-lang': ['orcish'] } });
 ```
 
 ### AxeBuilder#withRules(rules: String|Array)
@@ -80,11 +80,11 @@ new AxeBuilder({ driver }).options({ checks: { 'valid-lang': ['orcish'] } });
 Limits analysis to only those with the specified rule IDs. Accepts a String of a single rule ID or an Array of multiple rule IDs. Subsequent calls to `AxeBuilder#options`, `AxeBuilder#withRules` or `AxeBuilder#withRules` will override specified options.
 
 ```js
-new AxeBuilder({ driver }).withRules('html-lang');
+new AxeBuilder(driver).withRules('html-lang');
 ```
 
 ```js
-new AxeBuilder({ driver }).withRules(['html-lang', 'image-alt']);
+new AxeBuilder(driver).withRules(['html-lang', 'image-alt']);
 ```
 
 ### AxeBuilder#withTags(tags: String|Array)
@@ -92,11 +92,11 @@ new AxeBuilder({ driver }).withRules(['html-lang', 'image-alt']);
 Limits analysis to only those with the specified rule IDs. Accepts a String of a single tag or an Array of multiple tags. Subsequent calls to `AxeBuilder#options`, `AxeBuilder#withRules` or `AxeBuilder#withRules` will override specified options.
 
 ```js
-new AxeBuilder({ driver }).withTags('wcag2a');
+new AxeBuilder(driver).withTags('wcag2a');
 ```
 
 ```js
-new AxeBuilder({ driver }).withTags(['wcag2a', 'wcag2aa']);
+new AxeBuilder(driver).withTags(['wcag2a', 'wcag2aa']);
 ```
 
 ### AxeBuilder#disableRules(rules: String|Array)
@@ -104,7 +104,7 @@ new AxeBuilder({ driver }).withTags(['wcag2a', 'wcag2aa']);
 Skips verification of the rules provided. Accepts a String of a single rule ID or an Array of multiple rule IDs. Subsequent calls to `AxeBuilder#options`, `AxeBuilder#disableRules` will override specified options.
 
 ```js
-new AxeBuilder({ driver }).disableRules('color-contrast');
+new AxeBuilder(driver).disableRules('color-contrast');
 ```
 
 ### AxeBuilder#configure(config: [axe.Spec](https://github.com/dequelabs/axe-core/blob/develop/doc/API.md#api-name-axeconfigure))
@@ -117,7 +117,7 @@ const config = {
   rules: axe.Rule[]
 }
 
-new AxeBuilder({ driver }).configure(config).analyze((err, results) => {
+new AxeBuilder(driver).configure(config).analyze((err, results) => {
   if (err) {
     // Handle error somehow
   }
@@ -130,7 +130,7 @@ new AxeBuilder({ driver }).configure(config).analyze((err, results) => {
 Performs analysis and passes any encountered error and/or the result object.
 
 ```js
-new AxeBuilder({ driver }).analyze((err, results) => {
+new AxeBuilder(driver).analyze((err, results) => {
   if (err) {
     // Do something with error
   }
@@ -139,7 +139,7 @@ new AxeBuilder({ driver }).analyze((err, results) => {
 ```
 
 ```js
-new AxeBuilder({ driver })
+new AxeBuilder(driver)
   .analyze()
   .then(results => {
     console.log(results);
