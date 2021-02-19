@@ -193,7 +193,7 @@ class AxeBuilder {
   }
 }
 
-exports = AxeBuilder;
+exports = module.exports = AxeBuilder;
 
 // Enable ESM/TS imports while we wait for a SEMVER major release.
 export { AxeBuilder as default };
