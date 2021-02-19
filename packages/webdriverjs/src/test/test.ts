@@ -73,7 +73,7 @@ describe('@axe-core/webdriverjs', () => {
   describe('analyze', () => {
     it('returns results', async () => {
       await driver.get(`${addr}/index.html`);
-      const results = await new AxeBuilder({ driver }).analyze();
+      const results = await new AxeBuilder(driver).analyze();
       assert.isNotNull(results);
       assert.isArray(results.violations);
       assert.isArray(results.incomplete);
@@ -85,7 +85,7 @@ describe('@axe-core/webdriverjs', () => {
   describe('configure', () => {
     it('should find configured violations in all frames', async () => {
       await driver.get(`${addr}/outer-configure-frame.html`);
-      const results = await new AxeBuilder({ driver })
+      const results = await new AxeBuilder(driver)
         .options({
           rules: {
             'landmark-one-main': { enabled: false },
@@ -107,7 +107,7 @@ describe('@axe-core/webdriverjs', () => {
   describe('disableRules', () => {
     it('disables the given rules(s) as array', async () => {
       await driver.get(`${addr}/index.html`);
-      const results = await new AxeBuilder({ driver })
+      const results = await new AxeBuilder(driver)
         .disableRules(['region'])
         .analyze();
       const all = [
@@ -121,7 +121,7 @@ describe('@axe-core/webdriverjs', () => {
 
     it('disables the given rules(s) as string', async () => {
       await driver.get(`${addr}/index.html`);
-      const results = await new AxeBuilder({ driver })
+      const results = await new AxeBuilder(driver)
         .disableRules('region')
         .analyze();
       const all = [
@@ -138,7 +138,7 @@ describe('@axe-core/webdriverjs', () => {
     it('injects into nested frames', async () => {
       await driver.get(`${addr}/nested-frames.html`);
       const executeSpy = sinon.spy(driver, 'executeScript');
-      await new AxeBuilder({ driver }).analyze();
+      await new AxeBuilder(driver).analyze();
       /**
        * Ensure we called execute 4 times
        * 1. nested-frames.html
@@ -153,7 +153,7 @@ describe('@axe-core/webdriverjs', () => {
   describe('withRules', () => {
     it('only runs the provided rules as an array', async () => {
       await driver.get(`${addr}/index.html`);
-      const results = await new AxeBuilder({ driver })
+      const results = await new AxeBuilder(driver)
         .withRules(['region'])
         .analyze();
       const all = [
@@ -168,7 +168,7 @@ describe('@axe-core/webdriverjs', () => {
 
     it('only runs the provided rules as a string', async () => {
       await driver.get(`${addr}/index.html`);
-      const results = await new AxeBuilder({ driver })
+      const results = await new AxeBuilder(driver)
         .withRules('region')
         .analyze();
       const all = [
@@ -185,7 +185,7 @@ describe('@axe-core/webdriverjs', () => {
   describe('options', () => {
     it('passes options to axe-core', async () => {
       await driver.get(`${addr}/index.html`);
-      const results = await new AxeBuilder({ driver })
+      const results = await new AxeBuilder(driver)
         .options({ rules: { region: { enabled: false } } })
         .analyze();
       const all = [
@@ -201,7 +201,7 @@ describe('@axe-core/webdriverjs', () => {
   describe('withTags', () => {
     it('only rules rules with the given tag(s) as an array', async () => {
       await driver.get(`${addr}/index.html`);
-      const results = await new AxeBuilder({ driver })
+      const results = await new AxeBuilder(driver)
         .withTags(['best-practice'])
         .analyze();
       const all = [
@@ -218,7 +218,7 @@ describe('@axe-core/webdriverjs', () => {
 
     it('only rules rules with the given tag(s) as a string', async () => {
       await driver.get(`${addr}/index.html`);
-      const results = await new AxeBuilder({ driver })
+      const results = await new AxeBuilder(driver)
         .withTags('best-practice')
         .analyze();
       const all = [
@@ -235,7 +235,7 @@ describe('@axe-core/webdriverjs', () => {
 
     it('No results provided when the given tag(s) is invalid', async () => {
       await driver.get(`${addr}/index.html`);
-      const results = await new AxeBuilder({ driver })
+      const results = await new AxeBuilder(driver)
         .withTags(['foobar'])
         .analyze();
 
@@ -254,7 +254,7 @@ describe('@axe-core/webdriverjs', () => {
     it('with include and exclude', async () => {
       let error: Error | null = null;
       await driver.get(`${addr}/context.html`);
-      const builder = new AxeBuilder({ driver })
+      const builder = new AxeBuilder(driver)
         .include('.include')
         .exclude('.exclude');
 
@@ -270,7 +270,7 @@ describe('@axe-core/webdriverjs', () => {
     it('with only include', async () => {
       let error: Error | null = null;
       await driver.get(`${addr}/context.html`);
-      const builder = new AxeBuilder({ driver }).include('.include');
+      const builder = new AxeBuilder(driver).include('.include');
 
       try {
         await builder.analyze();
@@ -284,7 +284,7 @@ describe('@axe-core/webdriverjs', () => {
     it('wth only exclude', async () => {
       let error: Error | null = null;
       await driver.get(`${addr}/context.html`);
-      const builder = new AxeBuilder({ driver }).exclude('.exclude');
+      const builder = new AxeBuilder(driver).exclude('.exclude');
 
       try {
         await builder.analyze();
@@ -299,7 +299,7 @@ describe('@axe-core/webdriverjs', () => {
   describe('callback()', () => {
     it('returns results when callback is provided', async () => {
       await driver.get(`${addr}/index.html`);
-      new AxeBuilder({ driver }).analyze((err, results) => {
+      new AxeBuilder(driver).analyze((err, results) => {
         if (err) {
           // Something _should_ happen with error
         }

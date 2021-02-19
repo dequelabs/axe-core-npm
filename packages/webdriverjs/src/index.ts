@@ -1,11 +1,11 @@
 import type { WebDriver } from 'selenium-webdriver';
 import type { RunOptions, Spec, AxeResults } from 'axe-core';
 import { source } from 'axe-core';
-import type { Options, CallbackFunction, BuilderOptions } from './types';
+import type { CallbackFunction, BuilderOptions } from './types';
 import { normalizeContext } from './utils';
 import AxeInjector from './axe-injector';
 
-export default class AxeBuilder {
+class AxeBuilder {
   private driver: WebDriver;
   private axeSource: string;
   private includes: string[];
@@ -13,7 +13,11 @@ export default class AxeBuilder {
   private option: RunOptions;
   private config: Spec | null;
   private builderOptions: BuilderOptions;
-  constructor({ driver, axeSource, builderOptions }: Options) {
+  constructor(
+    driver: WebDriver,
+    axeSource?: string | null,
+    builderOptions?: BuilderOptions
+  ) {
     this.driver = driver;
     this.axeSource = axeSource || source;
     this.includes = [];
@@ -188,3 +192,8 @@ export default class AxeBuilder {
     });
   }
 }
+
+exports = AxeBuilder;
+
+// Enable ESM/TS imports while we wait for a SEMVER major release.
+export { AxeBuilder as default };

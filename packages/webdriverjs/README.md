@@ -125,7 +125,7 @@ new AxeBuilder({ driver }).configure(config).analyze((err, results) => {
 })
 ```
 
-### AxeBuilder#analyze(): Promise<axe.Results | Error>
+### AxeBuilder#analyze(): Promise<axe.Results>
 
 Performs analysis and passes any encountered error and/or the result object.
 
