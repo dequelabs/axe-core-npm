@@ -1,6 +1,6 @@
 {
   "name": "@axe-core/webdriverjs",
-  "version": "1.0.0",
+  "version": "4.1.1",
   "description": "Provides a method to inject and analyze web pages using axe",
   "author": "Michael Siek<me@michaelsiek.com>",
   "license": "MPL-2.0",
