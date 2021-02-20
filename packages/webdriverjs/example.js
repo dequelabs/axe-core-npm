@@ -1,5 +1,5 @@
-import AxeBuilder from './dist';
-import * as WebDriver from 'selenium-webdriver';
+const AxeBuilder = require('@axe-core/webdriverjs');
+const WebDriver = require('selenium-webdriver');
 
 // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 (async () => {
@@ -9,4 +9,5 @@ import * as WebDriver from 'selenium-webdriver';
     noSandbox: true
   }).analyze();
   console.log(results);
+  await driver.quit();
 })();

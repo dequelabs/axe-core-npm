@@ -5,7 +5,7 @@ import type { CallbackFunction, BuilderOptions } from './types';
 import { normalizeContext } from './utils';
 import AxeInjector from './axe-injector';
 
-export default class AxeBuilder {
+class AxeBuilder {
   private driver: WebDriver;
   private axeSource: string;
   private includes: string[];
@@ -195,5 +195,4 @@ export default class AxeBuilder {
 
 exports = module.exports = AxeBuilder;
 
-// TypeScript/ES6 module support (see #74).
-exports.default = AxeBuilder;
+export default AxeBuilder;

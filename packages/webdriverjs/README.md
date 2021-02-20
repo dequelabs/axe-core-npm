@@ -47,7 +47,7 @@ const builder = new AxeBuilder(driver);
 If you wish to run a specific version of [axe-core](https://github.com/dequelabs/axe-core), you can pass the source of axe-core source file in as a string. Doing so will mean `@axe-core/webdriverjs` run this version of axe-core, instead of the one installed as a dependency of `@axe-core/webdriverjs`.
 
 ```js
-const axeSource = fs.readFileSync('./axe-1.0.js', { encoding: 'utf-8' });
+const axeSource = fs.readFileSync('./axe-1.0.js', 'utf-8');
 const builder = new AxeBuilder(driver, axeSource);
 ```
 

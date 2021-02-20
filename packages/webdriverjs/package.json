@@ -4,6 +4,26 @@
   "description": "Provides a method to inject and analyze web pages using axe",
   "contributors": [
     {
+      "name": "Dylan Barrell",
+      "organization": "Deque Systems, Inc.",
+      "url": "http://github.com/dylanb/"
+    },
+    {
+      "name": "Marcy Sutton",
+      "organization": "Deque Systems, Inc.",
+      "url": "http://github.com/marcysutton/"
+    },
+    {
+      "name": "Wilco Fiers",
+      "organization": "Deque Systems, Inc.",
+      "url": "http://github.com/wilcofiers/"
+    },
+    {
+      "name": "David Sturley",
+      "organization": "Deque Systems, Inc.",
+      "url": "http://deque.com/"
+    },
+    {
       "name": "Michael Siek (me@michaelsiek.com)"
     }
   ],
