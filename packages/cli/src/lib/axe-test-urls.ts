@@ -1,42 +1,44 @@
-'use strict';
+import * as WebDriver from 'selenium-webdriver';
+// @ts-ignore
+import AxeBuilder from '@axe-core/webdriverjs';
+import { AxeResults } from 'axe-core';
+import { EventResponse } from '../types';
 
-const WebDriver = require('selenium-webdriver');
-const AxeBuilder = require('@axe-core/webdriverjs');
+const testPages = async (
+  urls: string | string[],
+  config: any,
+  events: EventResponse
+): Promise<AxeResults[] | AxeResults> => {
+  const driver: WebDriver.WebDriver = await config.driver;
 
-async function testPages(urls, config, events) {
-  //selenium.dev/selenium/docs/api/javascript/module/selenium-webdriver/index_exports_ThenableWebDriver.html
-  // We tried to use the non-thenable webdriver and failed the unit test for startDriver() even after we tried to make it work
-  const driver = await config.driver;
-  // End of the line, no more page left
   if (urls.length === 0) {
-    driver.quit();
+    await driver.quit();
     return Promise.resolve([]);
   }
+
   return new Promise((resolve, reject) => {
-    // Grab the first item on the URL list
     const currentUrl = urls[0].replace(/[,;]$/, '');
 
     if (events.onTestStart) {
       events.onTestStart(currentUrl);
     }
+
     if (config.timer) {
       events.startTimer('page load time');
     }
 
     driver
       .get(currentUrl)
-      .then(function () {
-        // https://github.com/vercel/pkg/issues/676
-        // we need to pass a string vs a function so we manually stringified the function
+      .then(() => {
         return driver.executeAsyncScript(`
-          const callback = arguments[arguments.length - 1];
-          const script = document.createElement('script');
-          script.innerHTML = 'document.documentElement.classList.add("deque-axe-is-ready");'
-          document.documentElement.appendChild(script);
-          callback();
+      const callback = arguments[arguments.length - 1];
+      const script = document.createElement('script');
+      script.innerHTML = 'document.documentElement.classList.add("deque-axe-is-ready");'
+      document.documentElement.appendChild(script);
+      callback();
       `);
       })
-      .then(function () {
+      .then(() => {
         return driver.wait(
           WebDriver.until.elementsLocated(
             WebDriver.By.css('.deque-axe-is-ready')
@@ -51,40 +53,43 @@ async function testPages(urls, config, events) {
         if (config.loadDelay > 0) {
           events.waitingMessage(config.loadDelay);
         }
-        return new Promise(function (resolve) {
+
+        return new Promise(resolve => {
           setTimeout(resolve, config.loadDelay);
         });
       })
       .then(() => {
-        // Set everything up
         const axe = new AxeBuilder(driver, config.axeSource);
 
         if (Array.isArray(config.include)) {
-          config.include.forEach(include => axe.include(include));
-        }
-        if (Array.isArray(config.exclude)) {
-          config.exclude.forEach(exclude => axe.exclude(exclude));
+          config.include.forEach((include: string) => axe.include(include));
         }
 
-        // Can not use withTags and withRules together
+        if (Array.isArray(config.exclude)) {
+          config.exclude.forEach((exclude: string) => axe.exclude(exclude));
+        }
+
         if (config.tags) {
           axe.withTags(config.tags);
         } else if (config.rules) {
           axe.withRules(config.rules);
         }
+
+        /* istanbul ignore if */
         if (config.disable) {
           axe.disableRules(config.disable);
         }
+
         if (config.timer) {
           events.startTimer('axe-core execution time');
         }
 
-        // Run axe
-        axe.analyze(function (err, results) {
+        axe.analyze((err: string, results: AxeResults) => {
           if (config.timer) {
             events.endTimer('axe-core execution time');
           }
 
+          /* istanbul ignore if */
           if (err) {
             return reject(err);
           }
@@ -95,16 +100,16 @@ async function testPages(urls, config, events) {
           }
 
           // Move to the next item
-          testPages(urls.slice(1), config, events).then(out => {
+          testPages(urls.slice(1), config, events).then((out: AxeResults) => {
             resolve([results].concat(out));
           });
         });
       })
-      .catch(e => {
-        driver.quit();
+      .catch(async e => {
+        await driver.quit();
         reject(e);
       });
   });
-}
+};
 
-module.exports = testPages;
+export default testPages;

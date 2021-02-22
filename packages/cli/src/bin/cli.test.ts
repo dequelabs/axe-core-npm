@@ -1,13 +1,12 @@
-'use strict';
-
-const { assert } = require('chai');
-const tempy = require('tempy');
-const http = require('http');
-const https = require('https');
-const path = require('path');
-const fs = require('fs');
-const pkg = require('../package.json');
-const { runCLI } = require('../testutils/index');
+import 'mocha';
+import { assert } from 'chai';
+import * as tempy from 'tempy';
+import * as http from 'http';
+import * as https from 'https';
+import * as path from 'path';
+import * as fs from 'fs';
+import { version } from '../../package.json';
+import runCLI from '../testutils/';
 
 const SIMPLE_HTML_FILE = path.join(__dirname, '..', 'testutils', 'simple.html');
 const SIMPLE_HTML_SOURCE = fs.readFileSync(SIMPLE_HTML_FILE, 'utf8');
@@ -28,7 +27,7 @@ describe('cli', () => {
   it('--version', async () => {
     const result = await runCLI('--version');
     assert.equal(result.exitCode, 0);
-    assert.deepEqual(result.stdout, pkg.version);
+    assert.deepEqual(result.stdout, version);
   });
 
   describe('given a file:// url', () => {
@@ -43,15 +42,15 @@ describe('cli', () => {
   });
 
   describe('given a http:// url', () => {
-    let port;
-    let server;
+    let port: number;
+    let server: any;
     before(done => {
       server = http.createServer((req, res) => {
         res.setHeader('Content-Type', 'text/html');
         res.write(SIMPLE_HTML_SOURCE);
         res.end();
       });
-      server.listen(0, err => {
+      server.listen(0, (err: Error) => {
         if (err) {
           return done(err);
         }
@@ -85,6 +84,15 @@ describe('cli', () => {
         'Violation of "marquee" with 1 occurrences!'
       );
       assert.include(result.stdout, 'Running axe-core 2.5.0');
+    });
+    it('error when given invalid axe source path', async () => {
+      const result = await runCLI(
+        `file://${SIMPLE_HTML_FILE}`,
+        '--axe-source',
+        'foobar'
+      );
+      assert.equal(result.exitCode, 2);
+      assert.include(result.stderr, 'Unable to find the axe-core source file');
     });
   });
 
@@ -142,7 +150,7 @@ describe('cli', () => {
   });
 
   describe('--dir', () => {
-    let reportDir;
+    let reportDir: string;
     beforeEach(() => {
       reportDir = tempy.directory();
     });
@@ -250,7 +258,7 @@ describe('cli', () => {
   });
 
   describe('--save', () => {
-    let reportDir;
+    let reportDir: string;
     beforeEach(() => {
       reportDir = tempy.directory();
     });
@@ -298,7 +306,7 @@ describe('cli', () => {
     // Timeout the page immediately. Ideally we'd block the page for awhile, then timeout based on that. This seemed easier for now tho.
     it('should set the page load timeout', async () => {
       try {
-        await runCLI(`file://${SIMPLE_HTML_FILE}`, '--timeout', 0);
+        await runCLI(`file://${SIMPLE_HTML_FILE}`, '--timeout', '0');
       } catch (error) {
         assert.notEqual(error.exitCode, 0);
         assert.include(

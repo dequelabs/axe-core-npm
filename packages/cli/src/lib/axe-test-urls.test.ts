@@ -1,60 +1,60 @@
-'use strict';
-
-const assert = require('chai').assert;
-const testPages = require('../lib/axe-test-urls');
+import 'mocha';
+import { assert } from 'chai';
+import testPages from './axe-test-urls';
 
 describe('testPages', function () {
   this.timeout(10000);
-  let config, mockDriver;
+  let config: any;
+  let mockDriver: any;
 
   beforeEach(() => {
     mockDriver = {
-      get: async arg => arg,
-      executeAsyncScript: async arg => arg,
-      executeScript: async arg => arg,
-      wait: async arg => arg,
+      get: async (arg: any) => arg,
+      executeAsyncScript: async (arg: any) => arg,
+      executeScript: async (arg: any) => arg,
+      wait: async (arg: any) => arg,
       switchTo: () => ({ defaultContent: () => {} }),
       findElements: async () => [],
-      quit: async arg => arg,
+      quit: async (arg: any) => arg,
       manage: () => ({
-        setTimeouts: async arg => arg
+        setTimeouts: async (arg: any) => arg
       })
     };
     config = { driver: mockDriver };
   });
 
   it('return a promise', () => {
-    assert.instanceOf(testPages([], config, {}), Promise);
+    assert.instanceOf(testPages([], config, {} as any), Promise);
   });
 
   it('calls driver.get() for each URL', async () => {
-    const urlsCalled = [];
+    const urlsCalled: string[] = [];
     const urls = ['http://foo', 'http://bar', 'http://baz'];
 
-    mockDriver.get = async url => {
+    mockDriver.get = async (url: string) => {
       urlsCalled.push(url);
       return url;
     };
 
-    await testPages(urls, config, {});
+    await testPages(urls, config, {} as any);
 
     assert.deepEqual(urlsCalled, urls);
   });
 
   it('waits until the document is ready to have a className added', async () => {
-    const asyncScripts = [];
+    const asyncScripts: string[] = [];
     let waitCalls = 0;
 
-    mockDriver.executeAsyncScript = async script => {
+    mockDriver.executeAsyncScript = async (script: string) => {
       asyncScripts.push(script);
       return script;
     };
-    mockDriver.wait = async script => {
+    mockDriver.wait = async (script: string) => {
       waitCalls++;
       return script;
     };
 
-    await testPages(['http://foo'], config, {});
+    await testPages(['http://foo'], config, {} as any);
 
     assert.equal(asyncScripts.length, 2);
     const [script] = asyncScripts;
@@ -67,25 +67,25 @@ describe('testPages', function () {
   });
 
   it('injects axe into the page', async () => {
-    const scripts = [];
+    const scripts: string[] = [];
     config.axeSource = 'axe="hi, I am axe"';
-    mockDriver.executeScript = async script => {
+    mockDriver.executeScript = async (script: string) => {
       scripts.push(script);
       return script;
     };
 
-    await testPages(['http://foo'], config, {});
+    await testPages(['http://foo'], config, {} as any);
     assert.include(scripts[0].toString(), config.axeSource);
   });
 
   it('runs axe once the page is loaded', async () => {
-    const asyncScripts = [];
-    mockDriver.executeAsyncScript = async script => {
+    const asyncScripts: string[] = [];
+    mockDriver.executeAsyncScript = async (script: string) => {
       asyncScripts.push(script);
       return script;
     };
 
-    await testPages(['http://foo'], config, {});
+    await testPages(['http://foo'], config, {} as any);
 
     assert.isDefined(
       asyncScripts

@@ -1,13 +1,13 @@
-'use strict';
-
-const assert = require('chai').assert;
-const { startDriver } = require('../lib/webdriver');
-const chromedriver = require('chromedriver');
-const chrome = require('selenium-webdriver/chrome');
-const path = require('path');
+import 'mocha';
+import { assert } from 'chai';
+import { startDriver } from './webdriver';
+import * as chromedriver from 'chromedriver';
+import * as chrome from 'selenium-webdriver/chrome';
+import * as path from 'path';
 
 describe('startDriver', () => {
-  let config, browser;
+  let config: any;
+  let browser: string;
   beforeEach(() => {
     browser = 'chrome-headless';
     config = {
@@ -20,31 +20,21 @@ describe('startDriver', () => {
   afterEach(async () => {
     const service = chrome.getDefaultService();
     if (service.isRunning()) {
-      await service.stop();
-
-      // An unfortunately hacky way to clean up
-      // the service. Stop will shut it down,
-      // but it doesn't reset the local state
-      service.address_ = null;
-      chrome.setDefaultService(null);
+      await service.kill();
     }
   });
 
   it('creates a driver', async () => {
     const driver = await startDriver(config);
-
     assert.isObject(driver);
     assert.isFunction(driver.manage);
   });
 
-  xit('sets the config.browser as the browser', done => {
+  xit('sets the config.browser as the browser', async () => {
     browser = 'chrome';
-    startDriver(config)
-      .then(config => config.driver.getCapabilities())
-      .then(capabilities => {
-        assert.equal(capabilities.get('browserName'), browser);
-      })
-      .then(done, done);
+    const driver = await startDriver(config);
+    const capabilities = await driver.getCapabilities();
+    assert.equal(capabilities.get('browserName'), browser);
   });
 
   it('sets the browser as chrome with chrome-headless', async () => {
@@ -60,7 +50,7 @@ describe('startDriver', () => {
     await startDriver(config);
     const service = chrome.getDefaultService();
 
-    assert.equal(service.executable_, chromedriver.path);
+    assert.equal((service as any).executable_, chromedriver.path);
   });
 
   it('uses the passed in chromedriver path with chrome-headless', async () => {
@@ -70,17 +60,7 @@ describe('startDriver', () => {
     const service = chrome.getDefaultService();
 
     assert.notEqual(config.chromedriverPath, chromedriver.path);
-    assert.equal(service.executable_, config.chromedriverPath);
-  });
-
-  it('sets the --headless flag with chrome-headless', async () => {
-    browser = 'chrome-headless';
-    await startDriver(config);
-    const capabilities = await config.builder.getCapabilities();
-    const chromeOptions = capabilities.get('chromeOptions');
-
-    assert.isObject(chromeOptions);
-    assert.deepEqual(chromeOptions.args, ['--headless']);
+    assert.equal((service as any).executable_, config.chromedriverPath);
   });
 
   it('sets the --chrome-options flag with no-sandbox', async () => {
@@ -91,7 +71,7 @@ describe('startDriver', () => {
     const chromeOptions = capabilities.get('chromeOptions');
 
     assert.isArray(chromeOptions.args);
-    assert.deepEqual(chromeOptions.args, ['--headless', '--no-sandbox']);
+    assert.deepEqual(chromeOptions.args, ['--no-sandbox']);
   });
 
   it('sets the --timeout flag', async () => {
