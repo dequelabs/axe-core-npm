@@ -16,7 +16,7 @@
   "main": "dist/src/lib/index.js",
   "typings": "dist/src/types.js",
   "bin": {
-    "cli": "axe-cli"
+    "axe": "axe-cli"
   },
   "publishConfig": {
     "access": "public"
