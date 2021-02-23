@@ -135,7 +135,7 @@ jobs:
     steps:
       - checkout
       - restore_dependency_cache
-      - run: npm run test --prefix=packages/webdriverio
+      - run: npm run coverage --prefix=packages/webdriverio
 
   reporter-earl:
     <<: *defaults
