@@ -8,3 +8,4 @@ exclude:
   - packages/cli/test/**/*
   - packages/cli/testutils/**/*
   - packages/webdriverio/fixtures/**
+  - packages/webdriverjs/src/test/fixtures/**
