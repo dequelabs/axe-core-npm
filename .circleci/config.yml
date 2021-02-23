@@ -128,7 +128,7 @@ jobs:
     steps:
       - checkout
       - restore_dependency_cache
-      - run: npm run test --prefix=packages/webdriverjs
+      - run: npm run coverage --prefix=packages/webdriverjs
 
   webdriverio:
     <<: *defaults

@@ -7,3 +7,4 @@ exclude:
   - packages/react/cypress/**/*
   - packages/cli/test/**/*
   - packages/cli/testutils/**/*
+  - packages/webdriverjs/src/test/fixtures/**
