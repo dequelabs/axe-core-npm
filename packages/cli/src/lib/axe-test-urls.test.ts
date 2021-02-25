@@ -1,23 +1,25 @@
 import 'mocha';
 import { assert } from 'chai';
 import testPages from './axe-test-urls';
+import { ConfigParams } from '../types';
 
 describe('testPages', function () {
   this.timeout(10000);
-  let config: any;
+  let config: ConfigParams;
   let mockDriver: any;
 
   beforeEach(() => {
+    const func = async (arg: any) => arg;
     mockDriver = {
-      get: async (arg: any) => arg,
-      executeAsyncScript: async (arg: any) => arg,
-      executeScript: async (arg: any) => arg,
-      wait: async (arg: any) => arg,
+      get: func,
+      executeAsyncScript: func,
+      executeScript: func,
+      wait: func,
       switchTo: () => ({ defaultContent: () => {} }),
       findElements: async () => [],
-      quit: async (arg: any) => arg,
+      quit: func,
       manage: () => ({
-        setTimeouts: async (arg: any) => arg
+        setTimeouts: func
       })
     };
     config = { driver: mockDriver };
