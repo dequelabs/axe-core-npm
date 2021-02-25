@@ -3,10 +3,11 @@ import { assert } from 'chai';
 import { startDriver } from './webdriver';
 import * as chromedriver from 'chromedriver';
 import * as chrome from 'selenium-webdriver/chrome';
+import type { Options } from 'selenium-webdriver/chrome';
 import * as path from 'path';
-
+import { WebdriverConfigParams } from '../types';
 describe('startDriver', () => {
-  let config: any;
+  let config: WebdriverConfigParams;
   let browser: string;
   beforeEach(() => {
     browser = 'chrome-headless';
@@ -65,10 +66,10 @@ describe('startDriver', () => {
 
   it('sets the --chrome-options flag with no-sandbox', async () => {
     browser = 'chrome-headless';
-    config.chromeOptions = ['--no-sandbox'];
+    config.chromeOptions = (['--no-sandbox'] as unknown) as Options[];
     await startDriver(config);
-    const capabilities = await config.builder.getCapabilities();
-    const chromeOptions = capabilities.get('chromeOptions');
+    const capabilities = config?.builder?.getCapabilities();
+    const chromeOptions = capabilities?.get('chromeOptions');
 
     assert.isArray(chromeOptions.args);
     assert.deepEqual(chromeOptions.args, ['--no-sandbox']);
@@ -78,7 +79,7 @@ describe('startDriver', () => {
     browser = 'chrome-headless';
     config.timeout = 10000;
     const driver = await startDriver(config);
-    await config.builder;
+    config.builder;
     const timeoutValue = await driver.manage().getTimeouts();
 
     assert.isObject(timeoutValue);

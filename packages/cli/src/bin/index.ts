@@ -29,7 +29,15 @@ const cli = async (
     showErrors,
     reporter: noReporter,
     chromeOptions,
-    verbose
+    verbose,
+    timeout,
+    path,
+    include,
+    exclude,
+    tags,
+    rules,
+    disable,
+    loadDelay
   } = args;
 
   const silentMode = !!stdout;
@@ -54,7 +62,14 @@ const cli = async (
     }
   }
 
-  args.driver = startDriver(args);
+  const driverConfigs = {
+    browser: args.browser,
+    timeout,
+    chromeOptions,
+    path
+  };
+
+  args.driver = startDriver(driverConfigs);
 
   const cliReporter = reporter(noReporter, silentMode);
   const axeVersion = getAxeVersion(args.axeSource);
@@ -79,8 +94,19 @@ const cli = async (
     exit
   });
 
+  const testPageConfigParams = {
+    driver: args.driver,
+    timer,
+    loadDelay,
+    axeSource: args.axeSource,
+    include,
+    exclude,
+    tags,
+    rules,
+    disable
+  };
   try {
-    const outcome = await axeTestUrls(urls, args, events);
+    const outcome = await axeTestUrls(urls, testPageConfigParams, events);
     if (silentMode) {
       process.stdout.write(JSON.stringify(outcome, null, 2));
       return;
@@ -91,7 +117,7 @@ const cli = async (
     }
 
     /* istanbul ignore if */
-    if (Array.isArray(outcome) && outcome.length > 1) {
+    if (Array.isArray(outcome)) {
       console.log(bold('Testing complete of %d pages\n'), outcome.length);
     }
 
@@ -100,6 +126,7 @@ const cli = async (
         const fileName = saveOutcome(outcome, save, dir);
         console.log('Saved file at', fileName, '\n');
       } catch (e) {
+        /* istanbul ignore next */
         console.error(error('Unable to save file!\n') + e);
         process.exit(1);
       }

@@ -1,8 +1,11 @@
 import * as chromedriver from 'chromedriver';
 import { Builder, Capabilities, WebDriver } from 'selenium-webdriver';
 import * as chrome from 'selenium-webdriver/chrome';
+import { WebdriverConfigParams } from '../types';
 
-const startDriver = async (config: any): Promise<WebDriver> => {
+const startDriver = async (
+  config: WebdriverConfigParams
+): Promise<WebDriver> => {
   const scriptTimeout = (config.timeout || 20) * 1000.0;
   let builder: Builder;
   const args: chrome.Options[] = [];
@@ -12,7 +15,7 @@ const startDriver = async (config: any): Promise<WebDriver> => {
       config.chromedriverPath || chromedriver.path
     ).build();
     chrome.setDefaultService(service);
-    if (config.chromeOptions) {
+    if (config.chromeOptions?.length) {
       args.push(...config.chromeOptions);
     }
 

@@ -24,7 +24,7 @@ describe('testPages', function () {
   });
 
   it('return a promise', () => {
-    assert.instanceOf(testPages([], config, {} as any), Promise);
+    assert.instanceOf(testPages([], config), Promise);
   });
 
   it('calls driver.get() for each URL', async () => {
@@ -36,7 +36,7 @@ describe('testPages', function () {
       return url;
     };
 
-    await testPages(urls, config, {} as any);
+    await testPages(urls, config);
 
     assert.deepEqual(urlsCalled, urls);
   });
@@ -54,7 +54,7 @@ describe('testPages', function () {
       return script;
     };
 
-    await testPages(['http://foo'], config, {} as any);
+    await testPages(['http://foo'], config);
 
     assert.equal(asyncScripts.length, 2);
     const [script] = asyncScripts;
@@ -74,7 +74,7 @@ describe('testPages', function () {
       return script;
     };
 
-    await testPages(['http://foo'], config, {} as any);
+    await testPages(['http://foo'], config);
     assert.include(scripts[0].toString(), config.axeSource);
   });
 
@@ -85,7 +85,7 @@ describe('testPages', function () {
       return script;
     };
 
-    await testPages(['http://foo'], config, {} as any);
+    await testPages(['http://foo'], config);
 
     assert.isDefined(
       asyncScripts

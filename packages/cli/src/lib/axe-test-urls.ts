@@ -1,12 +1,12 @@
 import * as WebDriver from 'selenium-webdriver';
 import AxeBuilder from '@axe-core/webdriverjs';
 import { AxeResults } from 'axe-core';
-import { EventResponse } from '../types';
+import { EventResponse, ConfigParams } from '../types';
 
 const testPages = async (
   urls: string | string[],
-  config: any,
-  events: EventResponse
+  config: ConfigParams,
+  events?: EventResponse
 ): Promise<AxeResults[] | AxeResults> => {
   const driver: WebDriver.WebDriver = await config.driver;
 
@@ -18,12 +18,12 @@ const testPages = async (
   return new Promise((resolve, reject) => {
     const currentUrl = urls[0].replace(/[,;]$/, '');
 
-    if (events.onTestStart) {
-      events.onTestStart(currentUrl);
+    if (events?.onTestStart) {
+      events?.onTestStart(currentUrl);
     }
 
     if (config.timer) {
-      events.startTimer('page load time');
+      events?.startTimer('page load time');
     }
 
     driver
@@ -46,11 +46,11 @@ const testPages = async (
       })
       .then(() => {
         if (config.timer) {
-          events.startTimer('page load time');
+          events?.startTimer('page load time');
         }
 
-        if (config.loadDelay > 0) {
-          events.waitingMessage(config.loadDelay);
+        if (config.loadDelay) {
+          events?.waitingMessage(config.loadDelay);
         }
 
         return new Promise(resolve => {
@@ -80,12 +80,12 @@ const testPages = async (
         }
 
         if (config.timer) {
-          events.startTimer('axe-core execution time');
+          events?.startTimer('axe-core execution time');
         }
 
         axe.analyze((err: string, results: AxeResults) => {
           if (config.timer) {
-            events.endTimer('axe-core execution time');
+            events?.endTimer('axe-core execution time');
           }
 
           /* istanbul ignore if */
@@ -94,8 +94,8 @@ const testPages = async (
           }
 
           // Notify about the update
-          if (events.onTestComplete) {
-            events.onTestComplete(results);
+          if (events?.onTestComplete) {
+            events?.onTestComplete(results);
           }
 
           // Move to the next item

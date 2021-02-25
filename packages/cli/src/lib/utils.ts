@@ -7,7 +7,7 @@ export const saveOutcome = (
   outcome: AxeResults | AxeResults[],
   fileName?: string,
   dir?: string
-): string | void => {
+): string => {
   if (typeof fileName !== 'string') {
     fileName = 'axe-results-' + Date.now() + '.json';
   }
@@ -83,8 +83,10 @@ export const getAxeSource = (axePath?: string) => {
     // Look for axe in CDW ./node_modules
     axePath = path.join(process.cwd(), 'node_modules', 'axe-core', 'axe.js');
   }
+  /* istanbul ignore if */
   if (!fs.existsSync(axePath)) {
     // if all else fails, use the locally installed axe
+    /* istanbul ignore next */
     axePath = path.join(__dirname, 'node_modules', 'axe-core', 'axe.js');
   }
 

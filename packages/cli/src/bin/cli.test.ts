@@ -3,6 +3,7 @@ import { assert } from 'chai';
 import * as tempy from 'tempy';
 import * as http from 'http';
 import * as https from 'https';
+import * as net from 'net';
 import * as path from 'path';
 import * as fs from 'fs';
 import { version } from '../../package.json';
@@ -43,18 +44,15 @@ describe('cli', () => {
 
   describe('given a http:// url', () => {
     let port: number;
-    let server: any;
+    let server: http.Server;
     before(done => {
       server = http.createServer((req, res) => {
         res.setHeader('Content-Type', 'text/html');
         res.write(SIMPLE_HTML_SOURCE);
         res.end();
       });
-      server.listen(0, (err: Error) => {
-        if (err) {
-          return done(err);
-        }
-        port = server.address().port;
+      server.listen(0, () => {
+        port = (server.address() as net.AddressInfo).port;
         done();
       });
     });
