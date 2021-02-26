@@ -113,7 +113,7 @@ jobs:
       - restore_dependency_cache
       # Re-build packages, ensuring packages/webdriverjs/dist exists.
       - run: npx lerna run prepare
-      - run: npm run test --prefix=packages/cli
+      - run: npm run coverage --prefix=packages/cli
 
   puppeteer:
     <<: *defaults

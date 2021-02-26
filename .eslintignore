@@ -1,1 +1,2 @@
-packages/cli/testutils/*
+packages/cli/src/testutils/*
+packages/cli/src/**/**/*.test.ts
