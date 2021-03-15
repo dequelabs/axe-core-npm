@@ -32,6 +32,9 @@ jobs:
             - v1-cli-npm-{{ checksum "packages/cli/package-lock.json" }}
       - restore_cache:
           keys:
+            - v1-playwright-npm-{{ checksum "packages/playwright/package-lock.json" }}
+      - restore_cache:
+          keys:
             - v1-puppeteer-npm-{{ checksum "packages/puppeteer/package-lock.json" }}
       - restore_cache:
           keys:
@@ -62,6 +65,10 @@ jobs:
           paths:
             - packages/cli/node_modules
       - save_cache:
+          key: v1-playwright-npm-{{ checksum "packages/playwright/package-lock.json" }}
+          paths:
+            - packages/playwright/node_modules
+      - save_cache:
           key: v1-puppeteer-npm-{{ checksum "packages/puppeteer/package-lock.json" }}
           paths:
             - packages/puppeteer/node_modules
@@ -90,6 +97,7 @@ jobs:
           paths:
             - node_modules
             - packages/cli/node_modules
+            - packages/playwright/node_modules
             - packages/puppeteer/node_modules
             - packages/webdriverjs/node_modules
             - packages/webdriverio/node_modules
@@ -114,6 +122,14 @@ jobs:
       # Re-build packages, ensuring packages/webdriverjs/dist exists.
       - run: npx lerna run prepare
       - run: npm run coverage --prefix=packages/cli
+
+  playwright:
+    <<: *defaults
+    steps:
+      - checkout
+      - restore_dependency_cache
+      - run: npm run build --prefix=packages/playwright
+      - run: npm run coverage --prefix=packages/playwright
 
   puppeteer:
     <<: *defaults
@@ -201,6 +217,9 @@ workflows:
           requires:
             - dependencies
       - cli:
+          requires:
+            - lint
+      - playwright:
           requires:
             - lint
       - puppeteer:
