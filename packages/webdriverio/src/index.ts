@@ -225,6 +225,10 @@ export default class AxeBuilder {
   private async setBrowsingContext(
     id: null | Element | BrowserObject = null
   ): Promise<void> {
-    await this.client.switchToFrame(id);
+    if (id) {
+      await this.client.switchToFrame(id);
+    } else {
+      await this.client.switchToParentFrame();
+    }
   }
 }
