@@ -1,16 +1,14 @@
-<!-- this page has 3 iframes each going to same src  -->
+<!-- this page has 3 frames each going to same src  -->
 <!DOCTYPE html>
 <html lang="en">
   <head>
     <title>Multiple Frames</title>
   </head>
 
-  <body>
-    <h1>this page has 3 iframes (no recursion)</h1>
-    <br /><br /><br />
-    <iframe src="/frames/baz.html"></iframe>
-    <iframe src="/frames/baz.html"></iframe>
-    <iframe src="/frames/baz.html"></iframe>
-    <iframe class="ignoredFrame" src="/frames/baz.html"></iframe>
-  </body>
+  <frameset>
+    <frame src="/frames/baz.html">
+    <frame src="/frames/baz.html">
+    <frame src="/frames/baz.html">
+    <frame class="ignoredFrame" src="/frames/baz.html">
+  </frameset>
 </html>
