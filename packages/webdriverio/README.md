@@ -34,7 +34,7 @@ const { remote } = require('webdriverio');
 
 (async () => {
   const client = await remote({
-    logLevel: 'silent',
+    logLevel: 'error',
     capabilities: {
       browserName: 'firefox'
     }
