@@ -139,7 +139,9 @@ export default class AxeInjector {
 
     await this.driver.executeScript(this.script);
 
-    const frames = await this.driver.findElements({ tagName: 'iframe' });
+    const ifs = await this.driver.findElements({ tagName: 'iframe' });
+    const fs = await this.driver.findElements({ tagName: 'frame' });
+    const frames = ifs.concat(fs);
 
     for (const childFrames of frames) {
       framePath.push(childFrames);
@@ -171,8 +173,10 @@ export default class AxeInjector {
     // XXX: if this `executeScript` fails, we *want* to error, as we cannot run axe-core.
     await this.driver.executeScript(this.script);
 
-    // Get all of <iframe>s at this level
-    const frames = await this.driver.findElements({ tagName: 'iframe' });
+    // Get all of <iframe>s and <frame>s at this level
+    const ifs = await this.driver.findElements({ tagName: 'iframe' });
+    const fs = await this.driver.findElements({ tagName: 'frame' });
+    const frames = ifs.concat(fs);
 
     // Inject the script into all child frames. Handle errors to ensure we don't stop execution if we fail to inject.
     for (const childFrame of frames) {
