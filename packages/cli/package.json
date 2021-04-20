@@ -42,7 +42,7 @@
   "dependencies": {
     "@axe-core/webdriverjs": "^4.1.1",
     "axe-core": "^4.1.2",
-    "chromedriver": "latest",
+    "chromedriver": "^90.0.0",
     "colors": "^1.4.0",
     "commander": "^7.1.0",
     "selenium-webdriver": "^3.6.0"
