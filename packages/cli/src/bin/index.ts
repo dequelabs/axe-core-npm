@@ -1,5 +1,6 @@
 import type { OptionValues } from 'commander';
 import * as colors from 'colors';
+import * as fs from 'fs';
 import {
   parseBrowser,
   parseUrl,
@@ -41,12 +42,13 @@ const cli = async (
   } = args;
 
   const silentMode = !!stdout;
-  args.axeSource = getAxeSource(args.axeSource);
 
-  if (!args.axeSource) {
+  if (args.axeSource && !fs.existsSync(args.axeSource)) {
     console.error(error('Unable to find the axe-core source file'));
     process.exit(2);
   }
+
+  args.axeSource = getAxeSource(args.axeSource);
 
   args.browser = parseBrowser(args.browser);
   /* istanbul ignore if */
