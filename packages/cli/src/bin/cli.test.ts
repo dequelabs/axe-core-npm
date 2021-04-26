@@ -6,7 +6,7 @@ import * as https from 'https';
 import * as net from 'net';
 import * as path from 'path';
 import * as fs from 'fs';
-import { version } from '../../package.json';
+import { version, dependencies } from '../../package.json';
 import runCLI from '../testutils/';
 
 const SIMPLE_HTML_FILE = path.join(__dirname, '..', 'testutils', 'simple.html');
@@ -83,14 +83,17 @@ describe('cli', () => {
       );
       assert.include(result.stdout, 'Running axe-core 2.5.0');
     });
-    it('error when given invalid axe source path', async () => {
+    it('use local axe-core when given invalid axe-core source', async () => {
       const result = await runCLI(
         `file://${SIMPLE_HTML_FILE}`,
         '--axe-source',
         'foobar'
       );
-      assert.equal(result.exitCode, 2);
-      assert.include(result.stderr, 'Unable to find the axe-core source file');
+      assert.equal(result.exitCode, 0);
+      assert.include(
+        result.stdout,
+        `Running axe-core ${dependencies['axe-core'].replace('^', '')}`
+      );
     });
   });
 
