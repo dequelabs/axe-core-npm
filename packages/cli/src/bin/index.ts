@@ -1,6 +1,5 @@
 import type { OptionValues } from 'commander';
 import * as colors from 'colors';
-import * as fs from 'fs';
 import {
   parseBrowser,
   parseUrl,
@@ -42,7 +41,6 @@ const cli = async (
   } = args;
 
   const silentMode = !!stdout;
-
   args.axeSource = getAxeSource(args.axeSource);
 
   if (!args.axeSource) {
