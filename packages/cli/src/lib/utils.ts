@@ -86,8 +86,18 @@ export const getAxeSource = (axePath?: string) => {
   /* istanbul ignore if */
   if (!fs.existsSync(axePath)) {
     // if all else fails, use the locally installed axe
+    // `__dirname` is /@axe-core/cli/dist/src/lib when installed globally
+    // to access the locally installed axe-core package we need to go up 3 levels
     /* istanbul ignore next */
-    axePath = path.join(__dirname, 'node_modules', 'axe-core', 'axe.js');
+    axePath = path.join(
+      __dirname,
+      '..',
+      '..',
+      '..',
+      'node_modules',
+      'axe-core',
+      'axe.js'
+    );
   }
 
   return fs.readFileSync(axePath, { encoding: 'utf-8' });
