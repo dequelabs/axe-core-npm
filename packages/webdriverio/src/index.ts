@@ -172,6 +172,18 @@ export default class AxeBuilder {
   }
 
   /**
+   * Get axe-core source and configurations
+   * @returns {String}
+   */
+
+  private get script(): string {
+    return `
+      ${this.axeSource}
+      axe.configure({ branding: { application: 'webdriverio' }})
+      `;
+  }
+
+  /**
    * Injects `axe-core` into all frames.
    * @param {Element | null} browsingContext - defaults to null
    * @returns {Promise<void>}
@@ -179,7 +191,7 @@ export default class AxeBuilder {
 
   private async inject(browsingContext: Element | null = null): Promise<void> {
     await this.setBrowsingContext(browsingContext);
-    await this.client.execute(this.axeSource);
+    await this.client.execute(this.script);
 
     const iframes = (await this.client.$$(this.iframeSelector())) || [];
     if (!iframes.length) {
