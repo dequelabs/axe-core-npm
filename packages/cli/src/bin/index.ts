@@ -43,12 +43,12 @@ const cli = async (
 
   const silentMode = !!stdout;
 
-  if (args.axeSource && !fs.existsSync(args.axeSource)) {
+  args.axeSource = getAxeSource(args.axeSource);
+
+  if (!args.axeSource) {
     console.error(error('Unable to find the axe-core source file'));
     process.exit(2);
   }
-
-  args.axeSource = getAxeSource(args.axeSource);
 
   args.browser = parseBrowser(args.browser);
   /* istanbul ignore if */

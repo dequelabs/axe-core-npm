@@ -70,10 +70,10 @@ export const parseBrowser = (browser?: string): string | Error => {
   }
 };
 
-export const getAxeSource = (axePath?: string) => {
-  const resolvedPath = path.resolve(process.cwd(), axePath || '');
-  if (axePath && fs.existsSync(resolvedPath)) {
-    return fs.readFileSync(resolvedPath, 'utf-8');
+export const getAxeSource = (axePath?: string): string | null => {
+  if (axePath) {
+    const resolved = path.resolve(process.cwd(), axePath);
+    return fs.existsSync(resolved) ? fs.readFileSync(resolved, 'utf-8') : null;
   } else {
     return require('axe-core').source;
   }
