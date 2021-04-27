@@ -1,0 +1,2 @@
+# Require that merge commits have security review performed on them.
+review_merges: true
