@@ -184,6 +184,12 @@ describe('@axe-core/webdriverio', () => {
            */
           assert.strictEqual(executeSpy.callCount, 4);
         });
+
+        it('injects into all iframes', async () => {
+          await client.url('http://qateam.dequecloud.com/attest/api/test.html');
+          const results = await new AxeBuilder({ client }).analyze();
+          assert.strictEqual(results.violations.length, 7);
+        });
       });
 
       describe('logOrRethrowError', () => {
