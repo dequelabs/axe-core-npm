@@ -1,5 +1,6 @@
 import 'mocha';
 import { assert } from 'chai';
+import mock = require('mock-fs');
 import * as utils from './utils';
 
 describe('utils', () => {
@@ -71,6 +72,24 @@ describe('utils', () => {
   });
 
   describe('getAxeSource', () => {
+    describe('mock file', () => {
+      beforeEach(() => {
+        mock({
+          '/node_modules/axe-core': {},
+          '../node_modules/axe-core': {
+            'axe.js': 'foobar'
+          }
+        });
+      });
+
+      afterEach(() => {
+        mock.restore();
+      });
+      it('fall back to use `locally` installed axe-core', () => {
+        const axeSource = utils.getAxeSource();
+        assert.isNotNull(axeSource);
+      });
+    });
     it('given no axe source use local source', () => {
       const axeSource = utils.getAxeSource();
       assert.isNotNull(axeSource);
