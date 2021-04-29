@@ -1,7 +1,7 @@
 import 'mocha';
 import { assert } from 'chai';
 import mock = require('mock-fs');
-import * as path from 'path';
+import { dependencies } from '../../package.json';
 import * as utils from './utils';
 
 describe('utils', () => {
@@ -78,9 +78,7 @@ describe('utils', () => {
         mock({
           '/node_modules/axe-core': {},
           '../node_modules/axe-core': {
-            'axe.js': mock.load(
-              path.resolve('src', 'testutils', 'axe-core@2.5.0.js')
-            )
+            'axe.js': mock.load(require.resolve('axe-core'))
           }
         });
       });
@@ -90,7 +88,8 @@ describe('utils', () => {
       });
       it('fall back to use `locally` installed axe-core', () => {
         const axeSource = utils.getAxeSource();
-        assert.include(axeSource, 'aXe v2.5.0');
+        const axeVersionCheck = dependencies['axe-core'].replace('^', '');
+        assert.include(axeSource, axeVersionCheck);
       });
     });
     it('given no axe source use local source', () => {
