@@ -193,8 +193,12 @@ export default class AxeBuilder {
     await this.setBrowsingContext(browsingContext);
     await this.client.execute(this.script);
 
-    const frames = (await this.client.$$(this.frameSelector())) || [];
-    const iframes = frames.concat(await this.client.$$(this.iframeSelector())) || [];
+    const frames =
+      (await this.client.$$(this.frameSelector())) ||
+      /* istanbul ignore next */ [];
+    const iframes =
+      frames.concat(await this.client.$$(this.iframeSelector())) ||
+      /* istanbul ignore next */ [];
     if (!iframes.length) {
       return;
     }
