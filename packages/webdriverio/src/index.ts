@@ -179,6 +179,7 @@ export default class AxeBuilder {
   private get script(): string {
     return `
       ${this.axeSource}
+      axe.configure({ allowedOrigins: ['<unsafe_all_origins>'] })
       axe.configure({ branding: { application: 'webdriverio' }})
       `;
   }
