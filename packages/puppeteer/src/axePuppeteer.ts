@@ -18,9 +18,11 @@ interface IInjectAxeArgs {
 }
 
 function injectJSModule(frame: Frame): Promise<ElementHandle<Element> | void> {
-  return frame.addScriptTag({
-    path: require.resolve('axe-core')
-  });
+  return frame
+    .addScriptTag({
+      path: require.resolve('axe-core')
+    })
+    .then(() => undefined);
 }
 
 function injectJSSource(
