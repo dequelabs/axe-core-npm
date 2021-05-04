@@ -17,7 +17,7 @@ interface IInjectAxeArgs {
   args?: any[];
 }
 
-function injectJSModule(frame: Frame): Promise<void> {
+function injectJSModule(frame: Frame): Promise<ElementHandle<Element> | void> {
   return frame.addScriptTag({
     path: require.resolve('axe-core')
   });
@@ -56,7 +56,7 @@ async function injectJS(
     console.error(`Failed to inject axe-core into frame (${frame.url()})`);
   };
 
-  let injectP: Promise<void>;
+  let injectP: Promise<ElementHandle<Element> | void>;
   if (!source) {
     injectP = injectJSModule(frame);
   } else {
