@@ -17,7 +17,7 @@ interface IInjectAxeArgs {
   args?: any[];
 }
 
-function injectJSModule(frame: Frame): Promise<ElementHandle<Element> | void> {
+function injectJSModule(frame: Frame): Promise<void> {
   return frame.addScriptTag({
     path: require.resolve('axe-core')
   });
@@ -56,7 +56,7 @@ async function injectJS(
     console.error(`Failed to inject axe-core into frame (${frame.url()})`);
   };
 
-  let injectP: Promise<ElementHandle<Element> | void>;
+  let injectP: Promise<void>;
   if (!source) {
     injectP = injectJSModule(frame);
   } else {
@@ -234,7 +234,7 @@ export class AxePuppeteer {
       await ensureFrameReady(this.frame);
 
       await injectJS(this.frame, {
-        source: this.script,
+        source: this.source,
         selector: this.iframeSelector()
       });
 
@@ -270,20 +270,5 @@ export class AxePuppeteer {
       selector += `:not(${disabledFrameSelector})`;
     }
     return selector;
-  }
-
-  /**
-   * Get axe-core source and configurations
-   * @returns {String}
-   */
-
-  private get script(): string {
-    return `
-    ${this.source ? this.source : Axe.source}
-    axe.configure({ 
-      allowedOrigins: ['<unsafe_all_origins>'],
-      branding: { application: 'axe-puppeteer' }
-    })
-        `;
   }
 }
