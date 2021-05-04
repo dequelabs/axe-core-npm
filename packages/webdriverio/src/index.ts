@@ -181,8 +181,8 @@ export default class AxeBuilder {
       ${this.axeSource}
       axe.configure({ 
         allowedOrigins: ['<unsafe_all_origins>'],
-        branding: { application: 'webdriverio' 
-      }})
+        branding: { application: 'webdriverio' }
+      })
       `;
   }
 

@@ -77,8 +77,8 @@ export default class AxeInjector {
     ${this.config ? `axe.configure(${this.config})` : ''}
     axe.configure({ 
       allowedOrigins: ['<unsafe_all_origins>'], 
-      branding: { application: 'webdriverjs' 
-    }})
+      branding: { application: 'webdriverjs' }
+    })
     `;
   }
 
