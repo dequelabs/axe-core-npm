@@ -23,7 +23,7 @@ export function pageIsLoaded(): boolean {
   return document.readyState === 'complete';
 }
 
-export function configureAxe(config?: Axe.Spec) {
+export function configureAxe(config?: Axe.Spec): void {
   if (config) {
     window.axe.configure(config);
   }
