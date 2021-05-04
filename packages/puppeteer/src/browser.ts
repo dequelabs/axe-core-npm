@@ -28,10 +28,8 @@ export function configureAxe(config?: Axe.Spec) {
     window.axe.configure(config);
   }
 
-  const brandingConfig = {
-    branding: {
-      application: 'axe-puppeteer'
-    }
-  };
-  window.axe.configure(brandingConfig);
+  window.axe.configure({
+    allowedOrigins: ['<unsafe_all_origins>'],
+    branding: { application: 'axe-puppeteer' }
+  });
 }

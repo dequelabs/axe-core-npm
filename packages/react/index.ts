@@ -203,6 +203,7 @@ function checkAndReport(node: Node, timeout: number): Promise<void> {
             n = document;
           }
         }
+        axeCore.configure({ allowedOrigins: ['<unsafe_all_origins>'] });
         axeCore.run(n, { reporter: 'v2' }, function (
           error: Error,
           results: axeCore.AxeResults
@@ -366,7 +367,7 @@ function reactAxe(
   if (Object.keys(conf).length > 0) {
     axeCore.configure(conf);
   }
-
+  axeCore.configure({ allowedOrigins: ['<unsafe_all_origins>'] });
   if (!_createElement) {
     _createElement = React.createElement;
 
