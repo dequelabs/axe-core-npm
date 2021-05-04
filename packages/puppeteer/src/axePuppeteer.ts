@@ -234,7 +234,7 @@ export class AxePuppeteer {
       await ensureFrameReady(this.frame);
 
       await injectJS(this.frame, {
-        source: this.source,
+        source: this.script,
         selector: this.iframeSelector()
       });
 
@@ -270,5 +270,20 @@ export class AxePuppeteer {
       selector += `:not(${disabledFrameSelector})`;
     }
     return selector;
+  }
+
+  /**
+   * Get axe-core source and configurations
+   * @returns {String}
+   */
+
+  private get script(): string {
+    return `
+        ${this.source}
+        axe.configure({ 
+          allowedOrigins: ['<unsafe_all_origins>'],
+          branding: { application: 'axe-puppeteer' 
+        }})
+        `;
   }
 }
