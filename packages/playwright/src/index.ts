@@ -158,7 +158,7 @@ export default class AxeBuilder {
     return `
         ${this.source}
         axe.configure({ 
-          allowedOrigins: ['<unsafe_all_origin>'], 
+          allowedOrigins: ['<unsafe_all_origins>'], 
           branding: { application: 'playwright' }
         })
         `;
