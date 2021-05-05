@@ -172,6 +172,21 @@ export default class AxeBuilder {
   }
 
   /**
+   * Get axe-core source and configurations
+   * @returns {String}
+   */
+
+  private get script(): string {
+    return `
+      ${this.axeSource}
+      axe.configure({ 
+        allowedOrigins: ['<unsafe_all_origins>'],
+        branding: { application: 'webdriverio' }
+      })
+      `;
+  }
+
+  /**
    * Injects `axe-core` into all frames.
    * @param {Element | null} browsingContext - defaults to null
    * @returns {Promise<void>}
@@ -179,9 +194,14 @@ export default class AxeBuilder {
 
   private async inject(browsingContext: Element | null = null): Promise<void> {
     await this.setBrowsingContext(browsingContext);
-    await this.client.execute(this.axeSource);
+    await this.client.execute(this.script);
 
-    const iframes = (await this.client.$$(this.iframeSelector())) || [];
+    const frames =
+      (await this.client.$$(this.frameSelector())) ||
+      /* istanbul ignore next */ [];
+    const iframes =
+      frames.concat(await this.client.$$(this.iframeSelector())) ||
+      /* istanbul ignore next */ [];
     if (!iframes.length) {
       return;
     }
@@ -203,7 +223,7 @@ export default class AxeBuilder {
   }
 
   /**
-   * Get a CSS selector for retrieving child frames.
+   * Get a CSS selector for retrieving child iframes.
    * @returns {String}
    */
 
@@ -216,6 +236,19 @@ export default class AxeBuilder {
   }
 
   /**
+   * Get a CSS selector for retrieving child frames.
+   * @returns {String}
+   */
+
+     private frameSelector(): string {
+      let selector = 'frame';
+      for (const disableFrameSelector of this.disableFrameSelectors) {
+        selector += `:not(${disableFrameSelector})`;
+      }
+      return selector;
+    }
+
+  /**
    * Set browsing context - when `null` sets top level page as context
    * - https://webdriver.io/docs/api/webdriver.html#switchtoframe
    * @param {null | Element | BrowserObject} id - defaults to null
@@ -225,6 +258,10 @@ export default class AxeBuilder {
   private async setBrowsingContext(
     id: null | Element | BrowserObject = null
   ): Promise<void> {
-    await this.client.switchToFrame(id);
+    if (id) {
+      await this.client.switchToFrame(id);
+    } else {
+      await this.client.switchToParentFrame();
+    }
   }
 }

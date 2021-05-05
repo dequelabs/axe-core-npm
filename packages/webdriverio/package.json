@@ -14,7 +14,8 @@
     "prebuild": "rimraf dist",
     "build": "tsc-silent -p tsconfig.json --suppress @",
     "test": "mocha --timeout 60000 -r ts-node/register 'src/test.ts'",
-    "coverage": "nyc npm run test"
+    "coverage": "nyc npm run test",
+    "prepare": "npm run build"
   },
   "keywords": [
     "a11y",
@@ -28,7 +29,7 @@
     "webdriverio"
   ],
   "dependencies": {
-    "axe-core": "^4.1.2",
+    "axe-core": "^4.2.0",
     "cssesc": "^3.0.0"
   },
   "devDependencies": {
@@ -43,7 +44,7 @@
     "@types/test-listen": "^1.1.0",
     "@wdio/sync": "^6.11.0",
     "chai": "^4.3.0",
-    "chromedriver": "^88.0.0",
+    "chromedriver": "^90.0.0",
     "delay": "^5.0.0",
     "express": "^4.17.1",
     "is-ci": "^2.0.0",

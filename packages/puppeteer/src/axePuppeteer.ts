@@ -17,10 +17,12 @@ interface IInjectAxeArgs {
   args?: any[];
 }
 
-function injectJSModule(frame: Frame): Promise<void> {
-  return frame.addScriptTag({
-    path: require.resolve('axe-core')
-  });
+function injectJSModule(frame: Frame): Promise<ElementHandle<Element> | void> {
+  return frame
+    .addScriptTag({
+      path: require.resolve('axe-core')
+    })
+    .then(() => undefined);
 }
 
 function injectJSSource(
@@ -56,7 +58,7 @@ async function injectJS(
     console.error(`Failed to inject axe-core into frame (${frame.url()})`);
   };
 
-  let injectP: Promise<void>;
+  let injectP: Promise<ElementHandle<Element> | void>;
   if (!source) {
     injectP = injectJSModule(frame);
   } else {

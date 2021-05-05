@@ -83,6 +83,26 @@ describe('@axe-core/webdriverjs', () => {
   });
 
   describe('configure', () => {
+    it('should find configured violations in all iframes', async () => {
+      await driver.get(`${addr}/outer-configure-iframe.html`);
+      const results = await new AxeBuilder(driver)
+        .options({
+          rules: {
+            'landmark-one-main': { enabled: false },
+            'page-has-heading-one': { enabled: false },
+            region: { enabled: false },
+            'html-lang-valid': { enabled: false },
+            bypass: { enabled: false }
+          }
+        })
+        .configure(json)
+        .analyze();
+
+      assert.equal(results.violations[0].id, 'dylang');
+      // the second violation is in a iframe
+      assert.equal(results.violations[0].nodes.length, 2);
+    });
+
     it('should find configured violations in all frames', async () => {
       await driver.get(`${addr}/outer-configure-frame.html`);
       const results = await new AxeBuilder(driver)
@@ -135,6 +155,22 @@ describe('@axe-core/webdriverjs', () => {
   });
 
   describe('iframe tests', () => {
+    it('injects into nested iframes', async () => {
+      await driver.get(`${addr}/nested-iframes.html`);
+      const executeSpy = sinon.spy(driver, 'executeScript');
+      await new AxeBuilder(driver).analyze();
+      /**
+       * Ensure we called execute 4 times
+       * 1. nested-iframes.html
+       * 2. iframes/foo.html
+       * 3. iframes/bar.html
+       * 4. iframes/baz.html
+       */
+      assert.strictEqual(executeSpy.callCount, 4);
+    });
+  });
+
+  describe('frame tests', () => {
     it('injects into nested frames', async () => {
       await driver.get(`${addr}/nested-frames.html`);
       const executeSpy = sinon.spy(driver, 'executeScript');
@@ -142,9 +178,9 @@ describe('@axe-core/webdriverjs', () => {
       /**
        * Ensure we called execute 4 times
        * 1. nested-frames.html
-       * 2. foo.html
-       * 3. bar.html
-       * 4. baz.html
+       * 2. frames/foo.html
+       * 3. frames/bar.html
+       * 4. frames/baz.html
        */
       assert.strictEqual(executeSpy.callCount, 4);
     });

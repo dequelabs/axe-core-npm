@@ -222,6 +222,7 @@ describe('cli', () => {
     it('should log the time it takes to run', async () => {
       const result = await runCLI(`file://${SIMPLE_HTML_FILE}`, '--timer');
       assert.equal(result.exitCode, 0);
+      assert.isEmpty(result.stderr);
       assert.include(result.stdout, 'axe-core execution time');
       assert.include(result.stdout, 'Total test time');
     });

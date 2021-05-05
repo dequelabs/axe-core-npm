@@ -23,15 +23,13 @@ export function pageIsLoaded(): boolean {
   return document.readyState === 'complete';
 }
 
-export function configureAxe(config?: Axe.Spec) {
+export function configureAxe(config?: Axe.Spec): void {
   if (config) {
     window.axe.configure(config);
   }
 
-  const brandingConfig = {
-    branding: {
-      application: 'axe-puppeteer'
-    }
-  };
-  window.axe.configure(brandingConfig);
+  window.axe.configure({
+    allowedOrigins: ['<unsafe_all_origins>'],
+    branding: { application: 'axe-puppeteer' }
+  });
 }

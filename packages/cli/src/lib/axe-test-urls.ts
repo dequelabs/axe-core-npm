@@ -23,7 +23,7 @@ const testPages = async (
     }
 
     if (config.timer) {
-      events?.startTimer('page load time');
+      events?.startTimer('axe page load time');
     }
 
     driver
@@ -46,7 +46,7 @@ const testPages = async (
       })
       .then(() => {
         if (config.timer) {
-          events?.startTimer('page load time');
+          events?.endTimer('axe page load time');
         }
 
         if (config.loadDelay) {
