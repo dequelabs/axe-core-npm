@@ -47,8 +47,6 @@ export const analyzePage = ({
 }: AnalyzePageParams): Promise<AnalyzePageResponse> => {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const axeCore = (window as any).axe;
-  // Add playwright branding
-  axeCore.configure({ branding: { application: 'playwright' } });
 
   // Run axe-core
   return axeCore

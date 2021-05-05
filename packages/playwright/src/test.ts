@@ -170,6 +170,22 @@ describe('@axe-core/playwright', () => {
     });
   });
 
+  describe('iframe tests', () => {
+    it('injects into nested frames', async () => {
+      await page.goto(`${addr}/nested-frames.html`);
+      const results = await new AxeBuilder({ page }).analyze();
+      assert.strictEqual(results.incomplete.length, 0);
+    });
+
+    it('injects into all iframes', async () => {
+      await page.goto(`${addr}/nested-frames.html`);
+      const results = await new AxeBuilder({ page }).analyze();
+
+      assert.strictEqual(results.violations.length, 5);
+      assert.strictEqual(results.violations[0].id, 'dlitem');
+    });
+  });
+
   describe('include/exclude', () => {
     it('with include and exclude', async () => {
       let error: Error | null = null;

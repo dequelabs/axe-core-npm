@@ -1,4 +1,4 @@
-import type { Page } from 'playwright';
+import type { Page, Frame } from 'playwright';
 import type { RunOptions, AxeResults } from 'axe-core';
 import { source } from 'axe-core';
 import { normalizeContext, analyzePage } from './utils';
@@ -117,8 +117,9 @@ export default class AxeBuilder {
     const context = normalizeContext(this.includes, this.excludes);
     const page = this.page;
     const options = this.option;
-    await page.$$eval('iframe', this.source);
-    await page.evaluate(this.source);
+    await page.evaluate(this.script());
+    const frames = page.frames();
+    await this.inject(frames);
     const { results, error } = await page.evaluate(analyzePage, {
       context,
       options
@@ -129,5 +130,37 @@ export default class AxeBuilder {
     }
 
     return results as AxeResults;
+  }
+
+  /**
+   * Injects `axe-core` into all frames.
+   * @param Page - playwright page object
+   * @returns Promise<void>
+   */
+
+  private async inject(frames: Frame[]): Promise<void> {
+    for (const iframe of frames) {
+      await iframe.evaluate(this.script());
+      const childFrames = iframe.childFrames();
+      for (const childFrame of childFrames) {
+        frames.push(childFrame);
+        await this.inject(childFrame.childFrames());
+      }
+    }
+  }
+
+  /**
+   * Get axe-core source and configurations
+   * @returns String
+   */
+
+  private script(): string {
+    return `
+        ${this.source}
+        axe.configure({ 
+          allowedOrigins: ['<unsafe_all_origin>'], 
+          branding: { application: 'playwright' }
+        })
+        `;
   }
 }
