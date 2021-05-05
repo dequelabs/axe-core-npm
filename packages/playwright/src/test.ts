@@ -1,6 +1,7 @@
 import 'mocha';
 import * as playwright from 'playwright';
 import * as express from 'express';
+import type { AxeResults } from 'axe-core';
 import testListen = require('test-listen');
 import { assert } from 'chai';
 import * as path from 'path';
@@ -13,19 +14,27 @@ describe('@axe-core/playwright', () => {
   let page: playwright.Page;
   let browser: playwright.ChromiumBrowser;
 
-  beforeEach(async () => {
+  before(async () => {
     const app = express();
     app.use(express.static(path.resolve(__dirname, '..', 'fixtures')));
     server = createServer(app);
     addr = await testListen(server);
-    browser = await playwright.chromium.launch();
+  });
+
+  after(async () => {
+    server.close();
+  });
+
+  beforeEach(async () => {
+    browser = await playwright.chromium.launch({
+      args: ['--disable-dev-shm-usage']
+    });
     const context = await browser.newContext();
     page = await context.newPage();
   });
 
   afterEach(async () => {
     await browser.close();
-    server.close();
   });
 
   describe('analyze', () => {
@@ -187,48 +196,44 @@ describe('@axe-core/playwright', () => {
   });
 
   describe('include/exclude', () => {
+    const flatPassesTargets = (results: AxeResults): string[] => {
+      return results.passes
+        .reduce((acc, pass) => {
+          return acc.concat(pass.nodes as any);
+        }, [])
+        .reduce((acc, node: any) => {
+          return acc.concat(node.target);
+        }, []);
+    };
     it('with include and exclude', async () => {
-      let error: Error | null = null;
       await page.goto(`${addr}/context.html`);
-      const builder = new AxeBuilder({ page })
+      const results = await new AxeBuilder({ page })
         .include('.include')
-        .exclude('.exclude');
+        .exclude('.exclude')
+        .analyze();
+      const flattenTarget = flatPassesTargets(results);
 
-      try {
-        await builder.analyze();
-      } catch (e) {
-        error = e;
-      }
-
-      assert.strictEqual(error, null);
+      assert.strictEqual(flattenTarget[0], '.include');
+      assert.notInclude(flattenTarget, '.exclude');
     });
 
     it('with only include', async () => {
-      let error: Error | null = null;
       await page.goto(`${addr}/context.html`);
-      const builder = new AxeBuilder({ page }).include('.include');
-
-      try {
-        await builder.analyze();
-      } catch (e) {
-        error = e;
-      }
-
-      assert.strictEqual(error, null);
+      const results = await new AxeBuilder({ page })
+        .include('.include')
+        .analyze();
+      const flattenTarget = flatPassesTargets(results);
+      assert.strictEqual(flattenTarget[0], '.include');
     });
 
-    it('wth only exclude', async () => {
-      let error: Error | null = null;
+    it('with only exclude', async () => {
       await page.goto(`${addr}/context.html`);
-      const builder = new AxeBuilder({ page }).exclude('.exclude');
+      const results = await new AxeBuilder({ page })
+        .exclude('.exclude')
+        .analyze();
+      const flattenTarget = flatPassesTargets(results);
 
-      try {
-        await builder.analyze();
-      } catch (e) {
-        error = e;
-      }
-
-      assert.strictEqual(error, null);
+      assert.notInclude(flattenTarget, '.exclude');
     });
   });
 });
