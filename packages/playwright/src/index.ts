@@ -21,8 +21,8 @@ export default class AxeBuilder {
   /**
    * Selector to include in analysis.
    * This may be called any number of times.
-   * @param {String} selector
-   * @returns {AxeBuilder}
+   * @param String selector
+   * @returns AxeBuilder
    */
 
   public include(selector: string): AxeBuilder {
@@ -33,8 +33,8 @@ export default class AxeBuilder {
   /**
    * Selector to exclude in analysis.
    * This may be called any number of times.
-   * @param {String} selector
-   * @returns {AxeBuilder}
+   * @param String selector
+   * @returns AxeBuilder
    */
 
   public exclude(selector: string): AxeBuilder {
@@ -44,8 +44,8 @@ export default class AxeBuilder {
 
   /**
    * Set options to be passed into axe-core
-   * @param {RunOptions} options
-   * @returns {AxeBuilder}
+   * @param RunOptions options
+   * @returns AxeBuilder
    */
 
   public options(options: RunOptions): AxeBuilder {
@@ -56,8 +56,8 @@ export default class AxeBuilder {
   /**
    * Limit analysis to only the specified rules.
    * Cannot be used with `AxeBuilder#withTags`
-   * @param {String|Array} rules
-   * @returns {AxeBuilder}
+   * @param String|Array rules
+   * @returns AxeBuilder
    */
 
   public withRules(rules: string | string[]): AxeBuilder {
@@ -75,8 +75,8 @@ export default class AxeBuilder {
   /**
    * Limit analysis to only specified tags.
    * Cannot be used with `AxeBuilder#withRules`
-   * @param {String|Array} tags
-   * @returns {AxeBuilder}
+   * @param String|Array tags
+   * @returns AxeBuilder
    */
 
   public withTags(tags: string | string[]): AxeBuilder {
@@ -92,8 +92,8 @@ export default class AxeBuilder {
 
   /**
    * Set the list of rules to skip when running an analysis.
-   * @param {String|Array} rules
-   * @returns {AxeBuilder}
+   * @param String|Array rules
+   * @returns AxeBuilder
    */
 
   public disableRules(rules: string | string[]): AxeBuilder {
@@ -110,7 +110,7 @@ export default class AxeBuilder {
 
   /**
    * Perform analysis and retrieve results. *Does not chain.*
-   * @return {Promise<Result | Error>}
+   * @return Promise<Result | Error>
    */
 
   public async analyze(): Promise<AxeResults> {

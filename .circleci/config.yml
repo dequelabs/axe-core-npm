@@ -123,14 +123,6 @@ jobs:
       - run: npx lerna run prepare
       - run: npm run coverage --prefix=packages/cli
 
-  playwright:
-    <<: *defaults
-    steps:
-      - checkout
-      - restore_dependency_cache
-      - run: npm run build --prefix=packages/playwright
-      - run: npm run coverage --prefix=packages/playwright
-
   puppeteer:
     <<: *defaults
     steps:
@@ -168,6 +160,20 @@ jobs:
       - run: npm install cypress --prefix=packages/react
       - run: npm run build --prefix=packages/react
       - run: npm run test --prefix=packages/react
+
+  playwright:
+    docker:
+      - image: mcr.microsoft.com/playwright:bionic
+    environment:
+      NODE_ENV: development
+    working_directory: ~/axe-core-npm
+    steps:
+      - checkout
+      - restore_dependency_cache
+      - run: npm install
+      - run: npm run bootstrap -- --ci
+      - run: npm run build --prefix=packages/playwright
+      - run: npm run coverage --prefix=packages/playwright
 
   axe-core-test:
     <<: *defaults

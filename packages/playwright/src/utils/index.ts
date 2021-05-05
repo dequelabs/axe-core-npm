@@ -7,9 +7,9 @@ import type {
 
 /**
  * Get running context
- * @param {Array} include
- * @param {Array} exclude
- * @returns {(NormalizeContextResponse | null)}
+ * @param Array include
+ * @param Array exclude
+ * @returns (NormalizeContextResponse | null)
  */
 
 export const normalizeContext = (
@@ -37,8 +37,8 @@ export const normalizeContext = (
 
 /**
  * Analyze the page.
- * @param {AnalyzePageParams} analyzeContext
- * @returns {Promise<AnalyzePageResponse>}
+ * @param AnalyzePageParams analyzeContext
+ * @returns Promise<AnalyzePageResponse>
  */
 
 export const analyzePage = ({
