@@ -196,7 +196,12 @@ export default class AxeBuilder {
     await this.setBrowsingContext(browsingContext);
     await this.client.execute(this.script);
 
-    const iframes = (await this.client.$$(this.iframeSelector())) || [];
+    const frames =
+      (await this.client.$$(this.frameSelector())) ||
+      /* istanbul ignore next */ [];
+    const iframes =
+      frames.concat(await this.client.$$(this.iframeSelector())) ||
+      /* istanbul ignore next */ [];
     if (!iframes.length) {
       return;
     }
@@ -218,7 +223,7 @@ export default class AxeBuilder {
   }
 
   /**
-   * Get a CSS selector for retrieving child frames.
+   * Get a CSS selector for retrieving child iframes.
    * @returns {String}
    */
 
@@ -229,6 +234,19 @@ export default class AxeBuilder {
     }
     return selector;
   }
+
+  /**
+   * Get a CSS selector for retrieving child frames.
+   * @returns {String}
+   */
+
+     private frameSelector(): string {
+      let selector = 'frame';
+      for (const disableFrameSelector of this.disableFrameSelectors) {
+        selector += `:not(${disableFrameSelector})`;
+      }
+      return selector;
+    }
 
   /**
    * Set browsing context - when `null` sets top level page as context

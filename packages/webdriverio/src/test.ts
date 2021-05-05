@@ -120,6 +120,26 @@ describe('@axe-core/webdriverio', () => {
         });
       });
 
+      describe('disableIframe', () => {
+        it('does not inject into disabled iframes', async () => {
+          await client.url(`${addr}/recursive-iframes.html`);
+          const executeSpy = sinon.spy(client, 'execute');
+          await new AxeBuilder({ client })
+            .disableFrame('[src*="recursive.html"]')
+            .analyze();
+          assert.strictEqual(executeSpy.callCount, 2);
+        });
+
+        it('does not error when disabled iframe does not exist', async () => {
+          await client.url(`${addr}/recursive-iframes.html`);
+          const executeSpy = sinon.spy(client, 'execute');
+          await new AxeBuilder({ client })
+            .disableFrame('[src*="does-not-exist.html"]')
+            .analyze();
+          assert.strictEqual(executeSpy.callCount, 5);
+        });
+      });
+
       describe('disableFrame', () => {
         it('does not inject into disabled frames', async () => {
           await client.url(`${addr}/recursive-frames.html`);
@@ -171,16 +191,16 @@ describe('@axe-core/webdriverio', () => {
       });
 
       describe('iframe tests', () => {
-        it('injects into nested frames', async () => {
-          await client.url(`${addr}/nested-frames.html`);
+        it('injects into nested iframes', async () => {
+          await client.url(`${addr}/nested-iframes.html`);
           const executeSpy = sinon.spy(client, 'execute');
           await new AxeBuilder({ client }).analyze();
           /**
            * Ensure we called execute 4 times
-           * 1. nested-frames.html
-           * 2. foo.html
-           * 3. bar.html
-           * 4. baz.html
+           * 1. nested-iframes.html
+           * 2. iframes/foo.html
+           * 3. iframes/bar.html
+           * 4. iframes/baz.html
            */
           assert.strictEqual(executeSpy.callCount, 4);
         });
@@ -189,6 +209,22 @@ describe('@axe-core/webdriverio', () => {
           await client.url('http://qateam.dequecloud.com/attest/api/test.html');
           const results = await new AxeBuilder({ client }).analyze();
           assert.strictEqual(results.violations.length, 7);
+        });
+      });
+
+      describe('frame tests', () => {
+        it('injects into nested frames', async () => {
+          await client.url(`${addr}/nested-frames.html`);
+          const executeSpy = sinon.spy(client, 'execute');
+          await new AxeBuilder({ client }).analyze();
+          /**
+           * Ensure we called execute 4 times
+           * 1. nested-frames.html
+           * 2. frames/foo.html
+           * 3. frames/bar.html
+           * 4. frames/baz.html
+           */
+          assert.strictEqual(executeSpy.callCount, 4);
         });
       });
 
