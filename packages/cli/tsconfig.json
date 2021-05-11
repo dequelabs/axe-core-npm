@@ -1,0 +1,15 @@
+{
+  "compilerOptions": {
+    "types": ["node"],
+    "outDir": "./dist/",
+    "sourceMap": true,
+    "noImplicitAny": true,
+    "strictNullChecks": true,
+    "module": "commonjs",
+    "target": "es2015",
+    "resolveJsonModule": true,
+    "allowJs": true,
+    "lib": ["dom", "es2015", "esnext.asynciterable"]
+  },
+  "include": ["./src/lib", "./src/bin"]
+}

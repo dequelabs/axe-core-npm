@@ -17,15 +17,6 @@ commands:
       - restore_cache:
           keys:
             - v2-npm-cache-{{ .Environment.CIRCLE_SHA1 }}
-  
-  verify_axe_core_react:
-    description: 'Verify that @axe-core/react has all requires files'
-    steps:
-      - run: 
-          name: Run verify release script
-          command: |
-            cd ~/axe-core-npm/packages/react
-            bash verify-release.sh post
 
 jobs:
   dependencies:
@@ -122,7 +113,7 @@ jobs:
       - restore_dependency_cache
       # Re-build packages, ensuring packages/webdriverjs/dist exists.
       - run: npx lerna run prepare
-      - run: npm run test --prefix=packages/cli
+      - run: npm run coverage --prefix=packages/cli
 
   puppeteer:
     <<: *defaults
@@ -137,14 +128,14 @@ jobs:
     steps:
       - checkout
       - restore_dependency_cache
-      - run: npm run test --prefix=packages/webdriverjs
+      - run: npm run coverage --prefix=packages/webdriverjs
 
   webdriverio:
     <<: *defaults
     steps:
       - checkout
       - restore_dependency_cache
-      - run: npm run test --prefix=packages/webdriverio
+      - run: npm run coverage --prefix=packages/webdriverio
 
   reporter-earl:
     <<: *defaults
@@ -187,8 +178,6 @@ jobs:
               --exact \
               --force-publish \
               --yes
-      # Verify that @axe-core/react has all requires files
-      - verify_axe_core_react
 
   production_release:
     <<: *defaults
@@ -202,8 +191,6 @@ jobs:
           npx lerna publish from-package \
             --force-publish='*' \
             --yes
-      # Verify that @axe-core/react has all requires files
-      - verify_axe_core_react
 
 workflows:
   version: 2
