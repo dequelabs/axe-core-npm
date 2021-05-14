@@ -3,6 +3,21 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [4.2.0](https://github.com/dequelabs/axe-core-npm/compare/v4.1.1...v4.2.0) (2021-05-05)
+
+### Bug Fixes
+
+- **cli:** add `endTimer()` for page load timer ([#236](https://github.com/dequelabs/axe-core-npm/issues/236)) ([e0a19a3](https://github.com/dequelabs/axe-core-npm/commit/e0a19a3bad9b9965df9b98f391efb3403ab737ae))
+- **cli:** find axe-core when installed globally ([#232](https://github.com/dequelabs/axe-core-npm/issues/232)) ([75c273d](https://github.com/dequelabs/axe-core-npm/commit/75c273d6b8b4dcec1f953605a5bf4c9b818436cb))
+- **webdriverio:** inject axe-core branding into all iframes ([#231](https://github.com/dequelabs/axe-core-npm/issues/231)) ([3f41c27](https://github.com/dequelabs/axe-core-npm/commit/3f41c2709114b894976bcdf03ca2b3d7f824fcae))
+- **webdriverio:** Recursively find <frame> ([#238](https://github.com/dequelabs/axe-core-npm/issues/238)) ([7e6a80d](https://github.com/dequelabs/axe-core-npm/commit/7e6a80d856118cceae598de5f91592d6e6c4dc39))
+- **webdriverjs:** Recursively find <frame> ([#209](https://github.com/dequelabs/axe-core-npm/issues/209)) ([0d20e1f](https://github.com/dequelabs/axe-core-npm/commit/0d20e1f3238ca70ccb528867fb1456487c02d0df))
+
+### Features
+
+- **puppeteer:** support puppeteer v9 ([#242](https://github.com/dequelabs/axe-core-npm/issues/242)) ([753a919](https://github.com/dequelabs/axe-core-npm/commit/753a91957c5008908e8b09421e01687bdb445967))
+- update axe-core to 4.2.0 ([#240](https://github.com/dequelabs/axe-core-npm/issues/240)) ([4e8f7fe](https://github.com/dequelabs/axe-core-npm/commit/4e8f7fee9db09fb56f91ea34f9984be66a29033e))
+
 ## [4.1.1](http://dequelabs/axe-core-npm/compare/v4.0.0...v4.1.1) (2021-01-28)
 
 ### Bug Fixes
