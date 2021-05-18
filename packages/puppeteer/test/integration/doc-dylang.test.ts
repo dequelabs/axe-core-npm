@@ -27,7 +27,7 @@ describe('doc-dylang.html', function () {
   before(async function () {
     // const app: express.Application = express()
     const app: express.Application = express();
-    app.use(express.static(path.resolve(__dirname,  '..', 'fixtures')));
+    app.use(express.static(path.resolve(__dirname, '..', 'fixtures')));
     this.server = createServer(app);
     this.addr = await testListen(this.server);
 
@@ -63,20 +63,36 @@ describe('doc-dylang.html', function () {
     expect(results.passes).to.have.lengthOf(0);
   });
 
-
-  it('configures in nested frames', async function() {
-    await this.page.goto(this.fixtureFileURL('nested-frames.html'))
+  it('configures in nested frames', async function () {
+    await this.page.goto(this.fixtureFileURL('nested-frames.html'));
 
     const results = await new AxePuppeteer(this.page)
       .configure(await customConfig())
       .withRules(['dylang'])
-      .analyze()
+      .analyze();
 
-    expect(results.violations.find((r: Axe.Result) => r.id === 'dylang'))
-      .to.not.be.undefined
+    expect(results.violations.find((r: Axe.Result) => r.id === 'dylang')).to.not
+      .be.undefined;
     expect(results.violations.find((r: Axe.Result) => r.id === 'dylang'))
       .to.have.property('nodes')
-      .and.to.have.lengthOf(4)
-  })
+      .and.to.have.lengthOf(4);
+  });
 
+  it('omits results from iframes forbidden by allowedOrigins', async function () {
+    await this.page.goto(this.fixtureFileURL('nested-frames.html'));
+
+    const config = await customConfig();
+    config.allowedOrigins = ['http://not-our-iframe.example.com'];
+
+    const results = await new AxePuppeteer(this.page)
+      .configure(config)
+      .withRules(['dylang'])
+      .analyze();
+
+    expect(results.violations.find((r: Axe.Result) => r.id === 'dylang')).to.not
+      .be.undefined;
+    expect(results.violations.find((r: Axe.Result) => r.id === 'dylang'))
+      .to.have.property('nodes')
+      .and.to.have.lengthOf(1); // omitting the 3 in disallowed iframe origins
+  });
 });

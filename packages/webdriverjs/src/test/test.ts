@@ -103,6 +103,31 @@ describe('@axe-core/webdriverjs', () => {
       assert.equal(results.violations[0].nodes.length, 2);
     });
 
+    it('should not find violations in iframes prohibited by allowedOrigins', async () => {
+      const config = {
+        ...json,
+        allowedOrigins: ['http://not-our-iframe.example.com']
+      };
+
+      await driver.get(`${addr}/outer-configure-iframe.html`);
+      const results = await new AxeBuilder(driver)
+        .options({
+          rules: {
+            'landmark-one-main': { enabled: false },
+            'page-has-heading-one': { enabled: false },
+            region: { enabled: false },
+            'html-lang-valid': { enabled: false },
+            bypass: { enabled: false }
+          }
+        })
+        .configure(config)
+        .analyze();
+
+      assert.equal(results.violations[0].id, 'dylang');
+      // There is a second violation in a iframe which we should miss
+      assert.equal(results.violations[0].nodes.length, 1);
+    });
+
     it('should find configured violations in all frames', async () => {
       await driver.get(`${addr}/outer-configure-frame.html`);
       const results = await new AxeBuilder(driver)

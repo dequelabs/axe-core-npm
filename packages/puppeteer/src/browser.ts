@@ -24,12 +24,15 @@ export function pageIsLoaded(): boolean {
 }
 
 export function configureAxe(config?: Axe.Spec): void {
+  window.axe.configure({
+    allowedOrigins: ['<unsafe_all_origins>']
+  });
+
   if (config) {
     window.axe.configure(config);
   }
 
   window.axe.configure({
-    allowedOrigins: ['<unsafe_all_origins>'],
     branding: { application: 'axe-puppeteer' }
   });
 }

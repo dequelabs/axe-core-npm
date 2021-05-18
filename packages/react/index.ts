@@ -364,10 +364,11 @@ function reactAxe(
     conf['disableOtherRules'] = true;
   }
 
+  axeCore.configure({ allowedOrigins: ['<unsafe_all_origins>'] });
   if (Object.keys(conf).length > 0) {
     axeCore.configure(conf);
   }
-  axeCore.configure({ allowedOrigins: ['<unsafe_all_origins>'] });
+
   if (!_createElement) {
     _createElement = React.createElement;
 
