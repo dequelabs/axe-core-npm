@@ -183,7 +183,8 @@ describe('@axe-core/playwright', () => {
     it('injects into nested frames', async () => {
       await page.goto(`${addr}/nested-frames.html`);
       const results = await new AxeBuilder({ page }).analyze();
-      assert.strictEqual(results.incomplete.length, 0);
+      const filterPasses = results.passes.filter(x => x.id === 'frame-tested');
+      assert.strictEqual(filterPasses.length, 1);
     });
 
     it('injects into all iframes', async () => {
