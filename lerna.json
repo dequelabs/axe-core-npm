@@ -1,4 +1,4 @@
 {
   "packages": ["packages/*", "packages/react/examples/*", "axe_core_test"],
-  "version": "4.1.1"
+  "version": "4.2.0"
 }
