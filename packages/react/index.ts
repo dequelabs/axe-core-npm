@@ -41,7 +41,7 @@ let context: axeCore.ElementContext | undefined;
 let _createElement: typeof React.createElement;
 const components: { [id: number]: React.Component } = {};
 const nodes: Node[] = [document.documentElement];
-const cache: { [key: string]: string } = {};
+let cache: { [key: string]: string } = {};
 
 // Returns a function, that, as long as it continues to be invoked, will not
 // be triggered. The function will be called after it stops being called for
@@ -355,6 +355,7 @@ function reactAxe(
   ReactDOM = _ReactDOM;
   timeout = _timeout;
   context = _context;
+  cache = {};
 
   const runOnly = conf['runOnly'];
   if (runOnly) {
