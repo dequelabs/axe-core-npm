@@ -41,7 +41,8 @@ const testPages = async (
         return driver.wait(
           WebDriver.until.elementsLocated(
             WebDriver.By.css('.deque-axe-is-ready')
-          )
+          ),
+          10000
         );
       })
       .then(() => {
