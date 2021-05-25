@@ -38,6 +38,7 @@ const defaultReset = `font-color:${theme.text};font-weight:normal;`;
 let idleId: number | undefined;
 let timeout: number;
 let context: axeCore.ElementContext | undefined;
+let conf: ReactSpec;
 let _createElement: typeof React.createElement;
 const components: { [id: number]: React.Component } = {};
 const nodes: Node[] = [document.documentElement];
@@ -185,11 +186,9 @@ function failureSummary(
  * @param {Number} timeout force call of axe.run after the timeout has passed (if not called before)
  * @return {Promise}
  */
-function checkAndReport(
-  node: Node,
-  timeout: number,
-  disableCache: boolean
-): Promise<void> {
+function checkAndReport(node: Node, timeout: number): Promise<void> {
+  const disableCache = conf['disableCache'];
+
   if (idleId) {
     cancelIdleCallback(idleId);
     idleId = undefined;
@@ -353,15 +352,15 @@ function reactAxe(
   _React: typeof React,
   _ReactDOM: typeof ReactDOM,
   _timeout: number,
-  conf = {} as ReactSpec,
+  _conf = {} as ReactSpec,
   _context?: axeCore.ElementContext
 ): Promise<void> {
   React = _React;
   ReactDOM = _ReactDOM;
   timeout = _timeout;
   context = _context;
+  conf = _conf;
 
-  const disableCache = conf['disableCache'];
   const runOnly = conf['runOnly'];
   if (runOnly) {
     conf['rules'] = axeCore
@@ -390,7 +389,7 @@ function reactAxe(
     };
   }
 
-  return checkAndReport(document.body, timeout, disableCache);
+  return checkAndReport(document.body, timeout);
 }
 
 export = reactAxe;
