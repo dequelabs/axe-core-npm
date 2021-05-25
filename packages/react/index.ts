@@ -41,7 +41,7 @@ let context: axeCore.ElementContext | undefined;
 let _createElement: typeof React.createElement;
 const components: { [id: number]: React.Component } = {};
 const nodes: Node[] = [document.documentElement];
-let cache: { [key: string]: string } = {};
+const cache: { [key: string]: string } = {};
 
 // Returns a function, that, as long as it continues to be invoked, will not
 // be triggered. The function will be called after it stops being called for
@@ -185,7 +185,11 @@ function failureSummary(
  * @param {Number} timeout force call of axe.run after the timeout has passed (if not called before)
  * @return {Promise}
  */
-function checkAndReport(node: Node, timeout: number): Promise<void> {
+function checkAndReport(
+  node: Node,
+  timeout: number,
+  disableCache: boolean
+): Promise<void> {
   if (idleId) {
     cancelIdleCallback(idleId);
     idleId = undefined;
@@ -217,7 +221,7 @@ function checkAndReport(node: Node, timeout: number): Promise<void> {
               const key: string = node.target.toString() + result.id;
               const retVal = !cache[key];
               cache[key] = key;
-              return retVal;
+              return disableCache || retVal;
             });
             return !!result.nodes.length;
           });
@@ -334,6 +338,7 @@ function addComponent(component: any): void {
  */
 interface ReactSpec extends axeCore.Spec {
   runOnly?: string[];
+  disableCache?: boolean;
 }
 
 /**
@@ -355,8 +360,8 @@ function reactAxe(
   ReactDOM = _ReactDOM;
   timeout = _timeout;
   context = _context;
-  cache = {};
 
+  const disableCache = conf['disableCache'];
   const runOnly = conf['runOnly'];
   if (runOnly) {
     conf['rules'] = axeCore
@@ -385,7 +390,7 @@ function reactAxe(
     };
   }
 
-  return checkAndReport(document.body, timeout);
+  return checkAndReport(document.body, timeout, disableCache);
 }
 
 export = reactAxe;
