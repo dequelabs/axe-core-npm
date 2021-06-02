@@ -9,3 +9,4 @@ exclude:
   - packages/cli/testutils/**/*
   - packages/webdriverio/fixtures/**
   - packages/webdriverjs/src/test/fixtures/**
+  - packages/playwright/fixtures/**

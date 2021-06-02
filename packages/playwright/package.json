@@ -1,0 +1,61 @@
+{
+  "name": "@axe-core/playwright",
+  "version": "4.1.1",
+  "description": "Provides a method to inject and analyze web pages using axe",
+  "contributors": [
+    {
+      "name": "Michael Siek (me@michaelsiek.com)"
+    }
+  ],
+  "license": "MPL-2.0",
+  "main": "dist/index.js",
+  "typings": "dist/index.d.ts",
+  "scripts": {
+    "prebuild": "rimraf dist",
+    "build": "tsc",
+    "test": "mocha --timeout 60000 -r ts-node/register 'src/test.ts'",
+    "coverage": "nyc npm run test",
+    "prepare": "npm run build"
+  },
+  "dependencies": {
+    "axe-core": "^4.2.0",
+    "playwright": "^1.8.0"
+  },
+  "devDependencies": {
+    "@types/chai": "^4.2.15",
+    "@types/express": "^4.17.11",
+    "@types/mocha": "^8.2.1",
+    "@types/node": "^14.14.31",
+    "@types/test-listen": "^1.1.0",
+    "chai": "^4.3.0",
+    "express": "^4.17.1",
+    "mocha": "^8.3.0",
+    "nyc": "^15.1.0",
+    "rimraf": "^3.0.2",
+    "test-listen": "^1.1.0",
+    "ts-node": "^9.1.1",
+    "typescript": "^4.2.4"
+  },
+  "peerDependencies": {
+    "playwright": ">= 1.0.0"
+  },
+  "nyc": {
+    "include": [
+      "src/index.ts"
+    ],
+    "extension": [
+      ".ts"
+    ],
+    "reporter": [
+      "text-summary",
+      "html"
+    ],
+    "sourceMap": true,
+    "instrument": true,
+    "checkCoverage": true,
+    "statements": 100,
+    "branches": 100,
+    "functions": 100,
+    "lines": 100
+  }
+}
