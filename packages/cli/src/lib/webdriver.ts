@@ -8,23 +8,23 @@ const startDriver = async (
 ): Promise<WebDriver> => {
   const scriptTimeout = (config.timeout || 20) * 1000.0;
   let builder: Builder;
-  const args: chrome.Options[] = [];
   /* istanbul ignore else */
   if (config.browser === 'chrome-headless') {
     const service = new chrome.ServiceBuilder(
       config.chromedriverPath || chromedriver.path
     ).build();
     chrome.setDefaultService(service);
+
+    let options = new chrome.Options().headless();
     if (config.chromeOptions?.length) {
-      args.push(...config.chromeOptions);
+      options = config.chromeOptions.reduce(function(options, arg) {
+        return options.addArguments(arg);
+      }, options );
     }
 
-    const chromeCapabilities = Capabilities.chrome();
-    chromeCapabilities.set('chromeOptions', { args });
     builder = new Builder()
       .forBrowser('chrome')
-      .withCapabilities(chromeCapabilities)
-      .setChromeOptions(new chrome.Options().headless());
+      .setChromeOptions(options);
   } else {
     builder = new Builder().forBrowser(config.browser);
   }
