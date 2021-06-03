@@ -22,7 +22,7 @@ export interface WebdriverConfigParams {
   timeout?: number;
   chromedriverPath?: string;
   path?: string;
-  chromeOptions?: Options[];
+  chromeOptions?: string[];
   builder?: Builder;
 }
 
