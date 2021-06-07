@@ -29,7 +29,7 @@
     "webdriverio"
   ],
   "dependencies": {
-    "axe-core": "^4.2.1",
+    "axe-core": "^4.2.2",
     "cssesc": "^3.0.0"
   },
   "devDependencies": {
