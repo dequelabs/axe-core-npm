@@ -3,6 +3,23 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [4.2.1](https://github.com/dequelabs/axe-core-npm/compare/v4.2.0...v4.2.1) (2021-05-19)
+
+### Bug Fixes
+
+- update axe-core to 4.2.1 ([#254](https://github.com/dequelabs/axe-core-npm/issues/254)) ([9d90185](https://github.com/dequelabs/axe-core-npm/commit/9d9018525a4d799f6d763d0329f05ccbfd20dbe4))
+
+# [4.2.0](https://github.com/dequelabs/axe-core-npm/compare/v4.1.1...v4.2.0) (2021-05-05)
+
+### Features
+
+- **puppeteer:** support puppeteer v9 ([#242](https://github.com/dequelabs/axe-core-npm/issues/242)) ([753a919](https://github.com/dequelabs/axe-core-npm/commit/753a91957c5008908e8b09421e01687bdb445967))
+- update axe-core to 4.2.0 ([#240](https://github.com/dequelabs/axe-core-npm/issues/240)) ([4e8f7fe](https://github.com/dequelabs/axe-core-npm/commit/4e8f7fee9db09fb56f91ea34f9984be66a29033e))
+
+## [4.1.1](https://github.com/dequelabs/axe-core-npm/compare/v4.0.0...v4.1.1) (2021-01-28)
+
+**Note:** Version bump only for package @axe-core/puppeteer
+
 # [4.1.0](https://github.com/dequelabs/axe-core-npm/compare/v4.0.0...v4.1.0) (2020-11-20)
 
 **Note:** Version bump only for package @axe-core/puppeteer

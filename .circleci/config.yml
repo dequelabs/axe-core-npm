@@ -17,15 +17,6 @@ commands:
       - restore_cache:
           keys:
             - v2-npm-cache-{{ .Environment.CIRCLE_SHA1 }}
-  
-  verify_axe_core_react:
-    description: 'Verify that @axe-core/react has all requires files'
-    steps:
-      - run: 
-          name: Run verify release script
-          command: |
-            cd ~/axe-core-npm/packages/react
-            bash verify-release.sh post
 
 jobs:
   dependencies:
@@ -39,6 +30,9 @@ jobs:
       - restore_cache:
           keys:
             - v1-cli-npm-{{ checksum "packages/cli/package-lock.json" }}
+      - restore_cache:
+          keys:
+            - v1-playwright-npm-{{ checksum "packages/playwright/package-lock.json" }}
       - restore_cache:
           keys:
             - v1-puppeteer-npm-{{ checksum "packages/puppeteer/package-lock.json" }}
@@ -71,6 +65,10 @@ jobs:
           paths:
             - packages/cli/node_modules
       - save_cache:
+          key: v1-playwright-npm-{{ checksum "packages/playwright/package-lock.json" }}
+          paths:
+            - packages/playwright/node_modules
+      - save_cache:
           key: v1-puppeteer-npm-{{ checksum "packages/puppeteer/package-lock.json" }}
           paths:
             - packages/puppeteer/node_modules
@@ -99,6 +97,7 @@ jobs:
           paths:
             - node_modules
             - packages/cli/node_modules
+            - packages/playwright/node_modules
             - packages/puppeteer/node_modules
             - packages/webdriverjs/node_modules
             - packages/webdriverio/node_modules
@@ -122,7 +121,7 @@ jobs:
       - restore_dependency_cache
       # Re-build packages, ensuring packages/webdriverjs/dist exists.
       - run: npx lerna run prepare
-      - run: npm run test --prefix=packages/cli
+      - run: npm run coverage --prefix=packages/cli
 
   puppeteer:
     <<: *defaults
@@ -137,14 +136,14 @@ jobs:
     steps:
       - checkout
       - restore_dependency_cache
-      - run: npm run test --prefix=packages/webdriverjs
+      - run: npm run coverage --prefix=packages/webdriverjs
 
   webdriverio:
     <<: *defaults
     steps:
       - checkout
       - restore_dependency_cache
-      - run: npm run test --prefix=packages/webdriverio
+      - run: npm run coverage --prefix=packages/webdriverio
 
   reporter-earl:
     <<: *defaults
@@ -161,6 +160,20 @@ jobs:
       - run: npm install cypress --prefix=packages/react
       - run: npm run build --prefix=packages/react
       - run: npm run test --prefix=packages/react
+
+  playwright:
+    docker:
+      - image: mcr.microsoft.com/playwright:bionic
+    environment:
+      NODE_ENV: development
+    working_directory: ~/axe-core-npm
+    steps:
+      - checkout
+      - restore_dependency_cache
+      - run: npm install
+      - run: npm run bootstrap -- --ci
+      - run: npm run build --prefix=packages/playwright
+      - run: npm run coverage --prefix=packages/playwright
 
   axe-core-test:
     <<: *defaults
@@ -187,8 +200,6 @@ jobs:
               --exact \
               --force-publish \
               --yes
-      # Verify that @axe-core/react has all requires files
-      - verify_axe_core_react
 
   production_release:
     <<: *defaults
@@ -202,8 +213,6 @@ jobs:
           npx lerna publish from-package \
             --force-publish='*' \
             --yes
-      # Verify that @axe-core/react has all requires files
-      - verify_axe_core_react
 
 workflows:
   version: 2
@@ -214,6 +223,9 @@ workflows:
           requires:
             - dependencies
       - cli:
+          requires:
+            - lint
+      - playwright:
           requires:
             - lint
       - puppeteer:

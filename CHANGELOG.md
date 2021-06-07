@@ -3,6 +3,41 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [4.2.1](https://github.com/dequelabs/axe-core-npm/compare/v4.2.0...v4.2.1) (2021-05-19)
+
+### Bug Fixes
+
+- update axe-core to 4.2.1 ([#254](https://github.com/dequelabs/axe-core-npm/issues/254)) ([9d90185](https://github.com/dequelabs/axe-core-npm/commit/9d9018525a4d799f6d763d0329f05ccbfd20dbe4))
+- **cli:** add timeout waiting for page to be ready ([#250](https://github.com/dequelabs/axe-core-npm/issues/250)) ([cbb795f](https://github.com/dequelabs/axe-core-npm/commit/cbb795f1a92c419794a5f1f9645e28493d7c9bdb))
+
+# [4.2.0](https://github.com/dequelabs/axe-core-npm/compare/v4.1.1...v4.2.0) (2021-05-05)
+
+### Bug Fixes
+
+- **cli:** add `endTimer()` for page load timer ([#236](https://github.com/dequelabs/axe-core-npm/issues/236)) ([e0a19a3](https://github.com/dequelabs/axe-core-npm/commit/e0a19a3bad9b9965df9b98f391efb3403ab737ae))
+- **cli:** find axe-core when installed globally ([#232](https://github.com/dequelabs/axe-core-npm/issues/232)) ([75c273d](https://github.com/dequelabs/axe-core-npm/commit/75c273d6b8b4dcec1f953605a5bf4c9b818436cb))
+- **webdriverio:** inject axe-core branding into all iframes ([#231](https://github.com/dequelabs/axe-core-npm/issues/231)) ([3f41c27](https://github.com/dequelabs/axe-core-npm/commit/3f41c2709114b894976bcdf03ca2b3d7f824fcae))
+- **webdriverio:** Recursively find <frame> ([#238](https://github.com/dequelabs/axe-core-npm/issues/238)) ([7e6a80d](https://github.com/dequelabs/axe-core-npm/commit/7e6a80d856118cceae598de5f91592d6e6c4dc39))
+- **webdriverjs:** Recursively find <frame> ([#209](https://github.com/dequelabs/axe-core-npm/issues/209)) ([0d20e1f](https://github.com/dequelabs/axe-core-npm/commit/0d20e1f3238ca70ccb528867fb1456487c02d0df))
+
+### Features
+
+- **puppeteer:** support puppeteer v9 ([#242](https://github.com/dequelabs/axe-core-npm/issues/242)) ([753a919](https://github.com/dequelabs/axe-core-npm/commit/753a91957c5008908e8b09421e01687bdb445967))
+- update axe-core to 4.2.0 ([#240](https://github.com/dequelabs/axe-core-npm/issues/240)) ([4e8f7fe](https://github.com/dequelabs/axe-core-npm/commit/4e8f7fee9db09fb56f91ea34f9984be66a29033e))
+
+## [4.1.1](http://dequelabs/axe-core-npm/compare/v4.0.0...v4.1.1) (2021-01-28)
+
+### Bug Fixes
+
+- **cli:** create a directory when one does not exist ([#187](http://dequelabs/axe-core-npm/issues/187)) ([814cabf](http://dequelabs/axe-core-npm/commits/814cabf1082a758940b0a7917a1993fdd1d013af))
+- **react:** Add example using Next.js ([#109](http://dequelabs/axe-core-npm/issues/109)) ([bd009d9](http://dequelabs/axe-core-npm/commits/bd009d9578d9b2704e258ade932fdbbe0a7a571a)), closes [#103](http://dequelabs/axe-core-npm/issues/103)
+- **react:** handle undefined config ([#183](http://dequelabs/axe-core-npm/issues/183)) ([6326e13](http://dequelabs/axe-core-npm/commits/6326e131bf62968d5a8180595c1b0b049844ca05))
+- **react:** Prevent config TypeError ([708c463](http://dequelabs/axe-core-npm/commits/708c46366d5f2069a4f25238beb32299abc962b9))
+
+### Features
+
+- **react:** add support for runOnly. ([#101](http://dequelabs/axe-core-npm/issues/101)) ([cfadde3](http://dequelabs/axe-core-npm/commits/cfadde3eebf74d26e0fb3768b84e953e92f0bf99))
+
 # [4.1.0](https://github.com/dequelabs/axe-core-npm/compare/v4.0.0...v4.1.0) (2020-11-20)
 
 ## Bug Fixes

@@ -204,6 +204,7 @@ function checkAndReport(node: Node, timeout: number): Promise<void> {
             n = document;
           }
         }
+        axeCore.configure({ allowedOrigins: ['<unsafe_all_origins>'] });
         axeCore.run(n, { reporter: 'v2' }, function (
           error: Error,
           results: axeCore.AxeResults
@@ -351,12 +352,13 @@ interface ReactSpec extends axeCore.Spec {
  * @param {Number} _timeout debounce timeout in milliseconds
  * @parma {Spec} conf React axe.configure Spec object
  * @param {ElementContext} _context axe ElementContent object
+ * @param {Function} _logger Logger implementation
  */
 function reactAxe(
   _React: typeof React,
   _ReactDOM: typeof ReactDOM,
   _timeout: number,
-  conf?: ReactSpec,
+  conf = {} as ReactSpec,
   _context?: axeCore.ElementContext,
   _logger?: (results: axeCore.AxeResults) => void
 ): Promise<void> {
@@ -366,7 +368,7 @@ function reactAxe(
   context = _context;
   logger = _logger || logToConsole;
 
-  const runOnly = (conf || {})['runOnly'];
+  const runOnly = conf['runOnly'];
   if (runOnly) {
     conf['rules'] = axeCore
       .getRules(runOnly)
@@ -374,10 +376,10 @@ function reactAxe(
     conf['disableOtherRules'] = true;
   }
 
-  if (conf) {
+  if (Object.keys(conf).length > 0) {
     axeCore.configure(conf);
   }
-
+  axeCore.configure({ allowedOrigins: ['<unsafe_all_origins>'] });
   if (!_createElement) {
     _createElement = React.createElement;
 
