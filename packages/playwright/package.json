@@ -10,6 +10,9 @@
   "license": "MPL-2.0",
   "main": "dist/index.js",
   "typings": "dist/index.d.ts",
+  "publishConfig": {
+    "access": "public"
+  },
   "scripts": {
     "prebuild": "rimraf dist",
     "build": "tsc",
@@ -18,7 +21,7 @@
     "prepare": "npm run build"
   },
   "dependencies": {
-    "axe-core": "^4.2.0",
+    "axe-core": "^4.2.2",
     "playwright": "^1.8.0"
   },
   "devDependencies": {

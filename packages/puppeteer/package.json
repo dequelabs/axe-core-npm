@@ -42,7 +42,7 @@
     "typescript": "^4.2.4"
   },
   "dependencies": {
-    "axe-core": "^4.2.1"
+    "axe-core": "^4.2.2"
   },
   "peerDependencies": {
     "puppeteer": ">=1.10.0 <= 10"
