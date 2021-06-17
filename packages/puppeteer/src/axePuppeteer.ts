@@ -40,10 +40,10 @@ async function injectJS(
   if (!frame) {
     return;
   }
-  const frames = await frame.$$(selector);
+
+  const frames = frame.childFrames();
   const injections = [];
-  for (const frameElement of frames) {
-    const subFrame = await frameElement.contentFrame();
+  for (const subFrame of frames) {
     const p = injectJS(subFrame as Frame, {
       source,
       selector,
