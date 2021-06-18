@@ -12,7 +12,6 @@ function arrayify<T>(src: T | T[]): T[] {
 
 interface IInjectAxeArgs {
   source?: string | Function;
-  selector: string;
   logOnError?: boolean;
   args?: any[];
 }
@@ -35,7 +34,7 @@ function injectJSSource(
 
 async function injectJS(
   frame: Frame | undefined,
-  { source, selector, logOnError, args }: IInjectAxeArgs
+  { source, logOnError, args }: IInjectAxeArgs
 ): Promise<void> {
   if (!frame) {
     return;
@@ -46,7 +45,6 @@ async function injectJS(
   for (const subFrame of frames) {
     const p = injectJS(subFrame as Frame, {
       source,
-      selector,
       args,
       logOnError: true
     });
@@ -126,7 +124,6 @@ export class AxePuppeteer {
   private excludes: string[][];
   private axeOptions: Axe.RunOptions | null;
   private config: Axe.Spec | null;
-  private disabledFrameSelectors: string[];
 
   constructor(pageFrame: Page | Frame, source?: string) {
     this.frame = getFrame(pageFrame);
@@ -135,7 +132,6 @@ export class AxePuppeteer {
     this.excludes = [];
     this.axeOptions = null;
     this.config = null;
-    this.disabledFrameSelectors = [];
   }
 
   public include(selector: string | string[]): this {
@@ -221,7 +217,7 @@ export class AxePuppeteer {
   }
 
   public disableFrame(selector: string): this {
-    this.disabledFrameSelectors.push(selector);
+    this.excludes.push(arrayify(selector));
     return this;
   }
 
@@ -236,13 +232,11 @@ export class AxePuppeteer {
       await ensureFrameReady(this.frame);
 
       await injectJS(this.frame, {
-        source: this.source,
-        selector: this.iframeSelector()
+        source: this.source
       });
 
       await injectJS(this.frame, {
         source: configureAxe,
-        selector: this.iframeSelector(),
         args: [this.config]
       });
 
@@ -264,13 +258,5 @@ export class AxePuppeteer {
       }
       throw err;
     }
-  }
-
-  private iframeSelector(): string {
-    let selector = 'iframe';
-    for (const disabledFrameSelector of this.disabledFrameSelectors) {
-      selector += `:not(${disabledFrameSelector})`;
-    }
-    return selector;
   }
 }
