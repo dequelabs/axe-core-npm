@@ -32,7 +32,7 @@
     "prepare": "npm run build"
   },
   "dependencies": {
-    "axe-core": "^4.2.2",
+    "axe-core": "^4.2.3",
     "playwright": "^1.8.0"
   },
   "devDependencies": {
