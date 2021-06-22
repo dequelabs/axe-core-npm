@@ -7,6 +7,17 @@
       "name": "Michael Siek (me@michaelsiek.com)"
     }
   ],
+  "keywords": [
+    "a11y",
+    "unit",
+    "testing",
+    "tdd",
+    "bdd",
+    "accessibility",
+    "axe",
+    "playwright",
+    "axe-core"
+  ],
   "license": "MPL-2.0",
   "main": "dist/index.js",
   "typings": "dist/index.d.ts",
