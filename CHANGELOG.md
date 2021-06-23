@@ -3,6 +3,23 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [4.2.2](https://github.com/dequelabs/axe-core-npm/compare/v4.2.0...v4.2.2) (2021-06-23)
+
+### Bug Fixes
+
+- **playwright:** Make package public ([#264](https://github.com/dequelabs/axe-core-npm/issues/264)) ([35074ba](https://github.com/dequelabs/axe-core-npm/commit/35074baaebe68244ab86ece9f1580ad65975d119))
+- pass chrome options to `chromeOptions.addArguments()` ([#262](https://github.com/dequelabs/axe-core-npm/issues/262)) ([715f463](https://github.com/dequelabs/axe-core-npm/commit/715f463c1324d11cafec4a357ee55f446584cd1c))
+- selenium-webdriverjs peer dependency to allow newer versions ([#258](https://github.com/dequelabs/axe-core-npm/issues/258)) ([2dc2788](https://github.com/dequelabs/axe-core-npm/commit/2dc27883aa4aa40e64766b0bc60191cb1a4f8963))
+- update axe-core to 4.2.1 ([#254](https://github.com/dequelabs/axe-core-npm/issues/254)) ([9d90185](https://github.com/dequelabs/axe-core-npm/commit/9d9018525a4d799f6d763d0329f05ccbfd20dbe4))
+- **cli:** add timeout waiting for page to be ready ([#250](https://github.com/dequelabs/axe-core-npm/issues/250)) ([cbb795f](https://github.com/dequelabs/axe-core-npm/commit/cbb795f1a92c419794a5f1f9645e28493d7c9bdb))
+
+### Features
+
+- update to use `axe-core@4.2.3` ([#280](https://github.com/dequelabs/axe-core-npm/issues/280)) ([8aebba5](https://github.com/dequelabs/axe-core-npm/commit/8aebba5c6069ca047f649446e072259c069c9a22))
+- **react:** Add support for custom logger ([#181](https://github.com/dequelabs/axe-core-npm/issues/181)) ([1f97433](https://github.com/dequelabs/axe-core-npm/commit/1f974338280460715e7b92d58279c3f18fa563f8))
+- update `axe-core@4.2.2` ([#263](https://github.com/dequelabs/axe-core-npm/issues/263)) ([8c609e1](https://github.com/dequelabs/axe-core-npm/commit/8c609e1e3580a63f8697ca94e146b0e2ed28e579))
+- **playwright:** add playwright integration ([#245](https://github.com/dequelabs/axe-core-npm/issues/245)) ([fec4ada](https://github.com/dequelabs/axe-core-npm/commit/fec4adae9bb9d7971c7d63d6c9f9839b4bd535d8))
+
 ## [4.2.1](https://github.com/dequelabs/axe-core-npm/compare/v4.2.0...v4.2.1) (2021-05-19)
 
 ### Bug Fixes
