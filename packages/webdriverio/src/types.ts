@@ -1,23 +1,19 @@
 import type { AxeResults, ElementContext, RunOptions, Spec } from 'axe-core';
 import * as axe from 'axe-core';
 import {
-  BrowserObject as BrowserObjectSync,
-  Element as ElementSync,
-  MultiRemoteBrowserObject as MultiRemoteBrowserObjectSync
-} from '@wdio/sync';
-import {
-  BrowserObject as BrowserObjectAsync,
-  MultiRemoteBrowserObject as MultiRemoteBrowserObjectAsync,
-  Element as ElementAsync
+  Browser ,
+  MultiRemoteBrowser,
+  Element as WebDriverElement,
 } from 'webdriverio';
 
 export type BrowserObject =
-  | BrowserObjectAsync
-  | BrowserObjectSync
-  | MultiRemoteBrowserObjectAsync
-  | MultiRemoteBrowserObjectSync;
+  | Browser<'sync'>
+  | Browser<'async'>
+  | MultiRemoteBrowser<'sync'>
+  | MultiRemoteBrowser<'async'>
 
-export type Element = ElementAsync | ElementSync;
+
+export type Element = WebDriverElement<'sync'> | WebDriverElement<'async'>;
 
 export interface AnalyzePageParams {
   context: ElementContext | null;
