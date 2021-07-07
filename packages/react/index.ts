@@ -188,7 +188,7 @@ function failureSummary(
  * @return {Promise}
  */
 function checkAndReport(node: Node, timeout: number): Promise<void> {
-  const disableCache = conf['disableCache'];
+  const disableDeduplicate = conf['disableDeduplicate'];
 
   if (idleId) {
     cancelIdleCallback(idleId);
@@ -221,7 +221,7 @@ function checkAndReport(node: Node, timeout: number): Promise<void> {
               const key: string = node.target.toString() + result.id;
               const retVal = !cache[key];
               cache[key] = key;
-              return disableCache || retVal;
+              return disableDeduplicate || retVal;
             });
             return !!result.nodes.length;
           });
@@ -346,7 +346,7 @@ function logToConsole(results: axeCore.AxeResults): void {
  */
 interface ReactSpec extends axeCore.Spec {
   runOnly?: string[];
-  disableCache?: boolean;
+  disableDeduplicate?: boolean;
 }
 
 /**
