@@ -64,15 +64,31 @@ describe('startDriver', () => {
     assert.equal((service as any).executable_, config.chromedriverPath);
   });
 
-  it('sets the --chrome-options flag with no-sandbox', async () => {
+  it('passes the --no-sandbox argument to chromeOptions', async () => {
     browser = 'chrome-headless';
-    config.chromeOptions = (['--no-sandbox'] as unknown) as Options[];
+    config.chromeOptions = ['--no-sandbox'];
     await startDriver(config);
-    const capabilities = config?.builder?.getCapabilities();
-    const chromeOptions = capabilities?.get('chromeOptions');
 
-    assert.isArray(chromeOptions.args);
-    assert.deepEqual(chromeOptions.args, ['--no-sandbox']);
+    const options = config?.builder?.getChromeOptions();
+    assert.isArray(options?.get('goog:chromeOptions').args);
+    assert.deepEqual(options?.get('goog:chromeOptions').args, [
+      'headless',
+      '--no-sandbox'
+    ]);
+  });
+
+  it('passes multiple arguments argument to chromeOptions', async () => {
+    browser = 'chrome-headless';
+    config.chromeOptions = ['no-sandbox', 'disable-dev-shm-usage'];
+    await startDriver(config);
+
+    const options = config?.builder?.getChromeOptions();
+    assert.isArray(options?.get('goog:chromeOptions').args);
+    assert.deepEqual(options?.get('goog:chromeOptions').args, [
+      'headless',
+      'no-sandbox',
+      'disable-dev-shm-usage'
+    ]);
   });
 
   it('sets the --timeout flag', async () => {
