@@ -1,4 +1,4 @@
-// This module encapsulates the browser enviromnent
+// This module encapsulates the browser environment
 import * as Axe from 'axe-core';
 
 // Expect axe to be set up.
@@ -32,4 +32,49 @@ export function configureAxe(config?: Axe.Spec): void {
     allowedOrigins: ['<unsafe_all_origins>'],
     branding: { application: 'axe-puppeteer' }
   });
+}
+
+export function axeGetFrameContext(
+  context: Axe.ElementContext
+): Axe.FrameContext[] {
+  return window.axe.utils.getFrameContexts(context);
+}
+
+export function axeRunPartial(
+  context: Axe.ElementContext,
+  options: Axe.RunOptions
+): Promise<Axe.PartialResult> {
+  return window.axe.runPartial(context, options);
+}
+
+export function axeFinishRun(
+  frameResults: Axe.PartialResult[],
+  options: Axe.RunOptions
+): Promise<Axe.AxeResults> {
+  return window.axe.finishRun(frameResults, options);
+}
+
+export function axeShadowSelect(
+  axeSelector: string | string[]
+): Element | null {
+  /* Find an element in shadow or light DOM trees, using an axe selector */
+  function shadowQuerySelector(
+    axeSelector: string[],
+    doc: Document | ShadowRoot
+  ): Element | null {
+    const selectorStr = axeSelector.shift();
+    const elm = selectorStr ? doc.querySelector(selectorStr) : null;
+    if (axeSelector.length === 0) {
+      return elm;
+    }
+    if (!elm?.shadowRoot) {
+      return null;
+    }
+    return shadowQuerySelector(axeSelector, elm.shadowRoot);
+  }
+
+  const selector = Array.isArray(axeSelector)
+    ? [...axeSelector]
+    : [axeSelector];
+  return shadowQuerySelector(selector, document);
 }

@@ -1,6 +1,7 @@
 import * as Axe from 'axe-core';
 import { ElementHandle, Frame, JSONObject, Page } from 'puppeteer';
 import { pageIsLoaded, runAxe, configureAxe } from './browser';
+import { runPartialRecursive, finishRun } from './partials';
 import { AnalyzeCB } from './types';
 
 function arrayify<T>(src: T | T[]): T[] {
@@ -17,7 +18,7 @@ interface IInjectAxeArgs {
   args?: any[];
 }
 
-function injectJSModule(frame: Frame): Promise<ElementHandle<Element> | void> {
+function injectJSModule(frame: Frame): Promise<void> {
   return frame
     .addScriptTag({
       path: require.resolve('axe-core')
@@ -103,9 +104,9 @@ async function ensureFrameReady(frame: Frame): Promise<void> {
 function normalizeContext(
   includes: string[][],
   excludes: string[][]
-): Axe.ElementContext | null {
+): Axe.ContextObject {
   if (!excludes.length && !includes.length) {
-    return null;
+    return { exclude: [] };
   }
 
   const ctx: Axe.ElementContext = {};
@@ -223,6 +224,21 @@ export class AxePuppeteer {
   public disableFrame(selector: string): this {
     this.disabledFrameSelectors.push(selector);
     return this;
+  }
+
+  // TODO: "Replace with the actual analyze"
+  public async newAnalyze(): Promise<Axe.AxeResults> {
+    const options = this.axeOptions || {};
+    const context = normalizeContext(this.includes, this.excludes);
+
+    await ensureFrameReady(this.frame);
+    const partialResults = await runPartialRecursive(
+      this.frame,
+      context,
+      options
+    );
+    const axeReport = await finishRun(partialResults, options);
+    return axeReport;
   }
 
   public async analyze(): Promise<Axe.AxeResults>;

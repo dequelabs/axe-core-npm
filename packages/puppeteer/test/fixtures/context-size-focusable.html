@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>runPartial, test context.size and context.focusable</title>
+  </head>
+  <body>
+    <iframe src="frames/link.html" id="fail1" tabindex="-1"></iframe>
+    <iframe src="frames/link-nested.html" id="fail2" tabindex="-1000"></iframe>
+    <iframe
+      src="frames/link.html"
+      id="pass1"
+      tabindex="-1"
+      height="1"
+      width="1"
+    ></iframe>
+    <iframe src="frames/heading-h2.html" id="pass2" tabindex="-1"></iframe>
+  </body>
+</html>

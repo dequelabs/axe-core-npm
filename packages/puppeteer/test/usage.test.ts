@@ -8,7 +8,6 @@ import Puppeteer from 'puppeteer';
 import * as sinon from 'sinon';
 import testListen from 'test-listen';
 import AxePuppeteer, { loadPage } from '../src/index';
-import { customConfig } from './utils';
 
 type SinonSpy = sinon.SinonSpy;
 type Frame = Puppeteer.Frame;
@@ -164,16 +163,14 @@ describe('AxePuppeteer', function () {
     expect(calledSpies).to.have.lengthOf(4);
   });
 
-  it('runs in nested frames', async function() {
-    await this.page.goto(this.fixtureFileURL('nested-frames.html'))
+  it('runs in nested frames', async function () {
+    await this.page.goto(this.fixtureFileURL('nested-frames.html'));
 
-    const results = await new AxePuppeteer(this.page)
-      .analyze()
+    const results = await new AxePuppeteer(this.page).analyze();
 
-
-    expect(results.violations.find((r: Axe.Result) => r.id === 'label'))
-      .to.not.be.undefined
-  })
+    expect(results.violations.find((r: Axe.Result) => r.id === 'label')).to.not
+      .be.undefined;
+  });
 
   it('injects custom axe source into nested frames', async function () {
     const axeSource = `
@@ -539,27 +536,26 @@ describe('AxePuppeteer', function () {
     });
   });
 
-  describe('disableFrame', function() {
-    it('disables the given rule(s)', async function() {
-      await this.page.goto(this.fixtureFileURL('nested-frames.html'))
+  describe('disableFrame', function () {
+    it('disables the given rule(s)', async function () {
+      await this.page.goto(this.fixtureFileURL('nested-frames.html'));
 
       const results = await new AxePuppeteer(this.page)
         // Disable the `region` rule
-        .disableFrame("#topLevel")
-        .analyze()
+        .disableFrame('#topLevel')
+        .analyze();
 
       const flatResults = [
         ...results.passes,
         ...results.incomplete,
         ...results.inapplicable,
         ...results.violations
-      ]
+      ];
 
-
-      expect(results.violations.find((r: Axe.Result) => r.id === 'label'))
-        .to.be.undefined
-    })
-  })
+      expect(results.violations.find((r: Axe.Result) => r.id === 'label')).to.be
+        .undefined;
+    });
+  });
 
   describe("when given a page that hasn't loaded", function () {
     it('gives a helpful error', async function () {
