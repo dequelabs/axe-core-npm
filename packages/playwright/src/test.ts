@@ -194,6 +194,24 @@ describe('@axe-core/playwright', () => {
       assert.strictEqual(results.violations.length, 5);
       assert.strictEqual(results.violations[0].id, 'dlitem');
     });
+
+    it('injects once per iframe', async () => {
+      await page.goto(`${addr}/nested-frames.html`)
+
+      const builder = new AxeBuilder({ page });
+      const origScript = (builder as any).script;
+      let count = 0;
+      Object.defineProperty(builder, 'script', {
+        get() {
+          count++
+          return origScript
+        }
+      })
+
+      await builder.analyze()
+
+      assert.strictEqual(count, 4)
+    })
   });
 
   describe('include/exclude', () => {
