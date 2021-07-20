@@ -39,6 +39,7 @@ const defaultReset = `font-color:${theme.text};font-weight:normal;`;
 let idleId: number | undefined;
 let timeout: number;
 let context: axeCore.ElementContext | undefined;
+let conf: ReactSpec;
 let _createElement: typeof React.createElement;
 const components: { [id: number]: React.Component } = {};
 const nodes: Node[] = [document.documentElement];
@@ -187,6 +188,8 @@ function failureSummary(
  * @return {Promise}
  */
 function checkAndReport(node: Node, timeout: number): Promise<void> {
+  const disableDeduplicate = conf['disableDeduplicate'];
+
   if (idleId) {
     cancelIdleCallback(idleId);
     idleId = undefined;
@@ -218,7 +221,7 @@ function checkAndReport(node: Node, timeout: number): Promise<void> {
               const key: string = node.target.toString() + result.id;
               const retVal = !cache[key];
               cache[key] = key;
-              return retVal;
+              return disableDeduplicate || retVal;
             });
             return !!result.nodes.length;
           });
@@ -343,6 +346,7 @@ function logToConsole(results: axeCore.AxeResults): void {
  */
 interface ReactSpec extends axeCore.Spec {
   runOnly?: string[];
+  disableDeduplicate?: boolean;
 }
 
 /**
@@ -358,7 +362,7 @@ function reactAxe(
   _React: typeof React,
   _ReactDOM: typeof ReactDOM,
   _timeout: number,
-  conf = {} as ReactSpec,
+  _conf = {} as ReactSpec,
   _context?: axeCore.ElementContext,
   _logger?: (results: axeCore.AxeResults) => void
 ): Promise<void> {
@@ -366,6 +370,7 @@ function reactAxe(
   ReactDOM = _ReactDOM;
   timeout = _timeout;
   context = _context;
+  conf = _conf;
   logger = _logger || logToConsole;
 
   const runOnly = conf['runOnly'];
