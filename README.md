@@ -11,7 +11,7 @@ The packages are listed below:
 - [`@axe-core/playwright`](./packages/playwright/README.md)
 - [`@axe-core/puppeteer`](./packages/puppeteer/README.md)
 - [`@axe-core/react`](./packages/react/README.md)
-- [`@axe-core/reporter-earl`](./packages/reporter-earl/readme.md)
+- [`@axe-core/reporter-earl`](./packages/reporter-earl/README.md)
 - [`@axe-core/webdriverio`](./packages/webdriverio/README.md)
 - [`@axe-core/webdriverjs`](./packages/webdriverjs/README.md)
 
