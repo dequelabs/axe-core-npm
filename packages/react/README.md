@@ -34,7 +34,7 @@ Once initialized, the module will output accessibility defect information to the
 
 ## Deduplicating
 
-@axe-core/react will deduplicate violations using the rule that raised the violation and the CSS selector and the failureSummary of the specific node. This will ensure that each unique issue will only be printed to the console once.
+@axe-core/react will deduplicate violations using the rule that raised the violation and the CSS selector and the failureSummary of the specific node. This will ensure that each unique issue will only be printed to the console once. This can be disabled by setting `disableDeduplicate: true` in the configuration object as shown in the example [here](#configuration).
 
 ## Debouncing
 
@@ -55,7 +55,8 @@ const config = {
       id: 'skip-link',
       enabled: true
     }
-  ]
+  ],
+  disableDeduplicate: true
 };
 
 axe(React, ReactDOM, 1000, config);
