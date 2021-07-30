@@ -1,9 +1,27 @@
-import type { WebDriver } from 'selenium-webdriver';
-import type { RunOptions, Spec, AxeResults } from 'axe-core';
+import { WebDriver } from 'selenium-webdriver';
+import {
+  RunOptions,
+  Spec,
+  AxeResults,
+  ContextObject,
+  PartialResult
+} from 'axe-core';
 import { source } from 'axe-core';
-import type { CallbackFunction, BuilderOptions } from './types';
+import { CallbackFunction, BuilderOptions } from './types';
 import { normalizeContext } from './utils';
 import AxeInjector from './axe-injector';
+import {
+  axeGetFrameContext,
+  axeRunPartial,
+  axeRunLegacy,
+  axeSourceInject,
+  axeFinishRun,
+  axeSupportsRunPartial,
+  FrameContextWeb
+} from './browser';
+import * as assert from 'assert';
+
+type PartialResults = Array<PartialResult | null>;
 
 class AxeBuilder {
   private driver: WebDriver;
@@ -13,6 +31,7 @@ class AxeBuilder {
   private option: RunOptions;
   private config: Spec | null;
   private builderOptions: BuilderOptions;
+
   constructor(
     driver: WebDriver,
     axeSource?: string | null,
@@ -30,10 +49,7 @@ class AxeBuilder {
   /**
    * Selector to include in analysis.
    * This may be called any number of times.
-   * @param {String} selector
-   * @returns {AxeBuilder}
    */
-
   public include(selector: string): AxeBuilder {
     this.includes.push(selector);
     return this;
@@ -42,10 +58,7 @@ class AxeBuilder {
   /**
    * Selector to exclude in analysis.
    * This may be called any number of times.
-   * @param {String} selector
-   * @returns {AxeBuilder}
    */
-
   public exclude(selector: string): AxeBuilder {
     this.excludes.push(selector);
     return this;
@@ -53,10 +66,7 @@ class AxeBuilder {
 
   /**
    * Set options to be passed into axe-core
-   * @param {RunOptions} options
-   * @returns {AxeBuilder}
    */
-
   public options(options: RunOptions): AxeBuilder {
     this.option = options;
     return this;
@@ -65,10 +75,7 @@ class AxeBuilder {
   /**
    * Limit analysis to only the specified rules.
    * Cannot be used with `AxeBuilder#withTags`
-   * @param {String|Array} rules
-   * @returns {AxeBuilder}
    */
-
   public withRules(rules: string | string[]): AxeBuilder {
     rules = Array.isArray(rules) ? rules : [rules];
     /* istanbul ignore next */
@@ -84,10 +91,7 @@ class AxeBuilder {
   /**
    * Limit analysis to only specified tags.
    * Cannot be used with `AxeBuilder#withRules`
-   * @param {String|Array} tags
-   * @returns {AxeBuilder}
    */
-
   public withTags(tags: string | string[]): AxeBuilder {
     tags = Array.isArray(tags) ? tags : [tags];
     /* istanbul ignore next */
@@ -101,16 +105,12 @@ class AxeBuilder {
 
   /**
    * Set the list of rules to skip when running an analysis.
-   * @param {String|Array} rules
-   * @returns {AxeBuilder}
    */
-
   public disableRules(rules: string | string[]): AxeBuilder {
     rules = Array.isArray(rules) ? rules : [rules];
     /* istanbul ignore next */
     this.option = this.option || {};
     this.option.rules = {};
-
     for (const rule of rules) {
       this.option.rules[rule] = { enabled: false };
     }
@@ -121,10 +121,7 @@ class AxeBuilder {
   /**
    * Set configuration for `axe-core`.
    * This value is passed directly to `axe.configure()`
-   * @param {Spec} config
-   * @returns {AxeBuilder | Error}
    */
-
   public configure(config: Spec): AxeBuilder {
     /* istanbul ignore if */
     if (typeof config !== 'object') {
@@ -138,57 +135,119 @@ class AxeBuilder {
 
   /**
    * Performs an analysis and retrieves results.
-   * @param {CallbackFunction} callback
-   * @returns {Promise<AxeResults>}
    */
-
   public async analyze(callback?: CallbackFunction): Promise<AxeResults> {
-    const driver = this.driver;
+    let pResults: Promise<AxeResults>;
+    await this.driver.switchTo().defaultContent();
+    await axeSourceInject(this.driver, this.axeSource, this.config);
+    const supportsRunPartial = await axeSupportsRunPartial(this.driver);
     const context = normalizeContext(this.includes, this.excludes);
-    const options = this.option;
-    const config = this.config;
-    const axeSource = this.axeSource;
+
+    const legacyMode = false;
+    if (supportsRunPartial && !legacyMode) {
+      const partials = await this.runPartialRecursive(context);
+      pResults = this.finishRun(partials);
+    } else {
+      // Axe-core before 4.3
+      pResults = this.runLegacy(context);
+    }
+    return this.resolveCallback(pResults, callback);
+  }
+
+  /**
+   * Use axe.run() to get results from the page
+   */
+  private async runLegacy(context: ContextObject): Promise<AxeResults> {
+    const { driver, axeSource, config, builderOptions } = this;
     const injector = new AxeInjector({
       driver,
       axeSource,
       config,
-      builderOptions: this.builderOptions
+      builderOptions
     });
+    await injector.injectIntoAllFrames();
+    return axeRunLegacy(this.driver, context, this.option, this.config);
+  }
 
+  /**
+   * Use axe.runPartial() to get partial results from the page
+   */
+  private async runPartialRecursive(
+    context: ContextObject,
+    skipInjection = false
+  ): Promise<PartialResults> {
+    if (!skipInjection) {
+      await axeSourceInject(this.driver, this.axeSource, this.config);
+    }
+    // IMPORTANT: axeGetFrameContext MUST be called before axeRunPartial
+    const frameContexts = await axeGetFrameContext(this.driver, context);
+    const partialResults: PartialResults = [
+      await axeRunPartial(this.driver, context, this.option)
+    ];
+
+    for (const frameInfo of frameContexts) {
+      const partials = await this.runFramePartial(frameInfo);
+      partialResults.push(...partials);
+    }
+    return partialResults;
+  }
+
+  async runFramePartial({
+    frameContext,
+    frameSelector,
+    frame
+  }: FrameContextWeb): Promise<PartialResults> {
+    let switchedFrame = false;
+    try {
+      assert(frame, `Expect frame of "${frameSelector}" to be defined`);
+      await this.driver.switchTo().frame(frame);
+      switchedFrame = true;
+      const partials = await this.runPartialRecursive(frameContext);
+      await this.driver.switchTo().parentFrame();
+      return partials;
+    } catch {
+      if (switchedFrame) {
+        await this.driver.switchTo().parentFrame();
+      }
+      return [null];
+    }
+  }
+
+  /**
+   * Use axe.finishRun() to turn partial results into actual results
+   */
+  private async finishRun(partials: PartialResults): Promise<AxeResults> {
+    await this.driver.switchTo().newWindow('tab');
+    await axeSourceInject(this.driver, this.axeSource, this.config);
+    const res = await axeFinishRun(this.driver, partials, this.option);
+    await this.driver.switchTo().defaultContent();
+    return res;
+  }
+
+  /**
+   * Pass the axe results, or possible to the callback if needed
+   * and return a promise.
+   */
+  private resolveCallback(
+    thenable: Promise<AxeResults>,
+    callback?: CallbackFunction
+  ): Promise<AxeResults> {
     return new Promise((resolve, reject) => {
-      injector.inject(() => {
-        driver
-          // https://github.com/vercel/pkg/issues/676
-          // we need to pass a string vs a function so we manually stringified the function
-          .executeAsyncScript(
-            `
-          const callback = arguments[arguments.length - 1];
-          const context = ${JSON.stringify(context)} || document;
-          const options = ${JSON.stringify(options)} || {};
-          const config = ${JSON.stringify(config)} || null;
-          if (config) {
-            window.axe.configure(config);
+      thenable
+        .then((results: AxeResults) => {
+          /* istanbul ignore if */
+          callback?.(null, results);
+          resolve(results);
+        })
+        .catch((err: Error) => {
+          // When using a callback, do *not* reject the wrapping Promise. This prevents having to handle the same error twice.
+          /* istanbul ignore else */
+          if (callback) {
+            callback(err.message, null);
+          } else {
+            reject(err);
           }
-          window.axe.run(context, options).then(callback);
-        `
-          )
-          .then(results => {
-            /* istanbul ignore if */
-            if (callback) {
-              callback(null, results as AxeResults);
-            }
-            resolve(results as AxeResults);
-          })
-          .catch((err: Error) => {
-            // When using a callback, do *not* reject the wrapping Promise. This prevents having to handle the same error twice.
-            /* istanbul ignore else */
-            if (callback) {
-              callback(err.message, null);
-            } else {
-              reject(err);
-            }
-          });
-      });
+        });
     });
   }
 }

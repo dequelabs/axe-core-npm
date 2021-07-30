@@ -8,7 +8,7 @@ import type {
 } from './types';
 const { StaleElementReferenceError } = error;
 
-export default class AxeInjector {
+export default class AxeInjectorLegacy {
   private driver: WebDriver;
   private axeSource: string;
   private options: BuilderOptions;
@@ -162,8 +162,7 @@ export default class AxeInjector {
    * Injects into all frames
    * @returns {Promise<void>}
    */
-
-  private async injectIntoAllFrames(): Promise<void> {
+  public async injectIntoAllFrames(): Promise<void> {
     // Ensure we're "starting" our loop at the top-most frame
     await this.driver.switchTo().defaultContent();
 
@@ -172,6 +171,7 @@ export default class AxeInjector {
       // reinject any sandboxed iframes without the sandbox attribute so we can scan
       await this.sandboxBuster();
     }
+
     // Inject the script into the top-level
     // XXX: if this `executeScript` fails, we *want* to error, as we cannot run axe-core.
     await this.driver.executeScript(this.script);

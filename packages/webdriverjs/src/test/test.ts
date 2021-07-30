@@ -1,17 +1,18 @@
 import 'mocha';
+import { Spec } from 'axe-core';
 import type { WebDriver } from 'selenium-webdriver';
 import * as express from 'express';
-import * as sinon from 'sinon';
 import * as chromedriver from 'chromedriver';
 import testListen = require('test-listen');
 import delay from 'delay';
 import { assert } from 'chai';
 import * as path from 'path';
+import * as fs from 'fs';
 import { Server, createServer } from 'http';
 import * as net from 'net';
-const json = require('./fixtures/custom-rule-config.json');
 import Webdriver from './run-webdriver';
 import AxeBuilder from '../';
+const json = require('./fixtures/custom-rule-config.json') as Spec;
 
 const connectToChromeDriver = (port: number): Promise<void> => {
   let socket: net.Socket;
@@ -47,7 +48,12 @@ describe('@axe-core/webdriverjs', () => {
   let driver: WebDriver;
   let server: Server;
   let addr: string;
+  let axe403Source: string;
+
   before(async () => {
+    const axePath = path.resolve(__dirname, './fixtures/axe-core-4.0.3.js');
+    axe403Source = fs.readFileSync(axePath, 'utf8');
+
     chromedriver.start([`--port=${port}`]);
     await delay(500);
     await connectToChromeDriver(port);
@@ -85,18 +91,7 @@ describe('@axe-core/webdriverjs', () => {
   describe('configure', () => {
     it('should find configured violations in all iframes', async () => {
       await driver.get(`${addr}/outer-configure-iframe.html`);
-      const results = await new AxeBuilder(driver)
-        .options({
-          rules: {
-            'landmark-one-main': { enabled: false },
-            'page-has-heading-one': { enabled: false },
-            region: { enabled: false },
-            'html-lang-valid': { enabled: false },
-            bypass: { enabled: false }
-          }
-        })
-        .configure(json)
-        .analyze();
+      const results = await new AxeBuilder(driver).configure(json).analyze();
 
       assert.equal(results.violations[0].id, 'dylang');
       // the second violation is in a iframe
@@ -105,21 +100,19 @@ describe('@axe-core/webdriverjs', () => {
 
     it('should find configured violations in all frames', async () => {
       await driver.get(`${addr}/outer-configure-frame.html`);
-      const results = await new AxeBuilder(driver)
-        .options({
-          rules: {
-            'landmark-one-main': { enabled: false },
-            'page-has-heading-one': { enabled: false },
-            region: { enabled: false },
-            'html-lang-valid': { enabled: false },
-            bypass: { enabled: false }
-          }
-        })
-        .configure(json)
-        .analyze();
+      const results = await new AxeBuilder(driver).configure(json).analyze();
 
       assert.equal(results.violations[0].id, 'dylang');
       // the second violation is in a frame
+      assert.equal(results.violations[0].nodes.length, 2);
+    });
+
+    it('should work with older versions of axe-core', async () => {
+      await driver.get(`${addr}/outer-configure-iframe.html`);
+      const results = await new AxeBuilder(driver, axe403Source)
+        .configure(json)
+        .analyze();
+      assert.equal(results.violations[0].id, 'dylang');
       assert.equal(results.violations[0].nodes.length, 2);
     });
   });
@@ -154,35 +147,75 @@ describe('@axe-core/webdriverjs', () => {
     });
   });
 
-  describe('iframe tests', () => {
+  describe('frame tests', () => {
     it('injects into nested iframes', async () => {
       await driver.get(`${addr}/nested-iframes.html`);
-      const executeSpy = sinon.spy(driver, 'executeScript');
-      await new AxeBuilder(driver).analyze();
-      /**
-       * Ensure we called execute 4 times
-       * 1. nested-iframes.html
-       * 2. iframes/foo.html
-       * 3. iframes/bar.html
-       * 4. iframes/baz.html
-       */
-      assert.strictEqual(executeSpy.callCount, 4);
-    });
-  });
+      const { violations } = await new AxeBuilder(driver)
+        .options({ runOnly: 'label' })
+        .analyze();
 
-  describe('frame tests', () => {
+      assert.equal(violations[0].id, 'label');
+      const nodes = violations[0].nodes;
+      assert.lengthOf(nodes, 4);
+      assert.deepEqual(nodes[0].target, [
+        '#ifr-foo',
+        '#foo-bar',
+        '#bar-baz',
+        'input'
+      ]);
+      assert.deepEqual(nodes[1].target, ['#ifr-foo', '#foo-baz', 'input']);
+      assert.deepEqual(nodes[2].target, ['#ifr-bar', '#bar-baz', 'input']);
+      assert.deepEqual(nodes[3].target, ['#ifr-baz', 'input']);
+    });
+
     it('injects into nested frames', async () => {
       await driver.get(`${addr}/nested-frames.html`);
-      const executeSpy = sinon.spy(driver, 'executeScript');
-      await new AxeBuilder(driver).analyze();
-      /**
-       * Ensure we called execute 4 times
-       * 1. nested-frames.html
-       * 2. frames/foo.html
-       * 3. frames/bar.html
-       * 4. frames/baz.html
-       */
-      assert.strictEqual(executeSpy.callCount, 4);
+      const { violations } = await new AxeBuilder(driver)
+        .options({ runOnly: 'label' })
+        .analyze();
+
+      assert.equal(violations[0].id, 'label');
+      assert.lengthOf(violations[0].nodes, 4);
+
+      const nodes = violations[0].nodes;
+      assert.deepEqual(nodes[0].target, [
+        '#frm-foo',
+        '#foo-bar',
+        '#bar-baz',
+        'input'
+      ]);
+      assert.deepEqual(nodes[1].target, ['#frm-foo', '#foo-baz', 'input']);
+      assert.deepEqual(nodes[2].target, ['#frm-bar', '#bar-baz', 'input']);
+      assert.deepEqual(nodes[3].target, ['#frm-baz', 'input']);
+    });
+
+    it('should work on shadow DOM iframes', async () => {
+      await driver.get(`${addr}/shadow-iframes.html`);
+      const { violations } = await new AxeBuilder(driver)
+        .options({ runOnly: 'label' })
+        .analyze();
+
+      assert.equal(violations[0].id, 'label');
+      assert.lengthOf(violations[0].nodes, 3);
+
+      const nodes = violations[0].nodes;
+      assert.deepEqual(nodes[0].target, ['#light-frame', 'input']);
+      assert.deepEqual(nodes[1].target, [
+        ['#shadow-root', '#shadow-frame'],
+        'input'
+      ]);
+      assert.deepEqual(nodes[2].target, ['#slotted-frame', 'input']);
+    });
+
+    it('can run with versions of axe-core without axe.runPartial', async () => {
+      await driver.get(`${addr}/nested-iframes.html`);
+      const results = await new AxeBuilder(driver, axe403Source)
+        .options({ runOnly: ['label'] })
+        .analyze();
+
+      assert.equal(results.violations[0].id, 'label');
+      assert.lengthOf(results.violations[0].nodes, 4);
+      assert.equal(results.testEngine.version, '4.0.3');
     });
   });
 
@@ -333,17 +366,21 @@ describe('@axe-core/webdriverjs', () => {
   });
 
   describe('callback()', () => {
-    it('returns results when callback is provided', async () => {
-      await driver.get(`${addr}/index.html`);
-      new AxeBuilder(driver).analyze((err, results) => {
-        if (err) {
-          // Something _should_ happen with error
-        }
-        assert.isNotNull(results);
-        assert.isArray(results?.violations);
-        assert.isArray(results?.incomplete);
-        assert.isArray(results?.passes);
-        assert.isArray(results?.inapplicable);
+    it('returns results when callback is provided', done => {
+      driver.get(`${addr}/index.html`).then(() => {
+        new AxeBuilder(driver).analyze((err, results) => {
+          try {
+            assert.isNull(err);
+            assert.isNotNull(results);
+            assert.isArray(results?.violations);
+            assert.isArray(results?.incomplete);
+            assert.isArray(results?.passes);
+            assert.isArray(results?.inapplicable);
+            done();
+          } catch (e) {
+            done(e);
+          }
+        });
       });
     });
   });
