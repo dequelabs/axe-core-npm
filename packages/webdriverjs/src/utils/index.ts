@@ -25,3 +25,7 @@ export const normalizeContext = (
     exclude
   };
 };
+
+export function sleep(t = 10): Promise<void> {
+  return new Promise(r => setTimeout(r, t));
+}

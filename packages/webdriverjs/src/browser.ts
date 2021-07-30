@@ -8,7 +8,10 @@ import {
 } from 'axe-core';
 import { WebDriver, WebElement } from 'selenium-webdriver';
 
-export type FrameContextWeb = FrameContext & { frame: WebElement };
+export type FrameContextWeb = FrameContext & {
+  frame: WebElement;
+  href: string;
+};
 
 // https://github.com/vercel/pkg/issues/676
 // we need to pass a string vs a function so we manually stringified the function
@@ -20,17 +23,17 @@ export function axeSourceInject(
 ): Promise<void> {
   return promisify(
     driver.executeScript(`
-    ${axeSource};
-    (function () {
-      window.axe.configure({
-        branding: { application: 'webdriverjs' }
-      });
-      var config = ${JSON.stringify(config)};
-      if (config) {
-        window.axe.configure(config);
-      }
-    }());
-  `)
+      ${axeSource};
+      (function () {
+        window.axe.configure({
+          branding: { application: 'webdriverjs' }
+        });
+        var config = ${JSON.stringify(config)};
+        if (config) {
+          window.axe.configure(config);
+        }
+      }());
+    `)
   );
 }
 
@@ -41,11 +44,11 @@ export function axeRunPartial(
 ): Promise<PartialResult> {
   return promisify(
     driver.executeAsyncScript<PartialResult>(`
-    const callback = arguments[arguments.length - 1];
-    const context = ${JSON.stringify(context)} || document;
-    const options = ${JSON.stringify(options)} || {};
-    window.axe.runPartial(context, options).then(callback);
-  `)
+      const callback = arguments[arguments.length - 1];
+      const context = ${JSON.stringify(context)} || document;
+      const options = ${JSON.stringify(options)} || {};
+      window.axe.runPartial(context, options).then(callback);
+    `)
   );
 }
 
@@ -56,11 +59,11 @@ export function axeFinishRun(
 ): Promise<AxeResults> {
   return promisify(
     driver.executeAsyncScript<AxeResults>(`
-    var partialResults = ${JSON.stringify(partialResults)};
-    var options = ${JSON.stringify(options || {})};
-    var callback = arguments[arguments.length - 1];
-    axe.finishRun(partialResults, options).then(callback);
-  `)
+      var partialResults = ${JSON.stringify(partialResults)};
+      var options = ${JSON.stringify(options || {})};
+      var callback = arguments[arguments.length - 1];
+      axe.finishRun(partialResults, options).then(callback);
+    `)
   );
 }
 
@@ -70,24 +73,24 @@ export function axeGetFrameContext(
 ): Promise<FrameContextWeb[]> {
   return promisify(
     driver.executeAsyncScript<FrameContextWeb[]>(`
-    var context = ${JSON.stringify(context)}
-    var callback = arguments[arguments.length - 1];
-    var frameContexts = window.axe.utils.getFrameContexts(context);
-    callback(frameContexts.map(function (frameContext) {
-      return Object.assign(frameContext, {
-        href: window.location.href, // For debugging
-        frame: axe.utils.shadowSelect(frameContext.frameSelector)
-      });
-    }));
-  `)
+      var context = ${JSON.stringify(context)}
+      var callback = arguments[arguments.length - 1];
+      var frameContexts = window.axe.utils.getFrameContexts(context);
+      callback(frameContexts.map(function (frameContext) {
+        return Object.assign(frameContext, {
+          href: window.location.href, // For debugging
+          frame: axe.utils.shadowSelect(frameContext.frameSelector)
+        });
+      }));
+    `)
   );
 }
 
 export function axeSupportsRunPartial(driver: WebDriver): Promise<boolean> {
   return promisify(
     driver.executeScript<boolean>(`
-    return typeof window.axe.runPartial === 'function'
-  `)
+      return typeof window.axe.runPartial === 'function'
+    `)
   );
 }
 
@@ -101,15 +104,15 @@ export function axeRunLegacy(
   // we need to pass a string vs a function so we manually stringified the function
   return promisify(
     driver.executeAsyncScript<AxeResults>(`
-    const callback = arguments[arguments.length - 1];
-    const context = ${JSON.stringify(context)} || document;
-    const options = ${JSON.stringify(options)} || {};
-    const config = ${JSON.stringify(config)} || null;
-    if (config) {
-      window.axe.configure(config);
-    }
-    window.axe.run(context, options).then(callback);
-  `)
+      const callback = arguments[arguments.length - 1];
+      const context = ${JSON.stringify(context)} || document;
+      const options = ${JSON.stringify(options)} || {};
+      const config = ${JSON.stringify(config)} || null;
+      if (config) {
+        window.axe.configure(config);
+      }
+      window.axe.run(context, options).then(callback);
+    `)
   );
 }
 

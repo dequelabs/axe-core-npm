@@ -1,15 +1,10 @@
 import { WebDriver } from 'selenium-webdriver';
-import {
-  RunOptions,
-  Spec,
-  AxeResults,
-  ContextObject,
-  PartialResult
-} from 'axe-core';
+import { RunOptions, Spec, AxeResults, ContextObject } from 'axe-core';
 import { source } from 'axe-core';
 import { CallbackFunction, BuilderOptions } from './types';
-import { normalizeContext } from './utils';
+import { normalizeContext, sleep } from './utils';
 import AxeInjector from './axe-injector';
+import { AxePartialRunner, PartialResults } from './axe-partial-runner';
 import {
   axeGetFrameContext,
   axeRunPartial,
@@ -20,8 +15,6 @@ import {
   FrameContextWeb
 } from './browser';
 import * as assert from 'assert';
-
-type PartialResults = Array<PartialResult | null>;
 
 class AxeBuilder {
   private driver: WebDriver;
@@ -137,21 +130,40 @@ class AxeBuilder {
    * Performs an analysis and retrieves results.
    */
   public async analyze(callback?: CallbackFunction): Promise<AxeResults> {
-    let pResults: Promise<AxeResults>;
+    return new Promise((resolve, reject) => {
+      return this.analyzePromise()
+        .then((results: AxeResults) => {
+          /* istanbul ignore if */
+          callback?.(null, results);
+          resolve(results);
+        })
+        .catch((err: Error) => {
+          // When using a callback, do *not* reject the wrapping Promise. This prevents having to handle the same error twice.
+          /* istanbul ignore else */
+          if (callback) {
+            callback(err.message, null);
+          } else {
+            reject(err);
+          }
+        });
+    });
+  }
+
+  /**
+   * Analyzes the page, returning a promise
+   */
+  private async analyzePromise(): Promise<AxeResults> {
+    const context = normalizeContext(this.includes, this.excludes);
     await this.driver.switchTo().defaultContent();
     await axeSourceInject(this.driver, this.axeSource, this.config);
-    const supportsRunPartial = await axeSupportsRunPartial(this.driver);
-    const context = normalizeContext(this.includes, this.excludes);
 
-    const legacyMode = false;
-    if (supportsRunPartial && !legacyMode) {
-      const partials = await this.runPartialRecursive(context);
-      pResults = this.finishRun(partials);
-    } else {
-      // Axe-core before 4.3
-      pResults = this.runLegacy(context);
+    if ((await axeSupportsRunPartial(this.driver)) === false) {
+      return this.runLegacy(context);
     }
-    return this.resolveCallback(pResults, callback);
+
+    const partialRunner = await this.runPartialRecursive(context);
+    const partials = await partialRunner.getPartials();
+    return this.finishRun(partials);
   }
 
   /**
@@ -170,46 +182,48 @@ class AxeBuilder {
   }
 
   /**
-   * Use axe.runPartial() to get partial results from the page
+   * Get partial results from the current context and its child frames
    */
   private async runPartialRecursive(
-    context: ContextObject,
-    skipInjection = false
-  ): Promise<PartialResults> {
-    if (!skipInjection) {
-      await axeSourceInject(this.driver, this.axeSource, this.config);
-    }
+    context: ContextObject
+  ): Promise<AxePartialRunner> {
+    await axeSourceInject(this.driver, this.axeSource, this.config);
     // IMPORTANT: axeGetFrameContext MUST be called before axeRunPartial
     const frameContexts = await axeGetFrameContext(this.driver, context);
-    const partialResults: PartialResults = [
-      await axeRunPartial(this.driver, context, this.option)
-    ];
+    // axeRunPartial MUST NOT be awaited, its promise is passed to AxePartialRunner
+    const partialPromise = axeRunPartial(this.driver, context, this.option);
+    const runner = new AxePartialRunner(partialPromise);
 
     for (const frameInfo of frameContexts) {
-      const partials = await this.runFramePartial(frameInfo);
-      partialResults.push(...partials);
+      const childResult = await this.runFramePartial(frameInfo);
+      runner.addChildResults(childResult);
     }
-    return partialResults;
+    return runner;
   }
 
+  /**
+   * Get partial results from a specific frame
+   */
   async runFramePartial({
     frameContext,
     frameSelector,
     frame
-  }: FrameContextWeb): Promise<PartialResults> {
+  }: FrameContextWeb): Promise<AxePartialRunner | null> {
     let switchedFrame = false;
     try {
       assert(frame, `Expect frame of "${frameSelector}" to be defined`);
       await this.driver.switchTo().frame(frame);
       switchedFrame = true;
-      const partials = await this.runPartialRecursive(frameContext);
+      const partialRunner = await this.runPartialRecursive(frameContext);
+      await sleep(); // Wait a tick for axe.runPartial to start
       await this.driver.switchTo().parentFrame();
-      return partials;
+
+      return partialRunner;
     } catch {
       if (switchedFrame) {
         await this.driver.switchTo().parentFrame();
       }
-      return [null];
+      return null;
     }
   }
 
@@ -222,33 +236,6 @@ class AxeBuilder {
     const res = await axeFinishRun(this.driver, partials, this.option);
     await this.driver.switchTo().defaultContent();
     return res;
-  }
-
-  /**
-   * Pass the axe results, or possible to the callback if needed
-   * and return a promise.
-   */
-  private resolveCallback(
-    thenable: Promise<AxeResults>,
-    callback?: CallbackFunction
-  ): Promise<AxeResults> {
-    return new Promise((resolve, reject) => {
-      thenable
-        .then((results: AxeResults) => {
-          /* istanbul ignore if */
-          callback?.(null, results);
-          resolve(results);
-        })
-        .catch((err: Error) => {
-          // When using a callback, do *not* reject the wrapping Promise. This prevents having to handle the same error twice.
-          /* istanbul ignore else */
-          if (callback) {
-            callback(err.message, null);
-          } else {
-            reject(err);
-          }
-        });
-    });
   }
 }
 
