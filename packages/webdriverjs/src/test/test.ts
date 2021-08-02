@@ -208,8 +208,8 @@ describe('@axe-core/webdriverjs', () => {
       assert.deepEqual(nodes[3].target, ['#ifr-baz', 'input']);
     });
 
-    it('injects into nested frames', async () => {
-      await driver.get(`${addr}/nested-frames.html`);
+    it('injects into nested frameset', async () => {
+      await driver.get(`${addr}/nested-frameset.html`);
       const { violations } = await new AxeBuilder(driver)
         .options({ runOnly: 'label' })
         .analyze();

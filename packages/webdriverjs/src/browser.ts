@@ -20,9 +20,9 @@ export function axeSourceInject(
   driver: WebDriver,
   axeSource: string,
   config: Spec | null
-): Promise<void> {
+): Promise<boolean> {
   return promisify(
-    driver.executeScript(`
+    driver.executeScript<boolean>(`
       try {
         ${axeSource};
         window.axe.configure({
@@ -32,6 +32,12 @@ export function axeSourceInject(
         if (config) {
           window.axe.configure(config);
         }
+        return (
+          window &&
+          window.axe &&
+          typeof window.axe.runPartial === 'function'
+        )
+
       } catch (err) {
         return { message: err.message, stack: err.stack };
       }
@@ -65,25 +71,31 @@ export function axeFinishRun(
   partialResults: Array<PartialResult | null>,
   options: RunOptions
 ): Promise<AxeResults> {
-  // Inject source and configuration a second time with a mock window,
+  // Inject source and configuration a second time with a mock "this" context,
   // to make it impossible to sniff the global window.axe for results.
   return promisify(
     driver.executeAsyncScript<AxeResults>(`
       var callback = arguments[arguments.length - 1];
-      try {
-        var window = { document: document };
-        ${axeSource};
-        var config = ${JSON.stringify(config)};
-        if (config) {
-          axe.configure(config);
+      (function () {
+        'use strict';
+        var window = undefined;
+        try {
+          ${axeSource};
+          this.axe.configure({
+            branding: { application: 'webdriverjs' }
+          });
+          var config = ${JSON.stringify(config)};
+          if (config) {
+            this.axe.configure(config);
+          }
+  
+          var partialResults = ${JSON.stringify(partialResults)};
+          var options = ${JSON.stringify(options || {})};
+          this.axe.finishRun(partialResults, options).then(callback);
+        } catch (err) {
+          callback({ message: err.message, stack: err.stack });
         }
-
-        var partialResults = ${JSON.stringify(partialResults)};
-        var options = ${JSON.stringify(options || {})};
-        axe.finishRun(partialResults, options).then(callback);
-      } catch (err) {
-        callback({ message: err.message, stack: err.stack });
-      }
+      }).call({ document: document, getComputedStyle: function () {} })
     `)
   );
 }

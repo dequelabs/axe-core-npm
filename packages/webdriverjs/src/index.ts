@@ -145,8 +145,12 @@ class AxeBuilder {
   private async analyzePromise(): Promise<AxeResults> {
     const context = normalizeContext(this.includes, this.excludes);
     await this.driver.switchTo().defaultContent();
-    await axeSourceInject(this.driver, this.axeSource, this.config);
-    if ((await axeSupportsRunPartial(this.driver)) === false) {
+    const runPartialSupported = await axeSourceInject(
+      this.driver,
+      this.axeSource,
+      this.config
+    );
+    if (runPartialSupported !== true) {
       return this.runLegacy(context);
     }
 
@@ -177,7 +181,9 @@ class AxeBuilder {
     context: ContextObject,
     initiator = false
   ): Promise<AxePartialRunner> {
-    await axeSourceInject(this.driver, this.axeSource, this.config);
+    if (!initiator) {
+      await axeSourceInject(this.driver, this.axeSource, this.config);
+    }
     // IMPORTANT: axeGetFrameContext MUST be called before axeRunPartial
     const frameContexts = await axeGetFrameContext(this.driver, context);
     // axeRunPartial MUST NOT be awaited, its promise is passed to AxePartialRunner
