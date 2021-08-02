@@ -48,11 +48,14 @@ describe('@axe-core/webdriverjs', () => {
   let driver: WebDriver;
   let server: Server;
   let addr: string;
-  let axe403Source: string;
+  let axeSource: string;
+  let axeCrasherSource: string;
 
   before(async () => {
-    const axePath = path.resolve(__dirname, './fixtures/axe-core-4.0.3.js');
-    axe403Source = fs.readFileSync(axePath, 'utf8');
+    const axePath = require.resolve('axe-core');
+    axeSource = fs.readFileSync(axePath, 'utf8');
+    const axeCrashPath = path.resolve(__dirname, './fixtures/axe-crasher.js');
+    axeCrasherSource = fs.readFileSync(axeCrashPath, 'utf8');
 
     chromedriver.start([`--port=${port}`]);
     await delay(500);
@@ -86,6 +89,49 @@ describe('@axe-core/webdriverjs', () => {
       assert.isArray(results.passes);
       assert.isArray(results.inapplicable);
     });
+
+    it('throws if axe errors out on the top window', done => {
+      driver
+        .get(`${addr}/crash-me.html`)
+        .then(() => {
+          return new AxeBuilder(driver, axeSource + axeCrasherSource).analyze();
+        })
+        .then(
+          () => done(new Error('Expect async function to throw')),
+          () => done()
+        );
+    });
+
+    it('throws when injecting a problematic source', done => {
+      driver
+        .get(`${addr}/crash-me.html`)
+        .then(() => {
+          return new AxeBuilder(driver, 'throw new Error()').analyze();
+        })
+        .then(
+          () => done(new Error('Expect async function to throw')),
+          () => done()
+        );
+    });
+
+    it('throws when a setup fails', done => {
+      const brokenSource =
+        axeSource +
+        `
+        ;window.axe.utils = {}
+      `;
+      driver
+        .get(`${addr}/index.html`)
+        .then(() => {
+          return new AxeBuilder(driver, brokenSource)
+            .withRules('label')
+            .analyze();
+        })
+        .then(
+          () => done(new Error(`Expect async function to throw`)),
+          () => done()
+        );
+    });
   });
 
   describe('configure', () => {
@@ -107,13 +153,11 @@ describe('@axe-core/webdriverjs', () => {
       assert.equal(results.violations[0].nodes.length, 2);
     });
 
-    it('should work with older versions of axe-core', async () => {
-      await driver.get(`${addr}/outer-configure-iframe.html`);
-      const results = await new AxeBuilder(driver, axe403Source)
-        .configure(json)
-        .analyze();
-      assert.equal(results.violations[0].id, 'dylang');
-      assert.equal(results.violations[0].nodes.length, 2);
+    it('throws when passed a non-object', () => {
+      assert.throws(() => {
+        /* @ts-expect-error */
+        new AxeBuilder(driver, axe403Source).configure('abc123');
+      });
     });
   });
 
@@ -207,15 +251,16 @@ describe('@axe-core/webdriverjs', () => {
       assert.deepEqual(nodes[2].target, ['#slotted-frame', 'input']);
     });
 
-    it('can run with versions of axe-core without axe.runPartial', async () => {
-      await driver.get(`${addr}/nested-iframes.html`);
-      const results = await new AxeBuilder(driver, axe403Source)
-        .options({ runOnly: ['label'] })
+    it('reports erroring frames in frame-tested', async () => {
+      await driver.get(`${addr}/crash-me-parent.html`);
+      const results = await new AxeBuilder(driver, axeSource + axeCrasherSource)
+        .options({ runOnly: ['label', 'frame-tested'] })
         .analyze();
 
+      assert.equal(results.incomplete[0].id, 'frame-tested');
+      assert.lengthOf(results.incomplete[0].nodes, 1);
       assert.equal(results.violations[0].id, 'label');
-      assert.lengthOf(results.violations[0].nodes, 4);
-      assert.equal(results.testEngine.version, '4.0.3');
+      assert.lengthOf(results.violations[0].nodes, 2);
     });
   });
 
@@ -350,7 +395,7 @@ describe('@axe-core/webdriverjs', () => {
       assert.strictEqual(error, null);
     });
 
-    it('wth only exclude', async () => {
+    it('with only exclude', async () => {
       let error: Error | null = null;
       await driver.get(`${addr}/context.html`);
       const builder = new AxeBuilder(driver).exclude('.exclude');
@@ -366,7 +411,21 @@ describe('@axe-core/webdriverjs', () => {
   });
 
   describe('callback()', () => {
-    it('returns results when callback is provided', done => {
+    it('returns an error as the first argument', done => {
+      driver.get(`${addr}/index.html`).then(() => {
+        new AxeBuilder(driver, 'throw new Error()').analyze((err, results) => {
+          try {
+            assert.isNull(results);
+            assert.isNotNull(err);
+            done();
+          } catch (e) {
+            done(e);
+          }
+        });
+      });
+    });
+
+    it('returns as the second argument', done => {
       driver.get(`${addr}/index.html`).then(() => {
         new AxeBuilder(driver).analyze((err, results) => {
           try {
@@ -382,6 +441,64 @@ describe('@axe-core/webdriverjs', () => {
           }
         });
       });
+    });
+  });
+
+  describe('for versions without axe.runPartial', () => {
+    let axe403Source: string;
+    before(() => {
+      const axe403Path = path.resolve(
+        __dirname,
+        './fixtures/axe-core-4.0.3.js'
+      );
+      axe403Source = fs.readFileSync(axe403Path, 'utf8');
+    });
+
+    it('can run', async () => {
+      await driver.get(`${addr}/nested-iframes.html`);
+      const results = await new AxeBuilder(driver, axe403Source)
+        .options({ runOnly: ['label'] })
+        .analyze();
+
+      assert.equal(results.violations[0].id, 'label');
+      assert.lengthOf(results.violations[0].nodes, 4);
+      assert.equal(results.testEngine.version, '4.0.3');
+    });
+
+    it('throws if the top level errors', done => {
+      driver
+        .get(`${addr}/crash-me.html`)
+        .then(() => {
+          return new AxeBuilder(
+            driver,
+            axe403Source + axeCrasherSource
+          ).analyze();
+        })
+        .then(
+          () => done(new Error('Expect async function to throw')),
+          () => done()
+        );
+    });
+
+    it('can be configured', async () => {
+      await driver.get(`${addr}/outer-configure-iframe.html`);
+      const results = await new AxeBuilder(driver, axe403Source)
+        .configure(json)
+        .analyze();
+      assert.equal(results.violations[0].id, 'dylang');
+      assert.equal(results.violations[0].nodes.length, 2);
+    });
+
+    it('reports frame-tested', async () => {
+      await driver.get(`${addr}/crash-me-parent.html`);
+      const results = await new AxeBuilder(driver, axeSource + axeCrasherSource)
+        .options({ runOnly: ['label', 'frame-tested'] })
+        .analyze();
+
+      assert.equal(results.incomplete[0].id, 'frame-tested');
+      assert.lengthOf(results.incomplete[0].nodes, 1);
+      assert.equal(results.violations[0].id, 'label');
+      assert.lengthOf(results.violations[0].nodes, 2);
     });
   });
 });

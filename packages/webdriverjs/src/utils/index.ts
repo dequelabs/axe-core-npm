@@ -2,11 +2,7 @@ import type { ContextObject } from 'axe-core';
 
 /**
  * Get running context
- * @param {Array} include
- * @param {Array} exclude
- * @returns {(ElementContext | null)}
  */
-
 export const normalizeContext = (
   include: string[],
   exclude: string[]
@@ -26,6 +22,17 @@ export const normalizeContext = (
   };
 };
 
-export function sleep(t = 10): Promise<void> {
-  return new Promise(r => setTimeout(r, t));
+/**
+ * Promise timeout
+ */
+export function sleep(milliseconds = 10): Promise<void> {
+  return new Promise(r => setTimeout(r, milliseconds));
 }
+
+// Utility to tell NodeJS not to worry about catching promise errors async.
+// See: https://stackoverflow.com/questions/40920179/should-i-refrain-from-handling-promise-rejection-asynchronously
+export const caught = (
+  f =>
+  <T>(p: Promise<T>): Promise<T> =>
+    p.catch(f), p
+)();

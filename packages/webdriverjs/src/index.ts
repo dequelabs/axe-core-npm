@@ -2,7 +2,7 @@ import { WebDriver } from 'selenium-webdriver';
 import { RunOptions, Spec, AxeResults, ContextObject } from 'axe-core';
 import { source } from 'axe-core';
 import { CallbackFunction, BuilderOptions } from './types';
-import { normalizeContext, sleep } from './utils';
+import { normalizeContext, sleep } from './utils/index';
 import AxeInjector from './axe-injector';
 import { AxePartialRunner, PartialResults } from './axe-partial-runner';
 import {
@@ -71,8 +71,6 @@ class AxeBuilder {
    */
   public withRules(rules: string | string[]): AxeBuilder {
     rules = Array.isArray(rules) ? rules : [rules];
-    /* istanbul ignore next */
-    this.option = this.option || {};
     this.option.runOnly = {
       type: 'rule',
       values: rules
@@ -87,8 +85,6 @@ class AxeBuilder {
    */
   public withTags(tags: string | string[]): AxeBuilder {
     tags = Array.isArray(tags) ? tags : [tags];
-    /* istanbul ignore next */
-    this.option = this.option || {};
     this.option.runOnly = {
       type: 'tag',
       values: tags
@@ -101,13 +97,10 @@ class AxeBuilder {
    */
   public disableRules(rules: string | string[]): AxeBuilder {
     rules = Array.isArray(rules) ? rules : [rules];
-    /* istanbul ignore next */
-    this.option = this.option || {};
     this.option.rules = {};
     for (const rule of rules) {
       this.option.rules[rule] = { enabled: false };
     }
-
     return this;
   }
 
@@ -116,7 +109,6 @@ class AxeBuilder {
    * This value is passed directly to `axe.configure()`
    */
   public configure(config: Spec): AxeBuilder {
-    /* istanbul ignore if */
     if (typeof config !== 'object') {
       throw new Error(
         'AxeBuilder needs an object to configure. See axe-core configure API.'
@@ -133,13 +125,11 @@ class AxeBuilder {
     return new Promise((resolve, reject) => {
       return this.analyzePromise()
         .then((results: AxeResults) => {
-          /* istanbul ignore if */
           callback?.(null, results);
           resolve(results);
         })
         .catch((err: Error) => {
           // When using a callback, do *not* reject the wrapping Promise. This prevents having to handle the same error twice.
-          /* istanbul ignore else */
           if (callback) {
             callback(err.message, null);
           } else {
@@ -156,12 +146,11 @@ class AxeBuilder {
     const context = normalizeContext(this.includes, this.excludes);
     await this.driver.switchTo().defaultContent();
     await axeSourceInject(this.driver, this.axeSource, this.config);
-
     if ((await axeSupportsRunPartial(this.driver)) === false) {
       return this.runLegacy(context);
     }
 
-    const partialRunner = await this.runPartialRecursive(context);
+    const partialRunner = await this.runPartialRecursive(context, true);
     const partials = await partialRunner.getPartials();
     return this.finishRun(partials);
   }
@@ -185,14 +174,15 @@ class AxeBuilder {
    * Get partial results from the current context and its child frames
    */
   private async runPartialRecursive(
-    context: ContextObject
+    context: ContextObject,
+    initiator = false
   ): Promise<AxePartialRunner> {
     await axeSourceInject(this.driver, this.axeSource, this.config);
     // IMPORTANT: axeGetFrameContext MUST be called before axeRunPartial
     const frameContexts = await axeGetFrameContext(this.driver, context);
     // axeRunPartial MUST NOT be awaited, its promise is passed to AxePartialRunner
     const partialPromise = axeRunPartial(this.driver, context, this.option);
-    const runner = new AxePartialRunner(partialPromise);
+    const runner = new AxePartialRunner(partialPromise, initiator);
 
     for (const frameInfo of frameContexts) {
       const childResult = await this.runFramePartial(frameInfo);
@@ -231,10 +221,8 @@ class AxeBuilder {
    * Use axe.finishRun() to turn partial results into actual results
    */
   private async finishRun(partials: PartialResults): Promise<AxeResults> {
-    await this.driver.switchTo().newWindow('tab');
-    await axeSourceInject(this.driver, this.axeSource, this.config);
-    const res = await axeFinishRun(this.driver, partials, this.option);
-    await this.driver.switchTo().defaultContent();
+    const { driver, axeSource, config, option } = this;
+    const res = await axeFinishRun(driver, axeSource, config, partials, option);
     return res;
   }
 }

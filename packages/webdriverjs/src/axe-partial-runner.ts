@@ -1,4 +1,5 @@
 import * as axe from 'axe-core';
+import { caught } from './utils/index';
 
 export type PartialResults = Parameters<typeof axe.finishRun>[0];
 
@@ -17,8 +18,11 @@ export class AxePartialRunner {
   private partialPromise: Promise<axe.PartialResult>;
   private childRunners: Array<AxePartialRunner | null> = [];
 
-  constructor(partialPromise: Promise<axe.PartialResult>) {
-    this.partialPromise = partialPromise;
+  constructor(
+    partialPromise: Promise<axe.PartialResult>,
+    private initiator: boolean = false
+  ) {
+    this.partialPromise = caught(partialPromise);
   }
 
   public addChildResults(childResultRunner: AxePartialRunner | null) {
@@ -29,11 +33,14 @@ export class AxePartialRunner {
     try {
       const parentPartial = await this.partialPromise;
       const childPromises = this.childRunners.map(childRunner => {
-        return childRunner?.getPartials() || [null];
+        return childRunner ? caught(childRunner.getPartials()) : [null];
       });
       const childPartials = (await Promise.all(childPromises)).flat(1);
       return [parentPartial, ...childPartials];
-    } catch {
+    } catch (e) {
+      if (this.initiator) {
+        throw e;
+      }
       return [null];
     }
   }

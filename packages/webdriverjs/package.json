@@ -33,7 +33,7 @@
   "scripts": {
     "prebuild": "rimraf dist",
     "build": "tsc",
-    "test": "mocha --timeout 60000 -r ts-node/register 'src/test/test.ts'",
+    "test": "mocha --timeout 10000 -r ts-node/register 'src/test/test.ts'",
     "coverage": "nyc npm run test",
     "prepare": "npm run build"
   },
@@ -95,9 +95,9 @@
     "sourceMap": true,
     "instrument": true,
     "checkCoverage": true,
-    "statements": 100,
-    "branches": 100,
-    "functions": 100,
-    "lines": 100
+    "statements": 85,
+    "branches": 85,
+    "functions": 85,
+    "lines": 85
   }
 }
