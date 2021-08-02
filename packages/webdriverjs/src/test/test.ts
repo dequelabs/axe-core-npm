@@ -115,11 +115,7 @@ describe('@axe-core/webdriverjs', () => {
     });
 
     it('throws when a setup fails', done => {
-      const brokenSource =
-        axeSource +
-        `
-        ;window.axe.utils = {}
-      `;
+      const brokenSource = axeSource + `;window.axe.utils = {}`;
       driver
         .get(`${addr}/index.html`)
         .then(() => {

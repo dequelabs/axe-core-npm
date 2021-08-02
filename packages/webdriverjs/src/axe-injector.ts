@@ -193,21 +193,4 @@ export default class AxeInjectorLegacy {
     // Move back to the top-most frame
     return this.driver.switchTo().defaultContent();
   }
-
-  /**
-   * Inject axe and invoke provided callback when complete
-   * @param {InjectCallback} callback
-   * @returns {void}
-   */
-
-  public inject(callback: InjectCallback): void {
-    this.injectIntoAllFrames()
-      .then(() => callback())
-      .catch(e => {
-        if (this.options.logIframeErrors) {
-          return callback();
-        }
-        callback(e);
-      });
-  }
 }
