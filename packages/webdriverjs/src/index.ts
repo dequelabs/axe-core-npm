@@ -11,7 +11,6 @@ import {
   axeRunLegacy,
   axeSourceInject,
   axeFinishRun,
-  axeSupportsRunPartial,
   FrameContextWeb
 } from './browser';
 import * as assert from 'assert';
@@ -145,7 +144,7 @@ class AxeBuilder {
   private async analyzePromise(): Promise<AxeResults> {
     const context = normalizeContext(this.includes, this.excludes);
     await this.driver.switchTo().defaultContent();
-    const runPartialSupported = await axeSourceInject(
+    const { runPartialSupported } = await axeSourceInject(
       this.driver,
       this.axeSource,
       this.config

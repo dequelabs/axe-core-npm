@@ -20,9 +20,9 @@ export function axeSourceInject(
   driver: WebDriver,
   axeSource: string,
   config: Spec | null
-): Promise<boolean> {
+): Promise<{ runPartialSupported: boolean }> {
   return promisify(
-    driver.executeScript<boolean>(`
+    driver.executeScript<{ runPartialSupported: boolean }>(`
       try {
         ${axeSource};
         window.axe.configure({
@@ -32,12 +32,11 @@ export function axeSourceInject(
         if (config) {
           window.axe.configure(config);
         }
-        return (
-          window &&
-          window.axe &&
-          typeof window.axe.runPartial === 'function'
-        )
-
+        return {
+          runPartialSupported: (
+            typeof window.axe.runPartial === 'function'
+          )
+        }
       } catch (err) {
         return { message: err.message, stack: err.stack };
       }
@@ -122,18 +121,6 @@ export function axeGetFrameContext(
   );
 }
 
-export function axeSupportsRunPartial(driver: WebDriver): Promise<boolean> {
-  return promisify(
-    driver.executeScript<boolean>(`
-      return (
-        window &&
-        window.axe &&
-        typeof window.axe.runPartial === 'function'
-      )
-    `)
-  );
-}
-
 export function axeRunLegacy(
   driver: WebDriver,
   context: ContextObject,
@@ -171,7 +158,7 @@ function promisify<T>(thenable: Promise<T>): Promise<T> {
     thenable.then(out => {
       if (isSerialError(out)) {
         // Throw if we find an error-like object
-        reject(new Error(out.stack));
+        return reject(new Error(out.stack));
       }
       resolve(out);
     }, reject);
