@@ -183,13 +183,12 @@ class AxeBuilder {
     }
     // IMPORTANT: axeGetFrameContext MUST be called before axeRunPartial
     const frameContexts = await axeGetFrameContext(this.driver, context);
-    // axeRunPartial MUST NOT be awaited, its promise is passed to AxePartialRunner
     const partials: PartialResults = [
       await axeRunPartial(this.driver, context, this.option)
     ];
     for (const frameInfo of frameContexts) {
-      const childResult = await this.runFramePartial(frameInfo);
-      partials.push(...childResult);
+      const childResults = await this.runFramePartial(frameInfo);
+      partials.push(...childResults);
     }
     return partials;
   }
