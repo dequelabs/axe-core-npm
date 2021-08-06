@@ -1,10 +1,9 @@
 import { WebDriver } from 'selenium-webdriver';
 import { RunOptions, Spec, AxeResults, ContextObject } from 'axe-core';
 import { source } from 'axe-core';
-import { CallbackFunction, BuilderOptions } from './types';
-import { normalizeContext, sleep } from './utils/index';
+import { CallbackFunction, BuilderOptions, PartialResults } from './types';
+import { normalizeContext } from './utils/index';
 import AxeInjector from './axe-injector';
-import { AxePartialRunner, PartialResults } from './axe-partial-runner';
 import {
   axeGetFrameContext,
   axeRunPartial,
@@ -153,8 +152,7 @@ class AxeBuilder {
       return this.runLegacy(context);
     }
 
-    const partialRunner = await this.runPartialRecursive(context, true);
-    const partials = await partialRunner.getPartials();
+    const partials = await this.runPartialRecursive(context, true);
     return this.finishRun(partials);
   }
 
@@ -179,21 +177,21 @@ class AxeBuilder {
   private async runPartialRecursive(
     context: ContextObject,
     initiator = false
-  ): Promise<AxePartialRunner> {
+  ): Promise<PartialResults> {
     if (!initiator) {
       await axeSourceInject(this.driver, this.axeSource, this.config);
     }
     // IMPORTANT: axeGetFrameContext MUST be called before axeRunPartial
     const frameContexts = await axeGetFrameContext(this.driver, context);
     // axeRunPartial MUST NOT be awaited, its promise is passed to AxePartialRunner
-    const partialPromise = axeRunPartial(this.driver, context, this.option);
-    const runner = new AxePartialRunner(partialPromise, initiator);
-
+    const partials: PartialResults = [
+      await axeRunPartial(this.driver, context, this.option)
+    ];
     for (const frameInfo of frameContexts) {
       const childResult = await this.runFramePartial(frameInfo);
-      runner.addChildResults(childResult);
+      partials.push(...childResult);
     }
-    return runner;
+    return partials;
   }
 
   /**
@@ -203,14 +201,13 @@ class AxeBuilder {
     frameContext,
     frameSelector,
     frame
-  }: FrameContextWeb): Promise<AxePartialRunner | null> {
+  }: FrameContextWeb): Promise<PartialResults> {
     let switchedFrame = false;
     try {
       assert(frame, `Expect frame of "${frameSelector}" to be defined`);
       await this.driver.switchTo().frame(frame);
       switchedFrame = true;
       const partialRunner = await this.runPartialRecursive(frameContext);
-      await sleep(); // Wait a tick for axe.runPartial to start
       await this.driver.switchTo().parentFrame();
 
       return partialRunner;
@@ -218,7 +215,7 @@ class AxeBuilder {
       if (switchedFrame) {
         await this.driver.switchTo().parentFrame();
       }
-      return null;
+      return [null];
     }
   }
 

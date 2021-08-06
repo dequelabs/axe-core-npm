@@ -1,6 +1,6 @@
 import 'mocha';
 import { Spec } from 'axe-core';
-import type { WebDriver } from 'selenium-webdriver';
+import { WebDriver } from 'selenium-webdriver';
 import * as express from 'express';
 import * as chromedriver from 'chromedriver';
 import testListen = require('test-listen');

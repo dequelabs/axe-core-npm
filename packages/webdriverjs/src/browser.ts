@@ -15,6 +15,8 @@ export type FrameContextWeb = FrameContext & {
 
 // https://github.com/vercel/pkg/issues/676
 // we need to pass a string vs a function so we manually stringified the function
+// There are no try/catch blocks needed in these scripts. If an error occurs
+// Selenium pass them onto the catch block.
 
 export function axeSourceInject(
   driver: WebDriver,
@@ -23,23 +25,16 @@ export function axeSourceInject(
 ): Promise<{ runPartialSupported: boolean }> {
   return promisify(
     driver.executeScript<{ runPartialSupported: boolean }>(`
-      try {
-        ${axeSource};
-        window.axe.configure({
-          branding: { application: 'webdriverjs' }
-        });
-        var config = ${JSON.stringify(config)};
-        if (config) {
-          window.axe.configure(config);
-        }
-        return {
-          runPartialSupported: (
-            typeof window.axe.runPartial === 'function'
-          )
-        }
-      } catch (err) {
-        return { message: err.message, stack: err.stack };
+      ${axeSource};
+      window.axe.configure({
+        branding: { application: 'webdriverjs' }
+      });
+      var config = ${JSON.stringify(config)};
+      if (config) {
+        window.axe.configure(config);
       }
+      var runPartial = typeof window.axe.runPartial === 'function';
+      return { runPartialSupported: runPartial };
     `)
   );
 }
@@ -52,13 +47,9 @@ export function axeRunPartial(
   return promisify(
     driver.executeAsyncScript<PartialResult>(`
       var callback = arguments[arguments.length - 1];
-      try {
-        var context = ${JSON.stringify(context)} || document;
-        var options = ${JSON.stringify(options)} || {};
-        window.axe.runPartial(context, options).then(callback);
-      } catch (err) {
-        callback({ message: err.message, stack: err.stack });
-      }
+      var context = ${JSON.stringify(context)} || document;
+      var options = ${JSON.stringify(options)} || {};
+      window.axe.runPartial(context, options).then(callback);
     `)
   );
 }
@@ -78,22 +69,18 @@ export function axeFinishRun(
       (function () {
         'use strict';
         var window = undefined;
-        try {
-          ${axeSource};
-          this.axe.configure({
-            branding: { application: 'webdriverjs' }
-          });
-          var config = ${JSON.stringify(config)};
-          if (config) {
-            this.axe.configure(config);
-          }
-  
-          var partialResults = ${JSON.stringify(partialResults)};
-          var options = ${JSON.stringify(options || {})};
-          this.axe.finishRun(partialResults, options).then(callback);
-        } catch (err) {
-          callback({ message: err.message, stack: err.stack });
+        ${axeSource};
+        this.axe.configure({
+          branding: { application: 'webdriverjs' }
+        });
+        var config = ${JSON.stringify(config)};
+        if (config) {
+          this.axe.configure(config);
         }
+
+        var partialResults = ${JSON.stringify(partialResults)};
+        var options = ${JSON.stringify(options || {})};
+        this.axe.finishRun(partialResults, options).then(callback);
       }).call({ document: document, getComputedStyle: function () {} })
     `)
   );
@@ -105,18 +92,14 @@ export function axeGetFrameContext(
 ): Promise<FrameContextWeb[]> {
   return promisify(
     driver.executeScript<FrameContextWeb[]>(`
-      try {
-        var context = ${JSON.stringify(context)}
-        var frameContexts = window.axe.utils.getFrameContexts(context);
-        return frameContexts.map(function (frameContext) {
-          return Object.assign(frameContext, {
-            href: window.location.href, // For debugging
-            frame: axe.utils.shadowSelect(frameContext.frameSelector)
-          });
+      var context = ${JSON.stringify(context)}
+      var frameContexts = window.axe.utils.getFrameContexts(context);
+      return frameContexts.map(function (frameContext) {
+        return Object.assign(frameContext, {
+          href: window.location.href, // For debugging
+          frame: axe.utils.shadowSelect(frameContext.frameSelector)
         });
-      } catch (err) {
-        return { message: err.message, stack: err.stack };
-      }
+      });
     `)
   );
 }
@@ -132,20 +115,13 @@ export function axeRunLegacy(
   return promisify(
     driver.executeAsyncScript<AxeResults>(`
       var callback = arguments[arguments.length - 1];
-      try {
-        var context = ${JSON.stringify(context)} || document;
-        var options = ${JSON.stringify(options)} || {};
-        var config = ${JSON.stringify(config)} || null;
-        if (config) {
-          window.axe.configure(config);
-        }
-        window.axe.run(context, options).then(callback);
-      } catch (err) {
-        callback({
-          message: err.message,
-          stack: err.stack
-        });
+      var context = ${JSON.stringify(context)} || document;
+      var options = ${JSON.stringify(options)} || {};
+      var config = ${JSON.stringify(config)} || null;
+      if (config) {
+        window.axe.configure(config);
       }
+      window.axe.run(context, options).then(callback);
     `)
   );
 }
@@ -155,26 +131,6 @@ export function axeRunLegacy(
  */
 function promisify<T>(thenable: Promise<T>): Promise<T> {
   return new Promise((resolve, reject) => {
-    thenable.then(out => {
-      if (isSerialError(out)) {
-        // Throw if we find an error-like object
-        return reject(new Error(out.stack));
-      }
-      resolve(out);
-    }, reject);
+    thenable.then(resolve, reject);
   });
-}
-
-type SerialError = {
-  message: string;
-  stack: string;
-};
-
-function isSerialError(obj: unknown): obj is SerialError {
-  return (
-    typeof obj === 'object' &&
-    obj !== null &&
-    'message' in obj &&
-    'stack' in obj
-  );
 }
