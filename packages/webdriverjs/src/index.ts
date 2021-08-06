@@ -196,7 +196,7 @@ class AxeBuilder {
   /**
    * Get partial results from a specific frame
    */
-  async runFramePartial({
+  private async runFramePartial({
     frameContext,
     frameSelector,
     frame
