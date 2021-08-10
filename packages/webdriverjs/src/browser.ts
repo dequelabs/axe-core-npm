@@ -8,7 +8,7 @@ import {
 } from 'axe-core';
 import { WebDriver, WebElement } from 'selenium-webdriver';
 
-export type FrameContextWeb = FrameContext & {
+type FrameContextWeb = FrameContext & {
   frame: WebElement;
   href: string;
 };

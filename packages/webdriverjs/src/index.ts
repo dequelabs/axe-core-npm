@@ -9,8 +9,7 @@ import {
   axeRunPartial,
   axeRunLegacy,
   axeSourceInject,
-  axeFinishRun,
-  FrameContextWeb
+  axeFinishRun
 } from './browser';
 import * as assert from 'assert';
 
@@ -186,36 +185,23 @@ class AxeBuilder {
     const partials: PartialResults = [
       await axeRunPartial(this.driver, context, this.option)
     ];
-    for (const frameInfo of frameContexts) {
-      const childResults = await this.runFramePartial(frameInfo);
-      partials.push(...childResults);
+
+    for (const { frameContext, frameSelector, frame } of frameContexts) {
+      let switchedFrame = false;
+      try {
+        assert(frame, `Expect frame of "${frameSelector}" to be defined`);
+        await this.driver.switchTo().frame(frame);
+        switchedFrame = true;
+        partials.push(...(await this.runPartialRecursive(frameContext)));
+        await this.driver.switchTo().parentFrame();
+      } catch {
+        if (switchedFrame) {
+          await this.driver.switchTo().parentFrame();
+        }
+        partials.push(null);
+      }
     }
     return partials;
-  }
-
-  /**
-   * Get partial results from a specific frame
-   */
-  private async runFramePartial({
-    frameContext,
-    frameSelector,
-    frame
-  }: FrameContextWeb): Promise<PartialResults> {
-    let switchedFrame = false;
-    try {
-      assert(frame, `Expect frame of "${frameSelector}" to be defined`);
-      await this.driver.switchTo().frame(frame);
-      switchedFrame = true;
-      const partialRunner = await this.runPartialRecursive(frameContext);
-      await this.driver.switchTo().parentFrame();
-
-      return partialRunner;
-    } catch {
-      if (switchedFrame) {
-        await this.driver.switchTo().parentFrame();
-      }
-      return [null];
-    }
   }
 
   /**
