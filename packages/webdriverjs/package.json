@@ -37,7 +37,7 @@
   "scripts": {
     "prebuild": "rimraf dist",
     "build": "tsc",
-    "test": "mocha --timeout 60000 -r ts-node/register 'src/test/test.ts'",
+    "test": "mocha --timeout 10000 -r ts-node/register 'src/test/test.ts'",
     "coverage": "nyc npm run test",
     "prepare": "npm run build"
   },
@@ -80,7 +80,7 @@
     "typescript": "^4.3.5"
   },
   "dependencies": {
-    "axe-core": "^4.2.3"
+    "axe-core": "^4.3.2"
   },
   "peerDependencies": {
     "selenium-webdriver": ">3.0.0-beta  || >=2.53.1 || >4.0.0-alpha"
@@ -99,9 +99,9 @@
     "sourceMap": true,
     "instrument": true,
     "checkCoverage": true,
-    "statements": 100,
-    "branches": 100,
-    "functions": 100,
-    "lines": 100
+    "statements": 85,
+    "branches": 85,
+    "functions": 85,
+    "lines": 85
   }
 }
