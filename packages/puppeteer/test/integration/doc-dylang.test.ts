@@ -1,59 +1,45 @@
 // Adapter from axe-webdriverjs.
 // This test tests to make sure that a valid configuration works.
-
-import { expect } from 'chai';
-import Puppeteer from 'puppeteer';
-import * as path from 'path';
+import 'mocha';
+import { expect, assert } from 'chai';
+import * as fs from 'fs';
+import Puppeteer, { Browser, Page } from 'puppeteer';
 import AxePuppeteer from '../../src/index';
 import Axe from 'axe-core';
-import { customConfig, fixtureFilePath } from '../utils';
-import express from 'express';
-import { createServer } from 'http';
-import testListen from 'test-listen';
+import { customConfig, puppeteerArgs, startServer } from '../utils';
+import { Server } from 'http';
 
 describe('doc-dylang.html', function () {
-  before(async function () {
-    this.timeout(10000);
+  let browser: Browser;
+  let page: Page;
+  let server: Server;
+  let addr: string;
+  this.timeout(10000);
 
-    const args = [];
-    if (process.env.CI) {
-      args.push('--no-sandbox', '--disable-setuid-sandbox');
-    }
-    this.browser = await Puppeteer.launch({ args });
+  before(async () => {
+    const args = puppeteerArgs();
+    browser = await Puppeteer.launch({ args });
+    ({ server, addr } = await startServer());
   });
+
   after(async function () {
-    await this.browser.close();
+    await browser.close();
+    server.close();
   });
-  before(async function () {
-    // const app: express.Application = express()
-    const app: express.Application = express();
-    app.use(express.static(path.resolve(__dirname,  '..', 'fixtures')));
-    this.server = createServer(app);
-    this.addr = await testListen(this.server);
 
-    this.fixtureFileURL = (filename: string): string => {
-      return `${this.addr}/${filename}`;
-    };
-  });
-  after(function () {
-    this.server.close();
-  });
   beforeEach(async function () {
-    this.page = await this.browser.newPage();
+    page = await browser.newPage();
   });
+
   afterEach(async function () {
-    await this.page.close();
+    await page.close();
   });
 
   it('should find violations with customized helpUrl', async function () {
     const config = await customConfig();
+    await page.goto(`${addr}/doc-dylang.html`);
 
-    await this.page.goto(this.fixtureFileURL('doc-dylang.html'));
-
-    const results = await new AxePuppeteer(this.page)
-      .configure(config)
-      .withRules(['dylang'])
-      .analyze();
+    const results = await new AxePuppeteer(page).configure(config).analyze();
 
     expect(results.violations).to.have.lengthOf(1);
     expect(results.violations[0].id).to.eql('dylang');
@@ -63,20 +49,30 @@ describe('doc-dylang.html', function () {
     expect(results.passes).to.have.lengthOf(0);
   });
 
+  it('configures in nested frames', async function () {
+    await page.goto(`${addr}/nested-frames.html`);
 
-  it('configures in nested frames', async function() {
-    await this.page.goto(this.fixtureFileURL('nested-frames.html'))
-
-    const results = await new AxePuppeteer(this.page)
+    const results = await new AxePuppeteer(page)
       .configure(await customConfig())
-      .withRules(['dylang'])
-      .analyze()
+      .analyze();
 
-    expect(results.violations.find((r: Axe.Result) => r.id === 'dylang'))
-      .to.not.be.undefined
+    expect(results.violations.find((r: Axe.Result) => r.id === 'dylang')).to.not
+      .be.undefined;
     expect(results.violations.find((r: Axe.Result) => r.id === 'dylang'))
       .to.have.property('nodes')
-      .and.to.have.lengthOf(4)
-  })
+      .and.to.have.lengthOf(4);
+  });
 
+  it('works without runPartial', async () => {
+    const axePath = require.resolve('../fixtures/external/axe-core@legacy.js');
+    const axe403Source = fs.readFileSync(axePath, 'utf8');
+    const config = await customConfig();
+    await page.goto(`${addr}/nested-frames.html`);
+    const results = await new AxePuppeteer(page, axe403Source)
+      .configure(config)
+      .analyze();
+
+    assert.equal(results.violations[0].id, 'dylang');
+    assert.equal(results.violations[0].nodes.length, 4);
+  });
 });

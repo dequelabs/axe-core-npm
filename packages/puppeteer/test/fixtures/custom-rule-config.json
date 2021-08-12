@@ -1,4 +1,5 @@
 {
+  "disableOtherRules": true,
   "checks": [
     {
       "id": "dylang",
