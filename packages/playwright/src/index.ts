@@ -117,7 +117,10 @@ export default class AxeBuilder {
     const context = normalizeContext(this.includes, this.excludes);
     const page = this.page;
     const options = this.option;
-    await page.evaluate(this.script());
+
+    // in playwright all frames are available in `.frames()`, even nested and
+    // shadowDOM iframes. also navigating to a url causes it to be put into
+    // an iframe so we don't need to inject into the page object itself
     const frames = page.frames();
     await this.inject(frames);
     const { results, error } = await page.evaluate(analyzePage, {
@@ -141,11 +144,6 @@ export default class AxeBuilder {
   private async inject(frames: Frame[]): Promise<void> {
     for (const iframe of frames) {
       await iframe.evaluate(this.script());
-      const childFrames = iframe.childFrames();
-      for (const childFrame of childFrames) {
-        frames.push(childFrame);
-        await this.inject(childFrame.childFrames());
-      }
     }
   }
 

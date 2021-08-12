@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Nested Frames</title>
+  </head>
+  <body>
+    <h1>This page has iframes in shadow DOM!</h1>
+    <iframe src="/iframes/baz.html" id="light-frame"></iframe>
+    <div id="shadow-root">
+      <iframe src="/iframes/baz.html" id="slotted-frame"></iframe>
+    </div>
+
+    <script>
+      const shadowRoot = document
+        .querySelector('#shadow-root')
+        .attachShadow({ mode: 'open' });
+      shadowRoot.innerHTML = `
+        <iframe src="/iframes/baz.html" id="shadow-frame"></iframe>
+        <slot />
+      `;
+    </script>
+  </body>
+</html>

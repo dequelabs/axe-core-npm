@@ -57,14 +57,12 @@ describe('testPages', function () {
     };
 
     await testPages(['http://foo'], config);
-
-    assert.equal(asyncScripts.length, 2);
-    const [script] = asyncScripts;
-    assert.match(
-      script,
-      /script\.innerHTML\s*=[\s\S]*['"]document\.documentElement\.classList\.add\(['"]deque-axe-is-ready/
-    );
-
+    const script = asyncScripts.find(scr => {
+      return scr.match(
+        /script\.innerHTML\s*=[\s\S]*['"]document\.documentElement\.classList\.add\(['"]deque-axe-is-ready/
+      );
+    });
+    assert.isDefined(script);
     assert.equal(waitCalls, 1);
   });
 
