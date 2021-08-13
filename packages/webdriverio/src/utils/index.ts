@@ -1,10 +1,17 @@
-import type { AxeResults, ElementContext } from 'axe-core';
-import * as webdriverio from 'webdriverio';
 import type {
-  AnalyzePageParams,
-  AnalyzePageResponse,
-  DoneFunction,
-  BrowserObject
+  AxeResults,
+  ElementContext,
+  PartialResult,
+  ContextObject
+} from 'axe-core';
+import type {
+  BrowserObject,
+  AxeRunPartialParams,
+  AxeGetFrameContextParams,
+  AxeRunLegacyParams,
+  AxeFinishRunParams,
+  AxeSourceInjectResponse,
+  AxeSourceInjectParams
 } from '../types';
 
 /**
@@ -37,53 +44,24 @@ export const isWebdriverClient = (client: BrowserObject): boolean => {
  */
 
 export const normalizeContext = (
-  include: string[],
-  exclude: string[]
+  includes: string[],
+  excludes: string[],
+  disabledFrameSelectors: string[]
 ): ElementContext | null => {
-  if (!exclude.length) {
-    if (!include.length) {
-      return null;
-    }
-    return {
-      include
-    };
-  }
-  if (!include.length) {
-    return {
-      exclude
-    };
-  }
-  return {
-    include,
-    exclude
+  const base: ContextObject = {
+    exclude: []
   };
-};
-
-/**
- * Analyze the page.
- * @param {AnalyzePageParams} analyzeContext
- * @param {DoneFunction} done
- * @returns {AnalyzePageResponse}
- */
-
-export const analyzePage = (
-  analyzeContext: AnalyzePageParams,
-  done: DoneFunction
-): AnalyzePageResponse | Promise<void> => {
-  const axeCore = window.axe;
-  const { options, context } = analyzeContext;
-
-  // Add webdriverio branding
-  axeCore.configure({ branding: { application: 'webdriverio' } });
-  // Run axe-core
-  return axeCore
-    .run(context || document, options || {})
-    .then((results: AxeResults) => {
-      done({ error: null, results });
-    })
-    .catch((err: Error) => {
-      done({ error: err.message, results: null });
-    });
+  if (excludes.length && Array.isArray(base.exclude)) {
+    base.exclude.push(...excludes);
+  }
+  if (disabledFrameSelectors.length && Array.isArray(base.exclude)) {
+    const frameExcludes = disabledFrameSelectors.map(frame => [frame, '*']);
+    base.exclude.push(...frameExcludes);
+  }
+  if (includes.length) {
+    base.include = includes;
+  }
+  return base;
 };
 
 /**
@@ -103,4 +81,117 @@ export const logOrRethrowError = (error: Error): void => {
   } else {
     throw new Error(error.message);
   }
+};
+
+/**
+ * Selenium-webdriver thenable aren't chainable. This fixes it.
+ */
+
+const promisify = <T>(thenable: Promise<T>): Promise<T> => {
+  return new Promise((resolve, reject) => {
+    thenable.then(resolve, reject);
+  });
+};
+
+export const axeSourceInject = async ({
+  client,
+  axeSource
+}: AxeSourceInjectParams): Promise<AxeSourceInjectResponse> => {
+  return promisify(
+    client.execute(`
+      ${axeSource};
+      window.axe.configure({
+        branding: { application: 'webdriverio' }
+      });
+
+      var runPartial = typeof window.axe.runPartial === 'function';
+      return { runPartialSupported: runPartial };
+    `)
+  );
+};
+
+export const axeRunPartialSupported = (
+  client: BrowserObject
+): Promise<boolean> => {
+  return promisify(
+    client.execute("return typeof window.axe.runPartial === 'function';")
+  );
+};
+
+export const axeRunPartial = ({
+  client,
+  context,
+  options
+}: AxeRunPartialParams): Promise<PartialResult> => {
+  return promisify(
+    client.executeAsync(`
+      var callback = arguments[arguments.length - 1];
+      var context = ${JSON.stringify(context)} || document;
+      var options = ${JSON.stringify(options)} || {};
+      window.axe.runPartial(context, options).then(callback);    
+    `)
+  );
+};
+
+export const axeGetFrameContext = ({
+  client,
+  context
+}: AxeGetFrameContextParams): Promise<any[]> => {
+  return promisify(
+    client.execute(`
+      var context = ${JSON.stringify(context)};
+      var frameContexts = window.axe.utils.getFrameContexts(context);
+      return frameContexts.map(function (frameContext) {
+        return Object.assign(frameContext, {
+          href: window.location.href, // For debugging
+          frame: axe.utils.shadowSelect(frameContext.frameSelector)
+        });
+      });
+    `)
+  );
+};
+
+export const axeRunLegacy = ({
+  client,
+  context,
+  options,
+  config
+}: AxeRunLegacyParams): Promise<AxeResults> => {
+  return promisify(
+    client.executeAsync(`
+      var callback = arguments[arguments.length - 1];
+      var context = ${JSON.stringify(context)} || document;
+      var options = ${JSON.stringify(options)} || {};
+      var config = ${JSON.stringify(config)} || null;
+      if (config) {
+        window.axe.configure(config);
+      }
+      window.axe.run(context, options).then(callback); 
+    `)
+  );
+};
+
+export const axeFinishRun = ({
+  client,
+  axeSource,
+  partialResults,
+  options
+}: AxeFinishRunParams): Promise<AxeResults> => {
+  return promisify(
+    client.executeAsync(`
+    var callback = arguments[arguments.length - 1];
+    (function () {
+      'use strict';
+      var window = undefined;
+      ${axeSource};
+      this.axe.configure({
+        branding: { application: 'webdriverio' }
+      });
+
+      var partialResults = ${JSON.stringify(partialResults)};
+      var options = ${JSON.stringify(options || {})};
+      this.axe.finishRun(partialResults, options).then(callback);
+    }).call({ document: document, getComputedStyle: function () {} })
+    `)
+  );
 };

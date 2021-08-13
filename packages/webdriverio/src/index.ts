@@ -1,18 +1,23 @@
 import type { RunOptions, AxeResults } from 'axe-core';
-import { source } from 'axe-core';
+import { source, ContextObject } from 'axe-core';
 import * as assert from 'assert';
 import * as cssesc from 'cssesc';
 import type {
   Options,
   CallbackFunction,
   BrowserObject,
-  Element
+  Element,
+  PartialResults
 } from './types';
 import {
-  analyzePage,
   isWebdriverClient,
   normalizeContext,
-  logOrRethrowError
+  logOrRethrowError,
+  axeSourceInject,
+  axeGetFrameContext,
+  axeRunPartial,
+  axeFinishRun,
+  axeRunLegacy
 } from './utils';
 
 export default class AxeBuilder {
@@ -22,13 +27,13 @@ export default class AxeBuilder {
   private excludes: string[];
   private option: RunOptions;
   private disableFrameSelectors: string[];
-  constructor({ client }: Options) {
+  constructor({ client, axeSource }: Options) {
     assert(
       isWebdriverClient(client),
       'An instantiated WebdriverIO client greater than v5 is required'
     );
     this.client = client;
-    this.axeSource = source;
+    this.axeSource = axeSource ? axeSource : source;
     this.includes = [];
     this.excludes = [];
     this.option = {};
@@ -145,30 +150,21 @@ export default class AxeBuilder {
    */
 
   public async analyze(callback?: CallbackFunction): Promise<AxeResults> {
-    await this.inject();
-    await this.setBrowsingContext();
-    const client = this.client;
-    const context = normalizeContext(this.includes, this.excludes);
-    const options = this.option;
-
-    // Ignoring since `analyzePage()` is expecting a callback()
-    // and we do not need to pass one
-    // eslint-disable-next-line @typescript-eslint/ban-ts-ignore
-    // @ts-ignore
-    const { results, error } = await client.executeAsync(analyzePage, {
-      context,
-      options
+    return new Promise((resolve, reject) => {
+      return this.analyzePromise()
+        .then((results: AxeResults) => {
+          callback?.(null, results);
+          resolve(results);
+        })
+        .catch((err: Error) => {
+          // When using a callback, do *not* reject the wrapping Promise. This prevents having to handle the same error twice.
+          if (callback) {
+            callback(err.message, null);
+          } else {
+            reject(err);
+          }
+        });
     });
-    /* istanbul ignore if */
-    if (callback) {
-      callback(error, results);
-    }
-
-    /* istanbul ignore if */
-    if (error) {
-      throw new Error(error);
-    }
-    return results;
   }
 
   /**
@@ -222,6 +218,34 @@ export default class AxeBuilder {
     }
   }
 
+  private async analyzePromise(): Promise<AxeResults> {
+    const { client, axeSource } = this;
+    const context = normalizeContext(
+      this.includes,
+      this.excludes,
+      this.disableFrameSelectors
+    ) as ContextObject;
+    await this.client.switchToParentFrame();
+
+    const { runPartialSupported } = await axeSourceInject({
+      client,
+      axeSource
+    });
+
+    if (!runPartialSupported) {
+      return await this.runLegacy(context);
+    }
+    const partials = await this.runPartialRecursive(context, true);
+
+    return await this.finishRun(partials);
+  }
+
+  private async runLegacy(context: ContextObject): Promise<AxeResults> {
+    const { client, option } = this;
+    await this.inject();
+    return axeRunLegacy({ client, context, options: option });
+  }
+
   /**
    * Get a CSS selector for retrieving child iframes.
    * @returns {String}
@@ -240,13 +264,13 @@ export default class AxeBuilder {
    * @returns {String}
    */
 
-     private frameSelector(): string {
-      let selector = 'frame';
-      for (const disableFrameSelector of this.disableFrameSelectors) {
-        selector += `:not(${disableFrameSelector})`;
-      }
-      return selector;
+  private frameSelector(): string {
+    let selector = 'frame';
+    for (const disableFrameSelector of this.disableFrameSelectors) {
+      selector += `:not(${disableFrameSelector})`;
     }
+    return selector;
+  }
 
   /**
    * Set browsing context - when `null` sets top level page as context
@@ -263,5 +287,60 @@ export default class AxeBuilder {
     } else {
       await this.client.switchToParentFrame();
     }
+  }
+
+  /**
+   * Get partial results from the current context and its child frames
+   * @param {ContextObject} context
+   * @param {Boolean} initiator - defaults to false
+   */
+
+  private async runPartialRecursive(
+    context: ContextObject,
+    initiator = false
+  ): Promise<PartialResults> {
+    if (!initiator) {
+      await axeSourceInject({
+        client: this.client,
+        axeSource: this.axeSource
+      });
+    }
+
+    const frameContexts = await axeGetFrameContext({
+      client: this.client,
+      context
+    });
+
+    const partials: PartialResults = [
+      await axeRunPartial({
+        client: this.client,
+        context,
+        options: this.option
+      })
+    ];
+
+    for (const { frameSelector, frameContext, frame } of frameContexts) {
+      try {
+        assert(frame, `Expect frame of "${frameSelector}" to be defined`);
+        await this.client.switchToFrame(frame);
+        partials.push(...(await this.runPartialRecursive(frameContext)));
+      } catch (error) {
+        partials.push(null);
+      }
+    }
+    await this.client.switchToParentFrame();
+    return partials;
+  }
+
+  private async finishRun(partials: PartialResults): Promise<AxeResults> {
+    const { client, axeSource, option } = this;
+    const res = await axeFinishRun({
+      client,
+      axeSource,
+      options: option,
+      partialResults: partials
+    });
+
+    return res;
   }
 }
