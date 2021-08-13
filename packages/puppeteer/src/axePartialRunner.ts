@@ -6,8 +6,7 @@ export type PartialResults = Parameters<typeof axe.finishRun>[0];
  * This class parallelizes the async calls to axe.runPartial.
  *
  * In this project, most async calls needs to block execution, such as
- * the driver.switchTo().frame() calls. These must run in the correct order
- * to avoid stale element references and infinite loops testing the same frame.
+ * the axeGetFrameContext() and getChildFrame() and calls.
  *
  * Unlike those calls, axe.runPartial() calls must run in parallel, so that
  * frame tests don't wait for each other. This is necessary to minimize the time
