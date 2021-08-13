@@ -1,25 +1,8 @@
-import { Spec } from 'axe-core';
-import * as fsOrig from 'fs';
 import * as path from 'path';
-import { promisify } from 'util';
 import express from 'express';
 import { createServer, Server } from 'http';
 import testListen from 'test-listen';
 import { expect } from 'chai';
-
-const fs = {
-  readFile: promisify(fsOrig.readFile)
-};
-
-export function fixtureFilePath(filename: string): string {
-  return path.resolve(__dirname, 'fixtures', filename);
-}
-
-export async function customConfig(): Promise<any> {
-  const configFile = fixtureFilePath('custom-rule-config.json');
-  const config = JSON.parse(await fs.readFile(configFile, 'utf8')) as Spec;
-  return config;
-}
 
 export async function expectAsync(
   fn: () => Promise<any>

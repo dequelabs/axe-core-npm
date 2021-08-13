@@ -30,8 +30,6 @@ describe('AxePuppeteer', function () {
   let addr: string;
   this.timeout(10000);
 
-  const fixtureFileURL = (filename: string) => `${addr}/${filename}`;
-
   let axeSource: string;
   let axeCrasherSource: string;
 
@@ -67,7 +65,7 @@ describe('AxePuppeteer', function () {
   it('runs in parallel', async () => {
     // Just to prove Puppeteer runs scripts in parallel,
     // and so axe-core/puppeteer should too
-    await page.goto(fixtureFileURL('index.html'));
+    await page.goto(`${addr}/external/index.html`);
     const p1 = page.evaluate(() => {
       window.parallel = true;
       return new Promise(res => {
@@ -84,13 +82,13 @@ describe('AxePuppeteer', function () {
 
   describe('constructor', () => {
     it('accepts a Page', async () => {
-      await page.goto(fixtureFileURL('index.html'));
+      await page.goto(`${addr}/external/index.html`);
       const axePup = new AxePuppeteer(page);
       await expectAsyncToNotThrow(() => axePup.analyze());
     });
 
     it('accepts a Frame', async () => {
-      await page.goto(fixtureFileURL('index.html'));
+      await page.goto(`${addr}/external/index.html`);
       const axePup = new AxePuppeteer(page.mainFrame());
       await expectAsyncToNotThrow(() => axePup.analyze());
     });
@@ -102,22 +100,26 @@ describe('AxePuppeteer', function () {
           configure: () => {}
         }
       `;
-
-      await page.goto(fixtureFileURL('index.html'));
-
+      await page.goto(`${addr}/external/index.html`);
       const evalSpy: SinonSpy = sinon.spy(page.mainFrame(), 'evaluate');
-
       await new AxePuppeteer(page, axeSource).analyze();
-
       assert(evalSpy.calledWith(axeSource));
     });
     // TODO: Defaults to using the bundled axe-core source
   });
 
   describe('.analyze()', () => {
+    it('sets the helpUrl application string', async () => {
+      await page.goto(`${addr}/external/iframes/baz.html`);
+      const { violations } = await new AxePuppeteer(page)
+        .withRules('label')
+        .analyze();
+      assert.include(violations[0].helpUrl, 'application=axe-puppeteer');
+    });
+
     describe('returned promise', () => {
       it("returns results through analyze's promise", async () => {
-        await page.goto(fixtureFileURL('index.html'));
+        await page.goto(`${addr}/external/index.html`);
         const results = await new AxePuppeteer(page)
           .withRules('label')
           .analyze();
@@ -136,7 +138,7 @@ describe('AxePuppeteer', function () {
           }
         `;
 
-        await page.goto(fixtureFileURL('index.html'));
+        await page.goto(`${addr}/external/index.html`);
 
         const axePup = new AxePuppeteer(page, axeSource);
         (await expectAsync(async () => axePup.analyze())).to.throw('boom');
@@ -145,7 +147,7 @@ describe('AxePuppeteer', function () {
 
     describe('analyze callback', () => {
       it('returns results through the callback if passed', done => {
-        page.goto(fixtureFileURL('index.html')).then(() => {
+        page.goto(`${addr}/external/index.html`).then(() => {
           new AxePuppeteer(page).analyze((err, results) => {
             try {
               expect(err).to.be.null;
@@ -171,8 +173,7 @@ describe('AxePuppeteer', function () {
           }
         `;
 
-        await page.goto(fixtureFileURL('index.html'));
-
+        await page.goto(`${addr}/external/index.html`);
         await new AxePuppeteer(page, axeSource).analyze(err => {
           expect(err)
             .to.exist.and.be.instanceof(Error)
@@ -310,7 +311,7 @@ describe('AxePuppeteer', function () {
           }
         `;
 
-        await page.goto(fixtureFileURL('context.html'));
+        await page.goto(`${addr}/context.html`);
 
         const axePip = new AxePuppeteer(page, axeSource)
           .include('.include')
@@ -334,7 +335,7 @@ describe('AxePuppeteer', function () {
           }
         `;
 
-        await page.goto(fixtureFileURL('context.html'));
+        await page.goto(`${addr}/context.html`);
 
         const axePip = new AxePuppeteer(page, axeSource)
           .include('.include')
@@ -367,7 +368,7 @@ describe('AxePuppeteer', function () {
           }
         `;
 
-        await page.goto(fixtureFileURL('context.html'));
+        await page.goto(`${addr}/context.html`);
 
         const axePip = new AxePuppeteer(page, axeSource).include('.include');
 
@@ -397,7 +398,7 @@ describe('AxePuppeteer', function () {
           }
         `;
 
-        await page.goto(fixtureFileURL('context.html'));
+        await page.goto(`${addr}/context.html`);
 
         const axePip = new AxePuppeteer(page, axeSource).exclude('.exclude');
 
@@ -419,7 +420,7 @@ describe('AxePuppeteer', function () {
           }
         `;
 
-      await page.goto(fixtureFileURL('context.html'));
+      await page.goto(`${addr}/context.html`);
 
       const axePip = new AxePuppeteer(page, axeSource);
 
@@ -464,7 +465,7 @@ describe('AxePuppeteer', function () {
         ]
       };
 
-      await page.goto(fixtureFileURL('index.html'));
+      await page.goto(`${addr}/external/index.html`);
 
       // HACK: work around axe-core (incorrectly) requiring this to be
       // a function (see https://github.com/dequelabs/axe-core/issues/974).
@@ -494,7 +495,7 @@ describe('AxePuppeteer', function () {
   describe('options', () => {
     describe('.options()', () => {
       it('passes options to axe-core', async () => {
-        await page.goto(fixtureFileURL('index.html'));
+        await page.goto(`${addr}/external/index.html`);
 
         const results = await new AxePuppeteer(page)
           // Disable the `region` rule
@@ -515,7 +516,7 @@ describe('AxePuppeteer', function () {
 
     describe('.withTags()', () => {
       it('only rules with the given tag(s)', async () => {
-        await page.goto(fixtureFileURL('index.html'));
+        await page.goto(`${addr}/external/index.html`);
 
         const results = await new AxePuppeteer(page)
           .withTags(['best-practice'])
@@ -537,7 +538,7 @@ describe('AxePuppeteer', function () {
 
     describe('.withRules()', () => {
       it('only rules with the given rule(s)', async () => {
-        await page.goto(fixtureFileURL('index.html'));
+        await page.goto(`${addr}/external/index.html`);
 
         const results = await new AxePuppeteer(page)
           // Only enable the `region` rule
@@ -558,7 +559,7 @@ describe('AxePuppeteer', function () {
 
     describe('.disableRules()', () => {
       it('disables the given rule(s)', async function () {
-        await page.goto(fixtureFileURL('index.html'));
+        await page.goto(`${addr}/external/index.html`);
 
         const results = await new AxePuppeteer(page)
           // Disable the `region` rule
@@ -643,7 +644,7 @@ describe('AxePuppeteer', function () {
       const results = await new AxePuppeteer(page, axeSource + axeCrasherSource)
         .options({ runOnly: ['label', 'frame-tested'] })
         .analyze();
-      console.log(results);
+
       assert.equal(results.incomplete[0].id, 'frame-tested');
       assert.lengthOf(results.incomplete[0].nodes, 1);
       assert.deepEqual(results.incomplete[0].nodes[0].target, ['#ifr-crash']);
