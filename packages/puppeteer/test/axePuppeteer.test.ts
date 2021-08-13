@@ -3,7 +3,7 @@ import Axe from 'axe-core';
 import * as fs from 'fs';
 import * as path from 'path';
 import { assert, expect } from 'chai';
-import Puppeteer, { Frame, Browser, Page } from 'puppeteer';
+import Puppeteer, { Browser, Page } from 'puppeteer';
 import { createServer, Server } from 'http';
 import * as sinon from 'sinon';
 import testListen from 'test-listen';
@@ -643,7 +643,7 @@ describe('AxePuppeteer', function () {
       const results = await new AxePuppeteer(page, axeSource + axeCrasherSource)
         .options({ runOnly: ['label', 'frame-tested'] })
         .analyze();
-
+      console.log(results);
       assert.equal(results.incomplete[0].id, 'frame-tested');
       assert.lengthOf(results.incomplete[0].nodes, 1);
       assert.deepEqual(results.incomplete[0].nodes[0].target, ['#ifr-crash']);
