@@ -1,5 +1,4 @@
 import 'mocha';
-import Axe from 'axe-core';
 import { expect } from 'chai';
 import { Server } from 'http';
 import Puppeteer, { Browser } from 'puppeteer';
