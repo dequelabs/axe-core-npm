@@ -12,7 +12,7 @@ import type {
   AxeFinishRunParams,
   AxeSourceInjectResponse,
   AxeSourceInjectParams
-} from '../types';
+} from './types';
 
 /**
  * Validates that the client provided is WebdriverIO v5 or v6.
@@ -47,7 +47,7 @@ export const normalizeContext = (
   includes: string[],
   excludes: string[],
   disabledFrameSelectors: string[]
-): ElementContext | null => {
+): ContextObject => {
   const base: ContextObject = {
     exclude: []
   };
@@ -107,14 +107,6 @@ export const axeSourceInject = async ({
       var runPartial = typeof window.axe.runPartial === 'function';
       return { runPartialSupported: runPartial };
     `)
-  );
-};
-
-export const axeRunPartialSupported = (
-  client: BrowserObject
-): Promise<boolean> => {
-  return promisify(
-    client.execute("return typeof window.axe.runPartial === 'function';")
   );
 };
 

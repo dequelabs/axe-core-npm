@@ -176,7 +176,6 @@ export default class AxeBuilder {
     return `
       ${this.axeSource}
       axe.configure({ 
-        allowedOrigins: ['<unsafe_all_origins>'],
         branding: { application: 'webdriverio' }
       })
       `;
@@ -224,8 +223,9 @@ export default class AxeBuilder {
       this.includes,
       this.excludes,
       this.disableFrameSelectors
-    ) as ContextObject;
-    await this.client.switchToParentFrame();
+    );
+    // https://github.com/webdriverio/webdriverio/issues/6607#issuecomment-808457664
+    await client.switchToFrame(null);
 
     const { runPartialSupported } = await axeSourceInject({
       client,
@@ -235,7 +235,7 @@ export default class AxeBuilder {
     if (!runPartialSupported) {
       return await this.runLegacy(context);
     }
-    const partials = await this.runPartialRecursive(context, true);
+    const partials = await this.runPartialRecursive(context);
 
     return await this.finishRun(partials);
   }
@@ -292,20 +292,11 @@ export default class AxeBuilder {
   /**
    * Get partial results from the current context and its child frames
    * @param {ContextObject} context
-   * @param {Boolean} initiator - defaults to false
    */
 
   private async runPartialRecursive(
-    context: ContextObject,
-    initiator = false
+    context: ContextObject
   ): Promise<PartialResults> {
-    if (!initiator) {
-      await axeSourceInject({
-        client: this.client,
-        axeSource: this.axeSource
-      });
-    }
-
     const frameContexts = await axeGetFrameContext({
       client: this.client,
       context
@@ -323,6 +314,10 @@ export default class AxeBuilder {
       try {
         assert(frame, `Expect frame of "${frameSelector}" to be defined`);
         await this.client.switchToFrame(frame);
+        await axeSourceInject({
+          client: this.client,
+          axeSource: this.script
+        });
         partials.push(...(await this.runPartialRecursive(frameContext)));
       } catch (error) {
         partials.push(null);

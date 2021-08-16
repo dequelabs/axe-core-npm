@@ -34,6 +34,7 @@
   ],
   "dependencies": {
     "axe-core": "^4.3.2",
+    "axe-test-fixtures": "github:dequelabs/axe-test-fixtures",
     "cssesc": "^3.0.0"
   },
   "devDependencies": {
@@ -47,7 +48,6 @@
     "@types/sinon": "^9.0.10",
     "@types/test-listen": "^1.1.0",
     "@wdio/sync": "^6.11.0",
-    "axe-test-fixtures": "github:dequelabs/axe-test-fixtures#v1",
     "chai": "^4.3.0",
     "chromedriver": "^92.0.1",
     "delay": "^5.0.0",
