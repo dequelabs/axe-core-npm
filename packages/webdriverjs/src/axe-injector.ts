@@ -1,11 +1,7 @@
 import type { WebDriver, WebElement } from 'selenium-webdriver';
 import { error } from 'selenium-webdriver';
 import { source } from 'axe-core';
-import type {
-  AxeInjectorParams,
-  BuilderOptions,
-  InjectCallback
-} from './types';
+import type { AxeInjectorParams, BuilderOptions } from './types';
 const { StaleElementReferenceError } = error;
 
 export default class AxeInjectorLegacy {
