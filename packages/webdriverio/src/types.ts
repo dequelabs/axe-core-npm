@@ -39,6 +39,7 @@ export type CallbackFunction = (
 
 export interface Options {
   client: BrowserObject;
+  axeSource?: string;
 }
 
 declare global {

@@ -1,5 +1,5 @@
 import type { RunOptions, AxeResults } from 'axe-core';
-import { source } from 'axe-core';
+import * as fs from 'fs';
 import * as assert from 'assert';
 import * as cssesc from 'cssesc';
 import type {
@@ -22,13 +22,15 @@ export default class AxeBuilder {
   private excludes: string[];
   private option: RunOptions;
   private disableFrameSelectors: string[];
-  constructor({ client }: Options) {
+  constructor({ client, axeSource }: Options) {
     assert(
       isWebdriverClient(client),
       'An instantiated WebdriverIO client greater than v5 is required'
     );
+    const sourceDir = require.resolve('axe-core');
+    const source = fs.readFileSync(sourceDir, 'utf-8');
     this.client = client;
-    this.axeSource = source;
+    this.axeSource = axeSource || source;
     this.includes = [];
     this.excludes = [];
     this.option = {};
@@ -240,13 +242,13 @@ export default class AxeBuilder {
    * @returns {String}
    */
 
-     private frameSelector(): string {
-      let selector = 'frame';
-      for (const disableFrameSelector of this.disableFrameSelectors) {
-        selector += `:not(${disableFrameSelector})`;
-      }
-      return selector;
+  private frameSelector(): string {
+    let selector = 'frame';
+    for (const disableFrameSelector of this.disableFrameSelectors) {
+      selector += `:not(${disableFrameSelector})`;
     }
+    return selector;
+  }
 
   /**
    * Set browsing context - when `null` sets top level page as context

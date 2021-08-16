@@ -63,7 +63,10 @@ describe('@axe-core/webdriverio', () => {
     let server: Server;
     let addr: string;
     let client: webdriverio.BrowserObject;
-
+    const axeSourcePath = path.resolve(
+      './fixtures/external/axe-core@legacy.js'
+    );
+    const axeSource = fs.readFileSync(axeSourcePath, 'utf-8');
     beforeEach(async () => {
       const app = express();
       let binaryPath;
@@ -109,6 +112,23 @@ describe('@axe-core/webdriverio', () => {
       });
 
       describe('analyze', () => {
+        describe('axeSource', () => {
+          it('returns results with different version of axeSource', async () => {
+            await client.url(`${addr}/index.html`);
+            const results = await new AxeBuilder({
+              client,
+              axeSource
+            }).analyze();
+
+            assert.isNotNull(results);
+            assert.strictEqual(results.testEngine.version, '4.0.3');
+            assert.isArray(results.violations);
+            assert.isArray(results.incomplete);
+            assert.isArray(results.passes);
+            assert.isArray(results.inapplicable);
+          });
+        });
+
         it('returns results', async () => {
           await client.url(`${addr}/index.html`);
           const results = await new AxeBuilder({ client }).analyze();

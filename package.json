@@ -44,5 +44,8 @@
     "*.{json,css,md,html}": [
       "prettier --write"
     ]
+  },
+  "dependencies": {
+    "axe-test-fixtures": "github:dequelabs/axe-test-fixtures"
   }
 }
