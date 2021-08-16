@@ -67,9 +67,8 @@ describe('@axe-core/webdriverio', () => {
     const axeTestFixtures = path.resolve(
       __dirname,
       '..',
-      'node_modules',
-      'axe-test-fixtures',
-      'fixtures'
+      'fixtures',
+      'external'
     );
     const axeLegacySource = fs.readFileSync(
       path.resolve(axeTestFixtures, 'axe-core@legacy.js'),
@@ -284,7 +283,7 @@ describe('@axe-core/webdriverio', () => {
             await client.url(`${addr}/index.html`);
             const results = await new AxeBuilder({
               client,
-              axeSource
+              axeSource: axeLegacySource
             }).analyze();
 
             assert.isNotNull(results);
