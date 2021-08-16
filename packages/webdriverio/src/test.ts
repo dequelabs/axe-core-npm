@@ -279,6 +279,23 @@ describe('@axe-core/webdriverio', () => {
       });
 
       describe('analyze', () => {
+        describe('axeSource', () => {
+          it('returns results with different version of axeSource', async () => {
+            await client.url(`${addr}/index.html`);
+            const results = await new AxeBuilder({
+              client,
+              axeSource
+            }).analyze();
+
+            assert.isNotNull(results);
+            assert.strictEqual(results.testEngine.version, '4.0.3');
+            assert.isArray(results.violations);
+            assert.isArray(results.incomplete);
+            assert.isArray(results.passes);
+            assert.isArray(results.inapplicable);
+          });
+        });
+
         it('returns results', async () => {
           await client.url(`${addr}/index.html`);
           const results = await new AxeBuilder({ client }).analyze();

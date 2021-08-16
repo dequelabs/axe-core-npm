@@ -1,5 +1,6 @@
 import type { RunOptions, AxeResults } from 'axe-core';
-import { source, ContextObject } from 'axe-core';
+import { ContextObject } from 'axe-core';
+import * as fs from 'fs';
 import * as assert from 'assert';
 import * as cssesc from 'cssesc';
 import type {
@@ -32,8 +33,10 @@ export default class AxeBuilder {
       isWebdriverClient(client),
       'An instantiated WebdriverIO client greater than v5 is required'
     );
+    const sourceDir = require.resolve('axe-core');
+    const source = fs.readFileSync(sourceDir, 'utf-8');
     this.client = client;
-    this.axeSource = axeSource ? axeSource : source;
+    this.axeSource = axeSource || source;
     this.includes = [];
     this.excludes = [];
     this.option = {};
