@@ -105,7 +105,6 @@ describe('AxePuppeteer', function () {
       await new AxePuppeteer(page, axeSource).analyze();
       assert(evalSpy.calledWith(axeSource));
     });
-    // TODO: Defaults to using the bundled axe-core source
   });
 
   describe('.analyze()', () => {
@@ -449,7 +448,7 @@ describe('AxePuppeteer', function () {
       const config: Axe.Spec = {
         checks: [
           {
-            evaluate: (): false => false,
+            evaluate: 'function () { return false }',
             id: 'foo'
           }
         ],
@@ -466,11 +465,6 @@ describe('AxePuppeteer', function () {
       };
 
       await page.goto(`${addr}/external/index.html`);
-
-      // HACK: work around axe-core (incorrectly) requiring this to be
-      // a function (see https://github.com/dequelabs/axe-core/issues/974).
-      (config.checks as any)[0].evaluate = 'function () { return false }';
-
       const results = await new AxePuppeteer(page)
         .configure(config)
         .withRules(['foo'])
