@@ -1,5 +1,5 @@
 import type { AxeResults, ContextObject } from 'axe-core';
-import type { AnalyzePageParams, AnalyzePageResponse } from '../types';
+import type { AnalyzePageParams, AnalyzePageResponse } from './types';
 
 /**
  * Get running context

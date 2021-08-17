@@ -201,7 +201,7 @@ export default class AxeBuilder {
    * Because we need to inject axe into all frames all at once (to avoid any potential problems with the DOM becoming out-of-sync) but also need to not process results for any child frames if the parent frame throws an error (requirements of the data structure for `axe.finishRun`), we have to return a deeply nested array of Promises and then flatten the array once all Promises have finished, throwing out any nested Promises if the parent Promise is not fulfilled.
    * @param frame - playwright frame object
    * @param context - axe-core context object
-   * @returns
+   * @returns Promise<AxePartialRunner>
    */
 
   private async runPartialRecursive(
