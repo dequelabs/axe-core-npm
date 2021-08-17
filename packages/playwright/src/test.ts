@@ -153,6 +153,20 @@ describe('@axe-core/playwright', () => {
   });
 
   describe('analyze', () => {
+    it('returns results using a different version of axe-core', async () => {
+      await page.goto(`${addr}/index.html`);
+      const results = await new AxeBuilder({
+        page,
+        axeSource: axeLegacySource
+      }).analyze();
+      assert.strictEqual(results.testEngine.version, '4.0.3');
+      assert.isNotNull(results);
+      assert.isArray(results.violations);
+      assert.isArray(results.incomplete);
+      assert.isArray(results.passes);
+      assert.isArray(results.inapplicable);
+    });
+
     it('returns results', async () => {
       await page.goto(`${addr}/index.html`);
       const results = await new AxeBuilder({ page }).analyze();
@@ -396,6 +410,24 @@ describe('@axe-core/playwright', () => {
         'input'
       ]);
       assert.deepEqual(nodes[2].target, ['#slotted-frame', 'input']);
+    });
+
+    it('injects once per iframe', async () => {
+      await page.goto(`${addr}/nested-frames.html`);
+
+      const builder = new AxeBuilder({ page });
+      const origScript = (builder as any).script;
+      let count = 0;
+      Object.defineProperty(builder, 'script', {
+        get() {
+          count++;
+          return origScript;
+        }
+      });
+
+      await builder.analyze();
+
+      assert.strictEqual(count, 4);
     });
   });
 
