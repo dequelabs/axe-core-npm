@@ -1,6 +1,6 @@
+import * as fs from 'fs';
 import type { Page, Frame, ElementHandle } from 'playwright';
 import type { RunOptions, AxeResults, ContextObject } from 'axe-core';
-import { source } from 'axe-core';
 import { normalizeContext, analyzePage } from './utils';
 import type { AxePlaywrightParams } from './types';
 import {
@@ -18,6 +18,8 @@ export default class AxeBuilder {
   private option: RunOptions;
   private source: string;
   constructor({ page, axeSource }: AxePlaywrightParams) {
+    const axePath = require.resolve('axe-core');
+    const source = fs.readFileSync(axePath, 'utf-8');
     this.page = page;
     this.includes = [];
     this.excludes = [];

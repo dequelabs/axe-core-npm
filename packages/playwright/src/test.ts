@@ -58,6 +58,7 @@ describe('@axe-core/playwright', () => {
           page,
           axeSource: axeLegacySource
         }).analyze();
+        assert.strictEqual(results.testEngine.version, '4.0.3');
         assert.isNotNull(results);
         assert.isArray(results.violations);
         assert.isArray(results.incomplete);
