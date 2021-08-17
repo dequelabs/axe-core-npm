@@ -13,6 +13,7 @@ export interface NormalizeContextResponse {
 
 export interface AxePlaywrightParams {
   page: Page;
+  axeSource?: string;
 }
 
 export interface AnalyzePageResponse {
