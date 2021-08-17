@@ -1,4 +1,5 @@
 import 'mocha';
+import * as fs from 'fs';
 import * as playwright from 'playwright';
 import * as express from 'express';
 import type { AxeResults } from 'axe-core';
@@ -13,6 +14,11 @@ describe('@axe-core/playwright', () => {
   let addr: string;
   let page: playwright.Page;
   let browser: playwright.ChromiumBrowser;
+  const axeTestFixtures = path.resolve(__dirname, '..', 'fixtures');
+  const axeLegacySource = fs.readFileSync(
+    path.resolve(axeTestFixtures, 'external', 'axe-core@legacy.js'),
+    'utf-8'
+  );
 
   before(async () => {
     const app = express();
@@ -38,6 +44,20 @@ describe('@axe-core/playwright', () => {
   });
 
   describe('analyze', () => {
+    it('returns results using a different version of axe-core', async () => {
+      await page.goto(`${addr}/index.html`);
+      const results = await new AxeBuilder({
+        page,
+        axeSource: axeLegacySource
+      }).analyze();
+      assert.strictEqual(results.testEngine.version, '4.0.3');
+      assert.isNotNull(results);
+      assert.isArray(results.violations);
+      assert.isArray(results.incomplete);
+      assert.isArray(results.passes);
+      assert.isArray(results.inapplicable);
+    });
+
     it('returns results', async () => {
       await page.goto(`${addr}/index.html`);
       const results = await new AxeBuilder({ page }).analyze();
@@ -196,22 +216,22 @@ describe('@axe-core/playwright', () => {
     });
 
     it('injects once per iframe', async () => {
-      await page.goto(`${addr}/nested-frames.html`)
+      await page.goto(`${addr}/nested-frames.html`);
 
       const builder = new AxeBuilder({ page });
       const origScript = (builder as any).script;
       let count = 0;
       Object.defineProperty(builder, 'script', {
         get() {
-          count++
-          return origScript
+          count++;
+          return origScript;
         }
-      })
+      });
 
-      await builder.analyze()
+      await builder.analyze();
 
-      assert.strictEqual(count, 4)
-    })
+      assert.strictEqual(count, 4);
+    });
   });
 
   describe('include/exclude', () => {
