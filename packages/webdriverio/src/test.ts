@@ -723,15 +723,16 @@ describe('@axe-core/webdriverio', () => {
           });
         });
 
-        it('returns an error as the first argument', async () => {
-          await client.url(`${addr}/index.html`);
+        it('returns an error as the first argument', done => {
+          client.url(`${addr}/index.html`);
           new AxeBuilder({ client, axeSource: 'throw new Error()' }).analyze(
             (err, results) => {
               try {
                 assert.isNull(results);
                 assert.isNotNull(err);
+                done();
               } catch (e) {
-                // Do something here ¯\_(ツ)_/¯
+                done(e);
               }
             }
           );

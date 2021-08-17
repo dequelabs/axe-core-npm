@@ -40,7 +40,7 @@ export const isWebdriverClient = (client: BrowserObject): boolean => {
  * Get running context
  * @param {Array} include
  * @param {Array} exclude
- * @returns {(ElementContext | null)}
+ * @returns {ElementContext}
  */
 
 export const normalizeContext = (
