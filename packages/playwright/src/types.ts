@@ -20,7 +20,7 @@ export interface AxePlaywrightParams {
 }
 
 export interface AnalyzePageResponse {
-  results: AxeResults | null;
+  results: AxeResults;
   error: string | null;
 }
 

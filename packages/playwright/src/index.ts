@@ -4,10 +4,10 @@ import type { RunOptions, AxeResults, ContextObject } from 'axe-core';
 import { normalizeContext, analyzePage } from './utils';
 import type { AxePlaywrightParams } from './types';
 import {
-  finishRun,
-  getFrameContexts,
-  runPartial,
-  shadowSelect
+  axeFinishRun,
+  axeGetFrameContexts,
+  axeRunPartial,
+  axeShadowSelect
 } from './browser';
 import AxePartialRunner from './AxePartialRunner';
 
@@ -123,35 +123,31 @@ export default class AxeBuilder {
    */
 
   public async analyze(): Promise<AxeResults> {
-    const context = normalizeContext(
-      this.includes,
-      this.excludes
-    ) as ContextObject;
-    const page = this.page;
-    const options = this.option;
+    const context = normalizeContext(this.includes, this.excludes);
+    const { page, option: options } = this;
 
     page.evaluate(this.script());
     const runPartialDefined = await page.evaluate<boolean>(
       'typeof window.axe.runPartial === "function"'
     );
 
-    let results: AxeResults | null;
+    let results: AxeResults;
 
-    if (runPartialDefined) {
-      const partialResults = await this.runPartialRecursive(
-        page.mainFrame(),
-        context
-      );
-      const partials = await partialResults.getPartials();
-      results = await page.evaluate(finishRun, {
-        partialResults: partials,
-        options
-      });
-    } else {
+    if (!runPartialDefined) {
       results = await this.runLegacy(context);
+      return results;
     }
+    const partialResults = await this.runPartialRecursive(
+      page.mainFrame(),
+      context
+    );
+    const partials = await partialResults.getPartials();
+    results = await page.evaluate(axeFinishRun, {
+      partialResults: partials,
+      options
+    });
 
-    return results as AxeResults;
+    return results;
   }
 
   /**
@@ -191,11 +187,12 @@ export default class AxeBuilder {
       context,
       options: this.option
     });
-    /* istanbul ignore if */
+
     if (axeResults.error) {
       throw new Error(axeResults.error);
     }
-    return axeResults.results as AxeResults;
+
+    return axeResults.results;
   }
 
   /**
@@ -210,9 +207,10 @@ export default class AxeBuilder {
     frame: Frame,
     context: ContextObject
   ): Promise<AxePartialRunner> {
-    await frame.evaluate(this.script());
-    const frameContexts = await frame.evaluate(getFrameContexts, { context });
-    const partialPromise = frame.evaluate(runPartial, {
+    const frameContexts = await frame.evaluate(axeGetFrameContexts, {
+      context
+    });
+    const partialPromise = frame.evaluate(axeRunPartial, {
       context,
       options: this.option
     });
@@ -222,17 +220,17 @@ export default class AxeBuilder {
     for (const { frameSelector, frameContext } of frameContexts) {
       let childResults: AxePartialRunner | null = null;
       try {
-        const iframeHandle = await frame.evaluateHandle(shadowSelect, {
+        const iframeHandle = await frame.evaluateHandle(axeShadowSelect, {
           frameSelector
         });
         // note: these can return null but the catch will handle this properly for all cases
-        const iframeElement = iframeHandle.asElement();
-        const childFrame = await (
-          iframeElement as ElementHandle<Element>
-        ).contentFrame();
+        const iframeElement =
+          iframeHandle.asElement() as ElementHandle<Element>;
+        const childFrame = await iframeElement.contentFrame();
         if (childFrame) {
+          await this.inject([childFrame]);
           childResults = await this.runPartialRecursive(
-            childFrame as Frame,
+            childFrame,
             frameContext
           );
         }

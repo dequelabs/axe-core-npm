@@ -45,6 +45,7 @@
     "@types/mocha": "^8.2.3",
     "@types/node": "^14.17.9",
     "@types/test-listen": "^1.1.0",
+    "axe-test-fixtures": "github:dequelabs/axe-test-fixtures",
     "chai": "^4.3.0",
     "express": "^4.17.1",
     "mocha": "^8.4.0",
