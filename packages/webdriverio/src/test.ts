@@ -724,18 +724,21 @@ describe('@axe-core/webdriverio', () => {
         });
 
         it('returns an error as the first argument', done => {
-          client.url(`${addr}/index.html`);
-          new AxeBuilder({ client, axeSource: 'throw new Error()' }).analyze(
-            (err, results) => {
-              try {
-                assert.isNull(results);
-                assert.isNotNull(err);
-                done();
-              } catch (e) {
-                done(e);
+          // eslint-disable-next-line @typescript-eslint/ban-ts-ignore
+          // @ts-ignore
+          client.url(`${addr}/index.html`).then(() => {
+            new AxeBuilder({ client, axeSource: 'throw new Error()' }).analyze(
+              (err, results) => {
+                try {
+                  assert.isNull(results);
+                  assert.isNotNull(err);
+                  done();
+                } catch (e) {
+                  done(e);
+                }
               }
-            }
-          );
+            );
+          });
         });
       });
     });
@@ -748,10 +751,8 @@ describe('@axe-core/webdriverio', () => {
     const axeTestFixtures = path.resolve(
       __dirname,
       '..',
-
-      'node_modules',
-      'axe-test-fixtures',
-      'fixtures'
+      'fixtures',
+      'external'
     );
     beforeEach(async () => {
       const app = express();
