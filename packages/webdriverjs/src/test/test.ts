@@ -499,7 +499,7 @@ describe('@axe-core/webdriverjs', () => {
 
     it('reports frame-tested', async () => {
       await driver.get(`${addr}/crash-me-parent.html`);
-      const results = await new AxeBuilder(driver, axeSource + axeCrasherSource)
+      const results = await new AxeBuilder(driver, axe403Source + axeCrasherSource)
         .options({ runOnly: ['label', 'frame-tested'] })
         .analyze();
 
