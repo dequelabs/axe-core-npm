@@ -1,8 +1,15 @@
 import * as fs from 'fs';
-import type { Page, Frame } from 'playwright';
-import type { RunOptions, AxeResults } from 'axe-core';
+import type { Page, Frame, ElementHandle } from 'playwright';
+import type { RunOptions, AxeResults, ContextObject } from 'axe-core';
 import { normalizeContext, analyzePage } from './utils';
 import type { AxePlaywrightParams } from './types';
+import {
+  axeFinishRun,
+  axeGetFrameContexts,
+  axeRunPartial,
+  axeShadowSelect
+} from './browser';
+import AxePartialRunner from './AxePartialRunner';
 
 export default class AxeBuilder {
   private page: Page;
@@ -117,24 +124,30 @@ export default class AxeBuilder {
 
   public async analyze(): Promise<AxeResults> {
     const context = normalizeContext(this.includes, this.excludes);
-    const page = this.page;
-    const options = this.option;
+    const { page, option: options } = this;
 
-    // in playwright all frames are available in `.frames()`, even nested and
-    // shadowDOM iframes. also navigating to a url causes it to be put into
-    // an iframe so we don't need to inject into the page object itself
-    const frames = page.frames();
-    await this.inject(frames);
-    const { results, error } = await page.evaluate(analyzePage, {
-      context,
+    page.evaluate(this.script());
+    const runPartialDefined = await page.evaluate<boolean>(
+      'typeof window.axe.runPartial === "function"'
+    );
+
+    let results: AxeResults;
+
+    if (!runPartialDefined) {
+      results = await this.runLegacy(context);
+      return results;
+    }
+    const partialResults = await this.runPartialRecursive(
+      page.mainFrame(),
+      context
+    );
+    const partials = await partialResults.getPartials();
+    results = await page.evaluate(axeFinishRun, {
+      partialResults: partials,
       options
     });
-    /* istanbul ignore if */
-    if (error) {
-      throw new Error(error);
-    }
 
-    return results as AxeResults;
+    return results;
   }
 
   /**
@@ -162,5 +175,71 @@ export default class AxeBuilder {
           branding: { application: 'playwright' }
         })
         `;
+  }
+
+  private async runLegacy(context: ContextObject): Promise<AxeResults> {
+    // in playwright all frames are available in `.frames()`, even nested and
+    // shadowDOM iframes. also navigating to a url causes it to be put into
+    // an iframe so we don't need to inject into the page object itself
+    const frames = this.page.frames();
+    await this.inject(frames);
+    const axeResults = await this.page.evaluate(analyzePage, {
+      context,
+      options: this.option
+    });
+
+    if (axeResults.error) {
+      throw new Error(axeResults.error);
+    }
+
+    return axeResults.results;
+  }
+
+  /**
+   * Inject `axe-core` into each frame and run `axe.runPartial`.
+   * Because we need to inject axe into all frames all at once (to avoid any potential problems with the DOM becoming out-of-sync) but also need to not process results for any child frames if the parent frame throws an error (requirements of the data structure for `axe.finishRun`), we have to return a deeply nested array of Promises and then flatten the array once all Promises have finished, throwing out any nested Promises if the parent Promise is not fulfilled.
+   * @param frame - playwright frame object
+   * @param context - axe-core context object
+   * @returns Promise<AxePartialRunner>
+   */
+
+  private async runPartialRecursive(
+    frame: Frame,
+    context: ContextObject
+  ): Promise<AxePartialRunner> {
+    const frameContexts = await frame.evaluate(axeGetFrameContexts, {
+      context
+    });
+    const partialPromise = frame.evaluate(axeRunPartial, {
+      context,
+      options: this.option
+    });
+    const initiator = frame === this.page.mainFrame();
+    const axePartialRunner = new AxePartialRunner(partialPromise, initiator);
+
+    for (const { frameSelector, frameContext } of frameContexts) {
+      let childResults: AxePartialRunner | null = null;
+      try {
+        const iframeHandle = await frame.evaluateHandle(axeShadowSelect, {
+          frameSelector
+        });
+        // note: these can return null but the catch will handle this properly for all cases
+        const iframeElement =
+          iframeHandle.asElement() as ElementHandle<Element>;
+        const childFrame = await iframeElement.contentFrame();
+        if (childFrame) {
+          await this.inject([childFrame]);
+          childResults = await this.runPartialRecursive(
+            childFrame,
+            frameContext
+          );
+        }
+      } catch {
+        /* do nothing */
+      }
+      axePartialRunner.addChildResults(childResults);
+    }
+
+    return axePartialRunner;
   }
 }

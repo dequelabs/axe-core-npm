@@ -13,16 +13,23 @@ describe('@axe-core/playwright', () => {
   let server: Server;
   let addr: string;
   let page: playwright.Page;
+  const axePath = require.resolve('axe-core');
+  const axeSource = fs.readFileSync(axePath, 'utf8');
   let browser: playwright.ChromiumBrowser;
   const axeTestFixtures = path.resolve(__dirname, '..', 'fixtures');
   const axeLegacySource = fs.readFileSync(
     path.resolve(axeTestFixtures, 'external', 'axe-core@legacy.js'),
     'utf-8'
   );
-
+  const axeCrashPath = path.resolve(
+    axeTestFixtures,
+    'external',
+    'axe-crasher.js'
+  );
+  const axeCrasherSource = fs.readFileSync(axeCrashPath, 'utf8');
   before(async () => {
     const app = express();
-    app.use(express.static(path.resolve(__dirname, '..', 'fixtures')));
+    app.use(express.static(axeTestFixtures));
     server = createServer(app);
     addr = await testListen(server);
   });
@@ -41,6 +48,108 @@ describe('@axe-core/playwright', () => {
 
   afterEach(async () => {
     await browser.close();
+  });
+
+  describe('for versions without axe.runPartial', () => {
+    describe('analyze', () => {
+      it('returns results', async () => {
+        await page.goto(`${addr}/index.html`);
+        const results = await new AxeBuilder({
+          page,
+          axeSource: axeLegacySource
+        }).analyze();
+        assert.strictEqual(results.testEngine.version, '4.0.3');
+        assert.isNotNull(results);
+        assert.isArray(results.violations);
+        assert.isArray(results.incomplete);
+        assert.isArray(results.passes);
+        assert.isArray(results.inapplicable);
+      });
+
+      it('throws if axe errors out on the top window', async () => {
+        let error: Error | null = null;
+        await page.goto(`${addr}/external/crash.html`);
+        try {
+          await new AxeBuilder({
+            page,
+            axeSource: axeLegacySource + axeCrasherSource
+          }).analyze();
+        } catch (e) {
+          error = e;
+        }
+        assert.isNotNull(error);
+      });
+    });
+
+    describe('frame tests', () => {
+      it('injects into nested iframes', async () => {
+        await page.goto(`${addr}/external/nested-iframes.html`);
+        const { violations } = await new AxeBuilder({
+          page,
+          axeSource: axeLegacySource
+        })
+          .withRules('label')
+          .analyze();
+
+        assert.equal(violations[0].id, 'label');
+        const nodes = violations[0].nodes;
+        assert.lengthOf(nodes, 4);
+        assert.deepEqual(nodes[0].target, [
+          '#ifr-foo',
+          '#foo-bar',
+          '#bar-baz',
+          'input'
+        ]);
+        assert.deepEqual(nodes[1].target, ['#ifr-foo', '#foo-baz', 'input']);
+        assert.deepEqual(nodes[2].target, ['#ifr-bar', '#bar-baz', 'input']);
+        assert.deepEqual(nodes[3].target, ['#ifr-baz', 'input']);
+      });
+
+      it('injects into nested frameset', async () => {
+        await page.goto(`${addr}/external/nested-frameset.html`);
+        const { violations } = await new AxeBuilder({
+          page,
+          axeSource: axeLegacySource
+        })
+          .withRules('label')
+          .analyze();
+
+        assert.equal(violations[0].id, 'label');
+        assert.lengthOf(violations[0].nodes, 4);
+
+        const nodes = violations[0].nodes;
+        assert.deepEqual(nodes[0].target, [
+          '#frm-foo',
+          '#foo-bar',
+          '#bar-baz',
+          'input'
+        ]);
+        assert.deepEqual(nodes[1].target, ['#frm-foo', '#foo-baz', 'input']);
+        assert.deepEqual(nodes[2].target, ['#frm-bar', '#bar-baz', 'input']);
+        assert.deepEqual(nodes[3].target, ['#frm-baz', 'input']);
+      });
+
+      it('should work on shadow DOM iframes', async () => {
+        await page.goto(`${addr}/external/shadow-frames.html`);
+        const { violations } = await new AxeBuilder({
+          page,
+          axeSource: axeLegacySource
+        })
+          .withRules('label')
+          .analyze();
+
+        assert.equal(violations[0].id, 'label');
+        assert.lengthOf(violations[0].nodes, 3);
+
+        const nodes = violations[0].nodes;
+        assert.deepEqual(nodes[0].target, ['#light-frame', 'input']);
+        assert.deepEqual(nodes[1].target, ['#slotted-frame', 'input']);
+        assert.deepEqual(nodes[2].target, [
+          ['#shadow-root', '#shadow-frame'],
+          'input'
+        ]);
+      });
+    });
   });
 
   describe('analyze', () => {
@@ -66,6 +175,50 @@ describe('@axe-core/playwright', () => {
       assert.isArray(results.incomplete);
       assert.isArray(results.passes);
       assert.isArray(results.inapplicable);
+    });
+
+    it('reports frame-tested', async () => {
+      await page.goto(`${addr}/external/crash-parent.html`);
+      const results = await new AxeBuilder({
+        page,
+        axeSource: axeSource + axeCrasherSource
+      })
+        .options({ runOnly: ['label', 'frame-tested'] })
+        .analyze();
+      assert.equal(results.incomplete[0].id, 'frame-tested');
+      assert.lengthOf(results.incomplete[0].nodes, 1);
+      assert.equal(results.violations[0].id, 'label');
+      assert.lengthOf(results.violations[0].nodes, 2);
+    });
+
+    it('throws when injecting a problematic source', async () => {
+      let error: Error | null = null;
+      await page.goto(`${addr}/external/crash-me.html`);
+      try {
+        await new AxeBuilder({
+          page,
+          axeSource: 'throw new Error()'
+        }).analyze();
+      } catch (e) {
+        error = e;
+      }
+      assert.isNotNull(error);
+    });
+
+    it('throws when a setup fails', async () => {
+      let error: Error | null = null;
+
+      const brokenSource = axeSource + `;window.axe.utils = {}`;
+      await page.goto(`${addr}/external/index.html`);
+      try {
+        await new AxeBuilder({ page, axeSource: brokenSource })
+          .withRules('label')
+          .analyze();
+      } catch (e) {
+        error = e;
+      }
+
+      assert.isNotNull(error);
     });
   });
 
@@ -199,20 +352,64 @@ describe('@axe-core/playwright', () => {
     });
   });
 
-  describe('iframe tests', () => {
-    it('injects into nested frames', async () => {
-      await page.goto(`${addr}/nested-frames.html`);
-      const results = await new AxeBuilder({ page }).analyze();
-      const filterPasses = results.passes.filter(x => x.id === 'frame-tested');
-      assert.strictEqual(filterPasses.length, 1);
+  describe('frame tests', () => {
+    it('injects into nested iframes', async () => {
+      await page.goto(`${addr}/external/nested-iframes.html`);
+      const { violations } = await new AxeBuilder({ page })
+        .options({ runOnly: 'label' })
+        .analyze();
+
+      assert.equal(violations[0].id, 'label');
+      const nodes = violations[0].nodes;
+      assert.lengthOf(nodes, 4);
+      assert.deepEqual(nodes[0].target, [
+        '#ifr-foo',
+        '#foo-bar',
+        '#bar-baz',
+        'input'
+      ]);
+      assert.deepEqual(nodes[1].target, ['#ifr-foo', '#foo-baz', 'input']);
+      assert.deepEqual(nodes[2].target, ['#ifr-bar', '#bar-baz', 'input']);
+      assert.deepEqual(nodes[3].target, ['#ifr-baz', 'input']);
     });
 
-    it('injects into all iframes', async () => {
-      await page.goto(`${addr}/nested-frames.html`);
-      const results = await new AxeBuilder({ page }).analyze();
+    it('injects into nested frameset', async () => {
+      await page.goto(`${addr}/external/nested-frameset.html`);
+      const { violations } = await new AxeBuilder({ page })
+        .options({ runOnly: 'label' })
+        .analyze();
 
-      assert.strictEqual(results.violations.length, 5);
-      assert.strictEqual(results.violations[0].id, 'dlitem');
+      assert.equal(violations[0].id, 'label');
+      assert.lengthOf(violations[0].nodes, 4);
+
+      const nodes = violations[0].nodes;
+      assert.deepEqual(nodes[0].target, [
+        '#frm-foo',
+        '#foo-bar',
+        '#bar-baz',
+        'input'
+      ]);
+      assert.deepEqual(nodes[1].target, ['#frm-foo', '#foo-baz', 'input']);
+      assert.deepEqual(nodes[2].target, ['#frm-bar', '#bar-baz', 'input']);
+      assert.deepEqual(nodes[3].target, ['#frm-baz', 'input']);
+    });
+
+    it('should work on shadow DOM iframes', async () => {
+      await page.goto(`${addr}/external/shadow-frames.html`);
+      const { violations } = await new AxeBuilder({ page })
+        .options({ runOnly: 'label' })
+        .analyze();
+
+      assert.equal(violations[0].id, 'label');
+      assert.lengthOf(violations[0].nodes, 3);
+
+      const nodes = violations[0].nodes;
+      assert.deepEqual(nodes[0].target, ['#light-frame', 'input']);
+      assert.deepEqual(nodes[1].target, [
+        ['#shadow-root', '#shadow-frame'],
+        'input'
+      ]);
+      assert.deepEqual(nodes[2].target, ['#slotted-frame', 'input']);
     });
 
     it('injects once per iframe', async () => {

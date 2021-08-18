@@ -1,38 +1,28 @@
-import type { AxeResults } from 'axe-core';
-import type {
-  NormalizeContextResponse,
-  AnalyzePageParams,
-  AnalyzePageResponse
-} from '../types';
+import type { AxeResults, ContextObject } from 'axe-core';
+import type { AnalyzePageParams, AnalyzePageResponse } from './types';
 
 /**
  * Get running context
  * @param Array include
  * @param Array exclude
- * @returns (NormalizeContextResponse | null)
+ * @returns ContextObject
  */
 
 export const normalizeContext = (
-  include: string[],
-  exclude: string[]
-): NormalizeContextResponse | null => {
-  if (!exclude.length) {
-    if (!include.length) {
-      return null;
-    }
-    return {
-      include
-    };
-  }
-  if (!include.length) {
-    return {
-      exclude
-    };
-  }
-  return {
-    include,
-    exclude
+  includes: string[],
+  excludes: string[]
+): ContextObject => {
+  const base: ContextObject = {
+    exclude: []
   };
+  if (excludes.length && Array.isArray(base.exclude)) {
+    base.exclude.push(...excludes);
+  }
+
+  if (includes.length) {
+    base.include = includes;
+  }
+  return base;
 };
 
 /**
