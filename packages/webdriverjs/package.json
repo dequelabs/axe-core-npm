@@ -37,7 +37,7 @@
   "scripts": {
     "prebuild": "rimraf dist",
     "build": "tsc",
-    "test": "mocha --timeout 10000 -r ts-node/register 'src/test/test.ts'",
+    "test": "mocha --timeout 10000 -r ts-node/register './tests/**/*.spec.ts'",
     "coverage": "nyc npm run test",
     "prepare": "npm run build"
   },
@@ -63,6 +63,7 @@
     "@types/selenium-webdriver": "^4.0.15",
     "@types/sinon": "^9.0.10",
     "@types/test-listen": "^1.1.0",
+    "axe-test-fixtures": "github:dequelabs/axe-test-fixtures#v1",
     "chai": "^4.3.0",
     "chaimocha": "^1.10.0",
     "chromedriver": "^91.0.1",
