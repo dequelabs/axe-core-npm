@@ -724,21 +724,18 @@ describe('@axe-core/webdriverio', () => {
         });
 
         it('returns an error as the first argument', done => {
-          // eslint-disable-next-line @typescript-eslint/ban-ts-ignore
-          // @ts-ignore
-          client.url(`${addr}/index.html`).then(() => {
-            new AxeBuilder({ client, axeSource: 'throw new Error()' }).analyze(
-              (err, results) => {
-                try {
-                  assert.isNull(results);
-                  assert.isNotNull(err);
-                  done();
-                } catch (e) {
-                  done(e);
-                }
+          Promise.resolve(client.url(`${addr}/index.html`));
+          new AxeBuilder({ client, axeSource: 'throw new Error()' }).analyze(
+            (err, results) => {
+              try {
+                assert.isNull(results);
+                assert.isNotNull(err);
+                done();
+              } catch (e) {
+                done(e);
               }
-            );
-          });
+            }
+          );
         });
       });
     });
