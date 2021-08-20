@@ -1,7 +1,4 @@
 packages/cli/src/testutils/*
 packages/cli/src/**/**/*.test.ts
-packages/webdriverjs/src/test/fixtures/*
-packages/webdriverio/fixtures/*
-packages/puppeteer/test/fixtures/*
 **/dist/*
-packages/playwright/fixtures/*
+**/fixtures/external/*

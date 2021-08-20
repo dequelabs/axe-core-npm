@@ -9,39 +9,9 @@ import { assert } from 'chai';
 import * as path from 'path';
 import * as fs from 'fs';
 import { Server, createServer } from 'http';
-import * as net from 'net';
-import Webdriver from './run-webdriver';
-import AxeBuilder from '../';
-const json = require('./fixtures/custom-rule-config.json') as Spec;
-
-const connectToChromeDriver = (port: number): Promise<void> => {
-  let socket: net.Socket;
-  return new Promise((resolve, reject) => {
-    // Give up after 1s
-    const timer = setTimeout(() => {
-      socket.destroy();
-      reject(new Error('Unable to connect to ChromeDriver'));
-    }, 1000);
-
-    const connectionListener = (): void => {
-      clearTimeout(timer);
-      socket.destroy();
-      return resolve();
-    };
-
-    socket = net.createConnection(
-      { host: 'localhost', port },
-      connectionListener
-    );
-
-    // Fail on error
-    socket.once('error', (err: Error) => {
-      clearTimeout(timer);
-      socket.destroy();
-      return reject(err);
-    });
-  });
-};
+import { Webdriver, connectToChromeDriver } from './test-utils';
+import AxeBuilder from '../src';
+const dylangConfig = require('./fixtures/external/dylang-config.json') as Spec;
 
 describe('@axe-core/webdriverjs', () => {
   const port = 9515;
@@ -54,7 +24,10 @@ describe('@axe-core/webdriverjs', () => {
   before(async () => {
     const axePath = require.resolve('axe-core');
     axeSource = fs.readFileSync(axePath, 'utf8');
-    const axeCrashPath = path.resolve(__dirname, './fixtures/axe-crasher.js');
+    const axeCrashPath = path.resolve(
+      __dirname,
+      './fixtures/external/axe-crasher.js'
+    );
     axeCrasherSource = fs.readFileSync(axeCrashPath, 'utf8');
 
     chromedriver.start([`--port=${port}`]);
@@ -81,7 +54,7 @@ describe('@axe-core/webdriverjs', () => {
 
   describe('analyze', () => {
     it('returns results', async () => {
-      await driver.get(`${addr}/index.html`);
+      await driver.get(`${addr}/external/index.html`);
       const results = await new AxeBuilder(driver).analyze();
       assert.isNotNull(results);
       assert.isArray(results.violations);
@@ -92,7 +65,7 @@ describe('@axe-core/webdriverjs', () => {
 
     it('throws if axe errors out on the top window', done => {
       driver
-        .get(`${addr}/crash-me.html`)
+        .get(`${addr}/external/crash.html`)
         .then(() => {
           return new AxeBuilder(driver, axeSource + axeCrasherSource).analyze();
         })
@@ -104,7 +77,7 @@ describe('@axe-core/webdriverjs', () => {
 
     it('throws when injecting a problematic source', done => {
       driver
-        .get(`${addr}/crash-me.html`)
+        .get(`${addr}/external/crash-me.html`)
         .then(() => {
           return new AxeBuilder(driver, 'throw new Error()').analyze();
         })
@@ -117,7 +90,7 @@ describe('@axe-core/webdriverjs', () => {
     it('throws when a setup fails', done => {
       const brokenSource = axeSource + `;window.axe.utils = {}`;
       driver
-        .get(`${addr}/index.html`)
+        .get(`${addr}/external/index.html`)
         .then(() => {
           return new AxeBuilder(driver, brokenSource)
             .withRules('label')
@@ -132,21 +105,25 @@ describe('@axe-core/webdriverjs', () => {
 
   describe('configure', () => {
     it('should find configured violations in all iframes', async () => {
-      await driver.get(`${addr}/outer-configure-iframe.html`);
-      const results = await new AxeBuilder(driver).configure(json).analyze();
+      await driver.get(`${addr}/external/nested-iframes.html`);
+      const results = await new AxeBuilder(driver)
+        .configure(dylangConfig)
+        .analyze();
 
       assert.equal(results.violations[0].id, 'dylang');
       // the second violation is in a iframe
-      assert.equal(results.violations[0].nodes.length, 2);
+      assert.equal(results.violations[0].nodes.length, 8);
     });
 
-    it('should find configured violations in all frames', async () => {
-      await driver.get(`${addr}/outer-configure-frame.html`);
-      const results = await new AxeBuilder(driver).configure(json).analyze();
+    it('should find configured violations in all framesets', async () => {
+      await driver.get(`${addr}/external/nested-frameset.html`);
+      const results = await new AxeBuilder(driver)
+        .configure(dylangConfig)
+        .analyze();
 
       assert.equal(results.violations[0].id, 'dylang');
       // the second violation is in a frame
-      assert.equal(results.violations[0].nodes.length, 2);
+      assert.equal(results.violations[0].nodes.length, 8);
     });
 
     it('throws when passed a non-object', () => {
@@ -159,7 +136,7 @@ describe('@axe-core/webdriverjs', () => {
 
   describe('disableRules', () => {
     it('disables the given rules(s) as array', async () => {
-      await driver.get(`${addr}/index.html`);
+      await driver.get(`${addr}/external/index.html`);
       const results = await new AxeBuilder(driver)
         .disableRules(['region'])
         .analyze();
@@ -173,7 +150,7 @@ describe('@axe-core/webdriverjs', () => {
     });
 
     it('disables the given rules(s) as string', async () => {
-      await driver.get(`${addr}/index.html`);
+      await driver.get(`${addr}/external/index.html`);
       const results = await new AxeBuilder(driver)
         .disableRules('region')
         .analyze();
@@ -189,7 +166,7 @@ describe('@axe-core/webdriverjs', () => {
 
   describe('frame tests', () => {
     it('injects into nested iframes', async () => {
-      await driver.get(`${addr}/nested-iframes.html`);
+      await driver.get(`${addr}/external/nested-iframes.html`);
       const { violations } = await new AxeBuilder(driver)
         .options({ runOnly: 'label' })
         .analyze();
@@ -209,7 +186,7 @@ describe('@axe-core/webdriverjs', () => {
     });
 
     it('injects into nested frameset', async () => {
-      await driver.get(`${addr}/nested-frameset.html`);
+      await driver.get(`${addr}/external/nested-frameset.html`);
       const { violations } = await new AxeBuilder(driver)
         .options({ runOnly: 'label' })
         .analyze();
@@ -230,7 +207,7 @@ describe('@axe-core/webdriverjs', () => {
     });
 
     it('should work on shadow DOM iframes', async () => {
-      await driver.get(`${addr}/shadow-iframes.html`);
+      await driver.get(`${addr}/external/shadow-frames.html`);
       const { violations } = await new AxeBuilder(driver)
         .options({ runOnly: 'label' })
         .analyze();
@@ -248,16 +225,14 @@ describe('@axe-core/webdriverjs', () => {
     });
 
     it('reports erroring frames in frame-tested', async () => {
-      await driver.get(`${addr}/crash-me-parent.html`);
+      await driver.get(`${addr}/external/crash-parent.html`);
       const results = await new AxeBuilder(driver, axeSource + axeCrasherSource)
         .options({ runOnly: ['label', 'frame-tested'] })
         .analyze();
 
       assert.equal(results.incomplete[0].id, 'frame-tested');
       assert.lengthOf(results.incomplete[0].nodes, 1);
-      assert.deepEqual(results.incomplete[0].nodes[0].target, [
-        '#ifr-crash-me'
-      ]);
+      assert.deepEqual(results.incomplete[0].nodes[0].target, ['#ifr-crash']);
       assert.equal(results.violations[0].id, 'label');
       assert.lengthOf(results.violations[0].nodes, 2);
       assert.deepEqual(results.violations[0].nodes[0].target, [
@@ -274,7 +249,7 @@ describe('@axe-core/webdriverjs', () => {
 
   describe('withRules', () => {
     it('only runs the provided rules as an array', async () => {
-      await driver.get(`${addr}/index.html`);
+      await driver.get(`${addr}/external/index.html`);
       const results = await new AxeBuilder(driver)
         .withRules(['region'])
         .analyze();
@@ -289,7 +264,7 @@ describe('@axe-core/webdriverjs', () => {
     });
 
     it('only runs the provided rules as a string', async () => {
-      await driver.get(`${addr}/index.html`);
+      await driver.get(`${addr}/external/index.html`);
       const results = await new AxeBuilder(driver)
         .withRules('region')
         .analyze();
@@ -306,7 +281,7 @@ describe('@axe-core/webdriverjs', () => {
 
   describe('options', () => {
     it('passes options to axe-core', async () => {
-      await driver.get(`${addr}/index.html`);
+      await driver.get(`${addr}/external/index.html`);
       const results = await new AxeBuilder(driver)
         .options({ rules: { region: { enabled: false } } })
         .analyze();
@@ -322,7 +297,7 @@ describe('@axe-core/webdriverjs', () => {
 
   describe('withTags', () => {
     it('only rules rules with the given tag(s) as an array', async () => {
-      await driver.get(`${addr}/index.html`);
+      await driver.get(`${addr}/external/index.html`);
       const results = await new AxeBuilder(driver)
         .withTags(['best-practice'])
         .analyze();
@@ -339,7 +314,7 @@ describe('@axe-core/webdriverjs', () => {
     });
 
     it('only rules rules with the given tag(s) as a string', async () => {
-      await driver.get(`${addr}/index.html`);
+      await driver.get(`${addr}/external/index.html`);
       const results = await new AxeBuilder(driver)
         .withTags('best-practice')
         .analyze();
@@ -356,7 +331,7 @@ describe('@axe-core/webdriverjs', () => {
     });
 
     it('No results provided when the given tag(s) is invalid', async () => {
-      await driver.get(`${addr}/index.html`);
+      await driver.get(`${addr}/external/index.html`);
       const results = await new AxeBuilder(driver)
         .withTags(['foobar'])
         .analyze();
@@ -420,7 +395,7 @@ describe('@axe-core/webdriverjs', () => {
 
   describe('callback()', () => {
     it('returns an error as the first argument', done => {
-      driver.get(`${addr}/index.html`).then(() => {
+      driver.get(`${addr}/external/index.html`).then(() => {
         new AxeBuilder(driver, 'throw new Error()').analyze((err, results) => {
           try {
             assert.isNull(results);
@@ -434,7 +409,7 @@ describe('@axe-core/webdriverjs', () => {
     });
 
     it('returns as the second argument', done => {
-      driver.get(`${addr}/index.html`).then(() => {
+      driver.get(`${addr}/external/index.html`).then(() => {
         new AxeBuilder(driver).analyze((err, results) => {
           try {
             assert.isNull(err);
@@ -457,13 +432,13 @@ describe('@axe-core/webdriverjs', () => {
     before(() => {
       const axe403Path = path.resolve(
         __dirname,
-        './fixtures/axe-core-4.0.3.js'
+        './fixtures/external/axe-core@legacy.js'
       );
       axe403Source = fs.readFileSync(axe403Path, 'utf8');
     });
 
     it('can run', async () => {
-      await driver.get(`${addr}/nested-iframes.html`);
+      await driver.get(`${addr}/external/nested-iframes.html`);
       const results = await new AxeBuilder(driver, axe403Source)
         .options({ runOnly: ['label'] })
         .analyze();
@@ -475,7 +450,7 @@ describe('@axe-core/webdriverjs', () => {
 
     it('throws if the top level errors', done => {
       driver
-        .get(`${addr}/crash-me.html`)
+        .get(`${addr}/external/crash.html`)
         .then(() => {
           return new AxeBuilder(
             driver,
@@ -489,20 +464,22 @@ describe('@axe-core/webdriverjs', () => {
     });
 
     it('can be configured', async () => {
-      await driver.get(`${addr}/outer-configure-iframe.html`);
+      await driver.get(`${addr}/external/nested-iframes.html`);
       const results = await new AxeBuilder(driver, axe403Source)
-        .configure(json)
+        .configure(dylangConfig)
         .analyze();
       assert.equal(results.violations[0].id, 'dylang');
-      assert.equal(results.violations[0].nodes.length, 2);
+      assert.equal(results.violations[0].nodes.length, 8);
     });
 
     it('reports frame-tested', async () => {
-      await driver.get(`${addr}/crash-me-parent.html`);
-      const results = await new AxeBuilder(driver, axeSource + axeCrasherSource)
+      await driver.get(`${addr}/external/crash-parent.html`);
+      const results = await new AxeBuilder(
+        driver,
+        axe403Source + axeCrasherSource
+      )
         .options({ runOnly: ['label', 'frame-tested'] })
         .analyze();
-
       assert.equal(results.incomplete[0].id, 'frame-tested');
       assert.lengthOf(results.incomplete[0].nodes, 1);
       assert.equal(results.violations[0].id, 'label');
