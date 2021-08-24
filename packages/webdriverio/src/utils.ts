@@ -178,7 +178,6 @@ export const axeFinishRun = ({
   partialResults,
   options
 }: AxeFinishRunParams): Promise<AxeResults> => {
-  // const originalWindow = client.getWindowHandle()
   return promisify(
     client.executeAsync(`
     var callback = arguments[arguments.length - 1];
