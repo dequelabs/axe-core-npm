@@ -63,6 +63,17 @@ describe('@axe-core/webdriverjs', () => {
       assert.isArray(results.inapplicable);
     });
 
+    it('properly isolates the call to axe.finishRun', async () => {
+      let err;
+      await driver.get(`${addr}/external/isolated-finish.html`);
+      try {
+        await new AxeBuilder(driver).analyze();
+      } catch (e) {
+        err = e;
+      }
+      assert.isUndefined(err);
+    });
+
     it('throws if axe errors out on the top window', done => {
       driver
         .get(`${addr}/external/crash.html`)

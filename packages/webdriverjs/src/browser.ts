@@ -66,22 +66,19 @@ export function axeFinishRun(
   return promisify(
     driver.executeAsyncScript<AxeResults>(`
       var callback = arguments[arguments.length - 1];
-      (function () {
-        'use strict';
-        var window = undefined;
-        ${axeSource};
-        this.axe.configure({
-          branding: { application: 'webdriverjs' }
-        });
-        var config = ${JSON.stringify(config)};
-        if (config) {
-          this.axe.configure(config);
-        }
 
-        var partialResults = ${JSON.stringify(partialResults)};
-        var options = ${JSON.stringify(options || {})};
-        this.axe.finishRun(partialResults, options).then(callback);
-      }).call({ document: document, getComputedStyle: function () {} })
+      ${axeSource};
+      window.axe.configure({
+        branding: { application: 'webdriverjs' }
+      });
+      var config = ${JSON.stringify(config)};
+      if (config) {
+        window.axe.configure(config);
+      }
+
+      var partialResults = ${JSON.stringify(partialResults)};
+      var options = ${JSON.stringify(options || {})};
+      window.axe.finishRun(partialResults, options).then(callback);
     `)
   );
 }
