@@ -171,13 +171,6 @@ export const openAboutBlank = (client: BrowserObject) => {
   );
 };
 
-// export const switchToAboutBlank = (client: BrowserObject) => {
-//   return promisify(
-//     client.switchToWindow(
-//       client.getWindowHandle()
-//     )
-//   )
-// }
 
 export const axeFinishRun = ({
   client,
