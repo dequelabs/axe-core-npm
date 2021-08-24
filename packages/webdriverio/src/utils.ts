@@ -163,12 +163,29 @@ export const axeRunLegacy = ({
   );
 };
 
+export const openAboutBlank = (client: BrowserObject) => {
+  return promisify(
+    client.execute(`
+      window.open('about:blank', '_blank');
+    `)
+  );
+};
+
+// export const switchToAboutBlank = (client: BrowserObject) => {
+//   return promisify(
+//     client.switchToWindow(
+//       client.getWindowHandle()
+//     )
+//   )
+// }
+
 export const axeFinishRun = ({
   client,
   axeSource,
   partialResults,
   options
 }: AxeFinishRunParams): Promise<AxeResults> => {
+  // const originalWindow = client.getWindowHandle()
   return promisify(
     client.executeAsync(`
     var callback = arguments[arguments.length - 1];

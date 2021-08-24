@@ -18,7 +18,8 @@ import {
   axeGetFrameContext,
   axeRunPartial,
   axeFinishRun,
-  axeRunLegacy
+  axeRunLegacy,
+  openAboutBlank
 } from './utils';
 
 export default class AxeBuilder {
@@ -333,12 +334,16 @@ export default class AxeBuilder {
 
   private async finishRun(partials: PartialResults): Promise<AxeResults> {
     const { client, axeSource, option } = this;
+    await openAboutBlank(client);
+    const [, newWindow] = await client.getWindowHandles();
+    await client.switchToWindow(newWindow);
     const res = await axeFinishRun({
       client,
       axeSource,
       options: option,
       partialResults: partials
     });
+    await client.closeWindow();
 
     return res;
   }
