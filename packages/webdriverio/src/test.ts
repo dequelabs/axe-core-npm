@@ -214,7 +214,7 @@ describe('@axe-core/webdriverio', () => {
             assert.deepEqual(nodes[3].target, ['#ifr-baz', 'input']);
           });
 
-          it('does not inject into disabled frames', async () => {
+          it('does not return results from disabled framesets', async () => {
             await client.url(`${addr}/nested-frameset.html`);
             const { violations } = await new AxeBuilder({
               client,
@@ -244,7 +244,7 @@ describe('@axe-core/webdriverio', () => {
             ]);
           });
 
-          it('does not error when disabled frame does not exist', async () => {
+          it('does not error when disabled frameset does not exist', async () => {
             await client.url(`${addr}/nested-frameset.html`);
             const { violations } = await new AxeBuilder({
               client,
@@ -406,7 +406,7 @@ describe('@axe-core/webdriverio', () => {
           assert.deepEqual(nodes[3].target, ['#ifr-baz', 'input']);
         });
 
-        it('does not inject into disabled frames', async () => {
+        it('does not inject into disabled frameset', async () => {
           await client.url(`${addr}/nested-frameset.html`);
           const { violations } = await new AxeBuilder({ client })
             .withRules('label')
@@ -425,7 +425,7 @@ describe('@axe-core/webdriverio', () => {
           assert.deepEqual(nodes[2].target, ['#frm-bar', '#bar-baz', 'input']);
         });
 
-        it('does not error when disabled frame does not exist', async () => {
+        it('does not error when disabled frameset does not exist', async () => {
           await client.url(`${addr}/nested-frameset.html`);
           const { violations } = await new AxeBuilder({ client })
             .options({ runOnly: 'label' })
