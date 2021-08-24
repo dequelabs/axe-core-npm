@@ -181,18 +181,14 @@ export const axeFinishRun = ({
   return promisify(
     client.executeAsync(`
     var callback = arguments[arguments.length - 1];
-    (function () {
-      'use strict';
-      var window = undefined;
-      ${axeSource};
-      this.axe.configure({
-        branding: { application: 'webdriverio' }
-      });
+    ${axeSource};
+    window.axe.configure({
+      branding: { application: 'webdriverio' }
+    });
 
-      var partialResults = ${JSON.stringify(partialResults)};
-      var options = ${JSON.stringify(options || {})};
-      this.axe.finishRun(partialResults, options).then(callback);
-    }).call({ document: document, getComputedStyle: function () {} })
+    var partialResults = ${JSON.stringify(partialResults)};
+    var options = ${JSON.stringify(options || {})};
+    window.axe.finishRun(partialResults, options).then(callback);
     `)
   );
 };

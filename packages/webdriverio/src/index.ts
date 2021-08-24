@@ -337,6 +337,7 @@ export default class AxeBuilder {
     await openAboutBlank(client);
     const [, newWindow] = await client.getWindowHandles();
     await client.switchToWindow(newWindow);
+    await client.url('about:blank');
     const res = await axeFinishRun({
       client,
       axeSource,
