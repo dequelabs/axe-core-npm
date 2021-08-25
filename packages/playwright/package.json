@@ -31,12 +31,12 @@
   "scripts": {
     "prebuild": "rimraf dist",
     "build": "tsc",
-    "test": "mocha --timeout 60000 -r ts-node/register 'src/test.ts'",
+    "test": "mocha --timeout 60000 -r ts-node/register 'tests/**.spec.ts'",
     "coverage": "nyc npm run test",
     "prepare": "npm run build"
   },
   "dependencies": {
-    "axe-core": "^4.3.2",
+    "axe-core": "^4.3.3",
     "playwright": "^1.13.1"
   },
   "devDependencies": {
