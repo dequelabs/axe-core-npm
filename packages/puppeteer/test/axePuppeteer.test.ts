@@ -116,6 +116,32 @@ describe('AxePuppeteer', function () {
       assert.include(violations[0].helpUrl, 'application=axe-puppeteer');
     });
 
+    it('returns correct results metadata', async () => {
+      await page.goto(`${addr}/index.html`);
+      const results = await new AxePuppeteer(page).analyze();
+      assert.isDefined(results.testEngine.name);
+      assert.isDefined(results.testEngine.version);
+      assert.isDefined(results.testEnvironment.orientationAngle);
+      assert.isDefined(results.testEnvironment.orientationType);
+      assert.isDefined(results.testEnvironment.userAgent);
+      assert.isDefined(results.testEnvironment.windowHeight);
+      assert.isDefined(results.testEnvironment.windowWidth);
+      assert.isDefined(results.testRunner.name);
+      assert.isDefined(results.toolOptions.reporter);
+      assert.equal(results.url, `${addr}/index.html`);
+    });
+
+    it('properly isolates the call to axe.finishRun', async () => {
+      let err;
+      await page.goto(`${addr}/external/isolated-finish.html`);
+      try {
+        await new AxePuppeteer(page).analyze();
+      } catch (e) {
+        err = e;
+      }
+      assert.isUndefined(err);
+    });
+
     describe('returned promise', () => {
       it("returns results through analyze's promise", async () => {
         await page.goto(`${addr}/external/index.html`);
@@ -653,6 +679,18 @@ describe('AxePuppeteer', function () {
         '#ifr-baz',
         'input'
       ]);
+    });
+
+    it('runs the same when passed a Frame', async () => {
+      await page.goto(`${addr}/external/nested-iframes.html`);
+      const pageResults = await new AxePuppeteer(page).analyze();
+
+      // Calling AxePuppeteer with a frame is deprecated, and will show a warning
+      const frame = page.mainFrame();
+      const frameResults = await new AxePuppeteer(frame).analyze();
+
+      pageResults.timestamp = frameResults.timestamp;
+      assert.deepEqual(pageResults, frameResults);
     });
   });
 

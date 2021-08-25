@@ -1,3 +1,4 @@
+import * as fs from 'fs';
 import { Frame, ElementHandle } from 'puppeteer';
 
 interface IInjectAxeArgs {
@@ -51,9 +52,8 @@ export async function injectJS(
 }
 
 async function injectJSModule(frame: Frame): Promise<void> {
-  await frame.addScriptTag({
-    path: require.resolve('axe-core')
-  });
+  const source = fs.readFileSync(require.resolve('axe-core'), 'utf8');
+  await injectJSSource(frame, source);
 }
 
 function injectJSSource(
