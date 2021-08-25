@@ -3,7 +3,6 @@ import * as webdriverio from 'webdriverio';
 const sync = require('@wdio/sync').default;
 import * as wdio from '@wdio/sync';
 import * as express from 'express';
-import * as sinon from 'sinon';
 import * as chromedriver from 'chromedriver';
 import isCI = require('is-ci');
 import testListen = require('test-listen');
@@ -63,14 +62,24 @@ describe('@axe-core/webdriverio', () => {
     let server: Server;
     let addr: string;
     let client: webdriverio.BrowserObject;
-    const axeSourcePath = path.resolve(
-      './fixtures/external/axe-core@legacy.js'
+    const axePath = require.resolve('axe-core');
+    const axeSource = fs.readFileSync(axePath, 'utf8');
+    const axeTestFixtures = path.resolve(
+      __dirname,
+      '..',
+      'fixtures',
+      'external'
     );
-    const axeSource = fs.readFileSync(axeSourcePath, 'utf-8');
+    const axeLegacySource = fs.readFileSync(
+      path.resolve(axeTestFixtures, 'axe-core@legacy.js'),
+      'utf-8'
+    );
+    const axeCrashPath = path.resolve(axeTestFixtures, 'axe-crasher.js');
+    const axeCrasherSource = fs.readFileSync(axeCrashPath, 'utf8');
     beforeEach(async () => {
       const app = express();
       let binaryPath;
-      app.use(express.static(path.resolve(__dirname, '..', 'fixtures')));
+      app.use(express.static(axeTestFixtures));
       server = createServer(app);
       addr = await testListen(server);
       if (
@@ -111,13 +120,170 @@ describe('@axe-core/webdriverio', () => {
         );
       });
 
+      describe('for versions without axe.runPartial', () => {
+        describe('analyze', () => {
+          it('returns results axe-core4.0.3', async () => {
+            await client.url(`${addr}/index.html`);
+            const results = await new AxeBuilder({
+              client,
+              axeSource: axeLegacySource
+            }).analyze();
+            assert.isNotNull(results);
+            assert.isArray(results.violations);
+            assert.isArray(results.incomplete);
+            assert.isArray(results.passes);
+            assert.isArray(results.inapplicable);
+          });
+
+          it('throws if axe errors out on the top window', async () => {
+            let error: Error | null = null;
+            await client.url(`${addr}/crash.html`);
+            try {
+              await new AxeBuilder({
+                client,
+                axeSource: axeLegacySource + axeCrasherSource
+              }).analyze();
+            } catch (e) {
+              error = e;
+            }
+            assert.isNotNull(error);
+          });
+        });
+
+        describe('disableFrames', () => {
+          it('does not return results from disabled iframes', async () => {
+            await client.url(`${addr}/nested-iframes.html`);
+            const { violations } = await new AxeBuilder({
+              client,
+              axeSource: axeLegacySource
+            })
+              .withRules('label')
+              .disableFrame('[src*="iframes/baz.html"]')
+              .analyze();
+
+            assert.equal(violations[0].id, 'label');
+            const nodes = violations[0].nodes;
+            assert.lengthOf(nodes, 3);
+            assert.deepEqual(nodes[0].target, [
+              '#ifr-foo',
+              '#foo-bar',
+              '#bar-baz',
+              'input'
+            ]);
+            assert.deepEqual(nodes[1].target, [
+              '#ifr-foo',
+              '#foo-baz',
+              'input'
+            ]);
+            assert.deepEqual(nodes[2].target, [
+              '#ifr-bar',
+              '#bar-baz',
+              'input'
+            ]);
+          });
+
+          it('does not error when disabled iframe does not exist', async () => {
+            await client.url(`${addr}/nested-iframes.html`);
+            const { violations } = await new AxeBuilder({
+              client,
+              axeSource: axeLegacySource
+            })
+              .withRules('label')
+              .disableFrame('[src*="does-not-exist.html"]')
+              .analyze();
+
+            assert.equal(violations[0].id, 'label');
+            const nodes = violations[0].nodes;
+            assert.lengthOf(nodes, 4);
+            assert.deepEqual(nodes[0].target, [
+              '#ifr-foo',
+              '#foo-bar',
+              '#bar-baz',
+              'input'
+            ]);
+            assert.deepEqual(nodes[1].target, [
+              '#ifr-foo',
+              '#foo-baz',
+              'input'
+            ]);
+            assert.deepEqual(nodes[2].target, [
+              '#ifr-bar',
+              '#bar-baz',
+              'input'
+            ]);
+            assert.deepEqual(nodes[3].target, ['#ifr-baz', 'input']);
+          });
+
+          it('does not return results from disabled framesets', async () => {
+            await client.url(`${addr}/nested-frameset.html`);
+            const { violations } = await new AxeBuilder({
+              client,
+              axeSource: axeLegacySource
+            })
+              .withRules('label')
+              .disableFrame('[src*="frameset/baz.html"]')
+              .analyze();
+            assert.equal(violations[0].id, 'label');
+            const nodes = violations[0].nodes;
+            assert.lengthOf(nodes, 3);
+            assert.deepEqual(nodes[0].target, [
+              '#frm-foo',
+              '#foo-bar',
+              '#bar-baz',
+              'input'
+            ]);
+            assert.deepEqual(nodes[1].target, [
+              '#frm-foo',
+              '#foo-baz',
+              'input'
+            ]);
+            assert.deepEqual(nodes[2].target, [
+              '#frm-bar',
+              '#bar-baz',
+              'input'
+            ]);
+          });
+
+          it('does not error when disabled frameset does not exist', async () => {
+            await client.url(`${addr}/nested-frameset.html`);
+            const { violations } = await new AxeBuilder({
+              client,
+              axeSource: axeLegacySource
+            })
+              .withRules('label')
+              .disableFrame('[src*="does-not-exist.html"]')
+              .analyze();
+            assert.equal(violations[0].id, 'label');
+            const nodes = violations[0].nodes;
+            assert.lengthOf(nodes, 4);
+            assert.deepEqual(nodes[0].target, [
+              '#frm-foo',
+              '#foo-bar',
+              '#bar-baz',
+              'input'
+            ]);
+            assert.deepEqual(nodes[1].target, [
+              '#frm-foo',
+              '#foo-baz',
+              'input'
+            ]);
+            assert.deepEqual(nodes[2].target, [
+              '#frm-bar',
+              '#bar-baz',
+              'input'
+            ]);
+            assert.deepEqual(nodes[3].target, ['#frm-baz', 'input']);
+          });
+        });
+      });
+
       describe('analyze', () => {
         describe('axeSource', () => {
           it('returns results with different version of axeSource', async () => {
             await client.url(`${addr}/index.html`);
             const results = await new AxeBuilder({
               client,
-              axeSource
+              axeSource: axeLegacySource
             }).analyze();
 
             assert.isNotNull(results);
@@ -138,45 +304,173 @@ describe('@axe-core/webdriverio', () => {
           assert.isArray(results.passes);
           assert.isArray(results.inapplicable);
         });
-      });
 
-      describe('disableIframe', () => {
-        it('does not inject into disabled iframes', async () => {
-          await client.url(`${addr}/recursive-iframes.html`);
-          const executeSpy = sinon.spy(client, 'execute');
-          await new AxeBuilder({ client })
-            .disableFrame('[src*="recursive.html"]')
+        it('reports frame-tested', async () => {
+          await client.url(`${addr}/crash-parent.html`);
+          const results = await new AxeBuilder({
+            client,
+            axeSource: axeSource + axeCrasherSource
+          })
+            .options({ runOnly: ['label', 'frame-tested'] })
             .analyze();
-          assert.strictEqual(executeSpy.callCount, 2);
+          assert.equal(results.incomplete[0].id, 'frame-tested');
+          assert.lengthOf(results.incomplete[0].nodes, 2);
+          assert.equal(results.violations[0].id, 'label');
+          assert.lengthOf(results.violations[0].nodes, 1);
         });
 
-        it('does not error when disabled iframe does not exist', async () => {
-          await client.url(`${addr}/recursive-iframes.html`);
-          const executeSpy = sinon.spy(client, 'execute');
-          await new AxeBuilder({ client })
-            .disableFrame('[src*="does-not-exist.html"]')
-            .analyze();
-          assert.strictEqual(executeSpy.callCount, 5);
+        it('throws if axe errors out on the top window', async () => {
+          let error: Error | null = null;
+          await client.url(`${addr}/crash.html`);
+          try {
+            await new AxeBuilder({
+              client,
+              axeSource: axeSource + axeCrasherSource
+            }).analyze();
+          } catch (e) {
+            error = e;
+          }
+          assert.isNotNull(error);
         });
+
+        it('throws when injecting a problematic source', async () => {
+          let error: Error | null = null;
+          await client.url(`${addr}/crash-me.html`);
+          try {
+            await new AxeBuilder({
+              client,
+              axeSource: 'throw new Error()'
+            }).analyze();
+          } catch (e) {
+            error = e;
+          }
+          assert.isNotNull(error);
+        });
+
+        it('throws when a setup fails', async () => {
+          let error: Error | null = null;
+
+          const brokenSource = axeSource + `;window.axe.utils = {}`;
+          await client.url(`${addr}/index.html`);
+          try {
+            await new AxeBuilder({ client, axeSource: brokenSource })
+              .withRules('label')
+              .analyze();
+          } catch (e) {
+            error = e;
+          }
+
+          assert.isNotNull(error);
+        });
+
+        it('properly isolates the call to axe.finishRun', async () => {
+          let error: Error | null = null;
+
+          await client.url(`${addr}/isolated-finish.html`)
+          try {
+            await new AxeBuilder({ client }).analyze()
+          } catch (e) {
+            error = e;
+          }
+
+          assert.isNull(error);
+        });
+
+        it('returns correct results metadata', async () => {
+          await client.url(`${addr}/index.html`);
+          const results = await new AxeBuilder({ client }).analyze();
+          assert.isDefined(results.testEngine.name)
+          assert.isDefined(results.testEngine.version)
+          assert.isDefined(results.testEnvironment.orientationAngle)
+          assert.isDefined(results.testEnvironment.orientationType)
+          assert.isDefined(results.testEnvironment.userAgent)
+          assert.isDefined(results.testEnvironment.windowHeight)
+          assert.isDefined(results.testEnvironment.windowWidth)
+          assert.isDefined(results.testRunner.name)
+          assert.isDefined(results.toolOptions.reporter)
+          assert.equal(results.url, `${addr}/index.html`)
+        })
       });
 
       describe('disableFrame', () => {
-        it('does not inject into disabled frames', async () => {
-          await client.url(`${addr}/recursive-frames.html`);
-          const executeSpy = sinon.spy(client, 'execute');
-          await new AxeBuilder({ client })
-            .disableFrame('[src*="recursive.html"]')
+        it('does not inject into disabled iframes', async () => {
+          await client.url(`${addr}/nested-iframes.html`);
+          const { violations } = await new AxeBuilder({ client })
+            .withRules('label')
+            .disableFrame('[src*="iframes/baz.html"]')
             .analyze();
-          assert.strictEqual(executeSpy.callCount, 2);
+
+          assert.equal(violations[0].id, 'label');
+          const nodes = violations[0].nodes;
+          assert.lengthOf(nodes, 3);
+          assert.deepEqual(nodes[0].target, [
+            '#ifr-foo',
+            '#foo-bar',
+            '#bar-baz',
+            'input'
+          ]);
+          assert.deepEqual(nodes[1].target, ['#ifr-foo', '#foo-baz', 'input']);
+          assert.deepEqual(nodes[2].target, ['#ifr-bar', '#bar-baz', 'input']);
         });
 
-        it('does not error when disabled frame does not exist', async () => {
-          await client.url(`${addr}/recursive-frames.html`);
-          const executeSpy = sinon.spy(client, 'execute');
-          await new AxeBuilder({ client })
+        it('does not error when disabled iframe does not exist', async () => {
+          await client.url(`${addr}/nested-iframes.html`);
+          const { violations } = await new AxeBuilder({ client })
+            .options({ runOnly: 'label' })
             .disableFrame('[src*="does-not-exist.html"]')
             .analyze();
-          assert.strictEqual(executeSpy.callCount, 5);
+
+          assert.equal(violations[0].id, 'label');
+          const nodes = violations[0].nodes;
+          assert.lengthOf(nodes, 4);
+          assert.deepEqual(nodes[0].target, [
+            '#ifr-foo',
+            '#foo-bar',
+            '#bar-baz',
+            'input'
+          ]);
+          assert.deepEqual(nodes[1].target, ['#ifr-foo', '#foo-baz', 'input']);
+          assert.deepEqual(nodes[2].target, ['#ifr-bar', '#bar-baz', 'input']);
+          assert.deepEqual(nodes[3].target, ['#ifr-baz', 'input']);
+        });
+
+        it('does not inject into disabled frameset', async () => {
+          await client.url(`${addr}/nested-frameset.html`);
+          const { violations } = await new AxeBuilder({ client })
+            .withRules('label')
+            .disableFrame('[src*="frameset/baz.html"]')
+            .analyze();
+          assert.equal(violations[0].id, 'label');
+          const nodes = violations[0].nodes;
+          assert.lengthOf(nodes, 3);
+          assert.deepEqual(nodes[0].target, [
+            '#frm-foo',
+            '#foo-bar',
+            '#bar-baz',
+            'input'
+          ]);
+          assert.deepEqual(nodes[1].target, ['#frm-foo', '#foo-baz', 'input']);
+          assert.deepEqual(nodes[2].target, ['#frm-bar', '#bar-baz', 'input']);
+        });
+
+        it('does not error when disabled frameset does not exist', async () => {
+          await client.url(`${addr}/nested-frameset.html`);
+          const { violations } = await new AxeBuilder({ client })
+            .options({ runOnly: 'label' })
+            .disableFrame('[src*="does-not-exist.html"]')
+            .analyze();
+          assert.equal(violations[0].id, 'label');
+          const nodes = violations[0].nodes;
+          assert.lengthOf(nodes, 4);
+          assert.deepEqual(nodes[0].target, [
+            '#frm-foo',
+            '#foo-bar',
+            '#bar-baz',
+            'input'
+          ]);
+          assert.deepEqual(nodes[1].target, ['#frm-foo', '#foo-baz', 'input']);
+          assert.deepEqual(nodes[2].target, ['#frm-bar', '#bar-baz', 'input']);
+          assert.deepEqual(nodes[3].target, ['#frm-baz', 'input']);
         });
       });
 
@@ -210,41 +504,64 @@ describe('@axe-core/webdriverio', () => {
         });
       });
 
-      describe('iframe tests', () => {
+      describe('frame tests', () => {
         it('injects into nested iframes', async () => {
           await client.url(`${addr}/nested-iframes.html`);
-          const executeSpy = sinon.spy(client, 'execute');
-          await new AxeBuilder({ client }).analyze();
-          /**
-           * Ensure we called execute 4 times
-           * 1. nested-iframes.html
-           * 2. iframes/foo.html
-           * 3. iframes/bar.html
-           * 4. iframes/baz.html
-           */
-          assert.strictEqual(executeSpy.callCount, 4);
+          const { violations } = await new AxeBuilder({ client })
+            .options({ runOnly: 'label' })
+            .analyze();
+
+          assert.equal(violations[0].id, 'label');
+          const nodes = violations[0].nodes;
+          assert.lengthOf(nodes, 4);
+          assert.deepEqual(nodes[0].target, [
+            '#ifr-foo',
+            '#foo-bar',
+            '#bar-baz',
+            'input'
+          ]);
+          assert.deepEqual(nodes[1].target, ['#ifr-foo', '#foo-baz', 'input']);
+          assert.deepEqual(nodes[2].target, ['#ifr-bar', '#bar-baz', 'input']);
+          assert.deepEqual(nodes[3].target, ['#ifr-baz', 'input']);
         });
 
-        it('injects into all iframes', async () => {
-          await client.url('http://qateam.dequecloud.com/attest/api/test.html');
-          const results = await new AxeBuilder({ client }).analyze();
-          assert.strictEqual(results.violations.length, 7);
-        });
-      });
+        it('injects into nested frameset', async () => {
+          await client.url(`${addr}/nested-frameset.html`);
+          const { violations } = await new AxeBuilder({ client })
+            .options({ runOnly: 'label' })
+            .analyze();
 
-      describe('frame tests', () => {
-        it('injects into nested frames', async () => {
-          await client.url(`${addr}/nested-frames.html`);
-          const executeSpy = sinon.spy(client, 'execute');
-          await new AxeBuilder({ client }).analyze();
-          /**
-           * Ensure we called execute 4 times
-           * 1. nested-frames.html
-           * 2. frames/foo.html
-           * 3. frames/bar.html
-           * 4. frames/baz.html
-           */
-          assert.strictEqual(executeSpy.callCount, 4);
+          assert.equal(violations[0].id, 'label');
+          assert.lengthOf(violations[0].nodes, 4);
+
+          const nodes = violations[0].nodes;
+          assert.deepEqual(nodes[0].target, [
+            '#frm-foo',
+            '#foo-bar',
+            '#bar-baz',
+            'input'
+          ]);
+          assert.deepEqual(nodes[1].target, ['#frm-foo', '#foo-baz', 'input']);
+          assert.deepEqual(nodes[2].target, ['#frm-bar', '#bar-baz', 'input']);
+          assert.deepEqual(nodes[3].target, ['#frm-baz', 'input']);
+        });
+
+        it('should work on shadow DOM iframes', async () => {
+          await client.url(`${addr}/shadow-frames.html`);
+          const { violations } = await new AxeBuilder({ client })
+            .options({ runOnly: 'label' })
+            .analyze();
+
+          assert.equal(violations[0].id, 'label');
+          assert.lengthOf(violations[0].nodes, 3);
+
+          const nodes = violations[0].nodes;
+          assert.deepEqual(nodes[0].target, ['#light-frame', 'input']);
+          assert.deepEqual(nodes[1].target, [
+            ['#shadow-root', '#shadow-frame'],
+            'input'
+          ]);
+          assert.deepEqual(nodes[2].target, ['#slotted-frame', 'input']);
         });
       });
 
@@ -371,17 +688,17 @@ describe('@axe-core/webdriverio', () => {
             ...results.incomplete
           ];
           // Ensure all run rules had the "foobar" tag
-          assert.deepStrictEqual(0, all.length);
+          assert.lengthOf(all, 0);
         });
       });
 
       describe('include/exclude', () => {
         it('with include and exclude', async () => {
           let error: Error | null = null;
-          await client.url(`${addr}/context.html`);
+          await client.url(`${addr}/nested-iframes.html`);
           const builder = new AxeBuilder({ client })
-            .include('.include')
-            .exclude('.exclude');
+            .include('#ifr-foo')
+            .exclude('#ifr-bar');
 
           try {
             await builder.analyze();
@@ -394,8 +711,8 @@ describe('@axe-core/webdriverio', () => {
 
         it('with only include', async () => {
           let error: Error | null = null;
-          await client.url(`${addr}/context.html`);
-          const builder = new AxeBuilder({ client }).include('.include');
+          await client.url(`${addr}/nested-iframes.html`);
+          const builder = new AxeBuilder({ client }).include('#ifr-foo');
 
           try {
             await builder.analyze();
@@ -408,8 +725,8 @@ describe('@axe-core/webdriverio', () => {
 
         it('wth only exclude', async () => {
           let error: Error | null = null;
-          await client.url(`${addr}/context.html`);
-          const builder = new AxeBuilder({ client }).exclude('.exclude');
+          await client.url(`${addr}/nested-iframes.html`);
+          const builder = new AxeBuilder({ client }).exclude('#ifr-bar');
 
           try {
             await builder.analyze();
@@ -425,15 +742,28 @@ describe('@axe-core/webdriverio', () => {
         it('returns results when callback is provided', async () => {
           await client.url(`${addr}/index.html`);
           new AxeBuilder({ client }).analyze((err, results) => {
-            if (err) {
-              // Something _should_ happen with error
-            }
+            assert.isNull(err);
             assert.isNotNull(results);
             assert.isArray(results?.violations);
             assert.isArray(results?.incomplete);
             assert.isArray(results?.passes);
             assert.isArray(results?.inapplicable);
           });
+        });
+
+        it('returns an error as the first argument', done => {
+          Promise.resolve(client.url(`${addr}/index.html`));
+          new AxeBuilder({ client, axeSource: 'throw new Error()' }).analyze(
+            (err, results) => {
+              try {
+                assert.isNull(results);
+                assert.isNotNull(err);
+                done();
+              } catch (e) {
+                done(e);
+              }
+            }
+          );
         });
       });
     });
@@ -443,11 +773,16 @@ describe('@axe-core/webdriverio', () => {
     let server: Server;
     let addr: string;
     let remote: any;
-
+    const axeTestFixtures = path.resolve(
+      __dirname,
+      '..',
+      'fixtures',
+      'external'
+    );
     beforeEach(async () => {
       const app = express();
       let binaryPath = '';
-      app.use(express.static(path.resolve(__dirname, '..', 'fixtures')));
+      app.use(express.static(axeTestFixtures));
       server = createServer(app);
       addr = await testListen(server);
       if (

@@ -33,7 +33,7 @@
     "webdriverio"
   ],
   "dependencies": {
-    "axe-core": "^4.2.3",
+    "axe-core": "^4.3.3",
     "cssesc": "^3.0.0"
   },
   "devDependencies": {
@@ -44,18 +44,17 @@
     "@types/is-ci": "^2.0.0",
     "@types/mocha": "^8.2.3",
     "@types/node": "^14.17.9",
-    "@types/sinon": "^9.0.10",
     "@types/test-listen": "^1.1.0",
     "@wdio/sync": "^6.11.0",
+    "axe-test-fixtures": "github:dequelabs/axe-test-fixtures#v1",
     "chai": "^4.3.0",
-    "chromedriver": "^91.0.1",
+    "chromedriver": "^92.0.1",
     "delay": "^5.0.0",
     "express": "^4.17.1",
     "is-ci": "^2.0.0",
     "mocha": "^8.4.0",
     "nyc": "^15.1.0",
     "rimraf": "^3.0.2",
-    "sinon": "^9.2.4",
     "source-map-support": "^0.5.19",
     "test-listen": "^1.1.0",
     "ts-node": "^9.1.1",
@@ -80,9 +79,9 @@
     "sourceMap": true,
     "instrument": true,
     "checkCoverage": true,
-    "statements": 100,
+    "statements": 98,
     "branches": 90,
     "functions": 100,
-    "lines": 100
+    "lines": 98
   }
 }

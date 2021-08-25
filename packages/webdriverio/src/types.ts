@@ -19,18 +19,34 @@ export type BrowserObject =
 
 export type Element = ElementAsync | ElementSync;
 
-export interface AnalyzePageParams {
-  context: ElementContext | null;
-  options: RunOptions | null;
-  config: Spec | null;
+export interface AxeRunPartialParams {
+  client: BrowserObject;
+  context?: ElementContext;
+  options?: RunOptions;
 }
 
-export interface AnalyzePageResponse {
-  results: AxeResults | null;
-  error: Error | string | null;
+export interface AxeGetFrameContextParams {
+  client: BrowserObject;
+  context: ElementContext;
 }
 
-export type DoneFunction = ({ error, results }: AnalyzePageResponse) => void;
+export interface AxeRunLegacyParams extends AxeRunPartialParams {
+  config?: Spec;
+}
+
+export interface AxeSourceInjectParams {
+  client: BrowserObject;
+  axeSource: string;
+}
+
+export interface AxeFinishRunParams extends AxeSourceInjectParams {
+  partialResults: PartialResults;
+  options: RunOptions;
+}
+
+export interface AxeSourceInjectResponse {
+  runPartialSupported: boolean;
+}
 
 export type CallbackFunction = (
   error: string | null,
@@ -52,3 +68,5 @@ declare global {
     };
   }
 }
+
+export type PartialResults = Parameters<typeof axe.finishRun>[0];

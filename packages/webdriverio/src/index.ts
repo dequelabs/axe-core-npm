@@ -1,4 +1,5 @@
 import type { RunOptions, AxeResults } from 'axe-core';
+import { ContextObject } from 'axe-core';
 import * as fs from 'fs';
 import * as assert from 'assert';
 import * as cssesc from 'cssesc';
@@ -6,13 +7,19 @@ import type {
   Options,
   CallbackFunction,
   BrowserObject,
-  Element
+  Element,
+  PartialResults
 } from './types';
 import {
-  analyzePage,
   isWebdriverClient,
   normalizeContext,
-  logOrRethrowError
+  logOrRethrowError,
+  axeSourceInject,
+  axeGetFrameContext,
+  axeRunPartial,
+  axeFinishRun,
+  axeRunLegacy,
+  openAboutBlank
 } from './utils';
 
 export default class AxeBuilder {
@@ -147,30 +154,21 @@ export default class AxeBuilder {
    */
 
   public async analyze(callback?: CallbackFunction): Promise<AxeResults> {
-    await this.inject();
-    await this.setBrowsingContext();
-    const client = this.client;
-    const context = normalizeContext(this.includes, this.excludes);
-    const options = this.option;
-
-    // Ignoring since `analyzePage()` is expecting a callback()
-    // and we do not need to pass one
-    // eslint-disable-next-line @typescript-eslint/ban-ts-ignore
-    // @ts-ignore
-    const { results, error } = await client.executeAsync(analyzePage, {
-      context,
-      options
+    return new Promise((resolve, reject) => {
+      return this.analyzePromise()
+        .then((results: AxeResults) => {
+          callback?.(null, results);
+          resolve(results);
+        })
+        .catch((err: Error) => {
+          // When using a callback, do *not* reject the wrapping Promise. This prevents having to handle the same error twice.
+          if (callback) {
+            callback(err.message, null);
+          } else {
+            reject(err);
+          }
+        });
     });
-    /* istanbul ignore if */
-    if (callback) {
-      callback(error, results);
-    }
-
-    /* istanbul ignore if */
-    if (error) {
-      throw new Error(error);
-    }
-    return results;
   }
 
   /**
@@ -224,6 +222,35 @@ export default class AxeBuilder {
     }
   }
 
+  private async analyzePromise(): Promise<AxeResults> {
+    const { client, axeSource } = this;
+    const context = normalizeContext(
+      this.includes,
+      this.excludes,
+      this.disableFrameSelectors
+    );
+    // https://github.com/webdriverio/webdriverio/issues/6607#issuecomment-808457664
+    await client.switchToFrame(null);
+
+    const { runPartialSupported } = await axeSourceInject({
+      client,
+      axeSource
+    });
+
+    if (!runPartialSupported) {
+      return await this.runLegacy(context);
+    }
+    const partials = await this.runPartialRecursive(context);
+
+    return await this.finishRun(partials);
+  }
+
+  private async runLegacy(context: ContextObject): Promise<AxeResults> {
+    const { client, option } = this;
+    await this.inject();
+    return axeRunLegacy({ client, context, options: option });
+  }
+
   /**
    * Get a CSS selector for retrieving child iframes.
    * @returns {String}
@@ -265,5 +292,60 @@ export default class AxeBuilder {
     } else {
       await this.client.switchToParentFrame();
     }
+  }
+
+  /**
+   * Get partial results from the current context and its child frames
+   * @param {ContextObject} context
+   */
+
+  private async runPartialRecursive(
+    context: ContextObject
+  ): Promise<PartialResults> {
+    const frameContexts = await axeGetFrameContext({
+      client: this.client,
+      context
+    });
+
+    const partials: PartialResults = [
+      await axeRunPartial({
+        client: this.client,
+        context,
+        options: this.option
+      })
+    ];
+
+    for (const { frameSelector, frameContext, frame } of frameContexts) {
+      try {
+        assert(frame, `Expect frame of "${frameSelector}" to be defined`);
+        await this.client.switchToFrame(frame);
+        await axeSourceInject({
+          client: this.client,
+          axeSource: this.script
+        });
+        partials.push(...(await this.runPartialRecursive(frameContext)));
+      } catch (error) {
+        partials.push(null);
+      }
+    }
+    await this.client.switchToParentFrame();
+    return partials;
+  }
+
+  private async finishRun(partials: PartialResults): Promise<AxeResults> {
+    const { client, axeSource, option } = this;
+    await openAboutBlank(client);
+    const [, newWindow] = await client.getWindowHandles();
+    await client.switchToWindow(newWindow);
+    await client.url('about:blank');
+    const res = await axeFinishRun({
+      client,
+      axeSource,
+      options: option,
+      partialResults: partials
+    });
+    await client.closeWindow();
+
+    return res;
   }
 }
