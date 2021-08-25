@@ -271,6 +271,21 @@ describe('@axe-core/webdriverjs', () => {
         'input'
       ]);
     });
+
+    it('returns the same results from runPartial as from legacy mode', async () => {
+      await driver.get(`${addr}/nested-iframes.html`);
+      const normalResults = await new AxeBuilder(driver, axeSource).analyze();
+      const legacyResults = await new AxeBuilder(
+        driver,
+        axeSource +
+          `;
+        delete window.axe.runPartial;
+        delete window.axe.finishRun;
+      `
+      ).analyze();
+      normalResults.timestamp = legacyResults.timestamp;
+      assert.deepEqual(normalResults, legacyResults);
+    });
   });
 
   describe('withRules', () => {

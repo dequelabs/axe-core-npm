@@ -366,9 +366,9 @@ describe('@axe-core/webdriverio', () => {
         it('properly isolates the call to axe.finishRun', async () => {
           let error: Error | null = null;
 
-          await client.url(`${addr}/isolated-finish.html`)
+          await client.url(`${addr}/isolated-finish.html`);
           try {
-            await new AxeBuilder({ client }).analyze()
+            await new AxeBuilder({ client }).analyze();
           } catch (e) {
             error = e;
           }
@@ -379,17 +379,17 @@ describe('@axe-core/webdriverio', () => {
         it('returns correct results metadata', async () => {
           await client.url(`${addr}/index.html`);
           const results = await new AxeBuilder({ client }).analyze();
-          assert.isDefined(results.testEngine.name)
-          assert.isDefined(results.testEngine.version)
-          assert.isDefined(results.testEnvironment.orientationAngle)
-          assert.isDefined(results.testEnvironment.orientationType)
-          assert.isDefined(results.testEnvironment.userAgent)
-          assert.isDefined(results.testEnvironment.windowHeight)
-          assert.isDefined(results.testEnvironment.windowWidth)
-          assert.isDefined(results.testRunner.name)
-          assert.isDefined(results.toolOptions.reporter)
-          assert.equal(results.url, `${addr}/index.html`)
-        })
+          assert.isDefined(results.testEngine.name);
+          assert.isDefined(results.testEngine.version);
+          assert.isDefined(results.testEnvironment.orientationAngle);
+          assert.isDefined(results.testEnvironment.orientationType);
+          assert.isDefined(results.testEnvironment.userAgent);
+          assert.isDefined(results.testEnvironment.windowHeight);
+          assert.isDefined(results.testEnvironment.windowWidth);
+          assert.isDefined(results.testRunner.name);
+          assert.isDefined(results.toolOptions.reporter);
+          assert.equal(results.url, `${addr}/index.html`);
+        });
       });
 
       describe('disableFrame', () => {
@@ -562,6 +562,29 @@ describe('@axe-core/webdriverio', () => {
             'input'
           ]);
           assert.deepEqual(nodes[2].target, ['#slotted-frame', 'input']);
+        });
+
+        it('returns the same results from runPartial as from legacy mode', async () => {
+          await client.url(`${addr}/nested-iframes.html`);
+          const noHtmlConfig = `;axe.configure({ noHtml: true })`;
+          const source = axeSource + noHtmlConfig;
+          const normalResults = await new AxeBuilder({
+            client,
+            axeSource: source
+          }).analyze();
+
+          const axeSourceBroken =
+            source +
+            `;
+            delete window.axe.runPartial;
+            delete window.axe.finishRun;
+          `;
+          const legacyResults = await new AxeBuilder({
+            client,
+            axeSource: axeSourceBroken
+          }).analyze();
+          normalResults.timestamp = legacyResults.timestamp;
+          assert.deepEqual(normalResults, legacyResults);
         });
       });
 

@@ -353,6 +353,23 @@ describe('@axe-core/playwright', () => {
 
       assert.strictEqual(count, 9);
     });
+
+    it('returns the same results from runPartial as from legacy mode', async () => {
+      await page.goto(`${addr}/nested-iframes.html`);
+      const normalResults = await new AxeBuilder({ page, axeSource }).analyze();
+      const axeSourceBroken =
+        axeSource +
+        `;
+        delete window.axe.runPartial;
+        delete window.axe.finishRun;
+      `;
+      const legacyResults = await new AxeBuilder({
+        page,
+        axeSource: axeSourceBroken
+      }).analyze();
+      normalResults.timestamp = legacyResults.timestamp;
+      assert.deepEqual(normalResults, legacyResults);
+    });
   });
 
   describe('include/exclude', () => {

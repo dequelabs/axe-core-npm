@@ -334,6 +334,7 @@ export default class AxeBuilder {
 
   private async finishRun(partials: PartialResults): Promise<AxeResults> {
     const { client, axeSource, option } = this;
+    const win = await client.getWindowHandle();
     await openAboutBlank(client);
     const [, newWindow] = await client.getWindowHandles();
     await client.switchToWindow(newWindow);
@@ -345,7 +346,7 @@ export default class AxeBuilder {
       partialResults: partials
     });
     await client.closeWindow();
-
+    await client.switchToWindow(win);
     return res;
   }
 }
