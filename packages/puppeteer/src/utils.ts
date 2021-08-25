@@ -46,13 +46,6 @@ export function normalizeContext(
   return base;
 }
 
-export function getFrame(pageFrame: Page | Frame): Frame {
-  if ('mainFrame' in pageFrame) {
-    return pageFrame.mainFrame();
-  }
-  return pageFrame;
-}
-
 export async function getChildFrame(
   frame: Frame,
   childSelector: Axe.CrossTreeSelector

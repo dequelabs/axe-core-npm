@@ -20,11 +20,11 @@ export async function loadPage(
 
 // An instance of AxePuppeteer that owns a page and thus closes it after running axe.
 class OwningAxePuppeteer extends AxePuppeteer {
-  private page: Page;
+  private newPage: Page;
 
   constructor(page: Page, source?: string) {
     super(page, source);
-    this.page = page;
+    this.newPage = page;
   }
 
   public async analyze(): Promise<Axe.AxeResults>;
@@ -37,7 +37,7 @@ class OwningAxePuppeteer extends AxePuppeteer {
     try {
       return await super.analyze(callback);
     } finally {
-      await this.page.close();
+      await this.newPage.close();
     }
   }
 }

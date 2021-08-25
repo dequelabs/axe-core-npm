@@ -1,3 +1,4 @@
+import assert from 'assert';
 import { RunOptions, ContextObject, Spec, AxeResults } from 'axe-core';
 import { Frame, JSONArray, JSONObject, Page } from 'puppeteer';
 import {
@@ -14,7 +15,6 @@ import { AxePartialRunner } from './axePartialRunner';
 import {
   arrayify,
   getChildFrame,
-  getFrame,
   normalizeContext,
   frameSourceInject
 } from './utils';
@@ -27,9 +27,25 @@ export class AxePuppeteer {
   private axeOptions: RunOptions;
   private config: Spec | null;
   private disabledFrameSelectors: string[];
+  private page: Page | undefined;
 
   constructor(pageFrame: Page | Frame, source?: string) {
-    this.frame = getFrame(pageFrame);
+    if ('mainFrame' in pageFrame) {
+      if ('browser' in pageFrame) {
+        this.page = pageFrame;
+      } else {
+        console.warn(
+          'AxePuppeteer support for Puppeteer <= 3.0.3 is deprecated'
+        );
+      }
+      this.frame = pageFrame.mainFrame();
+    } else {
+      console.warn(
+        'AxePuppeteer construction with Frame objects is deprecated.'
+      );
+      this.frame = pageFrame;
+    }
+
     this.axeSource = source;
     this.includes = [];
     this.excludes = [];
@@ -101,13 +117,10 @@ export class AxePuppeteer {
   }
 
   public configure(config: Spec): this {
-    // Cast to any because we are asserting for javascript provided argument.
-    if (typeof (config as any) !== 'object') {
-      throw new Error(
-        'AxePuppeteer needs an object to configure. See axe-core configure API.'
-      );
-    }
-
+    assert(
+      typeof config === 'object',
+      'AxePuppeteer needs an object to configure. See axe-core configure API.'
+    );
     this.config = config;
     return this;
   }
@@ -149,7 +162,7 @@ export class AxePuppeteer {
     await frameSourceInject(frame, axeSource, config);
 
     const runPartialSupported = await frame.evaluate(axeRunPartialSupport);
-    if (runPartialSupported !== true) {
+    if (runPartialSupported !== true || this.page === undefined) {
       return this.runLegacy(context);
     }
     const partialRunner = await this.runPartialRecursive(frame, context);
@@ -191,13 +204,22 @@ export class AxePuppeteer {
   }
 
   private async finishRun(partialResults: PartialResults): Promise<AxeResults> {
-    // AxeResults
-    const options = this.axeOptions;
-    return await this.frame.evaluate(
-      axeFinishRun,
-      partialResults as JSONArray,
-      options as JSONObject
-    );
+    const { axeOptions, axeSource, config, page } = this;
+    assert(page, 'Running AxePuppeteer with a frame object is deprecated');
+
+    const browser = page.browser();
+    const blankPage = await browser.newPage();
+    await frameSourceInject(blankPage.mainFrame(), axeSource, config);
+
+    return await blankPage
+      .evaluate(
+        axeFinishRun,
+        partialResults as JSONArray,
+        axeOptions as JSONObject
+      )
+      .finally(() => {
+        blankPage.close();
+      });
   }
 
   private async runLegacy(context: ContextObject): Promise<AxeResults> {
