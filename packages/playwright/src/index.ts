@@ -1,6 +1,11 @@
 import * as fs from 'fs';
 import type { Page, Frame, ElementHandle } from 'playwright';
-import type { RunOptions, AxeResults, ContextObject } from 'axe-core';
+import type {
+  RunOptions,
+  AxeResults,
+  ContextObject,
+  PartialResults
+} from 'axe-core';
 import { normalizeContext, analyzePage } from './utils';
 import type { AxePlaywrightParams } from './types';
 import {
@@ -142,12 +147,7 @@ export default class AxeBuilder {
       context
     );
     const partials = await partialResults.getPartials();
-    results = await page.evaluate(axeFinishRun, {
-      partialResults: partials,
-      options
-    });
-
-    return results;
+    return this.finishRun(partials);
   }
 
   /**
@@ -197,7 +197,13 @@ export default class AxeBuilder {
 
   /**
    * Inject `axe-core` into each frame and run `axe.runPartial`.
-   * Because we need to inject axe into all frames all at once (to avoid any potential problems with the DOM becoming out-of-sync) but also need to not process results for any child frames if the parent frame throws an error (requirements of the data structure for `axe.finishRun`), we have to return a deeply nested array of Promises and then flatten the array once all Promises have finished, throwing out any nested Promises if the parent Promise is not fulfilled.
+   * Because we need to inject axe into all frames all at once
+   * (to avoid any potential problems with the DOM becoming out-of-sync)
+   * but also need to not process results for any child frames if the parent
+   * frame throws an error (requirements of the data structure for `axe.finishRun`),
+   *  we have to return a deeply nested array of Promises and then flatten
+   * the array once all Promises have finished, throwing out any nested Promises
+   * if the parent Promise is not fulfilled.
    * @param frame - playwright frame object
    * @param context - axe-core context object
    * @returns Promise<AxePartialRunner>
@@ -241,5 +247,20 @@ export default class AxeBuilder {
     }
 
     return axePartialRunner;
+  }
+
+  private async finishRun(partialResults: PartialResults): Promise<AxeResults> {
+    const { page, option: options } = this;
+    const context = page.context();
+    const blankPage = await context.newPage();
+    blankPage.evaluate(this.script());
+    return await blankPage
+      .evaluate(axeFinishRun, {
+        partialResults,
+        options
+      })
+      .finally(() => {
+        blankPage.close();
+      });
   }
 }
