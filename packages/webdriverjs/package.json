@@ -81,7 +81,7 @@
     "typescript": "^4.3.5"
   },
   "dependencies": {
-    "axe-core": "^4.3.2"
+    "axe-core": "^4.3.3"
   },
   "peerDependencies": {
     "selenium-webdriver": ">3.0.0-beta  || >=2.53.1 || >4.0.0-alpha"
