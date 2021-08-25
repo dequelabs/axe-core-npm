@@ -209,7 +209,16 @@ class AxeBuilder {
    */
   private async finishRun(partials: PartialResults): Promise<AxeResults> {
     const { driver, axeSource, config, option } = this;
+
+    const win = await driver.getWindowHandle();
+    await driver.executeScript(`window.open('about:blank')`);
+    const handlers = await driver.getAllWindowHandles();
+    await driver.switchTo().window(handlers[handlers.length - 1]);
+    // Make sure we're on a blank page, even if window.open isn't functioning properly.
+    await driver.get('about:blank');
     const res = await axeFinishRun(driver, axeSource, config, partials, option);
+    await driver.close();
+    driver.switchTo().window(win);
     return res;
   }
 }
