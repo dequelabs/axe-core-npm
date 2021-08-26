@@ -699,10 +699,7 @@ describe('AxePuppeteer', function () {
       const legacyResults = await new AxePuppeteer(
         page,
         axeSource +
-          `;
-        delete window.axe.runPartial;
-        delete window.axe.finishRun;
-      `
+          `;delete window.axe.runPartial; delete window.axe.finishRun;`
       ).analyze();
       normalResults.timestamp = legacyResults.timestamp;
       assert.deepEqual(normalResults, legacyResults);

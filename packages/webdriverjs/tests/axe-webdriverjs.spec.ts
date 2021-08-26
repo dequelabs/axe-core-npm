@@ -278,10 +278,7 @@ describe('@axe-core/webdriverjs', () => {
       const legacyResults = await new AxeBuilder(
         driver,
         axeSource +
-          `;
-        delete window.axe.runPartial;
-        delete window.axe.finishRun;
-      `
+          `;delete window.axe.runPartial; delete window.axe.finishRun;`
       ).analyze();
       normalResults.timestamp = legacyResults.timestamp;
       assert.deepEqual(normalResults, legacyResults);

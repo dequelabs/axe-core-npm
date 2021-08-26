@@ -357,15 +357,12 @@ describe('@axe-core/playwright', () => {
     it('returns the same results from runPartial as from legacy mode', async () => {
       await page.goto(`${addr}/nested-iframes.html`);
       const normalResults = await new AxeBuilder({ page, axeSource }).analyze();
-      const axeSourceBroken =
+      const axeSourceNoPartial =
         axeSource +
-        `;
-        delete window.axe.runPartial;
-        delete window.axe.finishRun;
-      `;
+        `;delete window.axe.runPartial; delete window.axe.finishRun;`;
       const legacyResults = await new AxeBuilder({
         page,
-        axeSource: axeSourceBroken
+        axeSource: axeSourceNoPartial
       }).analyze();
       normalResults.timestamp = legacyResults.timestamp;
       assert.deepEqual(normalResults, legacyResults);

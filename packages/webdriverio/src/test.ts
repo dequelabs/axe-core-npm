@@ -573,16 +573,14 @@ describe('@axe-core/webdriverio', () => {
             axeSource: source
           }).analyze();
 
-          const axeSourceBroken =
+          const axeSourceNoPartial =
             source +
-            `;
-            delete window.axe.runPartial;
-            delete window.axe.finishRun;
-          `;
+            `;delete window.axe.runPartial; delete window.axe.finishRun;`;
           const legacyResults = await new AxeBuilder({
             client,
-            axeSource: axeSourceBroken
+            axeSource: axeSourceNoPartial
           }).analyze();
+
           normalResults.timestamp = legacyResults.timestamp;
           assert.deepEqual(normalResults, legacyResults);
         });
