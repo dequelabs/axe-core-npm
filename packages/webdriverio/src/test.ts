@@ -566,6 +566,7 @@ describe('@axe-core/webdriverio', () => {
 
         it('returns the same results from runPartial as from legacy mode', async () => {
           await client.url(`${addr}/nested-iframes.html`);
+          // webdriver io mutates the html on the page with random id strings
           const noHtmlConfig = `;axe.configure({ noHtml: true })`;
           const source = axeSource + noHtmlConfig;
           const normalResults = await new AxeBuilder({
