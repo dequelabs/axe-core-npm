@@ -17,6 +17,7 @@
   "scripts": {
     "build": "tsc",
     "test": "mocha",
+    "test:perf": "npx ts-node test/perf.ts",
     "coverage": "nyc mocha",
     "prepublishOnly": "npm run build"
   },
