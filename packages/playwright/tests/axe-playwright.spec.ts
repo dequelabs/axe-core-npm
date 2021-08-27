@@ -17,16 +17,20 @@ describe('@axe-core/playwright', () => {
   const axeSource = fs.readFileSync(axePath, 'utf8');
   let browser: playwright.ChromiumBrowser;
   const axeTestFixtures = path.resolve(__dirname, 'fixtures');
+  const externalPath = path.resolve(axeTestFixtures, 'external');
   const axeLegacySource = fs.readFileSync(
-    path.resolve(axeTestFixtures, 'external', 'axe-core@legacy.js'),
+    `${externalPath}/axe-core@legacy.js`,
     'utf-8'
   );
-  const axeCrashPath = path.resolve(
-    axeTestFixtures,
-    'external',
-    'axe-crasher.js'
+  const axeCrasherSource = fs.readFileSync(
+    `${externalPath}/axe-crasher.js`,
+    'utf8'
   );
-  const axeCrasherSource = fs.readFileSync(axeCrashPath, 'utf8');
+  const axeForceLegacy = fs.readFileSync(
+    `${externalPath}/axe-force-legacy.js`,
+    'utf8'
+  );
+
   before(async () => {
     const app = express();
     app.use(express.static(axeTestFixtures));
@@ -143,6 +147,20 @@ describe('@axe-core/playwright', () => {
       }
 
       assert.isNotNull(error);
+    });
+
+    it('returns the same results from runPartial as from legacy mode', async () => {
+      await page.goto(`${addr}/nested-iframes.html`);
+      const legacyResults = await new AxeBuilder({
+        page,
+        axeSource: axeSource + axeForceLegacy
+      }).analyze();
+      assert.equal(legacyResults.testEngine.name, 'axe-legacy');
+
+      const normalResults = await new AxeBuilder({ page, axeSource }).analyze();
+      normalResults.timestamp = legacyResults.timestamp;
+      normalResults.testEngine.name = legacyResults.testEngine.name;
+      assert.deepEqual(normalResults, legacyResults);
     });
   });
 

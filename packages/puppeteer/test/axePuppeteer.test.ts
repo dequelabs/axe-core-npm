@@ -32,15 +32,20 @@ describe('AxePuppeteer', function () {
 
   let axeSource: string;
   let axeCrasherSource: string;
+  let axeForceLegacy: string;
 
   before(async () => {
     const axePath = require.resolve('axe-core');
     axeSource = fs.readFileSync(axePath, 'utf8');
-    const axeCrashPath = path.resolve(
-      __dirname,
-      './fixtures/external/axe-crasher.js'
+    const externalPath = path.resolve(__dirname, './fixtures/external/');
+    axeCrasherSource = fs.readFileSync(
+      `${externalPath}/axe-crasher.js`,
+      'utf8'
     );
-    axeCrasherSource = fs.readFileSync(axeCrashPath, 'utf8');
+    axeForceLegacy = fs.readFileSync(
+      `${externalPath}/axe-force-legacy.js`,
+      'utf8'
+    );
   });
 
   before(async () => {
@@ -140,6 +145,20 @@ describe('AxePuppeteer', function () {
         err = e;
       }
       assert.isUndefined(err);
+    });
+
+    it('returns the same results from runPartial as from legacy mode', async () => {
+      await page.goto(`${addr}/nested-iframes.html`);
+      const legacyResults = await new AxePuppeteer(
+        page,
+        axeSource + axeForceLegacy
+      ).analyze();
+      assert.equal(legacyResults.testEngine.name, 'axe-legacy');
+
+      const normalResults = await new AxePuppeteer(page, axeSource).analyze();
+      normalResults.timestamp = legacyResults.timestamp;
+      normalResults.testEngine.name = legacyResults.testEngine.name;
+      assert.deepEqual(normalResults, legacyResults);
     });
 
     describe('returned promise', () => {

@@ -74,8 +74,16 @@ describe('@axe-core/webdriverio', () => {
       path.resolve(axeTestFixtures, 'axe-core@legacy.js'),
       'utf-8'
     );
-    const axeCrashPath = path.resolve(axeTestFixtures, 'axe-crasher.js');
-    const axeCrasherSource = fs.readFileSync(axeCrashPath, 'utf8');
+    const axeCrasherSource = fs.readFileSync(
+      `${axeTestFixtures}/axe-crasher.js`,
+      'utf8'
+    );
+    const axeForceLegacy = fs.readFileSync(
+      `${axeTestFixtures}/axe-force-legacy.js`,
+      'utf8'
+    );
+    const noHtmlConfig = `;axe.configure({ noHtml: true })`;
+
     beforeEach(async () => {
       const app = express();
       let binaryPath;
@@ -390,6 +398,23 @@ describe('@axe-core/webdriverio', () => {
           assert.isDefined(results.toolOptions.reporter);
           assert.equal(results.url, `${addr}/index.html`);
         });
+
+        it('returns the same results from runPartial as from legacy mode', async () => {
+          await client.url(`${addr}/nested-iframes.html`);
+          const legacyResults = await new AxeBuilder({
+            axeSource: axeSource + noHtmlConfig + axeForceLegacy,
+            client
+          }).analyze();
+          assert.equal(legacyResults.testEngine.name, 'axe-legacy');
+
+          const normalResults = await new AxeBuilder({
+            axeSource: axeSource + noHtmlConfig,
+            client
+          }).analyze();
+          normalResults.timestamp = legacyResults.timestamp;
+          normalResults.testEngine.name = legacyResults.testEngine.name;
+          assert.deepEqual(normalResults, legacyResults);
+        });
       });
 
       describe('disableFrame', () => {
@@ -567,7 +592,6 @@ describe('@axe-core/webdriverio', () => {
         it('returns the same results from runPartial as from legacy mode', async () => {
           await client.url(`${addr}/nested-iframes.html`);
           // webdriver io mutates the html on the page with random id strings
-          const noHtmlConfig = `;axe.configure({ noHtml: true })`;
           const source = axeSource + noHtmlConfig;
           const normalResults = await new AxeBuilder({
             client,

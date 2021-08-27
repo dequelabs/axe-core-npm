@@ -185,8 +185,8 @@ export class AxePuppeteer {
 
     // Recursively start testing child frames
     for (const { frameSelector, frameContext } of frameContexts) {
-      let childResults: AxePartialRunner | null = null;
       try {
+        let childResults: AxePartialRunner | null = null;
         const childFrame = await getChildFrame(frame, frameSelector);
         if (childFrame) {
           await frameSourceInject(childFrame, this.axeSource, this.config);
@@ -195,10 +195,10 @@ export class AxePuppeteer {
             frameContext
           );
         }
+        axePartialRunner.addChildResults(childResults);
       } catch {
-        /* do nothing */
+        axePartialRunner.addChildResults(null);
       }
-      axePartialRunner.addChildResults(childResults);
     }
     return axePartialRunner;
   }
