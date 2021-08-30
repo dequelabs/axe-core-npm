@@ -75,11 +75,11 @@ describe('@axe-core/webdriverio', () => {
       'utf-8'
     );
     const axeCrasherSource = fs.readFileSync(
-      `${axeTestFixtures}/axe-crasher.js`,
+      path.join(axeTestFixtures, 'axe-crasher.js'),
       'utf8'
     );
     const axeForceLegacy = fs.readFileSync(
-      `${axeTestFixtures}/axe-force-legacy.js`,
+      path.join(axeTestFixtures, 'axe-force-legacy.js'),
       'utf8'
     );
     const noHtmlConfig = `;axe.configure({ noHtml: true })`;

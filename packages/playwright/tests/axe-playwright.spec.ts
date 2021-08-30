@@ -19,15 +19,15 @@ describe('@axe-core/playwright', () => {
   const axeTestFixtures = path.resolve(__dirname, 'fixtures');
   const externalPath = path.resolve(axeTestFixtures, 'external');
   const axeLegacySource = fs.readFileSync(
-    `${externalPath}/axe-core@legacy.js`,
+    path.join(externalPath, 'axe-core@legacy.js'),
     'utf-8'
   );
   const axeCrasherSource = fs.readFileSync(
-    `${externalPath}/axe-crasher.js`,
+    path.join(externalPath, 'axe-crasher.js'),
     'utf8'
   );
   const axeForceLegacy = fs.readFileSync(
-    `${externalPath}/axe-force-legacy.js`,
+    path.join(externalPath, 'axe-force-legacy.js'),
     'utf8'
   );
 

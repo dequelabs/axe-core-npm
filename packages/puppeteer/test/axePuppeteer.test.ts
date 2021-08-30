@@ -39,11 +39,11 @@ describe('AxePuppeteer', function () {
     axeSource = fs.readFileSync(axePath, 'utf8');
     const externalPath = path.resolve(__dirname, './fixtures/external/');
     axeCrasherSource = fs.readFileSync(
-      `${externalPath}/axe-crasher.js`,
+      path.join(externalPath, 'axe-crasher.js'),
       'utf8'
     );
     axeForceLegacy = fs.readFileSync(
-      `${externalPath}/axe-force-legacy.js`,
+      path.join(externalPath, 'axe-force-legacy.js'),
       'utf8'
     );
   });
