@@ -350,7 +350,7 @@ describe('@axe-core/webdriverio', () => {
         it('throws when a setup fails', async () => {
           let error: Error | null = null;
 
-          const brokenSource = axeSource + `;window.axe.utils = {}`;
+          const brokenSource = axeSource + `;window.axe.utils = {};`;
           await client.url(`${addr}/index.html`);
           try {
             await new AxeBuilder({ client, axeSource: brokenSource })
@@ -366,9 +366,9 @@ describe('@axe-core/webdriverio', () => {
         it('properly isolates the call to axe.finishRun', async () => {
           let error: Error | null = null;
 
-          await client.url(`${addr}/isolated-finish.html`)
+          await client.url(`${addr}/isolated-finish.html`);
           try {
-            await new AxeBuilder({ client }).analyze()
+            await new AxeBuilder({ client }).analyze();
           } catch (e) {
             error = e;
           }
@@ -379,17 +379,17 @@ describe('@axe-core/webdriverio', () => {
         it('returns correct results metadata', async () => {
           await client.url(`${addr}/index.html`);
           const results = await new AxeBuilder({ client }).analyze();
-          assert.isDefined(results.testEngine.name)
-          assert.isDefined(results.testEngine.version)
-          assert.isDefined(results.testEnvironment.orientationAngle)
-          assert.isDefined(results.testEnvironment.orientationType)
-          assert.isDefined(results.testEnvironment.userAgent)
-          assert.isDefined(results.testEnvironment.windowHeight)
-          assert.isDefined(results.testEnvironment.windowWidth)
-          assert.isDefined(results.testRunner.name)
-          assert.isDefined(results.toolOptions.reporter)
-          assert.equal(results.url, `${addr}/index.html`)
-        })
+          assert.isDefined(results.testEngine.name);
+          assert.isDefined(results.testEngine.version);
+          assert.isDefined(results.testEnvironment.orientationAngle);
+          assert.isDefined(results.testEnvironment.orientationType);
+          assert.isDefined(results.testEnvironment.userAgent);
+          assert.isDefined(results.testEnvironment.windowHeight);
+          assert.isDefined(results.testEnvironment.windowWidth);
+          assert.isDefined(results.testRunner.name);
+          assert.isDefined(results.toolOptions.reporter);
+          assert.equal(results.url, `${addr}/index.html`);
+        });
       });
 
       describe('disableFrame', () => {
