@@ -98,14 +98,16 @@ export const axeSourceInject = async ({
   axeSource
 }: AxeSourceInjectParams): Promise<AxeSourceInjectResponse> => {
   return promisify(
-    client.execute(`
+    // Had to use executeAsync() because we could not use multiline statements in client.execute()
+    // we were able to return a single boolean in a line but not when assigned to a variable.
+    client.executeAsync(`
+      var callback = arguments[arguments.length - 1];
       ${axeSource};
       window.axe.configure({
         branding: { application: 'webdriverio' }
       });
-
       var runPartial = typeof window.axe.runPartial === 'function';
-      return { runPartialSupported: runPartial };
+      callback(runPartial);
     `)
   );
 };
@@ -130,15 +132,19 @@ export const axeGetFrameContext = ({
   context
 }: AxeGetFrameContextParams): Promise<any[]> => {
   return promisify(
-    client.execute(`
+    // Had to use executeAsync() because we could not use multiline statements in client.execute()
+    // we were able to return a single boolean in a line but not when assigned to a variable.
+    client.executeAsync(`
+      var callback = arguments[arguments.length - 1];
       var context = ${JSON.stringify(context)};
       var frameContexts = window.axe.utils.getFrameContexts(context);
-      return frameContexts.map(function (frameContext) {
+      frameContexts = frameContexts.map(function (frameContext) {
         return Object.assign(frameContext, {
           href: window.location.href, // For debugging
           frame: axe.utils.shadowSelect(frameContext.frameSelector)
         });
       });
+      callback(frameContexts)
     `)
   );
 };
@@ -163,14 +169,13 @@ export const axeRunLegacy = ({
   );
 };
 
-export const openAboutBlank = (client: BrowserObject) => {
+export const openAboutBlank = (client: BrowserObject): Promise<void> => {
   return promisify(
     client.execute(`
       window.open('about:blank', '_blank');
     `)
   );
 };
-
 
 export const axeFinishRun = ({
   client,
