@@ -711,18 +711,6 @@ describe('AxePuppeteer', function () {
       pageResults.timestamp = frameResults.timestamp;
       assert.deepEqual(pageResults, frameResults);
     });
-
-    it('returns the same results from runPartial as from legacy mode', async () => {
-      await page.goto(`${addr}/nested-iframes.html`);
-      const normalResults = await new AxePuppeteer(page, axeSource).analyze();
-      const legacyResults = await new AxePuppeteer(
-        page,
-        axeSource +
-          `;delete window.axe.runPartial; delete window.axe.finishRun;`
-      ).analyze();
-      normalResults.timestamp = legacyResults.timestamp;
-      assert.deepEqual(normalResults, legacyResults);
-    });
   });
 
   describe('without runPartial', () => {

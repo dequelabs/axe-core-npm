@@ -588,27 +588,6 @@ describe('@axe-core/webdriverio', () => {
           ]);
           assert.deepEqual(nodes[2].target, ['#slotted-frame', 'input']);
         });
-
-        it('returns the same results from runPartial as from legacy mode', async () => {
-          await client.url(`${addr}/nested-iframes.html`);
-          // webdriver io mutates the html on the page with random id strings
-          const source = axeSource + noHtmlConfig;
-          const normalResults = await new AxeBuilder({
-            client,
-            axeSource: source
-          }).analyze();
-
-          const axeSourceNoPartial =
-            source +
-            `;delete window.axe.runPartial; delete window.axe.finishRun;`;
-          const legacyResults = await new AxeBuilder({
-            client,
-            axeSource: axeSourceNoPartial
-          }).analyze();
-
-          normalResults.timestamp = legacyResults.timestamp;
-          assert.deepEqual(normalResults, legacyResults);
-        });
       });
 
       describe('logOrRethrowError', () => {
