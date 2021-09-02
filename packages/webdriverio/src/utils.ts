@@ -169,14 +169,6 @@ export const axeRunLegacy = ({
   );
 };
 
-export const openAboutBlank = (client: BrowserObject): Promise<void> => {
-  return promisify(
-    client.execute(`
-      window.open('about:blank', '_blank');
-    `)
-  );
-};
-
 export const axeFinishRun = ({
   client,
   axeSource,
