@@ -218,7 +218,7 @@ class AxeBuilder {
     await driver.get('about:blank');
     const res = await axeFinishRun(driver, axeSource, config, partials, option);
     await driver.close();
-    driver.switchTo().window(win);
+    await driver.switchTo().window(win);
     return res;
   }
 }

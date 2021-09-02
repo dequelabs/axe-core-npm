@@ -358,7 +358,7 @@ describe('@axe-core/webdriverio', () => {
         it('throws when a setup fails', async () => {
           let error: Error | null = null;
 
-          const brokenSource = axeSource + `;window.axe.utils = {}`;
+          const brokenSource = axeSource + `;window.axe.utils = {};`;
           await client.url(`${addr}/index.html`);
           try {
             await new AxeBuilder({ client, axeSource: brokenSource })

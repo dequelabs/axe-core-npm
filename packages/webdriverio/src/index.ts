@@ -229,10 +229,8 @@ export default class AxeBuilder {
       this.excludes,
       this.disableFrameSelectors
     );
-    // https://github.com/webdriverio/webdriverio/issues/6607#issuecomment-808457664
-    await client.switchToFrame(null);
 
-    const { runPartialSupported } = await axeSourceInject({
+    const runPartialSupported = await axeSourceInject({
       client,
       axeSource
     });
