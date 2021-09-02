@@ -18,8 +18,7 @@ import {
   axeGetFrameContext,
   axeRunPartial,
   axeFinishRun,
-  axeRunLegacy,
-  openAboutBlank
+  axeRunLegacy
 } from './utils';
 
 export default class AxeBuilder {
@@ -332,9 +331,8 @@ export default class AxeBuilder {
 
   private async finishRun(partials: PartialResults): Promise<AxeResults> {
     const { client, axeSource, option } = this;
-    await openAboutBlank(client);
-    const [, newWindow] = await client.getWindowHandles();
-    await client.switchToWindow(newWindow);
+    const newWindow = await client.createWindow('tab');
+    await client.switchToWindow(newWindow.handle);
     await client.url('about:blank');
     const res = await axeFinishRun({
       client,
