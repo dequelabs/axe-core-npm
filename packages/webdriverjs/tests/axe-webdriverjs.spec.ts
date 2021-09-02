@@ -25,7 +25,7 @@ describe('@axe-core/webdriverjs', () => {
   before(async () => {
     const axePath = require.resolve('axe-core');
     axeSource = fs.readFileSync(axePath, 'utf8');
-    const externalPath = path.resolve(__dirname, './fixtures/external');
+    const externalPath = path.resolve(__dirname, 'fixtures', 'external');
     axeCrasherSource = fs.readFileSync(
       path.join(externalPath, 'axe-crasher.js'),
       'utf8'
@@ -477,7 +477,9 @@ describe('@axe-core/webdriverjs', () => {
     before(() => {
       const axe403Path = path.resolve(
         __dirname,
-        './fixtures/external/axe-core@legacy.js'
+        'fixtures',
+        'external',
+        'axe-core@legacy.js'
       );
       axe403Source = fs.readFileSync(axe403Path, 'utf8');
     });

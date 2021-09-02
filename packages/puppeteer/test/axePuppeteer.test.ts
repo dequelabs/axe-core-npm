@@ -37,7 +37,7 @@ describe('AxePuppeteer', function () {
   before(async () => {
     const axePath = require.resolve('axe-core');
     axeSource = fs.readFileSync(axePath, 'utf8');
-    const externalPath = path.resolve(__dirname, './fixtures/external/');
+    const externalPath = path.resolve(__dirname, 'fixtures', 'external');
     axeCrasherSource = fs.readFileSync(
       path.join(externalPath, 'axe-crasher.js'),
       'utf8'
