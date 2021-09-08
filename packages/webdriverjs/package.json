@@ -63,7 +63,7 @@
     "@types/selenium-webdriver": "^4.0.15",
     "@types/sinon": "^9.0.10",
     "@types/test-listen": "^1.1.0",
-    "axe-test-fixtures": "github:dequelabs/axe-test-fixtures#v1",
+    "axe-test-fixtures": "github:dequelabs/axe-test-fixtures#cross-origin",
     "chai": "^4.3.0",
     "chaimocha": "^1.10.0",
     "chromedriver": "^93.0.1",
