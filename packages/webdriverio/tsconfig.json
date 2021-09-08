@@ -9,6 +9,7 @@
     "sourceMap": true,
     "declaration": true,
     "outDir": "dist",
+    "downlevelIteration": true,
     "typeRoots": ["node_modules/@types"]
   },
   "include": ["src"]

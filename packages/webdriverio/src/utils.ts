@@ -141,7 +141,6 @@ export const axeGetFrameContext = ({
       frameContexts = frameContexts.map(function (frameContext) {
         return Object.assign(frameContext, {
           href: window.location.href, // For debugging
-          frame: axe.utils.shadowSelect(frameContext.frameSelector)
         });
       });
       callback(frameContexts)

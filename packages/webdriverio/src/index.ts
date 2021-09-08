@@ -312,10 +312,10 @@ export default class AxeBuilder {
       })
     ];
 
-    for (const { frameSelector, frameContext, frame } of frameContexts) {
+    for (const [i, { frameContext }] of frameContexts.entries()) {
       try {
-        assert(frame, `Expect frame of "${frameSelector}" to be defined`);
-        await this.client.switchToFrame(frame);
+        // https://github.com/webdriverio/webdriverio/blob/v6.12.0/packages/devtools/src/commands/switchToFrame.ts#L59-L76
+        await this.client.switchToFrame(i);
         await axeSourceInject({
           client: this.client,
           axeSource: this.script
