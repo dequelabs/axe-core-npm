@@ -1,9 +1,4 @@
-import type {
-  AxeResults,
-  ElementContext,
-  PartialResult,
-  ContextObject
-} from 'axe-core';
+import type { AxeResults, PartialResult, ContextObject } from 'axe-core';
 import type {
   BrowserObject,
   AxeRunPartialParams,
