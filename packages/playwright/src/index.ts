@@ -22,6 +22,8 @@ export default class AxeBuilder {
   private excludes: string[];
   private option: RunOptions;
   private source: string;
+  private legacyMode = false;
+
   constructor({ page, axeSource }: AxePlaywrightParams) {
     const axePath = require.resolve('axe-core');
     const source = fs.readFileSync(axePath, 'utf-8');
@@ -123,6 +125,18 @@ export default class AxeBuilder {
   }
 
   /**
+   * Use frameMessenger with <same_origin_only>
+   *
+   * This disables use of axe.runPartial() which is called in each frame, and
+   * axe.finishRun() which is called in a blank page. This uses axe.run() instead,
+   * but with the restriction that cross-origin frames will not be tested.
+   */
+  public setLegacyMode(legacyMode = true): this {
+    this.legacyMode = legacyMode;
+    return this;
+  }
+
+  /**
    * Perform analysis and retrieve results. *Does not chain.*
    * @return Promise<Result | Error>
    */
@@ -138,7 +152,7 @@ export default class AxeBuilder {
 
     let results: AxeResults;
 
-    if (!runPartialDefined) {
+    if (!runPartialDefined || this.legacyMode) {
       results = await this.runLegacy(context);
       return results;
     }
@@ -169,12 +183,12 @@ export default class AxeBuilder {
 
   private script(): string {
     return `
-        ${this.source}
-        axe.configure({ 
-          allowedOrigins: ['<unsafe_all_origins>'], 
-          branding: { application: 'playwright' }
-        })
-        `;
+      ${this.source}
+      axe.configure({
+        ${this.legacyMode ? '' : 'allowedOrigins: ["<unsafe_all_origins>"],'}
+        branding: { application: 'playwright' }
+      })
+    `;
   }
 
   private async runLegacy(context: ContextObject): Promise<AxeResults> {
