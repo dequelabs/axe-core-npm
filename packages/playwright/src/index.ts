@@ -152,11 +152,7 @@ export default class AxeBuilder {
       return this.finishRun(partials);
     } catch (error) {
       throw new Error(
-        `Error: ${JSON.stringify(
-          error,
-          null,
-          2
-        )}\n Please check out https://github.com/dequelabs/axe-core-npm/blob/develop/packages/playwright/error-handling.md`
+        `Error: ${error}\n Please check out https://github.com/dequelabs/axe-core-npm/blob/develop/packages/playwright/error-handling.md`
       );
     }
   }
@@ -269,9 +265,6 @@ export default class AxeBuilder {
       .evaluate(axeFinishRun, {
         partialResults,
         options
-      })
-      .catch(e => {
-        return e;
       })
       .finally(() => {
         blankPage.close();
