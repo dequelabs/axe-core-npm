@@ -152,7 +152,18 @@ class AxeBuilder {
     }
 
     const partials = await this.runPartialRecursive(context, true);
-    return this.finishRun(partials);
+
+    try {
+      return this.finishRun(partials);
+    } catch (error) {
+      throw new Error(
+        `Error: ${JSON.stringify(
+          error,
+          null,
+          2
+        )}\n Please check out https://github.com/dequelabs/axe-core-npm/blob/develop/packages/webdriverjs/error-handling.md`
+      );
+    }
   }
 
   /**
@@ -213,7 +224,17 @@ class AxeBuilder {
     const win = await driver.getWindowHandle();
     await driver.executeScript(`window.open('about:blank')`);
     const handlers = await driver.getAllWindowHandles();
-    await driver.switchTo().window(handlers[handlers.length - 1]);
+    assert(
+      driver.getWindowHandle,
+      'Please make sure that you have popup blockers disabled.'
+    );
+    try {
+      await driver.switchTo().window(handlers[handlers.length - 1]);
+    } catch (error) {
+      throw new Error(
+        `switchTo failed. Are you using updated browser drivers? \nDriver reported:\n${error}`
+      );
+    }
     // Make sure we're on a blank page, even if window.open isn't functioning properly.
     await driver.get('about:blank');
     const res = await axeFinishRun(driver, axeSource, config, partials, option);
