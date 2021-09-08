@@ -167,7 +167,18 @@ export class AxePuppeteer {
     }
     const partialRunner = await this.runPartialRecursive(frame, context);
     const partials = await partialRunner.getPartials();
-    return this.finishRun(partials);
+
+    try {
+      return this.finishRun(partials);
+    } catch (error) {
+      throw new Error(
+        `Error: ${JSON.stringify(
+          error,
+          null,
+          2
+        )}\n Please check out https://github.com/dequelabs/axe-core-npm/blob/develop/packages/puppeteer/error-handling.md`
+      );
+    }
   }
 
   private async runPartialRecursive(
@@ -210,13 +221,15 @@ export class AxePuppeteer {
     const browser = page.browser();
     const blankPage = await browser.newPage();
     await frameSourceInject(blankPage.mainFrame(), axeSource, config);
-
     return await blankPage
       .evaluate(
         axeFinishRun,
         partialResults as JSONArray,
         axeOptions as JSONObject
       )
+      .catch(e => {
+        return e;
+      })
       .finally(() => {
         blankPage.close();
       });
