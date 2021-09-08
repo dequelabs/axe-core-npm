@@ -46,7 +46,7 @@
     "@types/node": "^14.17.9",
     "@types/test-listen": "^1.1.0",
     "@wdio/sync": "^6.11.0",
-    "axe-test-fixtures": "github:dequelabs/axe-test-fixtures#cross-origin",
+    "axe-test-fixtures": "github:dequelabs/axe-test-fixtures#v1",
     "chai": "^4.3.0",
     "chromedriver": "^93.0.1",
     "delay": "^5.0.0",
