@@ -30,7 +30,7 @@
     "@types/puppeteer": "^5.4.4",
     "@types/sinon": "^7.0.13",
     "@types/test-listen": "^1.1.0",
-    "axe-test-fixtures": "github:dequelabs/axe-test-fixtures#v1",
+    "axe-test-fixtures": "github:dequelabs/axe-test-fixtures#cross-origin",
     "chai": "^4.3.4",
     "express": "^4.16.4",
     "mocha": "^5.2.0",
