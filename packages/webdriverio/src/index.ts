@@ -29,6 +29,8 @@ export default class AxeBuilder {
   private excludes: string[];
   private option: RunOptions;
   private disableFrameSelectors: string[];
+  private legacyMode = false;
+
   constructor({ client, axeSource }: Options) {
     assert(
       isWebdriverClient(client),
@@ -148,6 +150,18 @@ export default class AxeBuilder {
   }
 
   /**
+   * Use frameMessenger with <same_origin_only>
+   *
+   * This disables use of axe.runPartial() which is called in each frame, and
+   * axe.finishRun() which is called in a blank page. This uses axe.run() instead,
+   * but with the restriction that cross-origin frames will not be tested.
+   */
+  public setLegacyMode(legacyMode = true): AxeBuilder {
+    this.legacyMode = legacyMode;
+    return this;
+  }
+
+  /**
    * Performs an analysis and retrieves results.
    * @param {CallbackFunction} callback
    * @returns {Promise<AxeResults>}
@@ -180,7 +194,7 @@ export default class AxeBuilder {
     return `
       ${this.axeSource}
       axe.configure({ 
-        allowedOrigins: ['<unsafe_all_origins>'],
+        ${this.legacyMode ? '' : `allowedOrigins: ['<unsafe_all_origins>'],`}
         branding: { application: 'webdriverio' }
       })
       `;
@@ -235,7 +249,7 @@ export default class AxeBuilder {
       axeSource
     });
 
-    if (!runPartialSupported) {
+    if (!runPartialSupported || this.legacyMode) {
       return await this.runLegacy(context);
     }
     const partials = await this.runPartialRecursive(context);

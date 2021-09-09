@@ -21,6 +21,7 @@ class AxeBuilder {
   private option: RunOptions;
   private config: Spec | null;
   private builderOptions: BuilderOptions;
+  private legacyMode = false;
 
   constructor(
     driver: WebDriver,
@@ -137,6 +138,18 @@ class AxeBuilder {
   }
 
   /**
+   * Use frameMessenger with <same_origin_only>
+   *
+   * This disables use of axe.runPartial() which is called in each frame, and
+   * axe.finishRun() which is called in a blank page. This uses axe.run() instead,
+   * but with the restriction that cross-origin frames will not be tested.
+   */
+  public setLegacyMode(legacyMode = true): AxeBuilder {
+    this.legacyMode = legacyMode;
+    return this;
+  }
+
+  /**
    * Analyzes the page, returning a promise
    */
   private async analyzePromise(): Promise<AxeResults> {
@@ -147,7 +160,7 @@ class AxeBuilder {
       this.axeSource,
       this.config
     );
-    if (runPartialSupported !== true) {
+    if (runPartialSupported !== true || this.legacyMode) {
       return this.runLegacy(context);
     }
 
@@ -159,7 +172,14 @@ class AxeBuilder {
    * Use axe.run() to get results from the page
    */
   private async runLegacy(context: ContextObject): Promise<AxeResults> {
-    const { driver, axeSource, config, builderOptions } = this;
+    const { driver, axeSource, builderOptions } = this;
+    let config = this.config;
+    if (this.legacyMode !== true) {
+      config = {
+        ...(config || {}),
+        allowedOrigins: ['<unsafe_all_origins>']
+      };
+    }
     const injector = new AxeInjector({
       driver,
       axeSource,
