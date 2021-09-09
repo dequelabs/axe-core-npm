@@ -20,15 +20,20 @@ describe('@axe-core/webdriverjs', () => {
   let addr: string;
   let axeSource: string;
   let axeCrasherSource: string;
+  let axeForceLegacy: string;
 
   before(async () => {
     const axePath = require.resolve('axe-core');
     axeSource = fs.readFileSync(axePath, 'utf8');
-    const axeCrashPath = path.resolve(
-      __dirname,
-      './fixtures/external/axe-crasher.js'
+    const externalPath = path.resolve(__dirname, 'fixtures', 'external');
+    axeCrasherSource = fs.readFileSync(
+      path.join(externalPath, 'axe-crasher.js'),
+      'utf8'
     );
-    axeCrasherSource = fs.readFileSync(axeCrashPath, 'utf8');
+    axeForceLegacy = fs.readFileSync(
+      path.join(externalPath, 'axe-force-legacy.js'),
+      'utf8'
+    );
 
     chromedriver.start([`--port=${port}`]);
     await delay(500);
@@ -271,6 +276,20 @@ describe('@axe-core/webdriverjs', () => {
         'input'
       ]);
     });
+
+    it('returns the same results from runPartial as from legacy mode', async () => {
+      await driver.get(`${addr}/nested-iframes.html`);
+      const legacyResults = await new AxeBuilder(
+        driver,
+        axeSource + axeForceLegacy
+      ).analyze();
+      assert.equal(legacyResults.testEngine.name, 'axe-legacy');
+
+      const normalResults = await new AxeBuilder(driver, axeSource).analyze();
+      normalResults.timestamp = legacyResults.timestamp;
+      normalResults.testEngine.name = legacyResults.testEngine.name;
+      assert.deepEqual(normalResults, legacyResults);
+    });
   });
 
   describe('withRules', () => {
@@ -496,7 +515,9 @@ describe('@axe-core/webdriverjs', () => {
     before(() => {
       const axe403Path = path.resolve(
         __dirname,
-        './fixtures/external/axe-core@legacy.js'
+        'fixtures',
+        'external',
+        'axe-core@legacy.js'
       );
       axe403Source = fs.readFileSync(axe403Path, 'utf8');
     });

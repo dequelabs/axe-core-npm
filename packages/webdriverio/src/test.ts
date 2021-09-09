@@ -74,8 +74,16 @@ describe('@axe-core/webdriverio', () => {
       path.resolve(axeTestFixtures, 'axe-core@legacy.js'),
       'utf-8'
     );
-    const axeCrashPath = path.resolve(axeTestFixtures, 'axe-crasher.js');
-    const axeCrasherSource = fs.readFileSync(axeCrashPath, 'utf8');
+    const axeCrasherSource = fs.readFileSync(
+      path.join(axeTestFixtures, 'axe-crasher.js'),
+      'utf8'
+    );
+    const axeForceLegacy = fs.readFileSync(
+      path.join(axeTestFixtures, 'axe-force-legacy.js'),
+      'utf8'
+    );
+    const noHtmlConfig = `;axe.configure({ noHtml: true })`;
+
     beforeEach(async () => {
       const app = express();
       let binaryPath;
@@ -401,6 +409,23 @@ describe('@axe-core/webdriverio', () => {
           assert.isDefined(results.testRunner.name);
           assert.isDefined(results.toolOptions.reporter);
           assert.equal(results.url, `${addr}/index.html`);
+        });
+
+        it('returns the same results from runPartial as from legacy mode', async () => {
+          await client.url(`${addr}/nested-iframes.html`);
+          const legacyResults = await new AxeBuilder({
+            axeSource: axeSource + noHtmlConfig + axeForceLegacy,
+            client
+          }).analyze();
+          assert.equal(legacyResults.testEngine.name, 'axe-legacy');
+
+          const normalResults = await new AxeBuilder({
+            axeSource: axeSource + noHtmlConfig,
+            client
+          }).analyze();
+          normalResults.timestamp = legacyResults.timestamp;
+          normalResults.testEngine.name = legacyResults.testEngine.name;
+          assert.deepEqual(normalResults, legacyResults);
         });
       });
 
