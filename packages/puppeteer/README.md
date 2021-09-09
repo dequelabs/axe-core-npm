@@ -87,6 +87,34 @@ const builder = new AxePuppeteer(page, axeSource);
 
 Note that you might need to bypass the Content Security Policy in some cases.
 
+### AxePuppeteer#analyze([callback: (Error | null[, Object]) => void])
+
+Performs analysis and passes any encountered error and/or the result object to the provided callback function or promise function. **Does not chain as the operation is asynchronous**
+
+Using the returned promise (optional):
+
+```js
+new AxePuppeteer(page)
+  .analyze()
+  .then(function (results) {
+    console.log(results);
+  })
+  .catch(err => {
+    // Handle error somehow
+  });
+```
+
+Using a callback function
+
+```js
+new AxePuppeteer(page).analyze(function (err, results) {
+  if (err) {
+    // Handle error somehow
+  }
+  console.log(results);
+});
+```
+
 ### AxePuppeteer#include(selector: string | string[])
 
 Adds a CSS selector to the list of elements to include in analysis
@@ -184,30 +212,16 @@ const results = await new AxePuppeteer(page).configure(config).analyze();
 console.log(results);
 ```
 
-### AxePuppeteer#analyze([callback: (Error | null[, Object]) => void])
+### AxePuppeteer#setLegacyMode(legacyMode: boolean = true)
 
-Performs analysis and passes any encountered error and/or the result object to the provided callback function or promise function. **Does not chain as the operation is asynchronous**
+Set the frame testing method to "legacy mode". In this mode, axe will not open a blank page in which to aggregate its results. This can be used in an environment where opening a blank page is causes issues.
 
-Using the returned promise (optional):
+With legacy mode turned on, axe will fall back to its test solution prior to the 4.3 release, but with cross-origin frame testing disabled. The `frame-tested` rule will report which frames were untested.
 
-```js
-new AxePuppeteer(page)
-  .analyze()
-  .then(function (results) {
-    console.log(results);
-  })
-  .catch(err => {
-    // Handle error somehow
-  });
-```
-
-Using a callback function
+**Important** Use of `.setLegacyMode()` is a last resort. If you find there is no other solution, please [report this as an issue](https://github.com/dequelabs/axe-core-npm/issues/).
 
 ```js
-new AxePuppeteer(page).analyze(function (err, results) {
-  if (err) {
-    // Handle error somehow
-  }
-  console.log(results);
-});
+const axe = new AxePuppeteer(page).setLegacyMode();
+const result = await axe.analyze();
+axe.setLegacyMode(false); // Disables legacy mode
 ```

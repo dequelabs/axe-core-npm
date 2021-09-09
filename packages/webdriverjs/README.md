@@ -51,6 +51,30 @@ const axeSource = fs.readFileSync('./axe-1.0.js', 'utf-8');
 const builder = new AxeBuilder(driver, axeSource);
 ```
 
+### AxeBuilder#analyze(): Promise<axe.Results>
+
+Performs analysis and passes any encountered error and/or the result object.
+
+```js
+new AxeBuilder(driver).analyze((err, results) => {
+  if (err) {
+    // Do something with error
+  }
+  console.log(results);
+});
+```
+
+```js
+new AxeBuilder(driver)
+  .analyze()
+  .then(results => {
+    console.log(results);
+  })
+  .catch(e => {
+    // Do something with error
+  });
+```
+
 ### AxeBuilder#include(selector: String)
 
 Adds a CSS selector to the list of elements to include in analysis
@@ -125,26 +149,16 @@ new AxeBuilder(driver).configure(config).analyze((err, results) => {
 })
 ```
 
-### AxeBuilder#analyze(): Promise<axe.Results>
+### AxeBuilder#setLegacyMode(legacyMode: boolean = true)
 
-Performs analysis and passes any encountered error and/or the result object.
+Set the frame testing method to "legacy mode". In this mode, axe will not open a blank page in which to aggregate its results. This can be used in an environment where opening a blank page is causes issues.
 
-```js
-new AxeBuilder(driver).analyze((err, results) => {
-  if (err) {
-    // Do something with error
-  }
-  console.log(results);
-});
-```
+With legacy mode turned on, axe will fall back to its test solution prior to the 4.3 release, but with cross-origin frame testing disabled. The `frame-tested` rule will report which frames were untested.
+
+**Important** Use of `.setLegacyMode()` is a last resort. If you find there is no other solution, please [report this as an issue](https://github.com/dequelabs/axe-core-npm/issues/).
 
 ```js
-new AxeBuilder(driver)
-  .analyze()
-  .then(results => {
-    console.log(results);
-  })
-  .catch(e => {
-    // Do something with error
-  });
+const axe = new AxeBuilder(driver).setLegacyMode();
+const result = await axe.analyze();
+axe.setLegacyMode(false); // Disables legacy mode
 ```
