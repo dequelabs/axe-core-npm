@@ -21,6 +21,7 @@ class AxeBuilder {
   private option: RunOptions;
   private config: Spec | null;
   private builderOptions: BuilderOptions;
+  private legacyMode = false;
 
   constructor(
     driver: WebDriver,
@@ -40,7 +41,7 @@ class AxeBuilder {
    * Selector to include in analysis.
    * This may be called any number of times.
    */
-  public include(selector: string): AxeBuilder {
+  public include(selector: string): this {
     this.includes.push(selector);
     return this;
   }
@@ -49,7 +50,7 @@ class AxeBuilder {
    * Selector to exclude in analysis.
    * This may be called any number of times.
    */
-  public exclude(selector: string): AxeBuilder {
+  public exclude(selector: string): this {
     this.excludes.push(selector);
     return this;
   }
@@ -57,7 +58,7 @@ class AxeBuilder {
   /**
    * Set options to be passed into axe-core
    */
-  public options(options: RunOptions): AxeBuilder {
+  public options(options: RunOptions): this {
     this.option = options;
     return this;
   }
@@ -66,7 +67,7 @@ class AxeBuilder {
    * Limit analysis to only the specified rules.
    * Cannot be used with `AxeBuilder#withTags`
    */
-  public withRules(rules: string | string[]): AxeBuilder {
+  public withRules(rules: string | string[]): this {
     rules = Array.isArray(rules) ? rules : [rules];
     this.option.runOnly = {
       type: 'rule',
@@ -80,7 +81,7 @@ class AxeBuilder {
    * Limit analysis to only specified tags.
    * Cannot be used with `AxeBuilder#withRules`
    */
-  public withTags(tags: string | string[]): AxeBuilder {
+  public withTags(tags: string | string[]): this {
     tags = Array.isArray(tags) ? tags : [tags];
     this.option.runOnly = {
       type: 'tag',
@@ -92,7 +93,7 @@ class AxeBuilder {
   /**
    * Set the list of rules to skip when running an analysis.
    */
-  public disableRules(rules: string | string[]): AxeBuilder {
+  public disableRules(rules: string | string[]): this {
     rules = Array.isArray(rules) ? rules : [rules];
     this.option.rules = {};
     for (const rule of rules) {
@@ -105,7 +106,7 @@ class AxeBuilder {
    * Set configuration for `axe-core`.
    * This value is passed directly to `axe.configure()`
    */
-  public configure(config: Spec): AxeBuilder {
+  public configure(config: Spec): this {
     if (typeof config !== 'object') {
       throw new Error(
         'AxeBuilder needs an object to configure. See axe-core configure API.'
@@ -137,6 +138,18 @@ class AxeBuilder {
   }
 
   /**
+   * Use frameMessenger with <same_origin_only>
+   *
+   * This disables use of axe.runPartial() which is called in each frame, and
+   * axe.finishRun() which is called in a blank page. This uses axe.run() instead,
+   * but with the restriction that cross-origin frames will not be tested.
+   */
+  public setLegacyMode(legacyMode = true): AxeBuilder {
+    this.legacyMode = legacyMode;
+    return this;
+  }
+
+  /**
    * Analyzes the page, returning a promise
    */
   private async analyzePromise(): Promise<AxeResults> {
@@ -147,7 +160,7 @@ class AxeBuilder {
       this.axeSource,
       this.config
     );
-    if (runPartialSupported !== true) {
+    if (runPartialSupported !== true || this.legacyMode) {
       return this.runLegacy(context);
     }
 
@@ -159,7 +172,14 @@ class AxeBuilder {
    * Use axe.run() to get results from the page
    */
   private async runLegacy(context: ContextObject): Promise<AxeResults> {
-    const { driver, axeSource, config, builderOptions } = this;
+    const { driver, axeSource, builderOptions } = this;
+    let config = this.config;
+    if (this.legacyMode !== true) {
+      config = {
+        ...(config || {}),
+        allowedOrigins: ['<unsafe_all_origins>']
+      };
+    }
     const injector = new AxeInjector({
       driver,
       axeSource,

@@ -95,9 +95,6 @@ describe('@axe-core/webdriverio', () => {
       ) {
         binaryPath = `C:/Program Files/Google/Chrome/Application/chrome.exe`;
       }
-      // Only run headless on CI. This makes it a bit easier to debug
-      // tests (because we can inspect the browser's devtools).
-      const chromeArgs = isCI ? ['--headless', '--no-sandbox'] : [];
 
       const options: webdriverio.RemoteOptions = {
         port,
@@ -106,7 +103,7 @@ describe('@axe-core/webdriverio', () => {
         capabilities: {
           browserName: 'chrome',
           'goog:chromeOptions': {
-            args: chromeArgs,
+            args: ['headless'],
             binary: binaryPath
           }
         },
@@ -155,6 +152,21 @@ describe('@axe-core/webdriverio', () => {
               error = e;
             }
             assert.isNotNull(error);
+          });
+
+          it('tests cross-origin pages', async () => {
+            await client.url(`${addr}/cross-origin.html`);
+            const results = await new AxeBuilder({
+              client,
+              axeSource: axeLegacySource
+            })
+              .withRules(['frame-tested'])
+              .analyze();
+
+            const frameTested = results.incomplete.find(
+              ({ id }) => id === 'frame-tested'
+            );
+            assert.isUndefined(frameTested);
           });
         });
 
@@ -763,6 +775,50 @@ describe('@axe-core/webdriverio', () => {
         });
       });
 
+      describe('setLegacyMode', () => {
+        const runPartialThrows = `;axe.runPartial = () => { throw new Error("No runPartial")}`;
+        it('runs legacy mode when used', async () => {
+          await client.url(`${addr}/index.html`);
+          const results = await new AxeBuilder({
+            client,
+            axeSource: axeSource + runPartialThrows
+          })
+            .setLegacyMode()
+            .analyze();
+          assert.isNotNull(results);
+        });
+
+        it('prevents cross-origin frame testing', async () => {
+          await client.url(`${addr}/cross-origin.html`);
+          const results = await new AxeBuilder({
+            client,
+            axeSource: axeSource + runPartialThrows
+          })
+            .withRules('frame-tested')
+            .setLegacyMode()
+            .analyze();
+
+          const frameTested = results.incomplete.find(
+            ({ id }) => id === 'frame-tested'
+          );
+          assert.ok(frameTested);
+        });
+
+        it('can be disabled again', async () => {
+          await client.url(`${addr}/cross-origin.html`);
+          const results = await new AxeBuilder({ client })
+            .withRules('frame-tested')
+            .setLegacyMode()
+            .setLegacyMode(false)
+            .analyze();
+
+          const frameTested = results.incomplete.find(
+            ({ id }) => id === 'frame-tested'
+          );
+          assert.isUndefined(frameTested);
+        });
+      });
+
       describe('callback()', () => {
         it('returns results when callback is provided', async () => {
           await client.url(`${addr}/index.html`);
@@ -815,9 +871,6 @@ describe('@axe-core/webdriverio', () => {
       ) {
         binaryPath = `C:/Program Files/Google/Chrome/Application/chrome.exe`;
       }
-      // Only run headless on CI. This makes it a bit easier to debug
-      // tests (because we can inspect the browser's devtools).
-      const chromeArgs = isCI ? ['--headless', '--no-sandbox'] : [];
 
       const options: webdriverio.RemoteOptions = {
         port,
@@ -826,7 +879,7 @@ describe('@axe-core/webdriverio', () => {
         capabilities: {
           browserName: 'chrome',
           'goog:chromeOptions': {
-            args: chromeArgs,
+            args: ['headless'],
             binary: binaryPath
           }
         },

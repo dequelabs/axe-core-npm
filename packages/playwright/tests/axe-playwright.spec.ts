@@ -415,6 +415,50 @@ describe('@axe-core/playwright', () => {
     });
   });
 
+  describe('setLegacyMode', () => {
+    const runPartialThrows = `;axe.runPartial = () => { throw new Error("No runPartial")}`;
+    it('runs legacy mode when used', async () => {
+      await page.goto(`${addr}/external/index.html`);
+      const results = await new AxeBuilder({
+        page,
+        axeSource: axeSource + runPartialThrows
+      })
+        .setLegacyMode()
+        .analyze();
+      assert.isNotNull(results);
+    });
+
+    it('prevents cross-origin frame testing', async () => {
+      await page.goto(`${addr}/external/cross-origin.html`);
+      const results = await new AxeBuilder({
+        page,
+        axeSource: axeSource + runPartialThrows
+      })
+        .withRules('frame-tested')
+        .setLegacyMode()
+        .analyze();
+
+      const frameTested = results.incomplete.find(
+        ({ id }) => id === 'frame-tested'
+      );
+      assert.ok(frameTested);
+    });
+
+    it('can be disabled again', async () => {
+      await page.goto(`${addr}/external/cross-origin.html`);
+      const results = await new AxeBuilder({ page })
+        .withRules('frame-tested')
+        .setLegacyMode()
+        .setLegacyMode(false)
+        .analyze();
+
+      const frameTested = results.incomplete.find(
+        ({ id }) => id === 'frame-tested'
+      );
+      assert.isUndefined(frameTested);
+    });
+  });
+
   describe('for versions without axe.runPartial', () => {
     describe('analyze', () => {
       it('returns results', async () => {
@@ -443,6 +487,21 @@ describe('@axe-core/playwright', () => {
           error = e;
         }
         assert.isNotNull(error);
+      });
+
+      it('tests cross-origin pages', async () => {
+        await page.goto(`${addr}/external/cross-origin.html`);
+        const results = await new AxeBuilder({
+          page,
+          axeSource: axeLegacySource
+        })
+          .withRules('frame-tested')
+          .analyze();
+
+        const frameTested = results.incomplete.find(
+          ({ id }) => id === 'frame-tested'
+        );
+        assert.isUndefined(frameTested);
       });
     });
 

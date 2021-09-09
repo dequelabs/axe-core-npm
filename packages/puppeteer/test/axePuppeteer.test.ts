@@ -713,6 +713,44 @@ describe('AxePuppeteer', function () {
     });
   });
 
+  describe('setLegacyMode', () => {
+    const runPartialThrows = `;axe.runPartial = () => { throw new Error("No runPartial")}`;
+    it('runs legacy mode when used', async () => {
+      await page.goto(`${addr}/external/index.html`);
+      const results = await new AxePuppeteer(page, axeSource + runPartialThrows)
+        .setLegacyMode()
+        .analyze();
+      assert.isNotNull(results);
+    });
+
+    it('prevents cross-origin frame testing', async () => {
+      await page.goto(`${addr}/external/cross-origin.html`);
+      const results = await new AxePuppeteer(page, axeSource + runPartialThrows)
+        .withRules('frame-tested')
+        .setLegacyMode()
+        .analyze();
+
+      const frameTested = results.incomplete.find(
+        ({ id }) => id === 'frame-tested'
+      );
+      assert.ok(frameTested);
+    });
+
+    it('can be disabled again', async () => {
+      await page.goto(`${addr}/external/cross-origin.html`);
+      const results = await new AxePuppeteer(page)
+        .withRules('frame-tested')
+        .setLegacyMode()
+        .setLegacyMode(false)
+        .analyze();
+
+      const frameTested = results.incomplete.find(
+        ({ id }) => id === 'frame-tested'
+      );
+      assert.isUndefined(frameTested);
+    });
+  });
+
   describe('without runPartial', () => {
     let axe403Source: string;
     before(() => {
@@ -757,6 +795,18 @@ describe('AxePuppeteer', function () {
       assert.lengthOf(results.incomplete[0].nodes, 1);
       assert.equal(results.violations[0].id, 'label');
       assert.lengthOf(results.violations[0].nodes, 2);
+    });
+
+    it('tests cross-origin pages', async () => {
+      await page.goto(`${addr}/external/cross-origin.html`);
+      const results = await new AxePuppeteer(page, axe403Source)
+        .withRules('frame-tested')
+        .analyze();
+
+      const frameTested = results.incomplete.find(
+        ({ id }) => id === 'frame-tested'
+      );
+      assert.isUndefined(frameTested);
     });
   });
 });
