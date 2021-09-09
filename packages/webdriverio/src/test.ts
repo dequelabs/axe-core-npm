@@ -766,6 +766,41 @@ describe('@axe-core/webdriverio', () => {
           );
         });
       });
+
+      describe('devtools protocol', () => {
+        let client: webdriverio.BrowserObject;
+        beforeEach(async () => {
+          client = await webdriverio.remote({
+            logLevel: 'error',
+            automationProtocol: 'devtools',
+            capabilities: {
+              browserName: 'chrome'
+            }
+          });
+        });
+
+        afterEach(() => {
+          client.deleteSession();
+        });
+
+        it('tests shadow DOM frames in with the devtools protocol', async () => {
+          await client.url(`${addr}/shadow-frames.html`);
+          const { violations } = await new AxeBuilder({ client })
+            .options({ runOnly: 'label' })
+            .analyze();
+
+          assert.equal(violations[0].id, 'label');
+          assert.lengthOf(violations[0].nodes, 3);
+
+          const nodes = violations[0].nodes;
+          assert.deepEqual(nodes[0].target, ['#light-frame', 'input']);
+          assert.deepEqual(nodes[1].target, [
+            ['#shadow-root', '#shadow-frame'],
+            'input'
+          ]);
+          assert.deepEqual(nodes[2].target, ['#slotted-frame', 'input']);
+        });
+      });
     });
   });
 

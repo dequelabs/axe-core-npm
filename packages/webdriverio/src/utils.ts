@@ -1,8 +1,10 @@
+import { Element } from 'webdriverio';
 import type {
   AxeResults,
-  ElementContext,
+  CrossTreeSelector,
   PartialResult,
-  ContextObject
+  ContextObject,
+  FrameContext
 } from 'axe-core';
 import type {
   BrowserObject,
@@ -130,7 +132,7 @@ export const axeRunPartial = ({
 export const axeGetFrameContext = ({
   client,
   context
-}: AxeGetFrameContextParams): Promise<any[]> => {
+}: AxeGetFrameContextParams): Promise<FrameContext[]> => {
   return promisify(
     // Had to use executeAsync() because we could not use multiline statements in client.execute()
     // we were able to return a single boolean in a line but not when assigned to a variable.
@@ -138,12 +140,6 @@ export const axeGetFrameContext = ({
       var callback = arguments[arguments.length - 1];
       var context = ${JSON.stringify(context)};
       var frameContexts = window.axe.utils.getFrameContexts(context);
-      frameContexts = frameContexts.map(function (frameContext) {
-        return Object.assign(frameContext, {
-          href: window.location.href, // For debugging
-          frame: axe.utils.shadowSelect(frameContext.frameSelector)
-        });
-      });
       callback(frameContexts)
     `)
   );
@@ -189,3 +185,15 @@ export const axeFinishRun = ({
     `)
   );
 };
+
+export async function axeShadowSelect(
+  client: BrowserObject,
+  selector: CrossTreeSelector
+): Promise<Element | undefined> {
+  const selectors: string[] = Array.isArray(selector) ? selector : [selector];
+  let elmRef: Element | undefined = await client.$(selectors[0]);
+  for (let i = 1; i < selectors.length && elmRef; i++) {
+    elmRef = await client.$(selectors[i]);
+  }
+  return elmRef;
+}

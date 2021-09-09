@@ -18,7 +18,8 @@ import {
   axeGetFrameContext,
   axeRunPartial,
   axeFinishRun,
-  axeRunLegacy
+  axeRunLegacy,
+  axeShadowSelect
 } from './utils';
 
 export default class AxeBuilder {
@@ -312,8 +313,9 @@ export default class AxeBuilder {
       })
     ];
 
-    for (const { frameSelector, frameContext, frame } of frameContexts) {
+    for (const { frameSelector, frameContext } of frameContexts) {
       try {
+        const frame = await axeShadowSelect(this.client, frameSelector);
         assert(frame, `Expect frame of "${frameSelector}" to be defined`);
         await this.client.switchToFrame(frame);
         await axeSourceInject({
