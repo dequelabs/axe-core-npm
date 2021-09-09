@@ -41,7 +41,7 @@ class AxeBuilder {
    * Selector to include in analysis.
    * This may be called any number of times.
    */
-  public include(selector: string): AxeBuilder {
+  public include(selector: string): this {
     this.includes.push(selector);
     return this;
   }
@@ -50,7 +50,7 @@ class AxeBuilder {
    * Selector to exclude in analysis.
    * This may be called any number of times.
    */
-  public exclude(selector: string): AxeBuilder {
+  public exclude(selector: string): this {
     this.excludes.push(selector);
     return this;
   }
@@ -58,7 +58,7 @@ class AxeBuilder {
   /**
    * Set options to be passed into axe-core
    */
-  public options(options: RunOptions): AxeBuilder {
+  public options(options: RunOptions): this {
     this.option = options;
     return this;
   }
@@ -67,7 +67,7 @@ class AxeBuilder {
    * Limit analysis to only the specified rules.
    * Cannot be used with `AxeBuilder#withTags`
    */
-  public withRules(rules: string | string[]): AxeBuilder {
+  public withRules(rules: string | string[]): this {
     rules = Array.isArray(rules) ? rules : [rules];
     this.option.runOnly = {
       type: 'rule',
@@ -81,7 +81,7 @@ class AxeBuilder {
    * Limit analysis to only specified tags.
    * Cannot be used with `AxeBuilder#withRules`
    */
-  public withTags(tags: string | string[]): AxeBuilder {
+  public withTags(tags: string | string[]): this {
     tags = Array.isArray(tags) ? tags : [tags];
     this.option.runOnly = {
       type: 'tag',
@@ -93,7 +93,7 @@ class AxeBuilder {
   /**
    * Set the list of rules to skip when running an analysis.
    */
-  public disableRules(rules: string | string[]): AxeBuilder {
+  public disableRules(rules: string | string[]): this {
     rules = Array.isArray(rules) ? rules : [rules];
     this.option.rules = {};
     for (const rule of rules) {
@@ -106,7 +106,7 @@ class AxeBuilder {
    * Set configuration for `axe-core`.
    * This value is passed directly to `axe.configure()`
    */
-  public configure(config: Spec): AxeBuilder {
+  public configure(config: Spec): this {
     if (typeof config !== 'object') {
       throw new Error(
         'AxeBuilder needs an object to configure. See axe-core configure API.'
