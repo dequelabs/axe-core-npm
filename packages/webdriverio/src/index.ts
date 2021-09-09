@@ -47,10 +47,10 @@ export default class AxeBuilder {
    * Disable injecting axe-core into frame(s) matching the
    * given CSS `selector`. This method may be called any number of times.
    * @param {String} selector
-   * @returns {AxeBuilder}
+   * @returns {this}
    */
 
-  public disableFrame(selector: string): AxeBuilder {
+  public disableFrame(selector: string): this {
     this.disableFrameSelectors.push(cssesc(selector));
     return this;
   }
@@ -59,10 +59,10 @@ export default class AxeBuilder {
    * Selector to include in analysis.
    * This may be called any number of times.
    * @param {String} selector
-   * @returns {AxeBuilder}
+   * @returns {this}
    */
 
-  public include(selector: string): AxeBuilder {
+  public include(selector: string): this {
     this.includes.push(selector);
     return this;
   }
@@ -71,10 +71,10 @@ export default class AxeBuilder {
    * Selector to exclude in analysis.
    * This may be called any number of times.
    * @param {String} selector
-   * @returns {AxeBuilder}
+   * @returns {this}
    */
 
-  public exclude(selector: string): AxeBuilder {
+  public exclude(selector: string): this {
     this.excludes.push(selector);
     return this;
   }
@@ -82,10 +82,10 @@ export default class AxeBuilder {
   /**
    * Set options to be passed into axe-core
    * @param {RunOptions} options
-   * @returns {AxeBuilder}
+   * @returns {this}
    */
 
-  public options(options: RunOptions): AxeBuilder {
+  public options(options: RunOptions): this {
     this.option = options;
     return this;
   }
@@ -94,10 +94,10 @@ export default class AxeBuilder {
    * Limit analysis to only the specified rules.
    * Cannot be used with `AxeBuilder#withTags`
    * @param {String|Array} rules
-   * @returns {AxeBuilder}
+   * @returns {this}
    */
 
-  public withRules(rules: string | string[]): AxeBuilder {
+  public withRules(rules: string | string[]): this {
     rules = Array.isArray(rules) ? rules : [rules];
     /* istanbul ignore next */
     this.option = this.option || {};
@@ -113,10 +113,10 @@ export default class AxeBuilder {
    * Limit analysis to only specified tags.
    * Cannot be used with `AxeBuilder#withRules`
    * @param {String|Array} tags
-   * @returns {AxeBuilder}
+   * @returns {this}
    */
 
-  public withTags(tags: string | string[]): AxeBuilder {
+  public withTags(tags: string | string[]): this {
     tags = Array.isArray(tags) ? tags : [tags];
     /* istanbul ignore next */
     this.option = this.option || {};
@@ -130,10 +130,10 @@ export default class AxeBuilder {
   /**
    * Set the list of rules to skip when running an analysis.
    * @param {String|Array} rules
-   * @returns {AxeBuilder}
+   * @returns {this}
    */
 
-  public disableRules(rules: string | string[]): AxeBuilder {
+  public disableRules(rules: string | string[]): this {
     rules = Array.isArray(rules) ? rules : [rules];
     /* istanbul ignore next */
     this.option = this.option || {};
