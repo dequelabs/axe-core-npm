@@ -397,6 +397,23 @@ describe('@axe-core/playwright', () => {
     });
   });
 
+  describe('axe.finishRun errors', () => {
+    const finishRunThrows = `;axe.finishRun = () => { throw new Error("No finishRun")}`;
+    it('throws an error if axe.finishRun throws', async () => {
+      await page.goto(`${addr}/external/index.html`);
+
+      try {
+        await new AxeBuilder({
+          page,
+          axeSource: axeSource + finishRunThrows
+        }).analyze();
+        assert.fail('Should have thrown');
+      } catch (err) {
+        assert.match(err.message, /Please check out/);
+      }
+    });
+  });
+
   describe('for versions without axe.runPartial', () => {
     describe('analyze', () => {
       it('returns results', async () => {

@@ -169,7 +169,7 @@ export class AxePuppeteer {
     const partials = await partialRunner.getPartials();
 
     try {
-      return this.finishRun(partials);
+      return await this.finishRun(partials);
     } catch (error) {
       throw new Error(
         `Error: ${error}\n Please check out https://github.com/dequelabs/axe-core-npm/blob/develop/packages/puppeteer/error-handling.md`

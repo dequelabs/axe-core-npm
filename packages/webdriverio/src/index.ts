@@ -337,19 +337,16 @@ export default class AxeBuilder {
 
   private async finishRun(partials: PartialResults): Promise<AxeResults> {
     const { client, axeSource, option } = this;
-    const newWindow = await client.createWindow('tab');
-    assert(
-      newWindow.handle,
-      'Please make sure that you have popup blockers disabled.'
-    );
+
     try {
+      const newWindow = await client.createWindow('tab');
       await client.switchToWindow(newWindow.handle);
+      await client.url('about:blank');
     } catch (error) {
       throw new Error(
         `switchToWindow failed. Are you using updated browser drivers? \nDriver reported:\n${error}`
       );
     }
-    await client.url('about:blank');
     const res = await axeFinishRun({
       client,
       axeSource,

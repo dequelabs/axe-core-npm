@@ -694,6 +694,21 @@ describe('AxePuppeteer', function () {
     });
   });
 
+  describe('axe.finishRun errors', () => {
+    const finishRunThrows = `;axe.finishRun = () => { throw new Error("No finishRun")}`;
+
+    it('throws an error if axe.finishRun throws', async () => {
+      await page.goto(`${addr}/external/index.html`);
+      try {
+        await new AxePuppeteer(page, axeSource + finishRunThrows).analyze();
+        assert.fail('Should have thrown');
+      } catch (err) {
+        console.log(err);
+        assert.match(err.message, /Please check out/);
+      }
+    });
+  });
+
   describe('without runPartial', () => {
     let axe403Source: string;
     before(() => {
