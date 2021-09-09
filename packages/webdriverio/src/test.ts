@@ -15,49 +15,7 @@ import * as fs from 'fs';
 import AxeBuilder from '.';
 import { logOrRethrowError } from './utils';
 
-const connectToChromeDriver = (port: number): Promise<void> => {
-  let socket: net.Socket;
-  return new Promise((resolve, reject) => {
-    // eslint-disable-next-line prefer-const
-
-    // Give up after 1s
-    const timer = setTimeout(() => {
-      socket.destroy();
-      reject(new Error('Unable to connect to ChromeDriver'));
-    }, 1000);
-
-    const connectionListener = (): void => {
-      clearTimeout(timer);
-      socket.destroy();
-      return resolve();
-    };
-
-    socket = net.createConnection(
-      { host: 'localhost', port },
-      connectionListener
-    );
-
-    // Fail on error
-    socket.once('error', (err: Error) => {
-      clearTimeout(timer);
-      socket.destroy();
-      return reject(err);
-    });
-  });
-};
-
 describe('@axe-core/webdriverio', () => {
-  const port = 9515;
-  before(async () => {
-    chromedriver.start([`--port=${port}`]);
-    await delay(500);
-    await connectToChromeDriver(port);
-  });
-
-  after(() => {
-    chromedriver.stop();
-  });
-
   describe('WebdriverIO Async', () => {
     let server: Server;
     let addr: string;
@@ -97,13 +55,12 @@ describe('@axe-core/webdriverio', () => {
       }
 
       const options: webdriverio.RemoteOptions = {
-        port,
         path: '/',
-        services: ['chromedriver'],
+        automationProtocol: 'devtools',
         capabilities: {
           browserName: 'chrome',
           'goog:chromeOptions': {
-            args: ['headless'],
+            args: ['--headless'],
             binary: binaryPath
           }
         },
@@ -118,6 +75,10 @@ describe('@axe-core/webdriverio', () => {
       server.close();
     });
     describe('AxeBuilder', () => {
+      it('check to make sure that client is running devtools protocol', () => {
+        assert.isTrue(client.isDevTools);
+      });
+
       it('throws a useful error when not given a valid client', () => {
         assert.throws(
           () => new AxeBuilder({ client: () => 'foobar' } as any),
@@ -583,22 +544,24 @@ describe('@axe-core/webdriverio', () => {
           assert.deepEqual(nodes[3].target, ['#frm-baz', 'input']);
         });
 
-        it('should work on shadow DOM iframes', async () => {
+        it('should not work on shadow DOM iframes', async () => {
           await client.url(`${addr}/shadow-frames.html`);
-          const { violations } = await new AxeBuilder({ client })
-            .options({ runOnly: 'label' })
+          const { violations, incomplete } = await new AxeBuilder({ client })
+            .options({ runOnly: ['label', 'frame-tested'] })
             .analyze();
 
           assert.equal(violations[0].id, 'label');
-          assert.lengthOf(violations[0].nodes, 3);
+          assert.lengthOf(violations[0].nodes, 2);
 
           const nodes = violations[0].nodes;
           assert.deepEqual(nodes[0].target, ['#light-frame', 'input']);
-          assert.deepEqual(nodes[1].target, [
-            ['#shadow-root', '#shadow-frame'],
-            'input'
-          ]);
-          assert.deepEqual(nodes[2].target, ['#slotted-frame', 'input']);
+          assert.deepEqual(nodes[1].target, ['#slotted-frame', 'input']);
+
+          assert.lengthOf(incomplete, 1);
+          assert.lengthOf(incomplete[0].nodes, 1);
+          assert.deepEqual(incomplete[0].nodes[0].target, [
+            ['#shadow-root', '#shadow-frame']
+          ] as any);
         });
       });
 
@@ -862,31 +825,21 @@ describe('@axe-core/webdriverio', () => {
     );
     beforeEach(async () => {
       const app = express();
-      let binaryPath = '';
       app.use(express.static(axeTestFixtures));
       server = createServer(app);
       addr = await testListen(server);
-      if (
-        fs.existsSync(`C:/Program Files/Google/Chrome/Application/chrome.exe`)
-      ) {
-        binaryPath = `C:/Program Files/Google/Chrome/Application/chrome.exe`;
-      }
 
-      const options: webdriverio.RemoteOptions = {
-        port,
+      remote = webdriverio.remote({
+        automationProtocol: 'devtools',
         path: '/',
-        services: ['chromedriver'],
         capabilities: {
           browserName: 'chrome',
           'goog:chromeOptions': {
-            args: ['headless'],
-            binary: binaryPath
+            args: ['--headless']
           }
         },
         logLevel: 'error'
-      };
-
-      remote = webdriverio.remote(options);
+      });
     });
 
     afterEach(function (done) {
@@ -906,6 +859,7 @@ describe('@axe-core/webdriverio', () => {
         .then((client: wdio.BrowserObject) =>
           sync(() => {
             client.url(`${addr}/index.html`);
+            assert.isTrue(client.isDevTools);
             new AxeBuilder({ client }).analyze((error, results) => {
               assert.isNotNull(results);
               assert.isArray(results?.violations);
