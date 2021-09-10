@@ -349,11 +349,8 @@ export default class AxeBuilder {
     const win = await client.getWindowHandle();
 
     const newWindow = await client.createWindow('tab');
-    try {
-      await client.switchToWindow(newWindow.handle);
-    } catch (error) {
-      console.log(error);
-    }
+    await client.switchToWindow(newWindow.handle);
+
     await client.url('about:blank');
 
     const res = await axeFinishRun({
