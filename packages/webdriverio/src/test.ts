@@ -775,8 +775,10 @@ describe('@axe-core/webdriverio', () => {
         // eslint-disable-next-line @typescript-eslint/ban-ts-ignore
         // @ts-ignore
         delete client.createWindow;
+        // eslint-disable-next-line @typescript-eslint/ban-ts-ignore
+        // @ts-ignore
         client.createWindow = () => {
-          throw new Error('No window.open');
+          return { handle: null };
         };
         try {
           await new AxeBuilder({
@@ -785,7 +787,10 @@ describe('@axe-core/webdriverio', () => {
           }).analyze();
           assert.fail('Should have thrown');
         } catch (err) {
-          assert.match(err.message, /switchToWindow/);
+          assert.match(
+            err.message,
+            /Please make sure that you have popup blockers disabled./
+          );
         }
       });
 

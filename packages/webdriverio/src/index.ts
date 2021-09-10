@@ -243,7 +243,7 @@ export default class AxeBuilder {
       return await this.finishRun(partials);
     } catch (error) {
       throw new Error(
-        `Error: ${error}\n Please check out https://github.com/dequelabs/axe-core-npm/blob/develop/packages/webdriverio/error-handling.md`
+        `${error.message}\n Please check out https://github.com/dequelabs/axe-core-npm/blob/develop/packages/webdriverio/error-handling.md`
       );
     }
   }
@@ -337,16 +337,22 @@ export default class AxeBuilder {
 
   private async finishRun(partials: PartialResults): Promise<AxeResults> {
     const { client, axeSource, option } = this;
+    const newWindow = await client.createWindow('tab');
+
+    assert(
+      newWindow.handle,
+      'Please make sure that you have popup blockers disabled.'
+    );
 
     try {
-      const newWindow = await client.createWindow('tab');
       await client.switchToWindow(newWindow.handle);
       await client.url('about:blank');
     } catch (error) {
       throw new Error(
-        `switchToWindow failed. Are you using updated browser drivers? \nDriver reported:\n${error}`
+        `switchToWindow failed. Are you using updated browser drivers? \nDriver reported:\n${error.message}`
       );
     }
+
     const res = await axeFinishRun({
       client,
       axeSource,

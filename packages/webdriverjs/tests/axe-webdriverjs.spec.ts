@@ -465,7 +465,7 @@ describe('@axe-core/webdriverjs', () => {
         await new AxeBuilder(driver, source).analyze();
         assert.fail('Should have thrown');
       } catch (err) {
-        assert.match(err.message, /switchTo/);
+        assert.match(err.message, /switchTo failed./);
       }
     });
 

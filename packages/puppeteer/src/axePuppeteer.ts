@@ -172,7 +172,7 @@ export class AxePuppeteer {
       return await this.finishRun(partials);
     } catch (error) {
       throw new Error(
-        `Error: ${error}\n Please check out https://github.com/dequelabs/axe-core-npm/blob/develop/packages/puppeteer/error-handling.md`
+        `${error.message}\n Please check out https://github.com/dequelabs/axe-core-npm/blob/develop/packages/puppeteer/error-handling.md`
       );
     }
   }
@@ -216,6 +216,13 @@ export class AxePuppeteer {
 
     const browser = page.browser();
     const blankPage = await browser.newPage();
+    const windowHandle = await blankPage.evaluateHandle('window');
+
+    assert(
+      windowHandle,
+      'Please make sure that you have popup blockers disabled.'
+    );
+
     await frameSourceInject(blankPage.mainFrame(), axeSource, config);
     return await blankPage
       .evaluate(

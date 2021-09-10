@@ -1,4 +1,5 @@
 import * as fs from 'fs';
+import * as assert from 'assert';
 import type { Page, Frame, ElementHandle } from 'playwright';
 import type {
   RunOptions,
@@ -152,7 +153,7 @@ export default class AxeBuilder {
       return await this.finishRun(partials);
     } catch (error) {
       throw new Error(
-        `Error: ${error}\n Please check out https://github.com/dequelabs/axe-core-npm/blob/develop/packages/playwright/error-handling.md`
+        `${error.message}\n Please check out https://github.com/dequelabs/axe-core-npm/blob/develop/packages/playwright/error-handling.md`
       );
     }
   }
@@ -260,7 +261,14 @@ export default class AxeBuilder {
     const { page, option: options } = this;
     const context = page.context();
     const blankPage = await context.newPage();
+
+    assert(
+      blankPage,
+      'Please make sure that you have popup blockers disabled.'
+    );
+
     blankPage.evaluate(this.script());
+
     return await blankPage
       .evaluate(axeFinishRun, {
         partialResults,
