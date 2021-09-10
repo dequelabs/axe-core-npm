@@ -157,7 +157,7 @@ class AxeBuilder {
       return await this.finishRun(partials);
     } catch (error) {
       throw new Error(
-        `Error: ${error}\n Please check out https://github.com/dequelabs/axe-core-npm/blob/develop/packages/webdriverjs/error-handling.md`
+        `${error.message}\n Please check out https://github.com/dequelabs/axe-core-npm/blob/develop/packages/webdriverjs/error-handling.md`
       );
     }
   }
