@@ -28,6 +28,7 @@ export class AxePuppeteer {
   private config: Spec | null;
   private disabledFrameSelectors: string[];
   private page: Page | undefined;
+  private legacyMode = false;
 
   constructor(pageFrame: Page | Frame, source?: string) {
     if ('mainFrame' in pageFrame) {
@@ -54,23 +55,38 @@ export class AxePuppeteer {
     this.disabledFrameSelectors = [];
   }
 
+  /**
+   * Selector to include in analysis.
+   * This may be called any number of times.
+   */
   public include(selector: string | string[]): this {
     selector = arrayify(selector);
     this.includes.push(selector);
     return this;
   }
 
+  /**
+   * Selector to exclude in analysis.
+   * This may be called any number of times.
+   */
   public exclude(selector: string | string[]): this {
     selector = arrayify(selector);
     this.excludes.push(selector);
     return this;
   }
 
+  /**
+   * Set options to be passed into axe-core
+   */
   public options(options: RunOptions): this {
     this.axeOptions = options;
     return this;
   }
 
+  /**
+   * Limit analysis to only the specified rules.
+   * Cannot be used with `AxeBuilder#withTags`
+   */
   public withRules(rules: string | string[]): this {
     rules = arrayify(rules);
     if (!this.axeOptions) {
@@ -85,6 +101,10 @@ export class AxePuppeteer {
     return this;
   }
 
+  /**
+   * Limit analysis to only specified tags.
+   * Cannot be used with `AxeBuilder#withRules`
+   */
   public withTags(tags: string | string[]): this {
     tags = arrayify(tags);
     if (!this.axeOptions) {
@@ -99,6 +119,9 @@ export class AxePuppeteer {
     return this;
   }
 
+  /**
+   * Set the list of rules to skip when running an analysis.
+   */
   public disableRules(rules: string | string[]): this {
     rules = arrayify(rules);
     interface IRulesObj {
@@ -116,6 +139,10 @@ export class AxePuppeteer {
     return this;
   }
 
+  /**
+   * Set configuration for `axe-core`.
+   * This value is passed directly to `axe.configure()`
+   */
   public configure(config: Spec): this {
     assert(
       typeof config === 'object',
@@ -125,11 +152,29 @@ export class AxePuppeteer {
     return this;
   }
 
+  /**
+   * Exclude specific frames from a test
+   */
   public disableFrame(selector: string): this {
     this.disabledFrameSelectors.push(selector);
     return this;
   }
 
+  /**
+   * Use frameMessenger with <same_origin_only>
+   *
+   * This disables use of axe.runPartial() which is called in each frame, and
+   * axe.finishRun() which is called in a blank page. This uses axe.run() instead,
+   * but with the restriction that cross-origin frames will not be tested.
+   */
+  public setLegacyMode(legacyMode = true): this {
+    this.legacyMode = legacyMode;
+    return this;
+  }
+
+  /**
+   * Perform analysis and retrieve results. *Does not chain.*
+   */
   public async analyze(): Promise<AxeResults>;
   public async analyze<T extends AnalyzeCB>(
     callback?: T
@@ -162,7 +207,11 @@ export class AxePuppeteer {
     await frameSourceInject(frame, axeSource, config);
 
     const runPartialSupported = await frame.evaluate(axeRunPartialSupport);
-    if (runPartialSupported !== true || this.page === undefined) {
+    if (
+      runPartialSupported !== true ||
+      this.page === undefined ||
+      this.legacyMode
+    ) {
       return this.runLegacy(context);
     }
     const partialRunner = await this.runPartialRecursive(frame, context);
@@ -192,8 +241,8 @@ export class AxePuppeteer {
 
     // Recursively start testing child frames
     for (const { frameSelector, frameContext } of frameContexts) {
-      let childResults: AxePartialRunner | null = null;
       try {
+        let childResults: AxePartialRunner | null = null;
         const childFrame = await getChildFrame(frame, frameSelector);
         if (childFrame) {
           await frameSourceInject(childFrame, this.axeSource, this.config);
@@ -202,10 +251,10 @@ export class AxePuppeteer {
             frameContext
           );
         }
+        axePartialRunner.addChildResults(childResults);
       } catch {
-        /* do nothing */
+        axePartialRunner.addChildResults(null);
       }
-      axePartialRunner.addChildResults(childResults);
     }
     return axePartialRunner;
   }
@@ -239,14 +288,21 @@ export class AxePuppeteer {
     const options = this.axeOptions as JSONObject;
     const selector = iframeSelector(this.disabledFrameSelectors);
     const source = this.axeSource;
-    await injectJS(this.frame, { source, selector });
+    let config = this.config;
 
+    if (!this.legacyMode) {
+      config = {
+        ...(config || {}),
+        allowedOrigins: ['<unsafe_all_origins>']
+      };
+    }
+
+    await injectJS(this.frame, { source, selector });
     await injectJS(this.frame, {
       source: axeConfigure,
       selector,
-      args: [this.config]
+      args: [config]
     });
-
     return this.frame.evaluate(axeRunLegacy, context, options);
   }
 }

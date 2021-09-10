@@ -20,15 +20,20 @@ describe('@axe-core/webdriverjs', () => {
   let addr: string;
   let axeSource: string;
   let axeCrasherSource: string;
+  let axeForceLegacy: string;
 
   before(async () => {
     const axePath = require.resolve('axe-core');
     axeSource = fs.readFileSync(axePath, 'utf8');
-    const axeCrashPath = path.resolve(
-      __dirname,
-      './fixtures/external/axe-crasher.js'
+    const externalPath = path.resolve(__dirname, 'fixtures', 'external');
+    axeCrasherSource = fs.readFileSync(
+      path.join(externalPath, 'axe-crasher.js'),
+      'utf8'
     );
-    axeCrasherSource = fs.readFileSync(axeCrashPath, 'utf8');
+    axeForceLegacy = fs.readFileSync(
+      path.join(externalPath, 'axe-force-legacy.js'),
+      'utf8'
+    );
 
     chromedriver.start([`--port=${port}`]);
     await delay(500);
@@ -271,6 +276,20 @@ describe('@axe-core/webdriverjs', () => {
         'input'
       ]);
     });
+
+    it('returns the same results from runPartial as from legacy mode', async () => {
+      await driver.get(`${addr}/nested-iframes.html`);
+      const legacyResults = await new AxeBuilder(
+        driver,
+        axeSource + axeForceLegacy
+      ).analyze();
+      assert.equal(legacyResults.testEngine.name, 'axe-legacy');
+
+      const normalResults = await new AxeBuilder(driver, axeSource).analyze();
+      normalResults.timestamp = legacyResults.timestamp;
+      normalResults.testEngine.name = legacyResults.testEngine.name;
+      assert.deepEqual(normalResults, legacyResults);
+    });
   });
 
   describe('withRules', () => {
@@ -482,12 +501,52 @@ describe('@axe-core/webdriverjs', () => {
     });
   });
 
+  describe('setLegacyMode', () => {
+    const runPartialThrows = `;axe.runPartial = () => { throw new Error("No runPartial")}`;
+    it('runs legacy mode when used', async () => {
+      await driver.get(`${addr}/external/index.html`);
+      const results = await new AxeBuilder(driver, axeSource + runPartialThrows)
+        .setLegacyMode()
+        .analyze();
+      assert.isNotNull(results);
+    });
+
+    it('prevents cross-origin frame testing', async () => {
+      await driver.get(`${addr}/external/cross-origin.html`);
+      const results = await new AxeBuilder(driver, axeSource + runPartialThrows)
+        .withRules(['frame-tested'])
+        .setLegacyMode()
+        .analyze();
+
+      const frameTested = results.incomplete.find(
+        ({ id }) => id === 'frame-tested'
+      );
+      assert.ok(frameTested);
+    });
+
+    it('can be disabled again', async () => {
+      await driver.get(`${addr}/external/cross-origin.html`);
+      const results = await new AxeBuilder(driver)
+        .withRules(['frame-tested'])
+        .setLegacyMode()
+        .setLegacyMode(false)
+        .analyze();
+
+      const frameTested = results.incomplete.find(
+        ({ id }) => id === 'frame-tested'
+      );
+      assert.isUndefined(frameTested);
+    });
+  });
+
   describe('for versions without axe.runPartial', () => {
     let axe403Source: string;
     before(() => {
       const axe403Path = path.resolve(
         __dirname,
-        './fixtures/external/axe-core@legacy.js'
+        'fixtures',
+        'external',
+        'axe-core@legacy.js'
       );
       axe403Source = fs.readFileSync(axe403Path, 'utf8');
     });
@@ -539,6 +598,18 @@ describe('@axe-core/webdriverjs', () => {
       assert.lengthOf(results.incomplete[0].nodes, 1);
       assert.equal(results.violations[0].id, 'label');
       assert.lengthOf(results.violations[0].nodes, 2);
+    });
+
+    it('tests cross-origin pages', async () => {
+      await driver.get(`${addr}/external/cross-origin.html`);
+      const results = await new AxeBuilder(driver, axe403Source)
+        .withRules(['frame-tested'])
+        .analyze();
+
+      const frameTested = results.incomplete.find(
+        ({ id }) => id === 'frame-tested'
+      );
+      assert.isUndefined(frameTested);
     });
   });
 });

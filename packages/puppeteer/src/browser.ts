@@ -25,7 +25,6 @@ export function axeConfigure(config?: Axe.Spec): void {
     window.axe.configure(config);
   }
   window.axe.configure({
-    allowedOrigins: ['<unsafe_all_origins>'],
     branding: { application: 'axe-puppeteer' }
   });
 }

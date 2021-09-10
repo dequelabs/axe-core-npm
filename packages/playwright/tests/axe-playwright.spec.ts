@@ -17,16 +17,20 @@ describe('@axe-core/playwright', () => {
   const axeSource = fs.readFileSync(axePath, 'utf8');
   let browser: playwright.ChromiumBrowser;
   const axeTestFixtures = path.resolve(__dirname, 'fixtures');
+  const externalPath = path.resolve(axeTestFixtures, 'external');
   const axeLegacySource = fs.readFileSync(
-    path.resolve(axeTestFixtures, 'external', 'axe-core@legacy.js'),
+    path.join(externalPath, 'axe-core@legacy.js'),
     'utf-8'
   );
-  const axeCrashPath = path.resolve(
-    axeTestFixtures,
-    'external',
-    'axe-crasher.js'
+  const axeCrasherSource = fs.readFileSync(
+    path.join(externalPath, 'axe-crasher.js'),
+    'utf8'
   );
-  const axeCrasherSource = fs.readFileSync(axeCrashPath, 'utf8');
+  const axeForceLegacy = fs.readFileSync(
+    path.join(externalPath, 'axe-force-legacy.js'),
+    'utf8'
+  );
+
   before(async () => {
     const app = express();
     app.use(express.static(axeTestFixtures));
@@ -143,6 +147,20 @@ describe('@axe-core/playwright', () => {
       }
 
       assert.isNotNull(error);
+    });
+
+    it('returns the same results from runPartial as from legacy mode', async () => {
+      await page.goto(`${addr}/nested-iframes.html`);
+      const legacyResults = await new AxeBuilder({
+        page,
+        axeSource: axeSource + axeForceLegacy
+      }).analyze();
+      assert.equal(legacyResults.testEngine.name, 'axe-legacy');
+
+      const normalResults = await new AxeBuilder({ page, axeSource }).analyze();
+      normalResults.timestamp = legacyResults.timestamp;
+      normalResults.testEngine.name = legacyResults.testEngine.name;
+      assert.deepEqual(normalResults, legacyResults);
     });
   });
 
@@ -440,6 +458,50 @@ describe('@axe-core/playwright', () => {
     });
   });
 
+  describe('setLegacyMode', () => {
+    const runPartialThrows = `;axe.runPartial = () => { throw new Error("No runPartial")}`;
+    it('runs legacy mode when used', async () => {
+      await page.goto(`${addr}/external/index.html`);
+      const results = await new AxeBuilder({
+        page,
+        axeSource: axeSource + runPartialThrows
+      })
+        .setLegacyMode()
+        .analyze();
+      assert.isNotNull(results);
+    });
+
+    it('prevents cross-origin frame testing', async () => {
+      await page.goto(`${addr}/external/cross-origin.html`);
+      const results = await new AxeBuilder({
+        page,
+        axeSource: axeSource + runPartialThrows
+      })
+        .withRules('frame-tested')
+        .setLegacyMode()
+        .analyze();
+
+      const frameTested = results.incomplete.find(
+        ({ id }) => id === 'frame-tested'
+      );
+      assert.ok(frameTested);
+    });
+
+    it('can be disabled again', async () => {
+      await page.goto(`${addr}/external/cross-origin.html`);
+      const results = await new AxeBuilder({ page })
+        .withRules('frame-tested')
+        .setLegacyMode()
+        .setLegacyMode(false)
+        .analyze();
+
+      const frameTested = results.incomplete.find(
+        ({ id }) => id === 'frame-tested'
+      );
+      assert.isUndefined(frameTested);
+    });
+  });
+
   describe('for versions without axe.runPartial', () => {
     describe('analyze', () => {
       it('returns results', async () => {
@@ -468,6 +530,21 @@ describe('@axe-core/playwright', () => {
           error = e;
         }
         assert.isNotNull(error);
+      });
+
+      it('tests cross-origin pages', async () => {
+        await page.goto(`${addr}/external/cross-origin.html`);
+        const results = await new AxeBuilder({
+          page,
+          axeSource: axeLegacySource
+        })
+          .withRules('frame-tested')
+          .analyze();
+
+        const frameTested = results.incomplete.find(
+          ({ id }) => id === 'frame-tested'
+        );
+        assert.isUndefined(frameTested);
       });
     });
 

@@ -23,6 +23,8 @@ export default class AxeBuilder {
   private excludes: string[];
   private option: RunOptions;
   private source: string;
+  private legacyMode = false;
+
   constructor({ page, axeSource }: AxePlaywrightParams) {
     const axePath = require.resolve('axe-core');
     const source = fs.readFileSync(axePath, 'utf-8');
@@ -37,10 +39,10 @@ export default class AxeBuilder {
    * Selector to include in analysis.
    * This may be called any number of times.
    * @param String selector
-   * @returns AxeBuilder
+   * @returns this
    */
 
-  public include(selector: string): AxeBuilder {
+  public include(selector: string): this {
     this.includes.push(selector);
     return this;
   }
@@ -49,10 +51,10 @@ export default class AxeBuilder {
    * Selector to exclude in analysis.
    * This may be called any number of times.
    * @param String selector
-   * @returns AxeBuilder
+   * @returns this
    */
 
-  public exclude(selector: string): AxeBuilder {
+  public exclude(selector: string): this {
     this.excludes.push(selector);
     return this;
   }
@@ -63,7 +65,7 @@ export default class AxeBuilder {
    * @returns AxeBuilder
    */
 
-  public options(options: RunOptions): AxeBuilder {
+  public options(options: RunOptions): this {
     this.option = options;
     return this;
   }
@@ -72,10 +74,10 @@ export default class AxeBuilder {
    * Limit analysis to only the specified rules.
    * Cannot be used with `AxeBuilder#withTags`
    * @param String|Array rules
-   * @returns AxeBuilder
+   * @returns this
    */
 
-  public withRules(rules: string | string[]): AxeBuilder {
+  public withRules(rules: string | string[]): this {
     rules = Array.isArray(rules) ? rules : [rules];
     /* istanbul ignore next */
     this.option = this.option || {};
@@ -91,10 +93,10 @@ export default class AxeBuilder {
    * Limit analysis to only specified tags.
    * Cannot be used with `AxeBuilder#withRules`
    * @param String|Array tags
-   * @returns AxeBuilder
+   * @returns this
    */
 
-  public withTags(tags: string | string[]): AxeBuilder {
+  public withTags(tags: string | string[]): this {
     tags = Array.isArray(tags) ? tags : [tags];
     /* istanbul ignore next */
     this.option = this.option || {};
@@ -108,10 +110,10 @@ export default class AxeBuilder {
   /**
    * Set the list of rules to skip when running an analysis.
    * @param String|Array rules
-   * @returns AxeBuilder
+   * @returns this
    */
 
-  public disableRules(rules: string | string[]): AxeBuilder {
+  public disableRules(rules: string | string[]): this {
     rules = Array.isArray(rules) ? rules : [rules];
     /* istanbul ignore next */
     this.option = this.option || {};
@@ -120,6 +122,18 @@ export default class AxeBuilder {
     for (const rule of rules) {
       this.option.rules[rule] = { enabled: false };
     }
+    return this;
+  }
+
+  /**
+   * Use frameMessenger with <same_origin_only>
+   *
+   * This disables use of axe.runPartial() which is called in each frame, and
+   * axe.finishRun() which is called in a blank page. This uses axe.run() instead,
+   * but with the restriction that cross-origin frames will not be tested.
+   */
+  public setLegacyMode(legacyMode = true): this {
+    this.legacyMode = legacyMode;
     return this;
   }
 
@@ -139,7 +153,7 @@ export default class AxeBuilder {
 
     let results: AxeResults;
 
-    if (!runPartialDefined) {
+    if (!runPartialDefined || this.legacyMode) {
       results = await this.runLegacy(context);
       return results;
     }
@@ -177,12 +191,12 @@ export default class AxeBuilder {
 
   private script(): string {
     return `
-        ${this.source}
-        axe.configure({ 
-          allowedOrigins: ['<unsafe_all_origins>'], 
-          branding: { application: 'playwright' }
-        })
-        `;
+      ${this.source}
+      axe.configure({
+        ${this.legacyMode ? '' : 'allowedOrigins: ["<unsafe_all_origins>"],'}
+        branding: { application: 'playwright' }
+      })
+    `;
   }
 
   private async runLegacy(context: ContextObject): Promise<AxeResults> {

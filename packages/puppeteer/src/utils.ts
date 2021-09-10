@@ -1,6 +1,6 @@
 import * as fs from 'fs';
 import * as Axe from 'axe-core';
-import { Page, Frame, JSONObject } from 'puppeteer';
+import { Frame, JSONObject } from 'puppeteer';
 import { axeConfigure, axeShadowSelect } from './browser';
 import { pageIsLoaded } from './browser';
 

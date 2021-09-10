@@ -1,9 +1,4 @@
-import type {
-  AxeResults,
-  ElementContext,
-  PartialResult,
-  ContextObject
-} from 'axe-core';
+import type { AxeResults, PartialResult, ContextObject } from 'axe-core';
 import type {
   BrowserObject,
   AxeRunPartialParams,
@@ -40,7 +35,7 @@ export const isWebdriverClient = (client: BrowserObject): boolean => {
  * Get running context
  * @param {Array} include
  * @param {Array} exclude
- * @returns {ElementContext}
+ * @returns {ContextObject}
  */
 
 export const normalizeContext = (
@@ -118,12 +113,18 @@ export const axeRunPartial = ({
   options
 }: AxeRunPartialParams): Promise<PartialResult> => {
   return promisify(
-    client.executeAsync(`
+    client
+      .executeAsync(
+        `
       var callback = arguments[arguments.length - 1];
       var context = ${JSON.stringify(context)} || document;
       var options = ${JSON.stringify(options)} || {};
-      window.axe.runPartial(context, options).then(callback);    
-    `)
+      window.axe.runPartial(context, options).then(function (partials) {
+        callback(JSON.stringify(partials))
+      });
+    `
+      )
+      .then((r: string) => deserialize<PartialResult>(r))
   );
 };
 
@@ -138,12 +139,6 @@ export const axeGetFrameContext = ({
       var callback = arguments[arguments.length - 1];
       var context = ${JSON.stringify(context)};
       var frameContexts = window.axe.utils.getFrameContexts(context);
-      frameContexts = frameContexts.map(function (frameContext) {
-        return Object.assign(frameContext, {
-          href: window.location.href, // For debugging
-          frame: axe.utils.shadowSelect(frameContext.frameSelector)
-        });
-      });
       callback(frameContexts)
     `)
   );
@@ -156,7 +151,9 @@ export const axeRunLegacy = ({
   config
 }: AxeRunLegacyParams): Promise<AxeResults> => {
   return promisify(
-    client.executeAsync(`
+    client
+      .executeAsync(
+        `
       var callback = arguments[arguments.length - 1];
       var context = ${JSON.stringify(context)} || document;
       var options = ${JSON.stringify(options)} || {};
@@ -164,8 +161,12 @@ export const axeRunLegacy = ({
       if (config) {
         window.axe.configure(config);
       }
-      window.axe.run(context, options).then(callback); 
-    `)
+      window.axe.run(context, options).then(function (axeResults) {
+        callback(JSON.stringify(axeResults))
+      });
+    `
+      )
+      .then((r: string) => deserialize<AxeResults>(r))
   );
 };
 
@@ -176,16 +177,32 @@ export const axeFinishRun = ({
   options
 }: AxeFinishRunParams): Promise<AxeResults> => {
   return promisify(
-    client.executeAsync(`
-    var callback = arguments[arguments.length - 1];
-    ${axeSource};
-    window.axe.configure({
-      branding: { application: 'webdriverio' }
-    });
+    client
+      .executeAsync(
+        `
+      var callback = arguments[arguments.length - 1];
+      ${axeSource};
+      window.axe.configure({
+        branding: { application: 'webdriverio' }
+      });
 
-    var partialResults = ${JSON.stringify(partialResults)};
-    var options = ${JSON.stringify(options || {})};
-    window.axe.finishRun(partialResults, options).then(callback);
-    `)
+      var partialResults = ${JSON.stringify(partialResults)};
+      var options = ${JSON.stringify(options || {})};
+      window.axe.finishRun(partialResults, options).then(function (axeResults) {
+        callback(JSON.stringify(axeResults))
+      });
+    `
+      )
+      .then((r: string) => deserialize<AxeResults>(r))
   );
 };
+
+/**
+ * JSON.parse wrapper with types
+ *
+ * Unlike JSON.parse, WDIO converts { foo: undefined } to { foo: null }.
+ * This might throw axe-core off, so we're serializing this ourselves
+ */
+function deserialize<T>(s: string): T {
+  return JSON.parse(s) as T;
+}
