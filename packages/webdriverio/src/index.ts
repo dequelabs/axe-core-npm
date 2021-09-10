@@ -192,7 +192,7 @@ export default class AxeBuilder {
   private get script(): string {
     return `
       ${this.axeSource}
-      axe.configure({ 
+      axe.configure({
         ${this.legacyMode ? '' : `allowedOrigins: ['<unsafe_all_origins>'],`}
         branding: { application: 'webdriverio' }
       })
@@ -349,7 +349,11 @@ export default class AxeBuilder {
     const win = await client.getWindowHandle();
 
     const newWindow = await client.createWindow('tab');
-    await client.switchToWindow(newWindow.handle);
+    try {
+      await client.switchToWindow(newWindow.handle);
+    } catch (error) {
+      console.log(error);
+    }
     await client.url('about:blank');
 
     const res = await axeFinishRun({

@@ -38,6 +38,7 @@
   },
   "devDependencies": {
     "@types/chai": "^4.2.21",
+    "@types/chromedriver": "^81.0.0",
     "@types/cssesc": "^3.0.0",
     "@types/express": "^4.17.13",
     "@types/mocha": "^8.2.3",
@@ -46,6 +47,8 @@
     "@wdio/sync": "^6.11.0",
     "axe-test-fixtures": "github:dequelabs/axe-test-fixtures#v1",
     "chai": "^4.3.0",
+    "chromedriver": "^93.0.1",
+    "delay": "^5.0.0",
     "express": "^4.17.1",
     "mocha": "^8.4.0",
     "nyc": "^15.1.0",
