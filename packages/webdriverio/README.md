@@ -153,3 +153,7 @@ const axe = new AxeBuilder({ client }).setLegacyMode();
 const result = await axe.analyze();
 axe.setLegacyMode(false); // Disables legacy mode
 ```
+
+### Shadow DOM support
+
+`@axe-core/webdriverio` is unable to support iframes in shadow DOM elements due to lack of shadow DOM support in [webdriverio](https://webdriver.io/) devtools protocol.

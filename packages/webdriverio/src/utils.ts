@@ -139,12 +139,6 @@ export const axeGetFrameContext = ({
       var callback = arguments[arguments.length - 1];
       var context = ${JSON.stringify(context)};
       var frameContexts = window.axe.utils.getFrameContexts(context);
-      frameContexts = frameContexts.map(function (frameContext) {
-        return Object.assign(frameContext, {
-          href: window.location.href, // For debugging
-          frame: axe.utils.shadowSelect(frameContext.frameSelector)
-        });
-      });
       callback(frameContexts)
     `)
   );
