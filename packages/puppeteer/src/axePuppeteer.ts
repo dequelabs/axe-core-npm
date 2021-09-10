@@ -55,23 +55,38 @@ export class AxePuppeteer {
     this.disabledFrameSelectors = [];
   }
 
+  /**
+   * Selector to include in analysis.
+   * This may be called any number of times.
+   */
   public include(selector: string | string[]): this {
     selector = arrayify(selector);
     this.includes.push(selector);
     return this;
   }
 
+  /**
+   * Selector to exclude in analysis.
+   * This may be called any number of times.
+   */
   public exclude(selector: string | string[]): this {
     selector = arrayify(selector);
     this.excludes.push(selector);
     return this;
   }
 
+  /**
+   * Set options to be passed into axe-core
+   */
   public options(options: RunOptions): this {
     this.axeOptions = options;
     return this;
   }
 
+  /**
+   * Limit analysis to only the specified rules.
+   * Cannot be used with `AxeBuilder#withTags`
+   */
   public withRules(rules: string | string[]): this {
     rules = arrayify(rules);
     if (!this.axeOptions) {
@@ -86,6 +101,10 @@ export class AxePuppeteer {
     return this;
   }
 
+  /**
+   * Limit analysis to only specified tags.
+   * Cannot be used with `AxeBuilder#withRules`
+   */
   public withTags(tags: string | string[]): this {
     tags = arrayify(tags);
     if (!this.axeOptions) {
@@ -100,6 +119,9 @@ export class AxePuppeteer {
     return this;
   }
 
+  /**
+   * Set the list of rules to skip when running an analysis.
+   */
   public disableRules(rules: string | string[]): this {
     rules = arrayify(rules);
     interface IRulesObj {
@@ -117,6 +139,10 @@ export class AxePuppeteer {
     return this;
   }
 
+  /**
+   * Set configuration for `axe-core`.
+   * This value is passed directly to `axe.configure()`
+   */
   public configure(config: Spec): this {
     assert(
       typeof config === 'object',
@@ -126,16 +152,29 @@ export class AxePuppeteer {
     return this;
   }
 
+  /**
+   * Exclude specific frames from a test
+   */
   public disableFrame(selector: string): this {
     this.disabledFrameSelectors.push(selector);
     return this;
   }
 
+  /**
+   * Use frameMessenger with <same_origin_only>
+   *
+   * This disables use of axe.runPartial() which is called in each frame, and
+   * axe.finishRun() which is called in a blank page. This uses axe.run() instead,
+   * but with the restriction that cross-origin frames will not be tested.
+   */
   public setLegacyMode(legacyMode = true): this {
     this.legacyMode = legacyMode;
     return this;
   }
 
+  /**
+   * Perform analysis and retrieve results. *Does not chain.*
+   */
   public async analyze(): Promise<AxeResults>;
   public async analyze<T extends AnalyzeCB>(
     callback?: T
