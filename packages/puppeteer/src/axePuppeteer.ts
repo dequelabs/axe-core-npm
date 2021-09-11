@@ -265,10 +265,9 @@ export class AxePuppeteer {
 
     const browser = page.browser();
     const blankPage = await browser.newPage();
-    const windowHandle = await blankPage.evaluateHandle('window');
 
     assert(
-      windowHandle,
+      blankPage,
       'Please make sure that you have popup blockers disabled.'
     );
 

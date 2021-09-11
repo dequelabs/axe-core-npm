@@ -54,7 +54,6 @@ describe('AxePuppeteer', function () {
 
   after(async () => {
     server.close();
-    await browser.close();
   });
 
   beforeEach(async () => {
@@ -65,6 +64,7 @@ describe('AxePuppeteer', function () {
 
   afterEach(async () => {
     await page.close();
+    await browser.close();
   });
 
   it('runs in parallel', async () => {
@@ -723,11 +723,7 @@ describe('AxePuppeteer', function () {
       // eslint-disable-next-line @typescript-eslint/ban-ts-ignore
       // @ts-ignore
       page.browser().newPage = async () => {
-        return {
-          evaluateHandle: async () => {
-            return null;
-          }
-        };
+        return null;
       };
 
       try {
