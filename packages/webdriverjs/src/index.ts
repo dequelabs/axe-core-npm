@@ -238,15 +238,10 @@ class AxeBuilder {
     const { driver, axeSource, config, option } = this;
 
     const win = await driver.getWindowHandle();
-    const handlers = await driver.getAllWindowHandles();
-
-    assert(
-      handlers.length,
-      'Please make sure that you have popup blockers disabled.'
-    );
 
     try {
       await driver.executeScript(`window.open('about:blank')`);
+      const handlers = await driver.getAllWindowHandles();
       await driver.switchTo().window(handlers[handlers.length - 1]);
       await driver.get('about:blank');
     } catch (error) {
