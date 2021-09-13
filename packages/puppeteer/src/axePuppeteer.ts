@@ -216,7 +216,14 @@ export class AxePuppeteer {
     }
     const partialRunner = await this.runPartialRecursive(frame, context);
     const partials = await partialRunner.getPartials();
-    return this.finishRun(partials);
+
+    try {
+      return await this.finishRun(partials);
+    } catch (error) {
+      throw new Error(
+        `${error.message}\n Please check out https://github.com/dequelabs/axe-core-npm/blob/develop/packages/puppeteer/error-handling.md`
+      );
+    }
   }
 
   private async runPartialRecursive(
@@ -258,8 +265,13 @@ export class AxePuppeteer {
 
     const browser = page.browser();
     const blankPage = await browser.newPage();
-    await frameSourceInject(blankPage.mainFrame(), axeSource, config);
 
+    assert(
+      blankPage,
+      'Please make sure that you have popup blockers disabled.'
+    );
+
+    await frameSourceInject(blankPage.mainFrame(), axeSource, config);
     return await blankPage
       .evaluate(
         axeFinishRun,

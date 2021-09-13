@@ -49,22 +49,22 @@ describe('AxePuppeteer', function () {
   });
 
   before(async () => {
-    const args = puppeteerArgs();
-    browser = await Puppeteer.launch({ args });
     ({ server, addr } = await startServer());
   });
 
   after(async () => {
     server.close();
-    await browser.close();
   });
 
   beforeEach(async () => {
+    const args = puppeteerArgs();
+    browser = await Puppeteer.launch({ args });
     page = await browser.newPage();
   });
 
   afterEach(async () => {
     await page.close();
+    await browser.close();
   });
 
   it('runs in parallel', async () => {
@@ -710,6 +710,40 @@ describe('AxePuppeteer', function () {
 
       pageResults.timestamp = frameResults.timestamp;
       assert.deepEqual(pageResults, frameResults);
+    });
+  });
+
+  describe('axe.finishRun errors', () => {
+    const finishRunThrows = `;axe.finishRun = () => { throw new Error("No finishRun")}`;
+    it('throws an error if window.open throws', async () => {
+      await page.goto(`${addr}/external/index.html`);
+      // eslint-disable-next-line @typescript-eslint/ban-ts-ignore
+      // @ts-ignore
+      delete page.browser().newPage();
+      // eslint-disable-next-line @typescript-eslint/ban-ts-ignore
+      // @ts-ignore
+      page.browser().newPage = async () => {
+        return null;
+      };
+
+      try {
+        await new AxePuppeteer(page, axeSource).analyze();
+        assert.fail('Should have thrown');
+      } catch (err) {
+        assert.match(
+          err.message,
+          /Please make sure that you have popup blockers disabled./
+        );
+      }
+    });
+    it('throws an error if axe.finishRun throws', async () => {
+      await page.goto(`${addr}/external/index.html`);
+      try {
+        await new AxePuppeteer(page, axeSource + finishRunThrows).analyze();
+        assert.fail('Should have thrown');
+      } catch (err) {
+        assert.match(err.message, /Please check out/);
+      }
     });
   });
 

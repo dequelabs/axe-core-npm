@@ -253,7 +253,13 @@ export default class AxeBuilder {
     }
     const partials = await this.runPartialRecursive(context);
 
-    return await this.finishRun(partials);
+    try {
+      return await this.finishRun(partials);
+    } catch (error) {
+      throw new Error(
+        `${error.message}\n Please check out https://github.com/dequelabs/axe-core-npm/blob/develop/packages/webdriverio/error-handling.md`
+      );
+    }
   }
 
   private async runLegacy(context: ContextObject): Promise<AxeResults> {
@@ -349,9 +355,20 @@ export default class AxeBuilder {
     const win = await client.getWindowHandle();
 
     const newWindow = await client.createWindow('tab');
-    await client.switchToWindow(newWindow.handle);
 
-    await client.url('about:blank');
+    assert(
+      newWindow.handle,
+      'Please make sure that you have popup blockers disabled.'
+    );
+
+    try {
+      await client.switchToWindow(newWindow.handle);
+      await client.url('about:blank');
+    } catch (error) {
+      throw new Error(
+        `switchToWindow failed. Are you using updated browser drivers? \nDriver reported:\n${error.message}`
+      );
+    }
 
     const res = await axeFinishRun({
       client,

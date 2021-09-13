@@ -472,6 +472,35 @@ describe('@axe-core/webdriverjs', () => {
     });
   });
 
+  describe('axe.finishRun errors', () => {
+    const finishRunThrows = `;axe.finishRun = () => { throw new Error("No finishRun")}`;
+    const windowOpenThrows = `;window.open = () => { throw new Error("No window.open")}`;
+
+    it('throws an error if window.open throws', async () => {
+      const source = axeSource + windowOpenThrows;
+      await driver.get(`${addr}/external/index.html`);
+
+      try {
+        await new AxeBuilder(driver, source).analyze();
+        assert.fail('Should have thrown');
+      } catch (err) {
+        assert.match(err.message, /switchTo failed./);
+      }
+    });
+
+    it('throws an error if axe.finishRun throws', async () => {
+      const source = axeSource + finishRunThrows;
+      await driver.get(`${addr}/external/index.html`);
+
+      try {
+        await new AxeBuilder(driver, source).analyze();
+        assert.fail('Should have thrown');
+      } catch (err) {
+        assert.match(err.message, /Please check out/);
+      }
+    });
+  });
+
   describe('setLegacyMode', () => {
     const runPartialThrows = `;axe.runPartial = () => { throw new Error("No runPartial")}`;
     it('runs legacy mode when used', async () => {

@@ -415,6 +415,49 @@ describe('@axe-core/playwright', () => {
     });
   });
 
+  describe('axe.finishRun errors', () => {
+    const finishRunThrows = `;axe.finishRun = () => { throw new Error("No finishRun")}`;
+
+    it('throws an error if axe.finishRun throws', async () => {
+      await page.goto(`${addr}/external/index.html`);
+      // eslint-disable-next-line @typescript-eslint/ban-ts-ignore
+      //@ts-ignore
+      delete page.context().newPage;
+      // eslint-disable-next-line @typescript-eslint/ban-ts-ignore
+      //@ts-ignore
+      page.context().newPage = () => {
+        return null;
+      };
+
+      try {
+        await new AxeBuilder({
+          page,
+          axeSource: axeSource
+        }).analyze();
+        assert.fail('Should have thrown');
+      } catch (err) {
+        assert.match(
+          err.message,
+          /Please make sure that you have popup blockers disabled./
+        );
+      }
+    });
+
+    it('throws an error if axe.finishRun throws', async () => {
+      await page.goto(`${addr}/external/index.html`);
+
+      try {
+        await new AxeBuilder({
+          page,
+          axeSource: axeSource + finishRunThrows
+        }).analyze();
+        assert.fail('Should have thrown');
+      } catch (err) {
+        assert.match(err.message, /Please check out/);
+      }
+    });
+  });
+
   describe('setLegacyMode', () => {
     const runPartialThrows = `;axe.runPartial = () => { throw new Error("No runPartial")}`;
     it('runs legacy mode when used', async () => {
