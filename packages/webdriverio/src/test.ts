@@ -198,7 +198,7 @@ describe('@axe-core/webdriverio', () => {
                 .disableFrame('[src*="iframes/baz.html"]')
                 .analyze();
 
-              assert.equal(violations[0].id, 'label');
+              assert.strictEqual(violations[0].id, 'label');
               const nodes = violations[0].nodes;
               assert.lengthOf(nodes, 3);
               assert.deepEqual(nodes[0].target, [
@@ -229,7 +229,7 @@ describe('@axe-core/webdriverio', () => {
                 .disableFrame('[src*="does-not-exist.html"]')
                 .analyze();
 
-              assert.equal(violations[0].id, 'label');
+              assert.strictEqual(violations[0].id, 'label');
               const nodes = violations[0].nodes;
               assert.lengthOf(nodes, 4);
               assert.deepEqual(nodes[0].target, [
@@ -260,7 +260,7 @@ describe('@axe-core/webdriverio', () => {
                 .withRules('label')
                 .disableFrame('[src*="frameset/baz.html"]')
                 .analyze();
-              assert.equal(violations[0].id, 'label');
+              assert.strictEqual(violations[0].id, 'label');
               const nodes = violations[0].nodes;
               assert.lengthOf(nodes, 3);
               assert.deepEqual(nodes[0].target, [
@@ -290,7 +290,7 @@ describe('@axe-core/webdriverio', () => {
                 .withRules('label')
                 .disableFrame('[src*="does-not-exist.html"]')
                 .analyze();
-              assert.equal(violations[0].id, 'label');
+              assert.strictEqual(violations[0].id, 'label');
               const nodes = violations[0].nodes;
               assert.lengthOf(nodes, 4);
               assert.deepEqual(nodes[0].target, [
@@ -350,9 +350,9 @@ describe('@axe-core/webdriverio', () => {
             })
               .options({ runOnly: ['label', 'frame-tested'] })
               .analyze();
-            assert.equal(results.incomplete[0].id, 'frame-tested');
+            assert.strictEqual(results.incomplete[0].id, 'frame-tested');
             assert.lengthOf(results.incomplete[0].nodes, 2);
-            assert.equal(results.violations[0].id, 'label');
+            assert.strictEqual(results.violations[0].id, 'label');
             assert.lengthOf(results.violations[0].nodes, 1);
           });
 
@@ -425,7 +425,7 @@ describe('@axe-core/webdriverio', () => {
             assert.isDefined(results.testEnvironment.windowWidth);
             assert.isDefined(results.testRunner.name);
             assert.isDefined(results.toolOptions.reporter);
-            assert.equal(results.url, `${addr}/index.html`);
+            assert.strictEqual(results.url, `${addr}/index.html`);
           });
 
           it('returns the same results from runPartial as from legacy mode', async () => {
@@ -434,7 +434,7 @@ describe('@axe-core/webdriverio', () => {
               axeSource: axeSource + noHtmlConfig + axeForceLegacy,
               client
             }).analyze();
-            assert.equal(legacyResults.testEngine.name, 'axe-legacy');
+            assert.strictEqual(legacyResults.testEngine.name, 'axe-legacy');
 
             const normalResults = await new AxeBuilder({
               axeSource: axeSource + noHtmlConfig,
@@ -454,7 +454,7 @@ describe('@axe-core/webdriverio', () => {
               .disableFrame('[src*="iframes/baz.html"]')
               .analyze();
 
-            assert.equal(violations[0].id, 'label');
+            assert.strictEqual(violations[0].id, 'label');
             const nodes = violations[0].nodes;
             assert.lengthOf(nodes, 3);
             assert.deepEqual(nodes[0].target, [
@@ -482,7 +482,7 @@ describe('@axe-core/webdriverio', () => {
               .disableFrame('[src*="does-not-exist.html"]')
               .analyze();
 
-            assert.equal(violations[0].id, 'label');
+            assert.strictEqual(violations[0].id, 'label');
             const nodes = violations[0].nodes;
             assert.lengthOf(nodes, 4);
             assert.deepEqual(nodes[0].target, [
@@ -510,7 +510,7 @@ describe('@axe-core/webdriverio', () => {
               .withRules('label')
               .disableFrame('[src*="frameset/baz.html"]')
               .analyze();
-            assert.equal(violations[0].id, 'label');
+            assert.strictEqual(violations[0].id, 'label');
             const nodes = violations[0].nodes;
             assert.lengthOf(nodes, 3);
             assert.deepEqual(nodes[0].target, [
@@ -537,7 +537,7 @@ describe('@axe-core/webdriverio', () => {
               .options({ runOnly: 'label' })
               .disableFrame('[src*="does-not-exist.html"]')
               .analyze();
-            assert.equal(violations[0].id, 'label');
+            assert.strictEqual(violations[0].id, 'label');
             const nodes = violations[0].nodes;
             assert.lengthOf(nodes, 4);
             assert.deepEqual(nodes[0].target, [
@@ -597,7 +597,7 @@ describe('@axe-core/webdriverio', () => {
               .options({ runOnly: 'label' })
               .analyze();
 
-            assert.equal(violations[0].id, 'label');
+            assert.strictEqual(violations[0].id, 'label');
             const nodes = violations[0].nodes;
             assert.lengthOf(nodes, 4);
             assert.deepEqual(nodes[0].target, [
@@ -625,7 +625,7 @@ describe('@axe-core/webdriverio', () => {
               .options({ runOnly: 'label' })
               .analyze();
 
-            assert.equal(violations[0].id, 'label');
+            assert.strictEqual(violations[0].id, 'label');
             assert.lengthOf(violations[0].nodes, 4);
 
             const nodes = violations[0].nodes;
@@ -654,7 +654,7 @@ describe('@axe-core/webdriverio', () => {
               .options({ runOnly: ['label', 'frame-tested'] })
               .analyze();
 
-            assert.equal(violations[0].id, 'label');
+            assert.strictEqual(violations[0].id, 'label');
             assert.lengthOf(violations[0].nodes, 2);
 
             const nodes = violations[0].nodes;
