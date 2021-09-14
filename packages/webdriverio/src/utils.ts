@@ -1,21 +1,19 @@
-import type { AxeResults, PartialResult, ContextObject } from 'axe-core';
+import * as assert from 'assert';
+import type { Browser } from 'webdriverio';
 import type {
-  BrowserObject,
-  AxeRunPartialParams,
-  AxeGetFrameContextParams,
-  AxeRunLegacyParams,
-  AxeFinishRunParams,
-  AxeSourceInjectResponse,
-  AxeSourceInjectParams
-} from './types';
+  AxeResults,
+  PartialResult,
+  ContextObject,
+  RunOptions,
+  Spec,
+  PartialResults
+} from 'axe-core';
+import type { WdioBrowser } from './types';
 
 /**
  * Validates that the client provided is WebdriverIO v5 or v6.
- * @param {BrowserObject} client
- * @returns {boolean}
  */
-
-export const isWebdriverClient = (client: BrowserObject): boolean => {
+export const isWebdriverClient = (client: WdioBrowser): boolean => {
   if (!client || typeof client !== 'object') {
     return false;
   }
@@ -33,11 +31,7 @@ export const isWebdriverClient = (client: BrowserObject): boolean => {
 
 /**
  * Get running context
- * @param {Array} include
- * @param {Array} exclude
- * @returns {ContextObject}
  */
-
 export const normalizeContext = (
   includes: string[],
   excludes: string[],
@@ -61,11 +55,9 @@ export const normalizeContext = (
 
 /**
  * Checks to make sure that the error thrown was not a stale iframe
- * @param {Error} error
- * @returns {void}
  */
-
-export const logOrRethrowError = (error: Error): void => {
+export const logOrRethrowError = (error: unknown): void => {
+  assert(error instanceof Error, 'An unknown error occurred');
   if (
     error?.seleniumStack?.type === 'StaleElementReference' ||
     error.name === 'stale element reference'
@@ -81,17 +73,16 @@ export const logOrRethrowError = (error: Error): void => {
 /**
  * Selenium-webdriver thenable aren't chainable. This fixes it.
  */
-
 const promisify = <T>(thenable: Promise<T>): Promise<T> => {
   return new Promise((resolve, reject) => {
     thenable.then(resolve, reject);
   });
 };
 
-export const axeSourceInject = async ({
-  client,
-  axeSource
-}: AxeSourceInjectParams): Promise<AxeSourceInjectResponse> => {
+export const axeSourceInject = async (
+  client: Browser<'async'>,
+  axeSource: string
+): Promise<{ runPartialSupported: boolean }> => {
   return promisify(
     // Had to use executeAsync() because we could not use multiline statements in client.execute()
     // we were able to return a single boolean in a line but not when assigned to a variable.
@@ -107,31 +98,30 @@ export const axeSourceInject = async ({
   );
 };
 
-export const axeRunPartial = ({
-  client,
-  context,
-  options
-}: AxeRunPartialParams): Promise<PartialResult> => {
+export const axeRunPartial = (
+  client: Browser<'async'>,
+  context?: ContextObject,
+  options?: RunOptions
+): Promise<PartialResult> => {
   return promisify(
     client
-      .executeAsync(
+      .executeAsync<string, never>(
         `
       var callback = arguments[arguments.length - 1];
       var context = ${JSON.stringify(context)} || document;
       var options = ${JSON.stringify(options)} || {};
       window.axe.runPartial(context, options).then(function (partials) {
         callback(JSON.stringify(partials))
-      });
-    `
+      });`
       )
       .then((r: string) => deserialize<PartialResult>(r))
   );
 };
 
-export const axeGetFrameContext = ({
-  client,
-  context
-}: AxeGetFrameContextParams): Promise<any[]> => {
+export const axeGetFrameContext = (
+  client: Browser<'async'>,
+  context: ContextObject
+): Promise<any[]> => {
   return promisify(
     // Had to use executeAsync() because we could not use multiline statements in client.execute()
     // we were able to return a single boolean in a line but not when assigned to a variable.
@@ -144,17 +134,16 @@ export const axeGetFrameContext = ({
   );
 };
 
-export const axeRunLegacy = ({
-  client,
-  context,
-  options,
-  config
-}: AxeRunLegacyParams): Promise<AxeResults> => {
+export const axeRunLegacy = (
+  client: Browser<'async'>,
+  context: ContextObject,
+  options: RunOptions,
+  config?: Spec
+): Promise<AxeResults> => {
   return promisify(
     client
-      .executeAsync(
-        `
-      var callback = arguments[arguments.length - 1];
+      .executeAsync<string, never>(
+        `var callback = arguments[arguments.length - 1];
       var context = ${JSON.stringify(context)} || document;
       var options = ${JSON.stringify(options)} || {};
       var config = ${JSON.stringify(config)} || null;
@@ -163,24 +152,22 @@ export const axeRunLegacy = ({
       }
       window.axe.run(context, options).then(function (axeResults) {
         callback(JSON.stringify(axeResults))
-      });
-    `
+      });`
       )
       .then((r: string) => deserialize<AxeResults>(r))
   );
 };
 
-export const axeFinishRun = ({
-  client,
-  axeSource,
-  partialResults,
-  options
-}: AxeFinishRunParams): Promise<AxeResults> => {
+export const axeFinishRun = (
+  client: Browser<'async'>,
+  axeSource: string,
+  partialResults: PartialResults,
+  options: RunOptions
+): Promise<AxeResults> => {
   return promisify(
     client
-      .executeAsync(
-        `
-      var callback = arguments[arguments.length - 1];
+      .executeAsync<string, never>(
+        `var callback = arguments[arguments.length - 1];
       ${axeSource};
       window.axe.configure({
         branding: { application: 'webdriverio' }
@@ -190,8 +177,7 @@ export const axeFinishRun = ({
       var options = ${JSON.stringify(options || {})};
       window.axe.finishRun(partialResults, options).then(function (axeResults) {
         callback(JSON.stringify(axeResults))
-      });
-    `
+      });`
       )
       .then((r: string) => deserialize<AxeResults>(r))
   );
