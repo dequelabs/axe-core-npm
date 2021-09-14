@@ -312,6 +312,20 @@ describe('@axe-core/webdriverio', () => {
               assert.deepEqual(nodes[3].target, ['#frm-baz', 'input']);
             });
           });
+
+          it('reports frame-tested', async () => {
+            await client.url(`${addr}/crash-parent.html`);
+            const results = await new AxeBuilder({
+              client,
+              axeSource: axeLegacySource + axeCrasherSource
+            })
+              .options({ runOnly: ['label', 'frame-tested'] })
+              .analyze();
+            assert.equal(results.incomplete[0].id, 'frame-tested');
+            assert.lengthOf(results.incomplete[0].nodes, 1);
+            assert.equal(results.violations[0].id, 'label');
+            assert.lengthOf(results.violations[0].nodes, 2);
+          });
         });
 
         describe('analyze', () => {
@@ -351,9 +365,9 @@ describe('@axe-core/webdriverio', () => {
               .options({ runOnly: ['label', 'frame-tested'] })
               .analyze();
             assert.equal(results.incomplete[0].id, 'frame-tested');
-            assert.lengthOf(results.incomplete[0].nodes, 2);
+            assert.lengthOf(results.incomplete[0].nodes, 1);
             assert.equal(results.violations[0].id, 'label');
-            assert.lengthOf(results.violations[0].nodes, 1);
+            assert.lengthOf(results.violations[0].nodes, 2);
           });
 
           it('throws if axe errors out on the top window', async () => {
@@ -666,6 +680,50 @@ describe('@axe-core/webdriverio', () => {
             assert.deepEqual(incomplete[0].nodes[0].target, [
               ['#shadow-root', '#shadow-frame']
             ] as any);
+          });
+
+          it('reports erroring frames in frame-tested', async () => {
+            await client.url(`${addr}/crash-parent.html`);
+            const results = await new AxeBuilder({
+              client,
+              axeSource: axeSource + axeCrasherSource
+            })
+              .options({ runOnly: ['label', 'frame-tested'] })
+              .analyze();
+
+            assert.equal(results.incomplete[0].id, 'frame-tested');
+            assert.lengthOf(results.incomplete[0].nodes, 1);
+            assert.deepEqual(results.incomplete[0].nodes[0].target, [
+              '#ifr-crash'
+            ]);
+            assert.equal(results.violations[0].id, 'label');
+            assert.lengthOf(results.violations[0].nodes, 2);
+            assert.deepEqual(results.violations[0].nodes[0].target, [
+              '#ifr-bar',
+              '#bar-baz',
+              'input'
+            ]);
+            assert.deepEqual(results.violations[0].nodes[1].target, [
+              '#ifr-baz',
+              'input'
+            ]);
+          });
+
+          it('returns the same results from runPartial as from legacy mode', async () => {
+            await client.url(`${addr}/nested-iframes.html`);
+            const legacyResults = await new AxeBuilder({
+              client,
+              axeSource: axeSource + axeForceLegacy
+            }).analyze();
+            assert.equal(legacyResults.testEngine.name, 'axe-legacy');
+
+            const normalResults = await new AxeBuilder({
+              client,
+              axeSource: axeSource
+            }).analyze();
+            normalResults.timestamp = legacyResults.timestamp;
+            normalResults.testEngine.name = legacyResults.testEngine.name;
+            assert.deepEqual(normalResults, legacyResults);
           });
         });
 

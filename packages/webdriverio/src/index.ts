@@ -344,6 +344,7 @@ export default class AxeBuilder {
         partials.push(...(await this.runPartialRecursive(frameContext)));
       } catch (error) {
         partials.push(null);
+        await this.client.switchToParentFrame();
       }
     }
     await this.client.switchToParentFrame();
