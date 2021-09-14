@@ -61,7 +61,7 @@
     "webdriverio": "^7.12.4"
   },
   "peerDependencies": {
-    "webdriverio": "^6.0.0 || ^5.0.0"
+    "webdriverio": "^7.0.0 || ^6.0.0 || ^5.0.0"
   },
   "nyc": {
     "include": [
