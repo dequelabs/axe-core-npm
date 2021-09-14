@@ -77,9 +77,9 @@
     "sourceMap": true,
     "instrument": true,
     "checkCoverage": true,
-    "statements": 98,
-    "branches": 90,
-    "functions": 100,
-    "lines": 98
+    "statements": 85,
+    "branches": 85,
+    "functions": 85,
+    "lines": 85
   }
 }
