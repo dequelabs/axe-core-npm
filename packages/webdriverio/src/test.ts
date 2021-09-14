@@ -913,6 +913,47 @@ describe('@axe-core/webdriverio', () => {
           });
         });
       });
+
+      describe('axe.finishRun errors', () => {
+        const finishRunThrows = `;axe.finishRun = () => { throw new Error("No finishRun")}`;
+
+        it('throws an error if window.open throws', async () => {
+          await client.url(`${addr}/index.html`);
+          // eslint-disable-next-line @typescript-eslint/ban-ts-ignore
+          // @ts-ignore
+          delete client.createWindow;
+          // eslint-disable-next-line @typescript-eslint/ban-ts-ignore
+          // @ts-ignore
+          client.createWindow = () => {
+            return { handle: null };
+          };
+          try {
+            await new AxeBuilder({
+              client,
+              axeSource: axeSource
+            }).analyze();
+            assert.fail('Should have thrown');
+          } catch (err) {
+            assert.match(
+              err.message,
+              /Please make sure that you have popup blockers disabled./
+            );
+          }
+        });
+
+        it('throws an error if axe.finishRun throws', async () => {
+          await client.url(`${addr}/index.html`);
+          try {
+            await new AxeBuilder({
+              client,
+              axeSource: axeSource + finishRunThrows
+            }).analyze();
+            assert.fail('Should have thrown');
+          } catch (err) {
+            assert.match(err.message, /Please check out/);
+          }
+        });
+      });
     });
   }
 
