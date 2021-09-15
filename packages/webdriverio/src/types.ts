@@ -1,52 +1,14 @@
+import type { Browser, MultiRemoteBrowser, Element } from 'webdriverio';
 import type { AxeResults, ElementContext, RunOptions, Spec } from 'axe-core';
 import * as axe from 'axe-core';
-import {
-  BrowserObject as BrowserObjectSync,
-  Element as ElementSync,
-  MultiRemoteBrowserObject as MultiRemoteBrowserObjectSync
-} from '@wdio/sync';
-import {
-  BrowserObject as BrowserObjectAsync,
-  MultiRemoteBrowserObject as MultiRemoteBrowserObjectAsync,
-  Element as ElementAsync
-} from 'webdriverio';
 
-export type BrowserObject =
-  | BrowserObjectAsync
-  | BrowserObjectSync
-  | MultiRemoteBrowserObjectAsync
-  | MultiRemoteBrowserObjectSync;
+export type WdioBrowser =
+  | Browser<'async'>
+  | Browser<'sync'>
+  | MultiRemoteBrowser<'async'>
+  | MultiRemoteBrowser<'sync'>;
 
-export type Element = ElementAsync | ElementSync;
-
-export interface AxeRunPartialParams {
-  client: BrowserObject;
-  context?: ElementContext;
-  options?: RunOptions;
-}
-
-export interface AxeGetFrameContextParams {
-  client: BrowserObject;
-  context: ElementContext;
-}
-
-export interface AxeRunLegacyParams extends AxeRunPartialParams {
-  config?: Spec;
-}
-
-export interface AxeSourceInjectParams {
-  client: BrowserObject;
-  axeSource: string;
-}
-
-export interface AxeFinishRunParams extends AxeSourceInjectParams {
-  partialResults: PartialResults;
-  options: RunOptions;
-}
-
-export interface AxeSourceInjectResponse {
-  runPartialSupported: boolean;
-}
+export type WdioElement = Element<'async'> | Element<'sync'>;
 
 export type CallbackFunction = (
   error: string | null,
@@ -54,7 +16,7 @@ export type CallbackFunction = (
 ) => void;
 
 export interface Options {
-  client: BrowserObject;
+  client: WdioBrowser;
   axeSource?: string;
 }
 

@@ -1,15 +1,6 @@
-import type { RunOptions, AxeResults } from 'axe-core';
-import { ContextObject } from 'axe-core';
 import * as fs from 'fs';
 import * as assert from 'assert';
 import * as cssesc from 'cssesc';
-import type {
-  Options,
-  CallbackFunction,
-  BrowserObject,
-  Element,
-  PartialResults
-} from './types';
 import {
   isWebdriverClient,
   normalizeContext,
@@ -21,13 +12,23 @@ import {
   axeRunLegacy
 } from './utils';
 
+import type { Browser } from 'webdriverio';
+import type { RunOptions, AxeResults, ContextObject } from 'axe-core';
+import type {
+  Options,
+  CallbackFunction,
+  WdioBrowser,
+  WdioElement,
+  PartialResults
+} from './types';
+
 export default class AxeBuilder {
-  private client: BrowserObject;
+  private client: Browser<'async'>;
   private axeSource: string;
-  private includes: string[];
-  private excludes: string[];
-  private option: RunOptions;
-  private disableFrameSelectors: string[];
+  private includes: string[] = [];
+  private excludes: string[] = [];
+  private option: RunOptions = {};
+  private disableFrameSelectors: string[] = [];
   private legacyMode = false;
 
   constructor({ client, axeSource }: Options) {
@@ -35,23 +36,29 @@ export default class AxeBuilder {
       isWebdriverClient(client),
       'An instantiated WebdriverIO client greater than v5 is required'
     );
-    const sourceDir = require.resolve('axe-core');
-    const source = fs.readFileSync(sourceDir, 'utf-8');
-    this.client = client;
-    this.axeSource = axeSource || source;
-    this.includes = [];
-    this.excludes = [];
-    this.option = {};
-    this.disableFrameSelectors = [];
+    // Treat everything as Browser<'async'>:
+    // - Anything sync can also run async, since JS can await sync functions
+    // - Ignore MultiRemoteBrowser, which is just Browser with extra props
+    this.client = client as Browser<'async'>;
+
+    if (axeSource) {
+      this.axeSource = axeSource;
+    } else {
+      const sourceDir = require.resolve('axe-core');
+      try {
+        this.axeSource = fs.readFileSync(sourceDir, 'utf-8');
+      } catch (e) {
+        throw new Error(
+          'Unable to find axe-core source. Is axe-core installed?'
+        );
+      }
+    }
   }
 
   /**
    * Disable injecting axe-core into frame(s) matching the
    * given CSS `selector`. This method may be called any number of times.
-   * @param {String} selector
-   * @returns {this}
    */
-
   public disableFrame(selector: string): this {
     this.disableFrameSelectors.push(cssesc(selector));
     return this;
@@ -60,10 +67,7 @@ export default class AxeBuilder {
   /**
    * Selector to include in analysis.
    * This may be called any number of times.
-   * @param {String} selector
-   * @returns {this}
    */
-
   public include(selector: string): this {
     this.includes.push(selector);
     return this;
@@ -72,10 +76,7 @@ export default class AxeBuilder {
   /**
    * Selector to exclude in analysis.
    * This may be called any number of times.
-   * @param {String} selector
-   * @returns {this}
    */
-
   public exclude(selector: string): this {
     this.excludes.push(selector);
     return this;
@@ -83,10 +84,7 @@ export default class AxeBuilder {
 
   /**
    * Set options to be passed into axe-core
-   * @param {RunOptions} options
-   * @returns {this}
    */
-
   public options(options: RunOptions): this {
     this.option = options;
     return this;
@@ -95,14 +93,9 @@ export default class AxeBuilder {
   /**
    * Limit analysis to only the specified rules.
    * Cannot be used with `AxeBuilder#withTags`
-   * @param {String|Array} rules
-   * @returns {this}
    */
-
   public withRules(rules: string | string[]): this {
     rules = Array.isArray(rules) ? rules : [rules];
-    /* istanbul ignore next */
-    this.option = this.option || {};
     this.option.runOnly = {
       type: 'rule',
       values: rules
@@ -114,14 +107,9 @@ export default class AxeBuilder {
   /**
    * Limit analysis to only specified tags.
    * Cannot be used with `AxeBuilder#withRules`
-   * @param {String|Array} tags
-   * @returns {this}
    */
-
   public withTags(tags: string | string[]): this {
     tags = Array.isArray(tags) ? tags : [tags];
-    /* istanbul ignore next */
-    this.option = this.option || {};
     this.option.runOnly = {
       type: 'tag',
       values: tags
@@ -131,14 +119,9 @@ export default class AxeBuilder {
 
   /**
    * Set the list of rules to skip when running an analysis.
-   * @param {String|Array} rules
-   * @returns {this}
    */
-
   public disableRules(rules: string | string[]): this {
     rules = Array.isArray(rules) ? rules : [rules];
-    /* istanbul ignore next */
-    this.option = this.option || {};
     this.option.rules = {};
 
     for (const rule of rules) {
@@ -162,10 +145,7 @@ export default class AxeBuilder {
 
   /**
    * Performs an analysis and retrieves results.
-   * @param {CallbackFunction} callback
-   * @returns {Promise<AxeResults>}
    */
-
   public async analyze(callback?: CallbackFunction): Promise<AxeResults> {
     return new Promise((resolve, reject) => {
       return this.analyzePromise()
@@ -186,9 +166,7 @@ export default class AxeBuilder {
 
   /**
    * Get axe-core source and configurations
-   * @returns {String}
    */
-
   private get script(): string {
     return `
       ${this.axeSource}
@@ -201,35 +179,28 @@ export default class AxeBuilder {
 
   /**
    * Injects `axe-core` into all frames.
-   * @param {Element | null} browsingContext - defaults to null
-   * @returns {Promise<void>}
    */
-
-  private async inject(browsingContext: Element | null = null): Promise<void> {
+  private async inject(
+    browsingContext: WdioElement | null = null
+  ): Promise<void> {
     await this.setBrowsingContext(browsingContext);
     await this.client.execute(this.script);
 
-    const frames =
-      (await this.client.$$(this.frameSelector())) ||
-      /* istanbul ignore next */ [];
+    const frames = (await this.client.$$(this.frameSelector())) || [];
     const iframes =
-      frames.concat(await this.client.$$(this.iframeSelector())) ||
-      /* istanbul ignore next */ [];
+      frames.concat(await this.client.$$(this.iframeSelector())) || [];
     if (!iframes.length) {
       return;
     }
 
     for (const iframe of iframes) {
       try {
-        const exist = await iframe.isExisting();
-        /* istanbul ignore if */
-        if (!exist) {
+        if (!(await iframe.isExisting())) {
           continue;
         }
         await this.inject(iframe);
         await this.client.switchToParentFrame();
       } catch (error) {
-        /* istanbul ignore next */
         logOrRethrowError(error);
       }
     }
@@ -243,11 +214,7 @@ export default class AxeBuilder {
       this.disableFrameSelectors
     );
 
-    const runPartialSupported = await axeSourceInject({
-      client,
-      axeSource
-    });
-
+    const runPartialSupported = await axeSourceInject(client, axeSource);
     if (!runPartialSupported || this.legacyMode) {
       return await this.runLegacy(context);
     }
@@ -257,7 +224,9 @@ export default class AxeBuilder {
       return await this.finishRun(partials);
     } catch (error) {
       throw new Error(
-        `${error.message}\n Please check out https://github.com/dequelabs/axe-core-npm/blob/develop/packages/webdriverio/error-handling.md`
+        `${
+          (error as Error).message
+        }\n Please check out https://github.com/dequelabs/axe-core-npm/blob/develop/packages/webdriverio/error-handling.md`
       );
     }
   }
@@ -265,14 +234,12 @@ export default class AxeBuilder {
   private async runLegacy(context: ContextObject): Promise<AxeResults> {
     const { client, option } = this;
     await this.inject();
-    return axeRunLegacy({ client, context, options: option });
+    return axeRunLegacy(client, context, option);
   }
 
   /**
    * Get a CSS selector for retrieving child iframes.
-   * @returns {String}
    */
-
   private iframeSelector(): string {
     let selector = 'iframe';
     for (const disableFrameSelector of this.disableFrameSelectors) {
@@ -283,9 +250,7 @@ export default class AxeBuilder {
 
   /**
    * Get a CSS selector for retrieving child frames.
-   * @returns {String}
    */
-
   private frameSelector(): string {
     let selector = 'frame';
     for (const disableFrameSelector of this.disableFrameSelectors) {
@@ -297,12 +262,9 @@ export default class AxeBuilder {
   /**
    * Set browsing context - when `null` sets top level page as context
    * - https://webdriver.io/docs/api/webdriver.html#switchtoframe
-   * @param {null | Element | BrowserObject} id - defaults to null
-   * @returns {Promise<void>}
    */
-
   private async setBrowsingContext(
-    id: null | Element | BrowserObject = null
+    id: null | WdioElement | WdioBrowser = null
   ): Promise<void> {
     if (id) {
       await this.client.switchToFrame(id);
@@ -319,17 +281,9 @@ export default class AxeBuilder {
   private async runPartialRecursive(
     context: ContextObject
   ): Promise<PartialResults> {
-    const frameContexts = await axeGetFrameContext({
-      client: this.client,
-      context
-    });
-
+    const frameContexts = await axeGetFrameContext(this.client, context);
     const partials: PartialResults = [
-      await axeRunPartial({
-        client: this.client,
-        context,
-        options: this.option
-      })
+      await axeRunPartial(this.client, context, this.option)
     ];
 
     for (const { frameSelector, frameContext } of frameContexts) {
@@ -337,10 +291,7 @@ export default class AxeBuilder {
         const frame = await this.client.$(frameSelector);
         assert(frame, `Expect frame of "${frameSelector}" to be defined`);
         await this.client.switchToFrame(frame);
-        await axeSourceInject({
-          client: this.client,
-          axeSource: this.script
-        });
+        await axeSourceInject(this.client, this.script);
         partials.push(...(await this.runPartialRecursive(frameContext)));
       } catch (error) {
         partials.push(null);
@@ -354,9 +305,7 @@ export default class AxeBuilder {
   private async finishRun(partials: PartialResults): Promise<AxeResults> {
     const { client, axeSource, option } = this;
     const win = await client.getWindowHandle();
-
     const newWindow = await client.createWindow('tab');
-
     assert(
       newWindow.handle,
       'Please make sure that you have popup blockers disabled.'
@@ -367,17 +316,14 @@ export default class AxeBuilder {
       await client.url('about:blank');
     } catch (error) {
       throw new Error(
-        `switchToWindow failed. Are you using updated browser drivers? \nDriver reported:\n${error.message}`
+        `switchToWindow failed. Are you using updated browser drivers? \nDriver reported:\n${
+          (error as Error).message
+        }`
       );
     }
 
-    const res = await axeFinishRun({
-      client,
-      axeSource,
-      options: option,
-      partialResults: partials
-    });
-
+    const res = await axeFinishRun(client, axeSource, partials, option);
+    // Cleanup
     await client.closeWindow();
     await client.switchToWindow(win);
 

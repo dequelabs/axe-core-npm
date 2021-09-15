@@ -1,7 +1,6 @@
 import 'mocha';
 import * as webdriverio from 'webdriverio';
-const sync = require('@wdio/sync').default;
-import * as wdio from '@wdio/sync';
+import sync from '@wdio/sync';
 import * as express from 'express';
 import testListen = require('test-listen');
 import { assert } from 'chai';
@@ -13,6 +12,7 @@ import * as fs from 'fs';
 import delay from 'delay';
 import AxeBuilder from '.';
 import { logOrRethrowError } from './utils';
+import { WdioBrowser } from './types';
 
 const connectToChromeDriver = (port: number): Promise<void> => {
   let socket: net.Socket;
@@ -47,7 +47,7 @@ const connectToChromeDriver = (port: number): Promise<void> => {
 
 describe('@axe-core/webdriverio', () => {
   let port: number;
-  for (const protocol of ['devtools', 'webdriver']) {
+  for (const protocol of ['devtools', 'webdriver'] as const) {
     if (protocol === 'webdriver') {
       port = 9515;
       before(async () => {
@@ -64,7 +64,7 @@ describe('@axe-core/webdriverio', () => {
     describe('WebdriverIO Async', () => {
       let server: Server;
       let addr: string;
-      let client: webdriverio.BrowserObject;
+      let client: WdioBrowser;
       const axePath = require.resolve('axe-core');
       const axeSource = fs.readFileSync(axePath, 'utf8');
       const axeTestFixtures = path.resolve(
@@ -158,7 +158,7 @@ describe('@axe-core/webdriverio', () => {
             });
 
             it('throws if axe errors out on the top window', async () => {
-              let error: Error | null = null;
+              let error: unknown = null;
               await client.url(`${addr}/crash.html`);
               try {
                 await new AxeBuilder({
@@ -371,7 +371,7 @@ describe('@axe-core/webdriverio', () => {
           });
 
           it('throws if axe errors out on the top window', async () => {
-            let error: Error | null = null;
+            let error: unknown = null;
             await client.url(`${addr}/crash.html`);
             try {
               await new AxeBuilder({
@@ -385,7 +385,7 @@ describe('@axe-core/webdriverio', () => {
           });
 
           it('throws when injecting a problematic source', async () => {
-            let error: Error | null = null;
+            let error: unknown = null;
             await client.url(`${addr}/crash-me.html`);
             try {
               await new AxeBuilder({
@@ -399,7 +399,7 @@ describe('@axe-core/webdriverio', () => {
           });
 
           it('throws when a setup fails', async () => {
-            let error: Error | null = null;
+            let error: unknown = null;
 
             const brokenSource = axeSource + `;window.axe.utils = {};`;
             await client.url(`${addr}/index.html`);
@@ -415,7 +415,7 @@ describe('@axe-core/webdriverio', () => {
           });
 
           it('properly isolates the call to axe.finishRun', async () => {
-            let error: Error | null = null;
+            let error: unknown = null;
 
             await client.url(`${addr}/isolated-finish.html`);
             try {
@@ -729,28 +729,26 @@ describe('@axe-core/webdriverio', () => {
 
         describe('logOrRethrowError', () => {
           it('log a StaleElementReference Error with `seleniumStack`', () => {
-            const error = {
-              seleniumStack: {
-                type: 'StaleElementReference'
-              }
+            const error = new Error('Selenium Error');
+            error.seleniumStack = {
+              type: 'StaleElementReference'
             };
             assert.doesNotThrow(() => logOrRethrowError(error as any));
           });
 
           it('log a `stale element reference` Error', () => {
-            const error = {
-              name: 'stale element reference',
-              message: 'foobar'
-            };
+            const error = new Error('foobar');
+            error.name = 'stale element reference';
             assert.doesNotThrow(() => logOrRethrowError(error));
           });
 
           it('throws errors that are not StaleElementReferenceErrors', () => {
-            const error = {
-              name: 'foo',
-              message: 'bar'
-            };
+            const error = new Error('foo');
             assert.throws(() => logOrRethrowError(error));
+          });
+
+          it('throws if non-Error content is passed', () => {
+            assert.throws(() => logOrRethrowError('error'));
           });
         });
 
@@ -856,7 +854,7 @@ describe('@axe-core/webdriverio', () => {
 
         describe('include/exclude', () => {
           it('with include and exclude', async () => {
-            let error: Error | null = null;
+            let error: unknown = null;
             await client.url(`${addr}/nested-iframes.html`);
             const builder = new AxeBuilder({ client })
               .include('#ifr-foo')
@@ -872,7 +870,7 @@ describe('@axe-core/webdriverio', () => {
           });
 
           it('with only include', async () => {
-            let error: Error | null = null;
+            let error: unknown = null;
             await client.url(`${addr}/nested-iframes.html`);
             const builder = new AxeBuilder({ client }).include('#ifr-foo');
 
@@ -886,7 +884,7 @@ describe('@axe-core/webdriverio', () => {
           });
 
           it('wth only exclude', async () => {
-            let error: Error | null = null;
+            let error: unknown = null;
             await client.url(`${addr}/nested-iframes.html`);
             const builder = new AxeBuilder({ client }).exclude('#ifr-bar');
 
@@ -1048,19 +1046,19 @@ describe('@axe-core/webdriverio', () => {
 
     afterEach(function (done) {
       remote
-        .then((client: wdio.BrowserObject) =>
+        .then((client: WdioBrowser) =>
           sync(() => {
             client.deleteSession();
             server.close();
           })
         )
         .then(() => done())
-        .catch((e: Error) => done(e));
+        .catch((e: unknown) => done(e));
     });
 
     it('analyze', function (done) {
       remote
-        .then((client: wdio.BrowserObject) =>
+        .then((client: WdioBrowser) =>
           sync(() => {
             client.url(`${addr}/index.html`);
             assert.isTrue(client.isDevTools);
@@ -1074,7 +1072,7 @@ describe('@axe-core/webdriverio', () => {
           })
         )
         .then(() => done())
-        .catch((e: Error) => done(e));
+        .catch((e: unknown) => done(e));
     });
   });
 });
