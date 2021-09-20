@@ -1,14 +1,10 @@
 import type { WebDriver, WebElement } from 'selenium-webdriver';
 import { error } from 'selenium-webdriver';
 import { source } from 'axe-core';
-import type {
-  AxeInjectorParams,
-  BuilderOptions,
-  InjectCallback
-} from './types';
+import type { AxeInjectorParams, BuilderOptions } from './types';
 const { StaleElementReferenceError } = error;
 
-export default class AxeInjector {
+export default class AxeInjectorLegacy {
   private driver: WebDriver;
   private axeSource: string;
   private options: BuilderOptions;
@@ -75,8 +71,7 @@ export default class AxeInjector {
     return `
     ${this.axeSource}
     ${this.config ? `axe.configure(${this.config})` : ''}
-    axe.configure({ 
-      allowedOrigins: ['<unsafe_all_origins>'], 
+    axe.configure({
       branding: { application: 'webdriverjs' }
     })
     `;
@@ -162,8 +157,7 @@ export default class AxeInjector {
    * Injects into all frames
    * @returns {Promise<void>}
    */
-
-  private async injectIntoAllFrames(): Promise<void> {
+  public async injectIntoAllFrames(): Promise<void> {
     // Ensure we're "starting" our loop at the top-most frame
     await this.driver.switchTo().defaultContent();
 
@@ -172,6 +166,7 @@ export default class AxeInjector {
       // reinject any sandboxed iframes without the sandbox attribute so we can scan
       await this.sandboxBuster();
     }
+
     // Inject the script into the top-level
     // XXX: if this `executeScript` fails, we *want* to error, as we cannot run axe-core.
     await this.driver.executeScript(this.script);
@@ -192,22 +187,5 @@ export default class AxeInjector {
 
     // Move back to the top-most frame
     return this.driver.switchTo().defaultContent();
-  }
-
-  /**
-   * Inject axe and invoke provided callback when complete
-   * @param {InjectCallback} callback
-   * @returns {void}
-   */
-
-  public inject(callback: InjectCallback): void {
-    this.injectIntoAllFrames()
-      .then(() => callback())
-      .catch(e => {
-        if (this.options.logIframeErrors) {
-          return callback();
-        }
-        callback(e);
-      });
   }
 }

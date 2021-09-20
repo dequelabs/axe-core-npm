@@ -1,28 +1,20 @@
-import type { ElementContext } from 'axe-core';
+import type { ContextObject } from 'axe-core';
 
 /**
  * Get running context
- * @param {Array} include
- * @param {Array} exclude
- * @returns {(ElementContext | null)}
  */
-
 export const normalizeContext = (
   include: string[],
   exclude: string[]
-): ElementContext | null => {
+): ContextObject => {
   if (!exclude.length) {
     if (!include.length) {
-      return null;
+      return { exclude: [] };
     }
-    return {
-      include
-    };
+    return { include };
   }
   if (!include.length) {
-    return {
-      exclude
-    };
+    return { exclude };
   }
   return {
     include,

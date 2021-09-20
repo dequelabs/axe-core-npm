@@ -1,36 +1,14 @@
+import type { Browser, MultiRemoteBrowser, Element } from 'webdriverio';
 import type { AxeResults, ElementContext, RunOptions, Spec } from 'axe-core';
 import * as axe from 'axe-core';
-import {
-  BrowserObject as BrowserObjectSync,
-  Element as ElementSync,
-  MultiRemoteBrowserObject as MultiRemoteBrowserObjectSync
-} from '@wdio/sync';
-import {
-  BrowserObject as BrowserObjectAsync,
-  MultiRemoteBrowserObject as MultiRemoteBrowserObjectAsync,
-  Element as ElementAsync
-} from 'webdriverio';
 
-export type BrowserObject =
-  | BrowserObjectAsync
-  | BrowserObjectSync
-  | MultiRemoteBrowserObjectAsync
-  | MultiRemoteBrowserObjectSync;
+export type WdioBrowser =
+  | Browser<'async'>
+  | Browser<'sync'>
+  | MultiRemoteBrowser<'async'>
+  | MultiRemoteBrowser<'sync'>;
 
-export type Element = ElementAsync | ElementSync;
-
-export interface AnalyzePageParams {
-  context: ElementContext | null;
-  options: RunOptions | null;
-  config: Spec | null;
-}
-
-export interface AnalyzePageResponse {
-  results: AxeResults | null;
-  error: Error | string | null;
-}
-
-export type DoneFunction = ({ error, results }: AnalyzePageResponse) => void;
+export type WdioElement = Element<'async'> | Element<'sync'>;
 
 export type CallbackFunction = (
   error: string | null,
@@ -38,7 +16,8 @@ export type CallbackFunction = (
 ) => void;
 
 export interface Options {
-  client: BrowserObject;
+  client: WdioBrowser;
+  axeSource?: string;
 }
 
 declare global {
@@ -51,3 +30,5 @@ declare global {
     };
   }
 }
+
+export type PartialResults = Parameters<typeof axe.finishRun>[0];

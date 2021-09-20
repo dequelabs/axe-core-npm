@@ -17,14 +17,12 @@ const startDriver = async (
 
     let options = new chrome.Options().headless();
     if (config.chromeOptions?.length) {
-      options = config.chromeOptions.reduce(function(options, arg) {
+      options = config.chromeOptions.reduce(function (options, arg) {
         return options.addArguments(arg);
-      }, options );
+      }, options);
     }
 
-    builder = new Builder()
-      .forBrowser('chrome')
-      .setChromeOptions(options);
+    builder = new Builder().forBrowser('chrome').setChromeOptions(options);
   } else {
     builder = new Builder().forBrowser(config.browser);
   }

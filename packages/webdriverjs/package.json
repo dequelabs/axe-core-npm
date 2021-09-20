@@ -1,6 +1,6 @@
 {
   "name": "@axe-core/webdriverjs",
-  "version": "4.2.2",
+  "version": "4.3.0",
   "description": "Provides a method to inject and analyze web pages using axe",
   "contributors": [
     {
@@ -27,13 +27,17 @@
       "name": "Michael Siek (me@michaelsiek.com)"
     }
   ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/dequelabs/axe-core-npm.git"
+  },
   "license": "MPL-2.0",
   "main": "dist/index.js",
   "typings": "dist/index.d.ts",
   "scripts": {
     "prebuild": "rimraf dist",
     "build": "tsc",
-    "test": "mocha --timeout 60000 -r ts-node/register 'src/test/test.ts'",
+    "test": "mocha --timeout 10000 -r ts-node/register './tests/**/*.spec.ts'",
     "coverage": "nyc npm run test",
     "prepare": "npm run build"
   },
@@ -50,33 +54,34 @@
     "webdriverjs"
   ],
   "devDependencies": {
-    "@types/chai": "^4.2.15",
+    "@types/chai": "^4.2.21",
     "@types/chromedriver": "^81.0.0",
-    "@types/express": "^4.17.11",
+    "@types/express": "^4.17.13",
     "@types/http-server": "^0.10.1",
-    "@types/mocha": "^8.2.0",
-    "@types/node": "^14.14.26",
-    "@types/selenium-webdriver": "^4.0.11",
+    "@types/mocha": "^8.2.3",
+    "@types/node": "^14.17.9",
+    "@types/selenium-webdriver": "^4.0.15",
     "@types/sinon": "^9.0.10",
     "@types/test-listen": "^1.1.0",
+    "axe-test-fixtures": "github:dequelabs/axe-test-fixtures#v1",
     "chai": "^4.3.0",
     "chaimocha": "^1.10.0",
-    "chromedriver": "^90.0.0",
+    "chromedriver": "^93.0.1",
     "delay": "^5.0.0",
     "express": "^4.17.1",
     "http-server": "^0.12.3",
     "is-ci": "^3.0.0",
-    "mocha": "^8.3.0",
+    "mocha": "^8.4.0",
     "nyc": "^15.1.0",
     "rimraf": "^3.0.2",
-    "selenium-webdriver": "^4.0.0-beta.3",
+    "selenium-webdriver": "^4.0.0-beta.4",
     "sinon": "^9.2.4",
     "test-listen": "^1.1.0",
     "ts-node": "^9.1.1",
-    "typescript": "^4.1.5"
+    "typescript": "^4.3.5"
   },
   "dependencies": {
-    "axe-core": "^4.2.3"
+    "axe-core": "^4.3.3"
   },
   "peerDependencies": {
     "selenium-webdriver": ">3.0.0-beta  || >=2.53.1 || >4.0.0-alpha"
@@ -95,9 +100,9 @@
     "sourceMap": true,
     "instrument": true,
     "checkCoverage": true,
-    "statements": 100,
-    "branches": 100,
-    "functions": 100,
-    "lines": 100
+    "statements": 85,
+    "branches": 85,
+    "functions": 85,
+    "lines": 85
   }
 }

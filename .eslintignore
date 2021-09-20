@@ -1,2 +1,4 @@
 packages/cli/src/testutils/*
 packages/cli/src/**/**/*.test.ts
+**/dist/*
+**/fixtures/external/*

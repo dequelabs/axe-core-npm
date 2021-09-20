@@ -1,163 +1,94 @@
-import * as Axe from 'axe-core';
-import { ElementHandle, Frame, JSONObject, Page } from 'puppeteer';
-import { pageIsLoaded, runAxe, configureAxe } from './browser';
-import { AnalyzeCB } from './types';
-
-function arrayify<T>(src: T | T[]): T[] {
-  if (!Array.isArray(src)) {
-    return [src];
-  }
-  return src;
-}
-
-interface IInjectAxeArgs {
-  source?: string | Function;
-  selector: string;
-  logOnError?: boolean;
-  args?: any[];
-}
-
-function injectJSModule(frame: Frame): Promise<ElementHandle<Element> | void> {
-  return frame
-    .addScriptTag({
-      path: require.resolve('axe-core')
-    })
-    .then(() => undefined);
-}
-
-function injectJSSource(
-  frame: Frame,
-  source: string | Function,
-  args: any[] = []
-): Promise<void> {
-  return frame.evaluate(source as any, ...args);
-}
-
-async function injectJS(
-  frame: Frame | undefined,
-  { source, selector, logOnError, args }: IInjectAxeArgs
-): Promise<void> {
-  if (!frame) {
-    return;
-  }
-  const frames = await frame.$$(selector);
-  const injections = [];
-  for (const frameElement of frames) {
-    const subFrame = await frameElement.contentFrame();
-    const p = injectJS(subFrame as Frame, {
-      source,
-      selector,
-      args,
-      logOnError: true
-    });
-    injections.push(p);
-  }
-
-  const reportError = (): void => {
-    // tslint:disable-next-line:no-console
-    console.error(`Failed to inject axe-core into frame (${frame.url()})`);
-  };
-
-  let injectP: Promise<ElementHandle<Element> | void>;
-  if (!source) {
-    injectP = injectJSModule(frame);
-  } else {
-    injectP = injectJSSource(frame, source, args);
-  }
-
-  if (logOnError) {
-    // Just print diagnostic if a child frame fails to load.
-    // Don't fully error since we aren't the top-level frame
-    injectP = injectP.catch(reportError);
-  }
-
-  injections.push(injectP);
-  // Fix return type since we don't care about the value
-  return Promise.all(injections).then(() => undefined);
-}
-
-function isPage(pageFrame: Page | Frame): pageFrame is Page {
-  return (pageFrame as any).mainFrame !== undefined;
-}
-
-function getFrame(pageFrame: Page | Frame): Frame {
-  if (isPage(pageFrame)) {
-    return pageFrame.mainFrame();
-  }
-  return pageFrame;
-}
-
-async function ensureFrameReady(frame: Frame): Promise<void> {
-  // Wait so that we know there is an execution context.
-  // Assume that if we have an html node we have an execution context.
-  await frame.waitForSelector('html');
-
-  // Check if the page is loaded.
-  const pageReady = await frame.evaluate(pageIsLoaded);
-
-  if (!pageReady) {
-    throw new Error('Page/Frame is not ready');
-  }
-}
-
-function normalizeContext(
-  includes: string[][],
-  excludes: string[][]
-): Axe.ElementContext | null {
-  if (!excludes.length && !includes.length) {
-    return null;
-  }
-
-  const ctx: Axe.ElementContext = {};
-  if (excludes.length) {
-    ctx.exclude = excludes;
-  }
-  if (includes.length) {
-    ctx.include = includes;
-  }
-
-  return ctx;
-}
+import assert from 'assert';
+import { RunOptions, ContextObject, Spec, AxeResults } from 'axe-core';
+import { Frame, JSONArray, JSONObject, Page } from 'puppeteer';
+import {
+  axeGetFrameContext,
+  axeRunPartial,
+  axeFinishRun,
+  axeConfigure,
+  axeRunLegacy,
+  axeRunPartialSupport
+} from './browser';
+import { AnalyzeCB, PartialResults } from './types';
+import { iframeSelector, injectJS } from './legacy';
+import { AxePartialRunner } from './axePartialRunner';
+import {
+  arrayify,
+  getChildFrame,
+  normalizeContext,
+  frameSourceInject
+} from './utils';
 
 export class AxePuppeteer {
   private frame: Frame;
-  private source?: string;
+  private axeSource?: string;
   private includes: string[][];
   private excludes: string[][];
-  private axeOptions: Axe.RunOptions | null;
-  private config: Axe.Spec | null;
+  private axeOptions: RunOptions;
+  private config: Spec | null;
   private disabledFrameSelectors: string[];
+  private page: Page | undefined;
+  private legacyMode = false;
 
   constructor(pageFrame: Page | Frame, source?: string) {
-    this.frame = getFrame(pageFrame);
-    this.source = source;
+    if ('mainFrame' in pageFrame) {
+      if ('browser' in pageFrame) {
+        this.page = pageFrame;
+      } else {
+        console.warn(
+          'AxePuppeteer support for Puppeteer <= 3.0.3 is deprecated'
+        );
+      }
+      this.frame = pageFrame.mainFrame();
+    } else {
+      console.warn(
+        'AxePuppeteer construction with Frame objects is deprecated.'
+      );
+      this.frame = pageFrame;
+    }
+
+    this.axeSource = source;
     this.includes = [];
     this.excludes = [];
-    this.axeOptions = null;
+    this.axeOptions = {};
     this.config = null;
     this.disabledFrameSelectors = [];
   }
 
+  /**
+   * Selector to include in analysis.
+   * This may be called any number of times.
+   */
   public include(selector: string | string[]): this {
     selector = arrayify(selector);
     this.includes.push(selector);
     return this;
   }
 
+  /**
+   * Selector to exclude in analysis.
+   * This may be called any number of times.
+   */
   public exclude(selector: string | string[]): this {
     selector = arrayify(selector);
     this.excludes.push(selector);
     return this;
   }
 
-  public options(options: Axe.RunOptions): this {
+  /**
+   * Set options to be passed into axe-core
+   */
+  public options(options: RunOptions): this {
     this.axeOptions = options;
     return this;
   }
 
+  /**
+   * Limit analysis to only the specified rules.
+   * Cannot be used with `AxeBuilder#withTags`
+   */
   public withRules(rules: string | string[]): this {
     rules = arrayify(rules);
-
     if (!this.axeOptions) {
       this.axeOptions = {};
     }
@@ -170,9 +101,12 @@ export class AxePuppeteer {
     return this;
   }
 
+  /**
+   * Limit analysis to only specified tags.
+   * Cannot be used with `AxeBuilder#withRules`
+   */
   public withTags(tags: string | string[]): this {
     tags = arrayify(tags);
-
     if (!this.axeOptions) {
       this.axeOptions = {};
     }
@@ -185,13 +119,11 @@ export class AxePuppeteer {
     return this;
   }
 
+  /**
+   * Set the list of rules to skip when running an analysis.
+   */
   public disableRules(rules: string | string[]): this {
     rules = arrayify(rules);
-
-    if (!this.axeOptions) {
-      this.axeOptions = {};
-    }
-
     interface IRulesObj {
       [id: string]: {
         enabled: boolean;
@@ -204,55 +136,54 @@ export class AxePuppeteer {
       };
     }
     this.axeOptions.rules = newRules;
-
     return this;
   }
 
-  public configure(config: Axe.Spec): this {
-    // Cast to any because we are asserting for javascript provided argument.
-    if (typeof (config as any) !== 'object') {
-      throw new Error(
-        'AxePuppeteer needs an object to configure. See axe-core configure API.'
-      );
-    }
-
+  /**
+   * Set configuration for `axe-core`.
+   * This value is passed directly to `axe.configure()`
+   */
+  public configure(config: Spec): this {
+    assert(
+      typeof config === 'object',
+      'AxePuppeteer needs an object to configure. See axe-core configure API.'
+    );
     this.config = config;
     return this;
   }
 
+  /**
+   * Exclude specific frames from a test
+   */
   public disableFrame(selector: string): this {
     this.disabledFrameSelectors.push(selector);
     return this;
   }
 
-  public async analyze(): Promise<Axe.AxeResults>;
+  /**
+   * Use frameMessenger with <same_origin_only>
+   *
+   * This disables use of axe.runPartial() which is called in each frame, and
+   * axe.finishRun() which is called in a blank page. This uses axe.run() instead,
+   * but with the restriction that cross-origin frames will not be tested.
+   */
+  public setLegacyMode(legacyMode = true): this {
+    this.legacyMode = legacyMode;
+    return this;
+  }
+
+  /**
+   * Perform analysis and retrieve results. *Does not chain.*
+   */
+  public async analyze(): Promise<AxeResults>;
   public async analyze<T extends AnalyzeCB>(
     callback?: T
-  ): Promise<Axe.AxeResults | null>;
+  ): Promise<AxeResults | null>;
   public async analyze<T extends AnalyzeCB>(
     callback?: T
-  ): Promise<Axe.AxeResults | null> {
+  ): Promise<AxeResults | null> {
     try {
-      await ensureFrameReady(this.frame);
-
-      await injectJS(this.frame, {
-        source: this.source,
-        selector: this.iframeSelector()
-      });
-
-      await injectJS(this.frame, {
-        source: configureAxe,
-        selector: this.iframeSelector(),
-        args: [this.config]
-      });
-
-      const context = normalizeContext(this.includes, this.excludes);
-      const axeResults = await this.frame.evaluate(
-        runAxe,
-        context as JSONObject,
-        this.axeOptions as JSONObject
-      );
-
+      const axeResults = await this.analyzePromise();
       if (callback) {
         callback(null, axeResults);
       }
@@ -266,11 +197,111 @@ export class AxePuppeteer {
     }
   }
 
-  private iframeSelector(): string {
-    let selector = 'iframe';
-    for (const disabledFrameSelector of this.disabledFrameSelectors) {
-      selector += `:not(${disabledFrameSelector})`;
+  private async analyzePromise(): Promise<AxeResults> {
+    const { frame, axeSource, config } = this;
+    const context = normalizeContext(
+      this.includes,
+      this.excludes,
+      this.disabledFrameSelectors
+    );
+    await frameSourceInject(frame, axeSource, config);
+
+    const runPartialSupported = await frame.evaluate(axeRunPartialSupport);
+    if (
+      runPartialSupported !== true ||
+      this.page === undefined ||
+      this.legacyMode
+    ) {
+      return this.runLegacy(context);
     }
-    return selector;
+    const partialRunner = await this.runPartialRecursive(frame, context);
+    const partials = await partialRunner.getPartials();
+
+    try {
+      return await this.finishRun(partials);
+    } catch (error) {
+      throw new Error(
+        `${error.message}\n Please check out https://github.com/dequelabs/axe-core-npm/blob/develop/packages/puppeteer/error-handling.md`
+      );
+    }
+  }
+
+  private async runPartialRecursive(
+    frame: Frame,
+    context: ContextObject
+  ): Promise<AxePartialRunner> {
+    // IMPORTANT: axeGetFrameContext MUST be called before axeRunPartial
+    const frameContexts = await frame.evaluate(axeGetFrameContext, context);
+
+    // Start testing the parent frame - don't await, so runs are in parallel
+    const options = this.axeOptions as JSONObject;
+    const partialPromise = frame.evaluate(axeRunPartial, context, options);
+    const initiator = frame === this.frame;
+    const axePartialRunner = new AxePartialRunner(partialPromise, initiator);
+
+    // Recursively start testing child frames
+    for (const { frameSelector, frameContext } of frameContexts) {
+      try {
+        let childResults: AxePartialRunner | null = null;
+        const childFrame = await getChildFrame(frame, frameSelector);
+        if (childFrame) {
+          await frameSourceInject(childFrame, this.axeSource, this.config);
+          childResults = await this.runPartialRecursive(
+            childFrame,
+            frameContext
+          );
+        }
+        axePartialRunner.addChildResults(childResults);
+      } catch {
+        axePartialRunner.addChildResults(null);
+      }
+    }
+    return axePartialRunner;
+  }
+
+  private async finishRun(partialResults: PartialResults): Promise<AxeResults> {
+    const { axeOptions, axeSource, config, page } = this;
+    assert(page, 'Running AxePuppeteer with a frame object is deprecated');
+
+    const browser = page.browser();
+    const blankPage = await browser.newPage();
+
+    assert(
+      blankPage,
+      'Please make sure that you have popup blockers disabled.'
+    );
+
+    await frameSourceInject(blankPage.mainFrame(), axeSource, config);
+    return await blankPage
+      .evaluate(
+        axeFinishRun,
+        partialResults as JSONArray,
+        axeOptions as JSONObject
+      )
+      .finally(() => {
+        blankPage.close();
+      });
+  }
+
+  private async runLegacy(context: ContextObject): Promise<AxeResults> {
+    const options = this.axeOptions as JSONObject;
+    const selector = iframeSelector(this.disabledFrameSelectors);
+    const source = this.axeSource;
+    let config = this.config;
+
+    if (!this.legacyMode) {
+      config = {
+        ...(config || {}),
+        allowedOrigins: ['<unsafe_all_origins>']
+      };
+    }
+
+    await injectJS(this.frame, { source, selector });
+    await injectJS(this.frame, {
+      source: axeConfigure,
+      selector,
+      args: [config]
+    });
+    return this.frame.evaluate(axeRunLegacy, context, options);
   }
 }

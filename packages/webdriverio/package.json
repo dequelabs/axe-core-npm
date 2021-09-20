@@ -1,12 +1,16 @@
 {
   "name": "@axe-core/webdriverio",
-  "version": "4.2.2",
+  "version": "4.3.0",
   "description": "Provides a method to inject and analyze web pages using axe",
   "contributors": [
     {
       "name": "Michael Siek (me@michaelsiek.com)"
     }
   ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/dequelabs/axe-core-npm.git"
+  },
   "license": "MPL-2.0",
   "main": "dist/index.js",
   "typings": "dist/index.d.ts",
@@ -29,38 +33,35 @@
     "webdriverio"
   ],
   "dependencies": {
-    "axe-core": "^4.2.3",
+    "axe-core": "^4.3.3",
     "cssesc": "^3.0.0"
   },
   "devDependencies": {
-    "@types/chai": "^4.2.15",
+    "@types/chai": "^4.2.21",
     "@types/chromedriver": "^81.0.0",
     "@types/cssesc": "^3.0.0",
-    "@types/express": "^4.17.11",
-    "@types/is-ci": "^2.0.0",
-    "@types/mocha": "^8.2.0",
-    "@types/node": "^14.14.25",
-    "@types/sinon": "^9.0.10",
+    "@types/express": "^4.17.13",
+    "@types/mocha": "^8.2.3",
+    "@types/node": "^14.17.9",
     "@types/test-listen": "^1.1.0",
-    "@wdio/sync": "^6.11.0",
+    "@wdio/sync": "^7.12.4",
+    "axe-test-fixtures": "github:dequelabs/axe-test-fixtures#v1",
     "chai": "^4.3.0",
-    "chromedriver": "^90.0.0",
+    "chromedriver": "^93.0.1",
     "delay": "^5.0.0",
     "express": "^4.17.1",
-    "is-ci": "^2.0.0",
-    "mocha": "^8.2.1",
+    "mocha": "^8.4.0",
     "nyc": "^15.1.0",
     "rimraf": "^3.0.2",
-    "sinon": "^9.2.4",
     "source-map-support": "^0.5.19",
     "test-listen": "^1.1.0",
     "ts-node": "^9.1.1",
     "tsc-silent": "^1.2.1",
-    "typescript": "^4.1.4",
-    "webdriverio": "^6.12.1"
+    "typescript": "^4.3.5",
+    "webdriverio": "^7.12.4"
   },
   "peerDependencies": {
-    "webdriverio": "^6.0.0 || ^5.0.0"
+    "webdriverio": "^7.0.0 || ^6.0.0 || ^5.0.0"
   },
   "nyc": {
     "include": [
@@ -76,9 +77,9 @@
     "sourceMap": true,
     "instrument": true,
     "checkCoverage": true,
-    "statements": 100,
-    "branches": 90,
-    "functions": 100,
-    "lines": 100
+    "statements": 85,
+    "branches": 85,
+    "functions": 85,
+    "lines": 85
   }
 }
