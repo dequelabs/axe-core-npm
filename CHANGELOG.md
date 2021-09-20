@@ -3,6 +3,36 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [4.3.0](https://github.com/dequelabs/axe-core-npm/compare/v4.2.0...v4.3.0) (2021-09-20)
+
+### Bug Fixes
+
+- **cli:** add timeout waiting for page to be ready ([#250](https://github.com/dequelabs/axe-core-npm/issues/250)) ([cbb795f](https://github.com/dequelabs/axe-core-npm/commit/cbb795f1a92c419794a5f1f9645e28493d7c9bdb))
+- **playwright:** Make package public ([#264](https://github.com/dequelabs/axe-core-npm/issues/264)) ([35074ba](https://github.com/dequelabs/axe-core-npm/commit/35074baaebe68244ab86ece9f1580ad65975d119))
+- **types:** return `this` rather than the class ([#360](https://github.com/dequelabs/axe-core-npm/issues/360)) ([7999891](https://github.com/dequelabs/axe-core-npm/commit/7999891e9cf48a27ee053e702667b55344714896))
+- **webdriverio:** use `executeAsync()` vs `execute()` ([#346](https://github.com/dequelabs/axe-core-npm/issues/346)) ([0e4aa3a](https://github.com/dequelabs/axe-core-npm/commit/0e4aa3ab6f26a48b70cabb7a5bd476e62658c951))
+- **webdriverjs:** resolve promise ([#347](https://github.com/dequelabs/axe-core-npm/issues/347)) ([d1548a5](https://github.com/dequelabs/axe-core-npm/commit/d1548a5ad8c31262a655b7ba1e4fe5b7da888417))
+- pass chrome options to `chromeOptions.addArguments()` ([#262](https://github.com/dequelabs/axe-core-npm/issues/262)) ([715f463](https://github.com/dequelabs/axe-core-npm/commit/715f463c1324d11cafec4a357ee55f446584cd1c))
+- selenium-webdriverjs peer dependency to allow newer versions ([#258](https://github.com/dequelabs/axe-core-npm/issues/258)) ([2dc2788](https://github.com/dequelabs/axe-core-npm/commit/2dc27883aa4aa40e64766b0bc60191cb1a4f8963))
+- update axe-core to 4.2.1 ([#254](https://github.com/dequelabs/axe-core-npm/issues/254)) ([9d90185](https://github.com/dequelabs/axe-core-npm/commit/9d9018525a4d799f6d763d0329f05ccbfd20dbe4))
+
+### Features
+
+- **wdio:** Upgrade to support, and use types of v7 ([#364](https://github.com/dequelabs/axe-core-npm/issues/364)) ([734e7bd](https://github.com/dequelabs/axe-core-npm/commit/734e7bd73e48902be0af26adc5a09f079190ce7f))
+- Add .setLegacyMode ([#356](https://github.com/dequelabs/axe-core-npm/issues/356)) ([f9d021b](https://github.com/dequelabs/axe-core-npm/commit/f9d021b49487e2a0f804f61e9b6e09a26b69a6e4))
+- **playwright:** add playwright integration ([#245](https://github.com/dequelabs/axe-core-npm/issues/245)) ([fec4ada](https://github.com/dequelabs/axe-core-npm/commit/fec4adae9bb9d7971c7d63d6c9f9839b4bd535d8))
+- **playwright:** allow `AxeBuilder` to use different version of axe-core ([#335](https://github.com/dequelabs/axe-core-npm/issues/335)) ([f803c98](https://github.com/dequelabs/axe-core-npm/commit/f803c98dc9110d6abe34e7746a076e12f3b6fe45))
+- **playwright:** Upgrade to axe-core@4.3.2 ([#334](https://github.com/dequelabs/axe-core-npm/issues/334)) ([b94c75a](https://github.com/dequelabs/axe-core-npm/commit/b94c75a45ae049b1bb5acb6a7e1dc4c094753e05))
+- **puppeteer:** Deprecate Frame constructors & Puppeteer < 3.0.3 ([#339](https://github.com/dequelabs/axe-core-npm/issues/339)) ([1ea3047](https://github.com/dequelabs/axe-core-npm/commit/1ea3047a2953c76aedf7fd94923a88631c77a32f))
+- **puppeteer:** Upgrade to axe-core 4.3 ([#327](https://github.com/dequelabs/axe-core-npm/issues/327)) ([3c9aff1](https://github.com/dequelabs/axe-core-npm/commit/3c9aff1c64f22b17771aa6dd04ed5922f203c094))
+- **react:** Add configuration option to optional disable cache (deduplication) ([#309](https://github.com/dequelabs/axe-core-npm/issues/309)) ([435811c](https://github.com/dequelabs/axe-core-npm/commit/435811cb3957cf84b1c1701f6de5c4eb740c8301))
+- **react:** Add support for custom logger ([#181](https://github.com/dequelabs/axe-core-npm/issues/181)) ([1f97433](https://github.com/dequelabs/axe-core-npm/commit/1f974338280460715e7b92d58279c3f18fa563f8))
+- **webdriverio:** allow `AxeBuilder` to use different version of axe-core ([#333](https://github.com/dequelabs/axe-core-npm/issues/333)) ([25a8c1b](https://github.com/dequelabs/axe-core-npm/commit/25a8c1bae945b24661ac456d917ad76d22789e82))
+- **webdriverio:** Upgrade to axe-core@4.3.3 ([#331](https://github.com/dequelabs/axe-core-npm/issues/331)) ([2135347](https://github.com/dequelabs/axe-core-npm/commit/21353478bb4fb75688ffcfcd3a8a0e7198a8f0d3))
+- **webdriverjs:** upgrade to axe-core 4.3 ([#312](https://github.com/dequelabs/axe-core-npm/issues/312)) ([b416e74](https://github.com/dequelabs/axe-core-npm/commit/b416e74fb56526021b010996c0e1382269627efa))
+- update `axe-core@4.2.2` ([#263](https://github.com/dequelabs/axe-core-npm/issues/263)) ([8c609e1](https://github.com/dequelabs/axe-core-npm/commit/8c609e1e3580a63f8697ca94e146b0e2ed28e579))
+- update to use `axe-core@4.2.3` ([#280](https://github.com/dequelabs/axe-core-npm/issues/280)) ([8aebba5](https://github.com/dequelabs/axe-core-npm/commit/8aebba5c6069ca047f649446e072259c069c9a22))
+
 ## [4.2.2](https://github.com/dequelabs/axe-core-npm/compare/v4.2.0...v4.2.2) (2021-06-23)
 
 ### Bug Fixes

@@ -3,6 +3,23 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [4.3.0](https://github.com/dequelabs/axe-core-npm/compare/v4.2.0...v4.3.0) (2021-09-20)
+
+### Bug Fixes
+
+- **types:** return `this` rather than the class ([#360](https://github.com/dequelabs/axe-core-npm/issues/360)) ([7999891](https://github.com/dequelabs/axe-core-npm/commit/7999891e9cf48a27ee053e702667b55344714896))
+- **webdriverjs:** resolve promise ([#347](https://github.com/dequelabs/axe-core-npm/issues/347)) ([d1548a5](https://github.com/dequelabs/axe-core-npm/commit/d1548a5ad8c31262a655b7ba1e4fe5b7da888417))
+- selenium-webdriverjs peer dependency to allow newer versions ([#258](https://github.com/dequelabs/axe-core-npm/issues/258)) ([2dc2788](https://github.com/dequelabs/axe-core-npm/commit/2dc27883aa4aa40e64766b0bc60191cb1a4f8963))
+- update axe-core to 4.2.1 ([#254](https://github.com/dequelabs/axe-core-npm/issues/254)) ([9d90185](https://github.com/dequelabs/axe-core-npm/commit/9d9018525a4d799f6d763d0329f05ccbfd20dbe4))
+
+### Features
+
+- Add .setLegacyMode ([#356](https://github.com/dequelabs/axe-core-npm/issues/356)) ([f9d021b](https://github.com/dequelabs/axe-core-npm/commit/f9d021b49487e2a0f804f61e9b6e09a26b69a6e4))
+- **puppeteer:** Upgrade to axe-core 4.3 ([#327](https://github.com/dequelabs/axe-core-npm/issues/327)) ([3c9aff1](https://github.com/dequelabs/axe-core-npm/commit/3c9aff1c64f22b17771aa6dd04ed5922f203c094))
+- **webdriverjs:** upgrade to axe-core 4.3 ([#312](https://github.com/dequelabs/axe-core-npm/issues/312)) ([b416e74](https://github.com/dequelabs/axe-core-npm/commit/b416e74fb56526021b010996c0e1382269627efa))
+- update `axe-core@4.2.2` ([#263](https://github.com/dequelabs/axe-core-npm/issues/263)) ([8c609e1](https://github.com/dequelabs/axe-core-npm/commit/8c609e1e3580a63f8697ca94e146b0e2ed28e579))
+- update to use `axe-core@4.2.3` ([#280](https://github.com/dequelabs/axe-core-npm/issues/280)) ([8aebba5](https://github.com/dequelabs/axe-core-npm/commit/8aebba5c6069ca047f649446e072259c069c9a22))
+
 ## [4.2.2](https://github.com/dequelabs/axe-core-npm/compare/v4.2.0...v4.2.2) (2021-06-23)
 
 ### Bug Fixes
