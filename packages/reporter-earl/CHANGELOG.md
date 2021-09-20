@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [4.3.1](https://github.com/dequelabs/axe-core-npm/compare/v4.3.0...v4.3.1) (2021-09-20)
+
+### Bug Fixes
+
+- **cli,reporter-earl,react:** use correct version of axe-core ([#378](https://github.com/dequelabs/axe-core-npm/issues/378)) ([0c7d050](https://github.com/dequelabs/axe-core-npm/commit/0c7d0506b7d397df3c96414fc37a408e90fe9a9c))
+
 # [4.3.0](https://github.com/dequelabs/axe-core-npm/compare/v4.2.0...v4.3.0) (2021-09-20)
 
 ### Bug Fixes
