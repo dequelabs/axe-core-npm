@@ -1,5 +1,9 @@
 # Contributing
 
+## Contributor License Agreement
+
+In order to contribute, you must accept the [contributor license agreement](https://cla-assistant.io/dequelabs/axe-core-npm) (CLA). Acceptance of this agreement will be checked automatically and pull requests without a CLA cannot be merged.
+
 ## Contribution Guidelines
 
 ### Code Quality

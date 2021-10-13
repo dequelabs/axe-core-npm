@@ -50,3 +50,7 @@ We believe that automated testing has an important role to play in achieving dig
 4. Automated accessibility testing rules must, themselves, be tested automatically
 
 [axe-core]: https://github.com/dequelabs/axe-core
+
+## Contributing
+
+Please see our [contributing guide](https://github.com/dequelabs/axe-core-npm/tree/develop/docs/CONTRIBUTING.md) if you wish to contribute.
