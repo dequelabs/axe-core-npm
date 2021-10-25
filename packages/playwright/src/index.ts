@@ -19,8 +19,8 @@ import AxePartialRunner from './AxePartialRunner';
 
 export default class AxeBuilder {
   private page: Page;
-  private includes: string[][];
-  private excludes: string[][];
+  private includes: string[];
+  private excludes: string[];
   private option: RunOptions;
   private source: string;
   private legacyMode = false;
@@ -42,8 +42,7 @@ export default class AxeBuilder {
    * @returns this
    */
 
-  public include(selector: string | string[]): this {
-    selector = Array.isArray(selector) ? selector : [selector];
+  public include(selector: string): this {
     this.includes.push(selector);
     return this;
   }
@@ -55,8 +54,7 @@ export default class AxeBuilder {
    * @returns this
    */
 
-  public exclude(selector: string | string[]): this {
-    selector = Array.isArray(selector) ? selector : [selector];
+  public exclude(selector: string): this {
     this.excludes.push(selector);
     return this;
   }
