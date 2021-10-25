@@ -13,14 +13,15 @@ export const normalizeContext = (
   excludes: string[][]
 ): ContextObject => {
   const base: ContextObject = {
+    include: [],
     exclude: []
   };
   if (excludes.length && Array.isArray(base.exclude)) {
     base.exclude.push(...excludes);
   }
 
-  if (includes.length) {
-    base.include = includes;
+  if (includes.length && Array.isArray(base.include)) {
+    base.include.push(...includes);
   }
   return base;
 };

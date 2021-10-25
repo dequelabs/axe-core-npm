@@ -431,7 +431,7 @@ describe('@axe-core/playwright', () => {
     it('with multiple excludes', async () => {
       await page.goto(`${addr}/context.html`);
       const results = await new AxeBuilder({ page })
-        .exclude(['.exclude'])
+        .exclude('.exclude')
         .exclude('.exclude2')
         .analyze();
       const flattenTarget = flatPassesTargets(results);
