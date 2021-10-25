@@ -9,8 +9,8 @@ import type { AnalyzePageParams, AnalyzePageResponse } from './types';
  */
 
 export const normalizeContext = (
-  includes: string[][],
-  excludes: string[][]
+  includes: string[],
+  excludes: string[]
 ): ContextObject => {
   const base: ContextObject = {
     exclude: []
