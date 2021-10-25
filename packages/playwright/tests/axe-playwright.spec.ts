@@ -413,6 +413,48 @@ describe('@axe-core/playwright', () => {
 
       assert.notInclude(flattenTarget, '.exclude');
     });
+
+    it('with multiple includes', async () => {
+      await page.goto(`${addr}/context.html`);
+      const results = await new AxeBuilder({ page })
+        .include('.include')
+        .include('.include2')
+        .analyze();
+      const flattenTarget = flatPassesTargets(results);
+
+      assert.strictEqual(flattenTarget[0], '.include');
+      assert.strictEqual(flattenTarget[1], '.include2');
+      assert.notInclude(flattenTarget, '.exclude');
+      assert.notInclude(flattenTarget, '.exclude2');
+    });
+
+    it('with multiple excludes', async () => {
+      await page.goto(`${addr}/context.html`);
+      const results = await new AxeBuilder({ page })
+        .exclude(['.exclude'])
+        .exclude('.exclude2')
+        .analyze();
+      const flattenTarget = flatPassesTargets(results);
+
+      assert.notInclude(flattenTarget, '.exclude');
+      assert.notInclude(flattenTarget, '.exclude2');
+    });
+
+    it('with multiple includes and excludes', async () => {
+      await page.goto(`${addr}/context.html`);
+      const results = await new AxeBuilder({ page })
+        .include('.include')
+        .include('.include2')
+        .exclude('.exclude')
+        .exclude('.exclude2')
+        .analyze();
+      const flattenTarget = flatPassesTargets(results);
+
+      assert.strictEqual(flattenTarget[0], '.include');
+      assert.strictEqual(flattenTarget[1], '.include2');
+      assert.notInclude(flattenTarget, '.exclude');
+      assert.notInclude(flattenTarget, '.exclude2');
+    });
   });
 
   describe('axe.finishRun errors', () => {
