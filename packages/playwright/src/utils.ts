@@ -1,5 +1,9 @@
 import type { AxeResults, ContextObject } from 'axe-core';
-import type { AnalyzePageParams, AnalyzePageResponse } from './types';
+import type {
+  AnalyzePageParams,
+  AnalyzePageResponse,
+  AxeSelectors
+} from './types';
 
 /**
  * Get running context
@@ -9,19 +13,18 @@ import type { AnalyzePageParams, AnalyzePageResponse } from './types';
  */
 
 export const normalizeContext = (
-  includes: string[][],
-  excludes: string[][]
+  includes: AxeSelectors,
+  excludes: AxeSelectors
 ): ContextObject => {
   const base: ContextObject = {
-    include: [],
     exclude: []
   };
   if (excludes.length && Array.isArray(base.exclude)) {
     base.exclude.push(...excludes);
   }
 
-  if (includes.length && Array.isArray(base.include)) {
-    base.include.push(...includes);
+  if (includes.length) {
+    base.include = includes;
   }
   return base;
 };

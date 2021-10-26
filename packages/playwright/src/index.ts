@@ -8,7 +8,7 @@ import type {
   PartialResults
 } from 'axe-core';
 import { normalizeContext, analyzePage } from './utils';
-import type { AxePlaywrightParams } from './types';
+import type { AxePlaywrightParams, AxeSelector, AxeSelectors } from './types';
 import {
   axeFinishRun,
   axeGetFrameContexts,
@@ -19,8 +19,8 @@ import AxePartialRunner from './AxePartialRunner';
 
 export default class AxeBuilder {
   private page: Page;
-  private includes: string[][];
-  private excludes: string[][];
+  private includes: AxeSelectors;
+  private excludes: AxeSelectors;
   private option: RunOptions;
   private source: string;
   private legacyMode = false;
@@ -42,7 +42,7 @@ export default class AxeBuilder {
    * @returns this
    */
 
-  public include(selector: string | string[]): this {
+  public include(selector: AxeSelector): this {
     selector = Array.isArray(selector) ? selector : [selector];
     this.includes.push(selector);
     return this;
@@ -55,7 +55,7 @@ export default class AxeBuilder {
    * @returns this
    */
 
-  public exclude(selector: string | string[]): this {
+  public exclude(selector: AxeSelector): this {
     selector = Array.isArray(selector) ? selector : [selector];
     this.excludes.push(selector);
     return this;
