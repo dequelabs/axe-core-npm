@@ -414,7 +414,7 @@ describe('@axe-core/playwright', () => {
       assert.notInclude(flattenTarget, '.exclude');
     });
 
-    it('with multiple includes', async () => {
+    it('with chaining multiple includes', async () => {
       await page.goto(`${addr}/context.html`);
       const results = await new AxeBuilder({ page })
         .include('.include')
@@ -428,7 +428,7 @@ describe('@axe-core/playwright', () => {
       assert.notInclude(flattenTarget, '.exclude2');
     });
 
-    it('with multiple excludes', async () => {
+    it('with chainining multiple excludes', async () => {
       await page.goto(`${addr}/context.html`);
       const results = await new AxeBuilder({ page })
         .exclude('.exclude')
@@ -440,7 +440,7 @@ describe('@axe-core/playwright', () => {
       assert.notInclude(flattenTarget, '.exclude2');
     });
 
-    it('with multiple includes and excludes', async () => {
+    it('with chaining multiple includes and excludes', async () => {
       await page.goto(`${addr}/context.html`);
       const results = await new AxeBuilder({ page })
         .include('.include')

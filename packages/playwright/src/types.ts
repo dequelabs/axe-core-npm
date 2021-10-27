@@ -15,12 +15,6 @@ export interface AnalyzePageParams {
   options: RunOptions | null;
 }
 
-// utilise axe-core types to allow chaining on include and exclude
-// @see https://github.com/dequelabs/axe-core-npm/issues/389
-export type AxeSelector = BaseSelector | BaseSelector[];
-
-export type AxeSelectors = Array<AxeSelector>;
-
 export interface AxePlaywrightParams {
   page: Page;
   axeSource?: string;
