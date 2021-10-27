@@ -4,8 +4,7 @@ import type {
   AxeResults,
   ContextObject,
   CrossTreeSelector,
-  PartialResult,
-  BaseSelector
+  PartialResult
 } from 'axe-core';
 
 export type PartialResults = PartialResult | null;
