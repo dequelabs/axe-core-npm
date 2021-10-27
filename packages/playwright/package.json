@@ -73,7 +73,7 @@
     "instrument": true,
     "checkCoverage": true,
     "statements": 95,
-    "branches": 85,
+    "branches": 90,
     "functions": 100,
     "lines": 95
   }

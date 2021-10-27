@@ -414,7 +414,7 @@ describe('@axe-core/playwright', () => {
       assert.notInclude(flattenTarget, '.exclude');
     });
 
-    it('with chaining multiple includes', async () => {
+    it('with chaining multiple string includes', async () => {
       await page.goto(`${addr}/context.html`);
       const results = await new AxeBuilder({ page })
         .include('.include')
@@ -428,11 +428,37 @@ describe('@axe-core/playwright', () => {
       assert.notInclude(flattenTarget, '.exclude2');
     });
 
-    it('with chainining multiple excludes', async () => {
+    it('with chaining multiple string array includes', async () => {
+      await page.goto(`${addr}/context.html`);
+
+      const results = await new AxeBuilder({ page })
+        .include(['.include'])
+        .include(['.include2'])
+        .analyze();
+      const flattenTarget = flatPassesTargets(results);
+
+      assert.strictEqual(flattenTarget[0], '.include');
+      assert.strictEqual(flattenTarget[1], '.include2');
+      assert.notInclude(flattenTarget, '.exclude');
+      assert.notInclude(flattenTarget, '.exclude2');
+    });
+
+    it('with chainining multiple string excludes', async () => {
       await page.goto(`${addr}/context.html`);
       const results = await new AxeBuilder({ page })
         .exclude('.exclude')
         .exclude('.exclude2')
+        .analyze();
+      const flattenTarget = flatPassesTargets(results);
+
+      assert.notInclude(flattenTarget, '.exclude');
+      assert.notInclude(flattenTarget, '.exclude2');
+    });
+
+    it('with chainining multiple string array excludes', async () => {
+      const results = await new AxeBuilder({ page })
+        .exclude(['.exclude'])
+        .exclude(['.exclude2'])
         .analyze();
       const flattenTarget = flatPassesTargets(results);
 
