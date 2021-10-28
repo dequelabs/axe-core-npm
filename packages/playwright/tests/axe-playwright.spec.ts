@@ -414,8 +414,9 @@ describe('@axe-core/playwright', () => {
       assert.notInclude(flattenTarget, '.exclude');
     });
 
-    it('with chaining multiple string includes', async () => {
+    it('with chaining includes', async () => {
       await page.goto(`${addr}/context.html`);
+
       const results = await new AxeBuilder({ page })
         .include('.include')
         .include('.include2')
@@ -428,22 +429,7 @@ describe('@axe-core/playwright', () => {
       assert.notInclude(flattenTarget, '.exclude2');
     });
 
-    it('with chaining multiple string array includes', async () => {
-      await page.goto(`${addr}/context.html`);
-
-      const results = await new AxeBuilder({ page })
-        .include(['.include'])
-        .include(['.include2'])
-        .analyze();
-      const flattenTarget = flatPassesTargets(results);
-
-      assert.strictEqual(flattenTarget[0], '.include');
-      assert.strictEqual(flattenTarget[1], '.include2');
-      assert.notInclude(flattenTarget, '.exclude');
-      assert.notInclude(flattenTarget, '.exclude2');
-    });
-
-    it('with chainining multiple string excludes', async () => {
+    it('with chainining excludes', async () => {
       await page.goto(`${addr}/context.html`);
       const results = await new AxeBuilder({ page })
         .exclude('.exclude')
@@ -455,18 +441,7 @@ describe('@axe-core/playwright', () => {
       assert.notInclude(flattenTarget, '.exclude2');
     });
 
-    it('with chainining multiple string array excludes', async () => {
-      const results = await new AxeBuilder({ page })
-        .exclude(['.exclude'])
-        .exclude(['.exclude2'])
-        .analyze();
-      const flattenTarget = flatPassesTargets(results);
-
-      assert.notInclude(flattenTarget, '.exclude');
-      assert.notInclude(flattenTarget, '.exclude2');
-    });
-
-    it('with chaining multiple includes and excludes', async () => {
+    it('with chaining includes and excludes', async () => {
       await page.goto(`${addr}/context.html`);
       const results = await new AxeBuilder({ page })
         .include('.include')
@@ -480,6 +455,52 @@ describe('@axe-core/playwright', () => {
       assert.strictEqual(flattenTarget[1], '.include2');
       assert.notInclude(flattenTarget, '.exclude');
       assert.notInclude(flattenTarget, '.exclude2');
+    });
+
+    it('with include using an array of strings', async () => {
+      await page.goto(`${addr}/context.html`);
+      const expected = ['.selector-one', '.selector-two', '.selector-three'];
+
+      const axeSource = `
+      window.axe = {
+        configure(){},
+          run({ include }){
+            return Promise.resolve({ include })
+          }
+      }
+    `;
+      const results = new AxeBuilder({ page, axeSource: axeSource }).include([
+        '.selector-one',
+        '.selector-two',
+        '.selector-three'
+      ]);
+
+      const { include: actual } = (await results.analyze()) as any;
+
+      assert.deepEqual(actual[0], expected);
+    });
+
+    it('with exclude using an array of strings', async () => {
+      await page.goto(`${addr}/context.html`);
+      const expected = ['.selector-one', '.selector-two', '.selector-three'];
+
+      const axeSource = `
+      window.axe = {
+        configure(){},
+          run({ exclude }){
+            return Promise.resolve({ exclude })
+          }
+      }
+    `;
+      const results = new AxeBuilder({ page, axeSource: axeSource }).exclude([
+        '.selector-one',
+        '.selector-two',
+        '.selector-three'
+      ]);
+
+      const { exclude: actual } = (await results.analyze()) as any;
+
+      assert.deepEqual(actual[0], expected);
     });
   });
 
