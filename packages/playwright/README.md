@@ -83,7 +83,7 @@ new AxeBuilder({ page })
   });
 ```
 
-### AxeBuilder#include(selector: String)
+### AxeBuilder#include(selector: String | String[])
 
 Adds a CSS selector to the list of elements to include in analysis
 
@@ -91,12 +91,30 @@ Adds a CSS selector to the list of elements to include in analysis
 new AxeBuilder({ page }).include('.results-panel');
 ```
 
-### AxeBuilder#exclude(selector: String)
+Method chaining is also available, add multiple CSS selectors to the list of elements to include in analysis
+
+```js
+new AxeBuilder({ page })
+  .include('.selector-one')
+  .include('.selector-two')
+  .include('.selector-three');
+```
+
+### AxeBuilder#exclude(selector: String | String[])
 
 Add a CSS selector to the list of elements to exclude from analysis
 
 ```js
 new AxeBuilder({ page }).exclude('.another-element');
+```
+
+Method chaining is also available, add multiple CSS selectors to the list of elements to exclude from analysis
+
+```js
+new AxeBuilder({ page })
+  .exclude('.selector-one')
+  .exclude('.selector-two')
+  .exclude('.selector-three');
 ```
 
 ### AxeBuilder#options(options: [axe.RunOptions](https://github.com/dequelabs/axe-core/blob/develop/doc/API.md#options-parameter))
