@@ -429,7 +429,7 @@ describe('@axe-core/playwright', () => {
       assert.notInclude(flattenTarget, '.exclude2');
     });
 
-    it('with chainining excludes', async () => {
+    it('with chaining excludes', async () => {
       await page.goto(`${addr}/context.html`);
       const results = await new AxeBuilder({ page })
         .exclude('.exclude')
