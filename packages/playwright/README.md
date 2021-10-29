@@ -100,6 +100,8 @@ new AxeBuilder({ page })
   .include('.selector-three');
 ```
 
+Note: arrays with more than one index when passing multiple CSS selectors are not currently supported example: ` .include(['#foo', '#bar', '#baz'])`
+
 ### AxeBuilder#exclude(selector: String | String[])
 
 Add a CSS selector to the list of elements to exclude from analysis
@@ -116,6 +118,8 @@ new AxeBuilder({ page })
   .exclude('.selector-two')
   .exclude('.selector-three');
 ```
+
+Note: arrays with more than one index when passing multiple CSS selectors are not currently supported example: ` .exclude(['#foo', '#bar', '#baz'])`
 
 ### AxeBuilder#options(options: [axe.RunOptions](https://github.com/dequelabs/axe-core/blob/develop/doc/API.md#options-parameter))
 
