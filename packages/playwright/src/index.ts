@@ -170,7 +170,7 @@ export default class AxeBuilder {
     } catch (error) {
       throw new Error(
         `${
-          error.message as any
+          (error as any).message
         }\n Please check out https://github.com/dequelabs/axe-core-npm/blob/develop/packages/playwright/error-handling.md`
       );
     }
