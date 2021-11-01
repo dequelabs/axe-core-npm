@@ -128,7 +128,7 @@ describe('@axe-core/playwright', () => {
           axeSource: 'throw new Error()'
         }).analyze();
       } catch (e) {
-        error = e as any;
+        error = e as Error;
       }
       assert.isNotNull(error);
     });
@@ -143,7 +143,7 @@ describe('@axe-core/playwright', () => {
           .withRules('label')
           .analyze();
       } catch (e) {
-        error = e as any;
+        error = e as Error;
       }
 
       assert.isNotNull(error);
@@ -526,7 +526,7 @@ describe('@axe-core/playwright', () => {
         assert.fail('Should have thrown');
       } catch (err) {
         assert.match(
-          (err as any).message,
+          (err as Error).message,
           /Please make sure that you have popup blockers disabled./
         );
       }
@@ -542,7 +542,7 @@ describe('@axe-core/playwright', () => {
         }).analyze();
         assert.fail('Should have thrown');
       } catch (err) {
-        assert.match((err as any).message, /Please check out/);
+        assert.match((err as Error).message, /Please check out/);
       }
     });
   });
@@ -616,7 +616,7 @@ describe('@axe-core/playwright', () => {
             axeSource: axeLegacySource + axeCrasherSource
           }).analyze();
         } catch (e) {
-          error = e as any;
+          error = e as Error;
         }
         assert.isNotNull(error);
       });
