@@ -146,7 +146,7 @@ export default class AxeInjectorLegacy {
       try {
         await this.handleFrame(framePath);
       } catch (error) {
-        this.errorHandler(error);
+        this.errorHandler(error as any);
       } finally {
         framePath.pop();
       }
@@ -181,7 +181,7 @@ export default class AxeInjectorLegacy {
       try {
         await this.handleFrame([childFrame]);
       } catch (err) {
-        this.errorHandler(err);
+        this.errorHandler(err as any);
       }
     }
 
