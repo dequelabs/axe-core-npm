@@ -993,7 +993,7 @@ describe('@axe-core/webdriverio', () => {
             assert.fail('Should have thrown');
           } catch (err) {
             assert.match(
-              err.message,
+              (err as Error).message,
               /Please make sure that you have popup blockers disabled./
             );
           }
@@ -1008,7 +1008,7 @@ describe('@axe-core/webdriverio', () => {
             }).analyze();
             assert.fail('Should have thrown');
           } catch (err) {
-            assert.match(err.message, /Please check out/);
+            assert.match((err as Error).message, /Please check out/);
           }
         });
       });
