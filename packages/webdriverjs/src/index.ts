@@ -171,7 +171,7 @@ class AxeBuilder {
     } catch (error) {
       throw new Error(
         `${
-          (error as any).message
+          (error as Error).message
         }\n Please check out https://github.com/dequelabs/axe-core-npm/blob/develop/packages/webdriverjs/error-handling.md`
       );
     }
