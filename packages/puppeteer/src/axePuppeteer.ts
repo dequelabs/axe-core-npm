@@ -190,7 +190,7 @@ export class AxePuppeteer {
       return axeResults;
     } catch (err) {
       if (callback) {
-        callback(err);
+        callback(err as Error);
         return null;
       }
       throw err;
@@ -221,7 +221,9 @@ export class AxePuppeteer {
       return await this.finishRun(partials);
     } catch (error) {
       throw new Error(
-        `${error.message}\n Please check out https://github.com/dequelabs/axe-core-npm/blob/develop/packages/puppeteer/error-handling.md`
+        `${
+          (error as Error).message
+        }\n Please check out https://github.com/dequelabs/axe-core-npm/blob/develop/packages/puppeteer/error-handling.md`
       );
     }
   }

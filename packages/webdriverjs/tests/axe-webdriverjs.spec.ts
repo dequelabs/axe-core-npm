@@ -403,7 +403,7 @@ describe('@axe-core/webdriverjs', () => {
       try {
         await builder.analyze();
       } catch (e) {
-        error = e;
+        error = e as Error;
       }
 
       assert.strictEqual(error, null);
@@ -417,7 +417,7 @@ describe('@axe-core/webdriverjs', () => {
       try {
         await builder.analyze();
       } catch (e) {
-        error = e;
+        error = e as Error;
       }
 
       assert.strictEqual(error, null);
@@ -431,7 +431,7 @@ describe('@axe-core/webdriverjs', () => {
       try {
         await builder.analyze();
       } catch (e) {
-        error = e;
+        error = e as Error;
       }
 
       assert.strictEqual(error, null);
@@ -484,7 +484,7 @@ describe('@axe-core/webdriverjs', () => {
         await new AxeBuilder(driver, source).analyze();
         assert.fail('Should have thrown');
       } catch (err) {
-        assert.match(err.message, /switchTo failed./);
+        assert.match((err as Error).message, /switchTo failed./);
       }
     });
 
@@ -496,7 +496,7 @@ describe('@axe-core/webdriverjs', () => {
         await new AxeBuilder(driver, source).analyze();
         assert.fail('Should have thrown');
       } catch (err) {
-        assert.match(err.message, /Please check out/);
+        assert.match((err as Error).message, /Please check out/);
       }
     });
   });
