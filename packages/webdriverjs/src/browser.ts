@@ -49,7 +49,7 @@ export function axeRunPartial(
       var callback = arguments[arguments.length - 1];
       var context = ${JSON.stringify(context)} || document;
       var options = ${JSON.stringify(options)} || {};
-      window.axe.runPartial(context, options).then(callback);
+      window.axe.runPartial(context, options).then(res => JSON.parse(JSON.stringify(res))).then(callback);
     `)
   );
 }
@@ -78,7 +78,7 @@ export function axeFinishRun(
 
       var partialResults = ${JSON.stringify(partialResults)};
       var options = ${JSON.stringify(options || {})};
-      window.axe.finishRun(partialResults, options).then(callback);
+      window.axe.finishRun(partialResults, options).then(res => JSON.parse(JSON.stringify(res))).then(callback);
     `)
   );
 }
