@@ -118,7 +118,7 @@ export function axeRunLegacy(
       if (config) {
         window.axe.configure(config);
       }
-      window.axe.run(context, options).then(callback);
+      window.axe.run(context, options).then(res => JSON.parse(JSON.stringify(res))).then(callback);
     `)
   );
 }
