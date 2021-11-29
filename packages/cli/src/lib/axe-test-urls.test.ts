@@ -9,7 +9,7 @@ describe('testPages', function () {
   let mockDriver: any;
 
   beforeEach(() => {
-    const func = async (arg: any) => arg;
+    const func = async (arg: any) => '{}';
     mockDriver = {
       get: func,
       executeAsyncScript: func,
@@ -49,7 +49,7 @@ describe('testPages', function () {
 
     mockDriver.executeAsyncScript = async (script: string) => {
       asyncScripts.push(script);
-      return script;
+      return '{}';
     };
     mockDriver.wait = async (script: string) => {
       waitCalls++;
@@ -82,7 +82,7 @@ describe('testPages', function () {
     const asyncScripts: string[] = [];
     mockDriver.executeAsyncScript = async (script: string) => {
       asyncScripts.push(script);
-      return script;
+      return '{}';
     };
 
     await testPages(['http://foo'], config);
