@@ -29,7 +29,7 @@ describe('testPages', function () {
     assert.instanceOf(testPages([], config), Promise);
   });
 
-  it.only('calls driver.get() for each URL', async () => {
+  it('calls driver.get() for each URL', async () => {
     const urlsCalled: string[] = [];
     const urls = ['http://foo', 'http://bar', 'http://baz'];
 
