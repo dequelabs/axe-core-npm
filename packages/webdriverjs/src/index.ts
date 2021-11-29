@@ -16,8 +16,8 @@ import * as assert from 'assert';
 class AxeBuilder {
   private driver: WebDriver;
   private axeSource: string;
-  private includes: string[];
-  private excludes: string[];
+  private includes: string[][];
+  private excludes: string[][];
   private option: RunOptions;
   private config: Spec | null;
   private builderOptions: BuilderOptions;
@@ -41,7 +41,8 @@ class AxeBuilder {
    * Selector to include in analysis.
    * This may be called any number of times.
    */
-  public include(selector: string): this {
+  public include(selector: string | string[]): this {
+    selector = Array.isArray(selector) ? selector : [selector];
     this.includes.push(selector);
     return this;
   }
@@ -50,8 +51,11 @@ class AxeBuilder {
    * Selector to exclude in analysis.
    * This may be called any number of times.
    */
-  public exclude(selector: string): this {
+  public exclude(selector: string | string[]): this {
+    selector = Array.isArray(selector) ? selector : [selector];
     this.excludes.push(selector);
+    console.log(this.excludes);
+
     return this;
   }
 

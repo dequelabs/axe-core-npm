@@ -4,20 +4,17 @@ import type { ContextObject } from 'axe-core';
  * Get running context
  */
 export const normalizeContext = (
-  include: string[],
-  exclude: string[]
+  include: string[][],
+  exclude: string[][]
 ): ContextObject => {
-  if (!exclude.length) {
-    if (!include.length) {
-      return { exclude: [] };
-    }
-    return { include };
-  }
-  if (!include.length) {
-    return { exclude };
-  }
-  return {
-    include,
-    exclude
+  const base: ContextObject = {
+    exclude: []
   };
+  if (exclude.length && Array.isArray(base.exclude)) {
+    base.exclude.push(...exclude);
+  }
+  if (include.length && Array.isArray(base.include)) {
+    base.include.push(...include);
+  }
+  return base;
 };

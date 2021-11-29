@@ -1,5 +1,5 @@
 import 'mocha';
-import { Spec } from 'axe-core';
+import { AxeResults, Spec } from 'axe-core';
 import { WebDriver } from 'selenium-webdriver';
 import * as express from 'express';
 import * as chromedriver from 'chromedriver';
@@ -393,48 +393,94 @@ describe('@axe-core/webdriverjs', () => {
   });
 
   describe('include/exclude', () => {
+    const flatPassesTargets = (results: AxeResults): string[] => {
+      return results.passes
+        .reduce((acc, pass) => {
+          return acc.concat(pass.nodes as any);
+        }, [])
+        .reduce((acc, node: any) => {
+          return acc.concat(node.target);
+        }, []);
+    };
     it('with include and exclude', async () => {
-      let error: Error | null = null;
       await driver.get(`${addr}/context.html`);
       const builder = new AxeBuilder(driver)
         .include('.include')
         .exclude('.exclude');
+      const results = await builder.analyze();
 
-      try {
-        await builder.analyze();
-      } catch (e) {
-        error = e as Error;
-      }
-
-      assert.strictEqual(error, null);
+      assert.isTrue(flatPassesTargets(results).includes('.include'));
+      assert.isFalse(flatPassesTargets(results).includes('.exclude'));
     });
 
     it('with only include', async () => {
-      let error: Error | null = null;
       await driver.get(`${addr}/context.html`);
       const builder = new AxeBuilder(driver).include('.include');
+      const results = await builder.analyze();
 
-      try {
-        await builder.analyze();
-      } catch (e) {
-        error = e as Error;
-      }
-
-      assert.strictEqual(error, null);
+      assert.isTrue(flatPassesTargets(results).includes('.include'));
     });
 
     it('with only exclude', async () => {
-      let error: Error | null = null;
       await driver.get(`${addr}/context.html`);
       const builder = new AxeBuilder(driver).exclude('.exclude');
+      const results = await builder.analyze();
 
-      try {
-        await builder.analyze();
-      } catch (e) {
-        error = e as Error;
-      }
+      assert.isFalse(flatPassesTargets(results).includes('.exclude'));
+    });
 
-      assert.strictEqual(error, null);
+    it('with chaining only include', async () => {
+      await driver.get(`${addr}/context.html`);
+      const builder = new AxeBuilder(driver)
+        .include('.include')
+        .include('.include2');
+      const results = await builder.analyze();
+
+      assert.isTrue(flatPassesTargets(results).includes('.include'));
+      assert.isTrue(flatPassesTargets(results).includes('.include2'));
+    });
+
+    it('with chaining only exclude', async () => {
+      await driver.get(`${addr}/context.html`);
+      const builder = new AxeBuilder(driver)
+        .exclude('.exclude')
+        .exclude('.exclude2');
+      const results = await builder.analyze();
+
+      assert.isFalse(flatPassesTargets(results).includes('.exclude'));
+      assert.isFalse(flatPassesTargets(results).includes('.exclude2'));
+    });
+
+    it('with chaining only include and exclude', async () => {
+      await driver.get(`${addr}/context.html`);
+      const builder = new AxeBuilder(driver)
+        .include('.include')
+        .include('.include2')
+        .exclude('.exclude')
+        .exclude('.exclude2');
+      const results = await builder.analyze();
+      console.log(flatPassesTargets(results));
+
+      assert.isTrue(flatPassesTargets(results).includes('.include'));
+      assert.isTrue(flatPassesTargets(results).includes('.include2'));
+      assert.isFalse(flatPassesTargets(results).includes('.exclude'));
+      assert.isFalse(flatPassesTargets(results).includes('.exclude2'));
+    });
+
+    it('with chaining only include and exclude', async () => {
+      await driver.get(`${addr}/context.html`);
+      const builder = new AxeBuilder(driver)
+        .include('.include')
+        .include('.include2')
+        .exclude('.exclude')
+        .exclude('.exclude2');
+      const results = await builder.analyze();
+      console.log(flatPassesTargets(results));
+
+      assert.isTrue(flatPassesTargets(results).includes('.include'));
+      assert.isTrue(flatPassesTargets(results).includes('.include2'));
+      assert.isFalse(flatPassesTargets(results).includes('.exclude'));
+      assert.isFalse(flatPassesTargets(results).includes('.exclude2'));
     });
   });
 
