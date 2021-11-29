@@ -9,7 +9,7 @@ describe('testPages', function () {
   let mockDriver: any;
 
   beforeEach(() => {
-    const func = async (arg: any) => arg;
+    const func = async (arg: any) => '{}';
     mockDriver = {
       get: func,
       executeAsyncScript: func,
@@ -29,7 +29,7 @@ describe('testPages', function () {
     assert.instanceOf(testPages([], config), Promise);
   });
 
-  it('calls driver.get() for each URL', async () => {
+  it.only('calls driver.get() for each URL', async () => {
     const urlsCalled: string[] = [];
     const urls = ['http://foo', 'http://bar', 'http://baz'];
 
