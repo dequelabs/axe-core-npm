@@ -203,13 +203,13 @@ class AxeBuilder {
   private async runPartialRecursive(
     context: ContextObject,
     initiator = false
-  ): Promise<PartialResults> {
+  ): Promise<string[]> {
     if (!initiator) {
       await axeSourceInject(this.driver, this.axeSource, this.config);
     }
     // IMPORTANT: axeGetFrameContext MUST be called before axeRunPartial
     const frameContexts = await axeGetFrameContext(this.driver, context);
-    const partials: PartialResults = [
+    const partials: string[] = [
       await axeRunPartial(this.driver, context, this.option)
     ];
 
@@ -225,7 +225,7 @@ class AxeBuilder {
         if (switchedFrame) {
           await this.driver.switchTo().parentFrame();
         }
-        partials.push(null);
+        partials.push('null');
       }
     }
     return partials;
@@ -234,7 +234,7 @@ class AxeBuilder {
   /**
    * Use axe.finishRun() to turn partial results into actual results
    */
-  private async finishRun(partials: PartialResults): Promise<AxeResults> {
+  private async finishRun(partials: string[]): Promise<AxeResults> {
     const { driver, axeSource, config, option } = this;
 
     const win = await driver.getWindowHandle();

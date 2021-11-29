@@ -43,13 +43,13 @@ export function axeRunPartial(
   driver: WebDriver,
   context: ContextObject,
   options: RunOptions
-): Promise<PartialResult> {
+): Promise<string> {
   return promisify(
-    driver.executeAsyncScript<PartialResult>(`
+    driver.executeAsyncScript<string>(`
       var callback = arguments[arguments.length - 1];
       var context = ${JSON.stringify(context)} || document;
       var options = ${JSON.stringify(options)} || {};
-      window.axe.runPartial(context, options).then(callback);
+      window.axe.runPartial(context, options).then(res => JSON.stringify(res)).then(callback);
     `)
   );
 }
@@ -58,13 +58,15 @@ export function axeFinishRun(
   driver: WebDriver,
   axeSource: string,
   config: Spec | null,
-  partialResults: Array<PartialResult | null>,
+  partialResults: Array<string>,
   options: RunOptions
 ): Promise<AxeResults> {
   // Inject source and configuration a second time with a mock "this" context,
   // to make it impossible to sniff the global window.axe for results.
   return promisify(
-    driver.executeAsyncScript<AxeResults>(`
+    driver
+      .executeAsyncScript<string>(
+        `
       var callback = arguments[arguments.length - 1];
 
       ${axeSource};
@@ -77,9 +79,12 @@ export function axeFinishRun(
       }
 
       var partialResults = ${JSON.stringify(partialResults)};
+      partialResults = partialResults.map(res => JSON.parse(res));
       var options = ${JSON.stringify(options || {})};
-      window.axe.finishRun(partialResults, options).then(callback);
-    `)
+      window.axe.finishRun(partialResults, options).then(res => JSON.stringify(res)).then(callback);
+    `
+      )
+      .then(res => JSON.parse(res))
   );
 }
 
@@ -110,7 +115,9 @@ export function axeRunLegacy(
   // https://github.com/vercel/pkg/issues/676
   // we need to pass a string vs a function so we manually stringified the function
   return promisify(
-    driver.executeAsyncScript<AxeResults>(`
+    driver
+      .executeAsyncScript<string>(
+        `
       var callback = arguments[arguments.length - 1];
       var context = ${JSON.stringify(context)} || document;
       var options = ${JSON.stringify(options)} || {};
@@ -118,8 +125,10 @@ export function axeRunLegacy(
       if (config) {
         window.axe.configure(config);
       }
-      window.axe.run(context, options).then(callback);
-    `)
+      window.axe.run(context, options).then(res => JSON.stringify(res)).then(callback);
+    `
+      )
+      .then(res => JSON.parse(res))
   );
 }
 
