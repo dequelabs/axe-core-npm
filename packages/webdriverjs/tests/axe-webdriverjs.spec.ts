@@ -11,6 +11,7 @@ import * as fs from 'fs';
 import { Server, createServer } from 'http';
 import { Webdriver, connectToChromeDriver } from './test-utils';
 import AxeBuilder from '../src';
+import { axeRunPartial } from '../src/browser';
 const dylangConfig = require('./fixtures/external/dylang-config.json') as Spec;
 
 describe('@axe-core/webdriverjs', () => {
@@ -59,6 +60,16 @@ describe('@axe-core/webdriverjs', () => {
 
   describe('analyze', () => {
     it('returns results', async () => {
+      await driver.get(`${addr}/external/index.html`);
+      const results = await new AxeBuilder(driver).analyze();
+      assert.isNotNull(results);
+      assert.isArray(results.violations);
+      assert.isArray(results.incomplete);
+      assert.isArray(results.passes);
+      assert.isArray(results.inapplicable);
+    });
+
+    it('handles undefineds', async () => {
       await driver.get(`${addr}/external/index.html`);
       const results = await new AxeBuilder(driver).analyze();
       assert.isNotNull(results);
@@ -539,6 +550,18 @@ describe('@axe-core/webdriverjs', () => {
     });
   });
 
+  describe('browser functions', () => {
+    it('serializes results', async () => {
+      await driver.get(`${addr}/external/nested-iframes.html`);
+      await driver.executeScript(`
+                                 window.axe = {
+                                   runPartial: (c, o) => Promise.resolve({ violations: [], passes: [] })
+                                 };
+                                 `);
+      const res = await axeRunPartial(driver, null as any, null as any);
+      assert.equal(typeof res, 'string');
+    });
+  });
   describe('for versions without axe.runPartial', () => {
     let axe403Source: string;
     before(() => {
