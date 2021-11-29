@@ -54,8 +54,6 @@ class AxeBuilder {
   public exclude(selector: string | string[]): this {
     selector = Array.isArray(selector) ? selector : [selector];
     this.excludes.push(selector);
-    console.log(this.excludes);
-
     return this;
   }
 

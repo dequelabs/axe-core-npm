@@ -13,8 +13,8 @@ export const normalizeContext = (
   if (exclude.length && Array.isArray(base.exclude)) {
     base.exclude.push(...exclude);
   }
-  if (include.length && Array.isArray(base.include)) {
-    base.include.push(...include);
+  if (include.length) {
+    base.include = include;
   }
   return base;
 };

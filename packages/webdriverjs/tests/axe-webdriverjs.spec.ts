@@ -459,7 +459,6 @@ describe('@axe-core/webdriverjs', () => {
         .exclude('.exclude')
         .exclude('.exclude2');
       const results = await builder.analyze();
-      console.log(flatPassesTargets(results));
 
       assert.isTrue(flatPassesTargets(results).includes('.include'));
       assert.isTrue(flatPassesTargets(results).includes('.include2'));
@@ -475,12 +474,35 @@ describe('@axe-core/webdriverjs', () => {
         .exclude('.exclude')
         .exclude('.exclude2');
       const results = await builder.analyze();
-      console.log(flatPassesTargets(results));
 
       assert.isTrue(flatPassesTargets(results).includes('.include'));
       assert.isTrue(flatPassesTargets(results).includes('.include2'));
       assert.isFalse(flatPassesTargets(results).includes('.exclude'));
       assert.isFalse(flatPassesTargets(results).includes('.exclude2'));
+    });
+
+    it('with include / exclude iframe selectors with no violations', async () => {
+      await driver.get(`${addr}/context.html`);
+      const builder = new AxeBuilder(driver)
+        .include(['#ifr-one', 'html'])
+        .exclude(['#ifr-one', 'main'])
+        .exclude(['#ifr-one', 'img']);
+
+      const results = await builder.analyze();
+
+      assert.lengthOf(results.violations, 0);
+    });
+
+    it('with include / exclude iframe selectors with violations', async () => {
+      await driver.get(`${addr}/context.html`);
+      const builder = new AxeBuilder(driver)
+        .include(['#ifr-one', 'html'])
+        .exclude(['#ifr-one', 'main']);
+      const results = await builder.analyze();
+
+      assert.lengthOf(results.violations, 2);
+      assert.strictEqual(results.violations[0].id, 'image-alt');
+      assert.strictEqual(results.violations[1].id, 'region');
     });
   });
 
