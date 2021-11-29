@@ -297,7 +297,7 @@ describe('@axe-core/webdriverjs', () => {
       try {
         await builder.analyze();
       } catch (e) {
-        error = e;
+        error = e as Error;
       }
 
       assert.strictEqual(error, null);
@@ -311,7 +311,7 @@ describe('@axe-core/webdriverjs', () => {
       try {
         await builder.analyze();
       } catch (e) {
-        error = e;
+        error = e as Error;
       }
 
       assert.strictEqual(error, null);
@@ -325,7 +325,7 @@ describe('@axe-core/webdriverjs', () => {
       try {
         await builder.analyze();
       } catch (e) {
-        error = e;
+        error = e as Error;
       }
 
       assert.strictEqual(error, null);

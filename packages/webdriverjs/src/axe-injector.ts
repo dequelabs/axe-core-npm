@@ -151,7 +151,7 @@ export default class AxeInjector {
       try {
         await this.handleFrame(framePath);
       } catch (error) {
-        this.errorHandler(error);
+        this.errorHandler(error as Error);
       } finally {
         framePath.pop();
       }
@@ -163,7 +163,7 @@ export default class AxeInjector {
    * @returns {Promise<void>}
    */
 
-  private async injectIntoAllFrames(): Promise<void> {
+  async injectIntoAllFrames(): Promise<void> {
     // Ensure we're "starting" our loop at the top-most frame
     await this.driver.switchTo().defaultContent();
 
@@ -186,7 +186,7 @@ export default class AxeInjector {
       try {
         await this.handleFrame([childFrame]);
       } catch (err) {
-        this.errorHandler(err);
+        this.errorHandler(err as Error);
       }
     }
 

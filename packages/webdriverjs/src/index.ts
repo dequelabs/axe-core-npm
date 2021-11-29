@@ -1,9 +1,17 @@
 import type { WebDriver } from 'selenium-webdriver';
-import type { RunOptions, Spec, AxeResults } from 'axe-core';
+import type { RunOptions, Spec, AxeResults, ContextObject } from 'axe-core';
 import { source } from 'axe-core';
 import type { CallbackFunction, BuilderOptions } from './types';
 import { normalizeContext } from './utils';
+import {
+  axeGetFrameContext,
+  axeRunPartial,
+  axeRunLegacy,
+  axeSourceInject,
+  axeFinishRun
+} from './browser';
 import AxeInjector from './axe-injector';
+import * as assert from 'assert';
 
 class AxeBuilder {
   private driver: WebDriver;
@@ -154,42 +162,67 @@ class AxeBuilder {
       config,
       builderOptions: this.builderOptions
     });
+    await injector.injectIntoAllFrames();
+    return axeRunLegacy(this.driver, context, this.option, this.config);
+  }
 
-    return new Promise((resolve, reject) => {
-      injector.inject(() => {
-        driver
-          // https://github.com/vercel/pkg/issues/676
-          // we need to pass a string vs a function so we manually stringified the function
-          .executeAsyncScript(
-            `
-          const callback = arguments[arguments.length - 1];
-          const context = ${JSON.stringify(context)} || document;
-          const options = ${JSON.stringify(options)} || {};
-          const config = ${JSON.stringify(config)} || null;
-          if (config) {
-            window.axe.configure(config);
-          }
-          window.axe.run(context, options).then(callback);
-        `
-          )
-          .then(results => {
-            /* istanbul ignore if */
-            if (callback) {
-              callback(null, results as AxeResults);
-            }
-            resolve(results as AxeResults);
-          })
-          .catch((err: Error) => {
-            // When using a callback, do *not* reject the wrapping Promise. This prevents having to handle the same error twice.
-            /* istanbul ignore else */
-            if (callback) {
-              callback(err.message, null);
-            } else {
-              reject(err);
-            }
-          });
-      });
-    });
+  /**
+   * Get partial results from the current context and its child frames
+   */
+  private async runPartialRecursive(
+    context: ContextObject,
+    initiator = false
+  ): Promise<string[]> {
+    if (!initiator) {
+      await axeSourceInject(this.driver, this.axeSource, this.config);
+    }
+    // IMPORTANT: axeGetFrameContext MUST be called before axeRunPartial
+    const frameContexts = await axeGetFrameContext(this.driver, context);
+    const partials: string[] = [
+      await axeRunPartial(this.driver, context, this.option)
+    ];
+
+    for (const { frameContext, frameSelector, frame } of frameContexts) {
+      let switchedFrame = false;
+      try {
+        assert(frame, `Expect frame of "${frameSelector}" to be defined`);
+        await this.driver.switchTo().frame(frame);
+        switchedFrame = true;
+        partials.push(...(await this.runPartialRecursive(frameContext)));
+        await this.driver.switchTo().parentFrame();
+      } catch {
+        if (switchedFrame) {
+          await this.driver.switchTo().parentFrame();
+        }
+        partials.push('null');
+      }
+    }
+    return partials;
+  }
+
+  /**
+   * Use axe.finishRun() to turn partial results into actual results
+   */
+  private async finishRun(partials: string[]): Promise<AxeResults> {
+    const { driver, axeSource, config, option } = this;
+
+    const win = await driver.getWindowHandle();
+
+    try {
+      await driver.executeScript(`window.open('about:blank')`);
+      const handlers = await driver.getAllWindowHandles();
+      await driver.switchTo().window(handlers[handlers.length - 1]);
+      await driver.get('about:blank');
+    } catch (error) {
+      throw new Error(
+        `switchTo failed. Are you using updated browser drivers? \nDriver reported:\n${error}`
+      );
+    }
+    // Make sure we're on a blank page, even if window.open isn't functioning properly.
+    const res = await axeFinishRun(driver, axeSource, config, partials, option);
+    await driver.close();
+    await driver.switchTo().window(win);
+    return res;
   }
 }
 
