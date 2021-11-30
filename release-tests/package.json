@@ -1,0 +1,24 @@
+{
+  "name": "@axe-core/release-tests",
+  "version": "4.3.0",
+  "description": "Tests to ensure release script ran successfully",
+  "scripts": {
+    "test": "mocha test/*.js --timeout 15000"
+  },
+  "keywords": [],
+  "author": "Wilco Fiers",
+  "license": "ISC",
+  "dependencies": {
+    "@axe-core/cli": "latest",
+    "@axe-core/playwright": "latest",
+    "@axe-core/puppeteer": "latest",
+    "@axe-core/webdriverio": "latest",
+    "@axe-core/webdriverjs": "latest",
+    "execa": "^5.1.1",
+    "mocha": "^9.1.3",
+    "playwright": "^1.16.3",
+    "puppeteer": "^12.0.1",
+    "selenium-webdriver": "^4.1.0",
+    "webdriverio": "^7.16.10"
+  }
+}
