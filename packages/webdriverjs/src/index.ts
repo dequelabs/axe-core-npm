@@ -1,7 +1,12 @@
 import { WebDriver } from 'selenium-webdriver';
 import { RunOptions, Spec, AxeResults, ContextObject } from 'axe-core';
 import { source } from 'axe-core';
-import { CallbackFunction, BuilderOptions, PartialResults } from './types';
+import {
+  CallbackFunction,
+  BuilderOptions,
+  PartialResults,
+  Selector
+} from './types';
 import { normalizeContext } from './utils/index';
 import AxeInjector from './axe-injector';
 import {
@@ -16,8 +21,8 @@ import * as assert from 'assert';
 class AxeBuilder {
   private driver: WebDriver;
   private axeSource: string;
-  private includes: string[][];
-  private excludes: string[][];
+  private includes: Selector[];
+  private excludes: Selector[];
   private option: RunOptions;
   private config: Spec | null;
   private builderOptions: BuilderOptions;
@@ -41,7 +46,7 @@ class AxeBuilder {
    * Selector to include in analysis.
    * This may be called any number of times.
    */
-  public include(selector: string | string[]): this {
+  public include(selector: Selector): this {
     selector = Array.isArray(selector) ? selector : [selector];
     this.includes.push(selector);
     return this;
@@ -51,7 +56,7 @@ class AxeBuilder {
    * Selector to exclude in analysis.
    * This may be called any number of times.
    */
-  public exclude(selector: string | string[]): this {
+  public exclude(selector: Selector): this {
     selector = Array.isArray(selector) ? selector : [selector];
     this.excludes.push(selector);
     return this;

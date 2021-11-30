@@ -1,11 +1,12 @@
 import type { ContextObject } from 'axe-core';
+import { Selector } from '../types';
 
 /**
  * Get running context
  */
 export const normalizeContext = (
-  include: string[][],
-  exclude: string[][]
+  include: Selector[],
+  exclude: Selector[]
 ): ContextObject => {
   const base: ContextObject = {
     exclude: []

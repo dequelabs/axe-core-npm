@@ -1,5 +1,5 @@
 import type { WebDriver } from 'selenium-webdriver';
-import type { Spec, AxeResults } from 'axe-core';
+import type { Spec, AxeResults, BaseSelector } from 'axe-core';
 import * as axe from 'axe-core';
 
 export interface Options {
@@ -25,3 +25,5 @@ export type CallbackFunction = (
 export type InjectCallback = (err?: Error) => void;
 
 export type PartialResults = Parameters<typeof axe.finishRun>[0];
+
+export type Selector = BaseSelector | BaseSelector[];
