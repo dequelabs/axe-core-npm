@@ -1,6 +1,6 @@
 {
   "name": "@axe-core/webdriverjs",
-  "version": "4.3.1",
+  "version": "4.3.2",
   "description": "Provides a method to inject and analyze web pages using axe",
   "contributors": [
     {
@@ -66,7 +66,7 @@
     "axe-test-fixtures": "github:dequelabs/axe-test-fixtures#v1",
     "chai": "^4.3.0",
     "chaimocha": "^1.10.0",
-    "chromedriver": "^95.0.0",
+    "chromedriver": "^96.0.0",
     "delay": "^5.0.0",
     "express": "^4.17.1",
     "http-server": "^0.12.3",
