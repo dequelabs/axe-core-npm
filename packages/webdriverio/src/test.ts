@@ -853,7 +853,7 @@ describe('@axe-core/webdriverio', () => {
           });
         });
 
-        describe.only('include/exclude', () => {
+        describe('include/exclude', () => {
           const flatPassesTargets = (results: AxeResults): string[] => {
             return results.passes
               .reduce((acc, pass) => {
@@ -864,7 +864,7 @@ describe('@axe-core/webdriverio', () => {
               }, []);
           };
 
-          it('with include and exclude', async () => {
+          it.only('with include and exclude', async () => {
             await client.url(`${addr}/context.html`);
 
             const builder = new AxeBuilder({ client })
