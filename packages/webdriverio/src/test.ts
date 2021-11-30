@@ -864,7 +864,7 @@ describe('@axe-core/webdriverio', () => {
               }, []);
           };
 
-          it.only('with include and exclude', async () => {
+          it('with include and exclude', async () => {
             await client.url(`${addr}/context.html`);
 
             const builder = new AxeBuilder({ client })
