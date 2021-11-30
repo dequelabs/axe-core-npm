@@ -1,5 +1,5 @@
 import type { Browser, MultiRemoteBrowser, Element } from 'webdriverio';
-import type { AxeResults, ElementContext, RunOptions, Spec } from 'axe-core';
+import type { AxeResults, BaseSelector } from 'axe-core';
 import * as axe from 'axe-core';
 
 export type WdioBrowser =
@@ -32,3 +32,5 @@ declare global {
 }
 
 export type PartialResults = Parameters<typeof axe.finishRun>[0];
+
+export type Selector = BaseSelector | BaseSelector[];

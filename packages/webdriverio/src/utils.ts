@@ -8,7 +8,7 @@ import type {
   Spec,
   PartialResults
 } from 'axe-core';
-import type { WdioBrowser } from './types';
+import type { Selector, WdioBrowser } from './types';
 
 /**
  * Validates that the client provided is WebdriverIO v5 or v6.
@@ -33,8 +33,8 @@ export const isWebdriverClient = (client: WdioBrowser): boolean => {
  * Get running context
  */
 export const normalizeContext = (
-  includes: string[],
-  excludes: string[],
+  includes: Selector[],
+  excludes: Selector[],
   disabledFrameSelectors: string[]
 ): ContextObject => {
   const base: ContextObject = {
