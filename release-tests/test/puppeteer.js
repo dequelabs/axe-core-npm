@@ -1,6 +1,9 @@
+const { assert } = require('chai');
 const puppeteer = require('puppeteer');
 const { AxePuppeteer } = require('@axe-core/puppeteer');
 const { version } = require('@axe-core/puppeteer/package.json');
+const expectedVersion =
+  require('../../packages/puppeteer/package.json').version;
 
 describe(`@axe-core/puppeteer v${version}`, () => {
   let browser, page;
@@ -12,6 +15,10 @@ describe(`@axe-core/puppeteer v${version}`, () => {
 
   after(async () => {
     await browser.close();
+  });
+
+  it('matches the local version', () => {
+    assert.equal(version, expectedVersion);
   });
 
   it('runs without errors', async () => {

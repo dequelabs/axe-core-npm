@@ -1,7 +1,10 @@
+const { assert } = require('chai');
 const { Builder } = require('selenium-webdriver');
 const { Options } = require('selenium-webdriver/chrome');
 const AxeBuilder = require('@axe-core/webdriverjs');
 const { version } = require('@axe-core/webdriverjs/package.json');
+const expectedVersion =
+  require('../../packages/webdriverjs/package.json').version;
 
 describe(`@axe-core/webdriverjs v${version}`, function () {
   let driver;
@@ -17,6 +20,10 @@ describe(`@axe-core/webdriverjs v${version}`, function () {
 
   after(async () => {
     await driver.quit();
+  });
+
+  it('matches the local version', () => {
+    assert.equal(version, expectedVersion);
   });
 
   it('runs without errors', async () => {

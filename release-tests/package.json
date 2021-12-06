@@ -14,6 +14,7 @@
     "@axe-core/puppeteer": "latest",
     "@axe-core/webdriverio": "latest",
     "@axe-core/webdriverjs": "latest",
+    "chai": "^4.3.4",
     "execa": "^5.1.1",
     "mocha": "^9.1.3",
     "playwright": "^1.16.3",
