@@ -865,12 +865,11 @@ describe('@axe-core/webdriverio', () => {
           };
 
           it('with include and exclude', async () => {
-            await client.url(`${addr}/context.html`);
+            await client.url(`${addr}/context-include-exclude.html`);
 
             const builder = new AxeBuilder({ client })
               .include('.include')
               .exclude('.exclude');
-
             const results = await builder.analyze();
 
             assert.isTrue(flatPassesTargets(results).includes('.include'));
@@ -878,27 +877,25 @@ describe('@axe-core/webdriverio', () => {
           });
 
           it('with only include', async () => {
-            await client.url(`${addr}/context.html`);
+            await client.url(`${addr}/context-include-exclude.html`);
 
             const builder = new AxeBuilder({ client }).include('.include');
-
             const results = await builder.analyze();
 
             assert.isTrue(flatPassesTargets(results).includes('.include'));
           });
 
           it('with only exclude', async () => {
-            await client.url(`${addr}/context.html`);
+            await client.url(`${addr}/context-include-exclude.html`);
 
             const builder = new AxeBuilder({ client }).exclude('.exclude');
-
             const results = await builder.analyze();
 
             assert.isFalse(flatPassesTargets(results).includes('.exclude'));
           });
 
           it('with only chaining include', async () => {
-            await client.url(`${addr}/context.html`);
+            await client.url(`${addr}/context-include-exclude.html`);
 
             const builder = new AxeBuilder({ client })
               .include('.include')
@@ -911,7 +908,7 @@ describe('@axe-core/webdriverio', () => {
           });
 
           it('with only chaining exclude', async () => {
-            await client.url(`${addr}/context.html`);
+            await client.url(`${addr}/context-include-exclude.html`);
 
             const builder = new AxeBuilder({ client })
               .exclude('.exclude')
@@ -924,7 +921,7 @@ describe('@axe-core/webdriverio', () => {
           });
 
           it('with chaining include and exclude', async () => {
-            await client.url(`${addr}/context.html`);
+            await client.url(`${addr}/context-include-exclude.html`);
 
             const builder = new AxeBuilder({ client })
               .include('.include')
@@ -940,31 +937,45 @@ describe('@axe-core/webdriverio', () => {
             assert.isFalse(flatPassesTargets(results).includes('.exclude2'));
           });
 
-          it('with include and exclude iframe selectors show no violations', async () => {
-            await client.url(`${addr}/context.html`);
+          it('with include and exclude iframes', async () => {
+            await client.url(`${addr}/context-include-exclude.html`);
 
             const builder = new AxeBuilder({ client })
-              .include(['#ifr-one', 'html'])
-              .exclude(['#ifr-one', 'main'])
-              .exclude(['#ifr-one', 'img']);
+              .include(['#ifr-inc-excl', 'html'])
+              .exclude(['#ifr-inc-excl', '#foo-bar'])
+              .include(['#ifr-inc-excl', '#foo-baz', 'html'])
+              .exclude(['#ifr-inc-excl', '#foo-baz', 'input']);
 
             const results = await builder.analyze();
+            const labelResult = results.incomplete.find(
+              ({ id }) => id === 'label'
+            );
 
-            assert.lengthOf(results.violations, 0);
+            assert.isFalse(flatPassesTargets(results).includes('#foo-bar'));
+            assert.isFalse(flatPassesTargets(results).includes('input'));
+            assert.isUndefined(labelResult);
           });
 
-          it('with include and exclude iframe selectors show violations', async () => {
-            await client.url(`${addr}/context.html`);
+          it('with include and exclude iframes', async () => {
+            await client.url(`${addr}/context-include-exclude.html`);
 
             const builder = new AxeBuilder({ client })
-              .include(['#ifr-one', 'html'])
-              .exclude(['#ifr-one', 'main']);
+              .include(['#ifr-inc-excl', '#foo-baz', 'html'])
+              .include(['#ifr-inc-excl', '#foo-baz', 'input'])
+              // does not exist
+              .include(['#hazaar', 'html']);
 
             const results = await builder.analyze();
-
-            assert.lengthOf(results.violations, 2);
-            assert.strictEqual(results.violations[0].id, 'image-alt');
-            assert.strictEqual(results.violations[1].id, 'region');
+            const labelResult = results.incomplete.find(
+              ({ id }) => id === 'label'
+            );
+            assert.isTrue(flatPassesTargets(results).includes('#ifr-inc-excl'));
+            assert.isTrue(flatPassesTargets(results).includes('#foo-baz'));
+            assert.isTrue(flatPassesTargets(results).includes('input'));
+            assert.isFalse(flatPassesTargets(results).includes('#foo-bar'));
+            // does not exist
+            assert.isFalse(flatPassesTargets(results).includes('#hazaar'));
+            assert.isUndefined(labelResult);
           });
         });
 
