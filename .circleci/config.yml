@@ -41,7 +41,7 @@ jobs:
             - v2-webdriverjs-npm-{{ checksum "packages/webdriverjs/package-lock.json" }}
       - restore_cache:
           keys:
-            - v3-webdriverio-npm-{{ checksum "packages/webdriverio/package-lock.json" }}
+            - v2-webdriverio-npm-{{ checksum "packages/webdriverio/package-lock.json" }}
       - restore_cache:
           keys:
             - v2-reporter-earl-npm-{{ checksum "packages/reporter-earl/package-lock.json" }}
@@ -77,7 +77,7 @@ jobs:
           paths:
             - packages/webdriverjs/node_modules
       - save_cache:
-          key: v3-webdriverio-npm-{{ checksum "packages/webdriverio/package-lock.json" }}
+          key: v2-webdriverio-npm-{{ checksum "packages/webdriverio/package-lock.json" }}
           paths:
             - packages/webdriverio/node_modules
       - save_cache:
