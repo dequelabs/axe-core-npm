@@ -46,6 +46,6 @@
     ]
   },
   "dependencies": {
-    "axe-test-fixtures": "github:dequelabs/axe-test-fixtures#v1"
+    "axe-test-fixtures": "github:dequelabs/axe-test-fixtures"
   }
 }
