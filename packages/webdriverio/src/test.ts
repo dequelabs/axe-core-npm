@@ -966,7 +966,7 @@ describe('@axe-core/webdriverio', () => {
               .include(['#hazaar', 'html']);
 
             const results = await builder.analyze();
-            const labelResult = results.incomplete.find(
+            const labelResult = results.violations.find(
               ({ id }) => id === 'label'
             );
             assert.isTrue(flatPassesTargets(results).includes('#ifr-inc-excl'));
@@ -975,7 +975,7 @@ describe('@axe-core/webdriverio', () => {
             assert.isFalse(flatPassesTargets(results).includes('#foo-bar'));
             // does not exist
             assert.isFalse(flatPassesTargets(results).includes('#hazaar'));
-            assert.isUndefined(labelResult);
+            assert.isDefined(labelResult);
           });
         });
 
