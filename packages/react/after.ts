@@ -5,18 +5,18 @@ function after(host: React.Component, name: string, cb: Function): void {
   let restoreFn: () => void;
 
   if (originalFn) {
-    host[name] = function(...args): void {
+    host[name] = function (...args): void {
       originalFn.apply(this, args);
       cb(host);
     };
-    restoreFn = function(): void {
+    restoreFn = function (): void {
       host[name] = originalFn;
     };
   } else {
-    host[name] = function(): void {
+    host[name] = function (): void {
       cb(host);
     };
-    restoreFn = function(): void {
+    restoreFn = function (): void {
       delete host[name];
     };
   }
@@ -24,7 +24,7 @@ function after(host: React.Component, name: string, cb: Function): void {
   restoreFunctions.push(restoreFn);
 }
 
-after.restorePatchedMethods = function(): void {
+after.restorePatchedMethods = function (): void {
   restoreFunctions.forEach(restoreFn => restoreFn());
   restoreFunctions = [];
 };
