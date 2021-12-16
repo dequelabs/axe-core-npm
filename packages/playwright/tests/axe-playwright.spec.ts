@@ -500,7 +500,7 @@ describe('@axe-core/playwright', () => {
 
       const { exclude: actual } = (await results.analyze()) as any;
 
-      assert.deepEqual(actual[0], expected);
+      assert.deepEqual(actual, expected);
     });
   });
 
