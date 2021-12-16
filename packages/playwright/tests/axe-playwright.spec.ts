@@ -459,16 +459,7 @@ describe('@axe-core/playwright', () => {
 
     it('with include using an array of strings', async () => {
       await page.goto(`${addr}/context.html`);
-
-      const axeSource = `
-      window.axe = {
-        configure(){},
-          run({ include }){
-            return Promise.resolve({ include })
-          }
-      }
-    `;
-      const results = await new AxeBuilder({ page, axeSource: axeSource })
+      const results = await new AxeBuilder({ page })
         .include(['.selector-one', '.selector-two', '.selector-three'])
         .analyze();
 
@@ -480,17 +471,7 @@ describe('@axe-core/playwright', () => {
 
     it('with exclude using an array of strings', async () => {
       await page.goto(`${addr}/context.html`);
-
-      const axeSource = `
-      window.axe = {
-        configure(){},
-          run({ exclude }){
-            return Promise.resolve({ exclude })
-          }
-      }
-    `;
-
-      const results = await new AxeBuilder({ page, axeSource: axeSource })
+      const results = await new AxeBuilder({ page })
         .exclude(['.selector-one', '.selector-two', '.selector-three'])
         .analyze();
       const flattenTarget = flatPassesTargets(results);
@@ -500,17 +481,7 @@ describe('@axe-core/playwright', () => {
     });
     it('with chaining include/exclude using an array of strings', async () => {
       await page.goto(`${addr}/context.html`);
-
-      const axeSource = `
-      window.axe = {
-        configure(){},
-          run({ exclude }){
-            return Promise.resolve({ exclude })
-          }
-      }
-    `;
-
-      const results = await new AxeBuilder({ page, axeSource: axeSource })
+      const results = await new AxeBuilder({ page })
         .include(['.include', '.include2'])
         .exclude(['.exclude', '.exclude2'])
         .analyze();
