@@ -57,7 +57,9 @@ export default class AxeBuilder {
 
   public exclude(selector: string | string[]): this {
     selector = Array.isArray(selector) ? selector : [selector];
-    this.excludes.push(selector);
+    for (var selection of selector) {
+      this.excludes.push([selection]);
+    }
     return this;
   }
 
@@ -169,8 +171,7 @@ export default class AxeBuilder {
       return await this.finishRun(partials);
     } catch (error) {
       throw new Error(
-        `${
-          (error as Error).message
+        `${(error as Error).message
         }\n Please check out https://github.com/dequelabs/axe-core-npm/blob/develop/packages/playwright/error-handling.md`
       );
     }
