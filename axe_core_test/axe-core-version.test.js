@@ -29,8 +29,9 @@ describe('verify axe-core version', () => {
     const reporterEarlVersion = reporterEarl.version;
     const reporterEarlAxeCoreVersion = reporterEarl.devDependencies['axe-core'];
 
-    const [packageAxeCoreVersion] =
-      reporterEarlAxeCoreVersion.match(versioning);
+    const [packageAxeCoreVersion] = reporterEarlAxeCoreVersion.match(
+      versioning
+    );
     const [axeCoreReporterEarlVersion] = reporterEarlVersion.match(versioning);
     assert.strictEqual(axeCoreReporterEarlVersion, packageAxeCoreVersion);
   });

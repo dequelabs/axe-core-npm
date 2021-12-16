@@ -1096,14 +1096,15 @@
   }
   axe._load = function (audit) {
     'use strict';
-    axe.utils.respondable.subscribe(
-      'axe.ping',
-      function (data, keepalive, respond) {
-        respond({
-          axe: true
-        });
-      }
-    );
+    axe.utils.respondable.subscribe('axe.ping', function (
+      data,
+      keepalive,
+      respond
+    ) {
+      respond({
+        axe: true
+      });
+    });
     axe.utils.respondable.subscribe('axe.start', runCommand);
     axe._audit = new Audit(audit);
   };
@@ -1842,20 +1843,16 @@
       timeout = setTimeout(function () {
         reject(err('Axe in frame timed out', node));
       }, 3e4);
-      axe.utils.respondable(
-        win,
-        'axe.start',
-        parameters,
-        undefined,
-        function (data) {
-          clearTimeout(timeout);
-          if (data instanceof Error === false) {
-            resolve(data);
-          } else {
-            reject(data);
-          }
+      axe.utils.respondable(win, 'axe.start', parameters, undefined, function (
+        data
+      ) {
+        clearTimeout(timeout);
+        if (data instanceof Error === false) {
+          resolve(data);
+        } else {
+          reject(data);
         }
-      );
+      });
     });
   };
   function collectResultsFromFrames(
@@ -3782,7 +3779,8 @@
         checkboxgroup: {
           description:
             'Ensures related <input type="checkbox"> elements have a group and that that group designation is consistent',
-          help: 'Checkbox inputs with the same name attribute value must be part of a group'
+          help:
+            'Checkbox inputs with the same name attribute value must be part of a group'
         },
         'color-contrast': {
           description:
@@ -3791,7 +3789,8 @@
         },
         'definition-list': {
           description: 'Ensures <dl> elements are structured correctly',
-          help: '<dl> elements must only directly contain properly-ordered <dt> and <dd> groups, <script> or <template> elements'
+          help:
+            '<dl> elements must only directly contain properly-ordered <dt> and <dd> groups, <script> or <template> elements'
         },
         dlitem: {
           description: 'Ensures <dt> and <dd> elements are contained by a <dl>',
@@ -3831,7 +3830,8 @@
         'href-no-hash': {
           description:
             'Ensures that href values are valid link references to promote only using anchors as links',
-          help: 'Anchors must only be used as links with valid URLs or URL fragments'
+          help:
+            'Anchors must only be used as links with valid URLs or URL fragments'
         },
         'html-has-lang': {
           description: 'Ensures every HTML document has a lang attribute',
@@ -3850,7 +3850,8 @@
         'image-redundant-alt': {
           description:
             'Ensure button and link text is not repeated as image alternative',
-          help: 'Text of buttons and links should not be repeated in the image alternative'
+          help:
+            'Text of buttons and links should not be repeated in the image alternative'
         },
         'input-image-alt': {
           description:
@@ -3873,7 +3874,8 @@
         },
         'link-in-text-block': {
           description: 'Links can be distinguished without relying on color',
-          help: 'Links must be distinguished from surrounding text in a way that does not rely on color'
+          help:
+            'Links must be distinguished from surrounding text in a way that does not rely on color'
         },
         'link-name': {
           description: 'Ensures links have discernible text',
@@ -3881,7 +3883,8 @@
         },
         list: {
           description: 'Ensures that lists are structured correctly',
-          help: '<ul> and <ol> must only directly contain <li>, <script> or <template> elements'
+          help:
+            '<ul> and <ol> must only directly contain <li>, <script> or <template> elements'
         },
         listitem: {
           description: 'Ensures <li> elements are used semantically',
@@ -3911,12 +3914,14 @@
         },
         'p-as-heading': {
           description: 'Ensure p elements are not used to style headings',
-          help: 'Bold, italic text and font-size are not used to style p elements as a heading'
+          help:
+            'Bold, italic text and font-size are not used to style p elements as a heading'
         },
         radiogroup: {
           description:
             'Ensures related <input type="radio"> elements have a group and that the group designation is consistent',
-          help: 'Radio inputs with the same name attribute value must be part of a group'
+          help:
+            'Radio inputs with the same name attribute value must be part of a group'
         },
         region: {
           description:
@@ -3944,27 +3949,32 @@
         'table-duplicate-name': {
           description:
             'Ensure that tables do not have the same summary and caption',
-          help: 'The <caption> element should not contain the same text as the summary attribute'
+          help:
+            'The <caption> element should not contain the same text as the summary attribute'
         },
         'table-fake-caption': {
           description:
             'Ensure that tables with a caption use the <caption> element.',
-          help: 'Data or header cells should not be used to give caption to a data table.'
+          help:
+            'Data or header cells should not be used to give caption to a data table.'
         },
         'td-has-header': {
           description:
             'Ensure that each non-empty data cell in a large table has one or more table headers',
-          help: 'All non-empty td element in table larger than 3 by 3 must have an associated table header'
+          help:
+            'All non-empty td element in table larger than 3 by 3 must have an associated table header'
         },
         'td-headers-attr': {
           description:
             'Ensure that each cell in a table using the headers refers to another cell in that table',
-          help: 'All cells in a table element that use the headers attribute must only refer to other cells of that same table'
+          help:
+            'All cells in a table element that use the headers attribute must only refer to other cells of that same table'
         },
         'th-has-data-cells': {
           description:
             'Ensure that each table header in a data table refers to data cells',
-          help: 'All th elements and elements with role=columnheader/rowheader must have data cells they describe'
+          help:
+            'All th elements and elements with role=columnheader/rowheader must have data cells they describe'
         },
         'valid-lang': {
           description: 'Ensures lang attributes have valid values',
@@ -9126,27 +9136,29 @@
           }
           return set;
         };
-        var sortRolesByOptimalAriaContext =
-          function sortRolesByOptimalAriaContext(roles, ariaAttributes) {
-            var getScore = function getScore(role) {
-              var allowedAriaAttributes = aria.allowedAttr(role);
-              return allowedAriaAttributes.reduce(function (score, attribute) {
-                return score + (ariaAttributes.indexOf(attribute) > -1 ? 1 : 0);
-              }, 0);
-            };
-            var scored = roles.map(function (role) {
-              return {
-                score: getScore(role),
-                name: role
-              };
-            });
-            var sorted = scored.sort(function (scoredRoleA, scoredRoleB) {
-              return scoredRoleB.score - scoredRoleA.score;
-            });
-            return sorted.map(function (sortedRole) {
-              return sortedRole.name;
-            });
+        var sortRolesByOptimalAriaContext = function sortRolesByOptimalAriaContext(
+          roles,
+          ariaAttributes
+        ) {
+          var getScore = function getScore(role) {
+            var allowedAriaAttributes = aria.allowedAttr(role);
+            return allowedAriaAttributes.reduce(function (score, attribute) {
+              return score + (ariaAttributes.indexOf(attribute) > -1 ? 1 : 0);
+            }, 0);
           };
+          var scored = roles.map(function (role) {
+            return {
+              score: getScore(role),
+              name: role
+            };
+          });
+          var sorted = scored.sort(function (scoredRoleA, scoredRoleB) {
+            return scoredRoleB.score - scoredRoleA.score;
+          });
+          return sorted.map(function (sortedRole) {
+            return sortedRole.name;
+          });
+        };
         var roles = Object.keys(lookupTables.role).map(function (role) {
           var lookup = lookupTables.role[role];
           return {

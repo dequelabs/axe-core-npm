@@ -142,11 +142,9 @@ function logFailureMessage(
 ): void {
   // this exists on axe but we don't export it as part of the typescript
   // namespace, so just let me use it as I need
-  const message: string = (
-    axeCore as unknown as AxeWithAudit
-  )._audit.data.failureSummaries[key].failureMessage(
-    node[key].map(check => check.message || '')
-  );
+  const message: string = ((axeCore as unknown) as AxeWithAudit)._audit.data.failureSummaries[
+    key
+  ].failureMessage(node[key].map(check => check.message || ''));
 
   console.error(message);
 }
@@ -210,31 +208,30 @@ function checkAndReport(node: Node, timeout: number): Promise<void> {
           }
         }
         axeCore.configure({ allowedOrigins: ['<unsafe_all_origins>'] });
-        axeCore.run(
-          n,
-          { reporter: 'v2' },
-          function (error: Error, results: axeCore.AxeResults) {
-            if (error) {
-              return reject(error);
-            }
-
-            results.violations = results.violations.filter(result => {
-              result.nodes = result.nodes.filter(node => {
-                const key: string = node.target.toString() + result.id;
-                const retVal = !cache[key];
-                cache[key] = key;
-                return disableDeduplicate || retVal;
-              });
-              return !!result.nodes.length;
-            });
-
-            if (results.violations.length) {
-              logger(results);
-            }
-
-            resolve();
+        axeCore.run(n, { reporter: 'v2' }, function (
+          error: Error,
+          results: axeCore.AxeResults
+        ) {
+          if (error) {
+            return reject(error);
           }
-        );
+
+          results.violations = results.violations.filter(result => {
+            result.nodes = result.nodes.filter(node => {
+              const key: string = node.target.toString() + result.id;
+              const retVal = !cache[key];
+              cache[key] = key;
+              return disableDeduplicate || retVal;
+            });
+            return !!result.nodes.length;
+          });
+
+          if (results.violations.length) {
+            logger(results);
+          }
+
+          resolve();
+        });
       },
       {
         timeout: timeout

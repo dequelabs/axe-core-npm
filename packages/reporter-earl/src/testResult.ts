@@ -18,12 +18,14 @@ export default function testResult(
   { description }: RawResult,
   outcomes: RawNodeResult[] = []
 ): TestResult[] {
-  return outcomes.map(({ node, result }): TestResult => {
-    return {
-      '@type': EarlType.TestResult,
-      info: description,
-      outcome: 'earl:' + result,
-      pointer: cssToPointer(node.selector)
-    };
-  });
+  return outcomes.map(
+    ({ node, result }): TestResult => {
+      return {
+        '@type': EarlType.TestResult,
+        info: description,
+        outcome: 'earl:' + result,
+        pointer: cssToPointer(node.selector)
+      };
+    }
+  );
 }

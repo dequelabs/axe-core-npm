@@ -173,8 +173,7 @@ export default class AxeBuilder {
       return await this.finishRun(partials);
     } catch (error) {
       throw new Error(
-        `${
-          (error as Error).message
+        `${(error as Error).message
         }\n Please check out https://github.com/dequelabs/axe-core-npm/blob/develop/packages/playwright/error-handling.md`
       );
     }
