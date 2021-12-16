@@ -42,8 +42,11 @@ export default class AxeBuilder {
    * @returns this
    */
 
-  public include(selector: string): this {
-    this.includes.push(selector);
+  public include(selector: string | string[]): this {
+    selector = Array.isArray(selector) ? selector : [selector];
+    for (const selection of selector) {
+      this.includes.push(selection);
+    }
     return this;
   }
 
@@ -54,8 +57,11 @@ export default class AxeBuilder {
    * @returns this
    */
 
-  public exclude(selector: string): this {
-    this.excludes.push(selector);
+  public exclude(selector: string | string[]): this {
+    selector = Array.isArray(selector) ? selector : [selector];
+    for (const selection of selector) {
+      this.excludes.push(selection);
+    }
     return this;
   }
 
@@ -167,7 +173,9 @@ export default class AxeBuilder {
       return await this.finishRun(partials);
     } catch (error) {
       throw new Error(
-        `${error.message}\n Please check out https://github.com/dequelabs/axe-core-npm/blob/develop/packages/playwright/error-handling.md`
+        `${
+          (error as Error).message
+        }\n Please check out https://github.com/dequelabs/axe-core-npm/blob/develop/packages/playwright/error-handling.md`
       );
     }
   }

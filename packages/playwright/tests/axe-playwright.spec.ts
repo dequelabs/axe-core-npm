@@ -128,7 +128,7 @@ describe('@axe-core/playwright', () => {
           axeSource: 'throw new Error()'
         }).analyze();
       } catch (e) {
-        error = e;
+        error = e as Error;
       }
       assert.isNotNull(error);
     });
@@ -143,7 +143,7 @@ describe('@axe-core/playwright', () => {
           .withRules('label')
           .analyze();
       } catch (e) {
-        error = e;
+        error = e as Error;
       }
 
       assert.isNotNull(error);
@@ -413,6 +413,114 @@ describe('@axe-core/playwright', () => {
 
       assert.notInclude(flattenTarget, '.exclude');
     });
+
+    it('with chaining includes', async () => {
+      await page.goto(`${addr}/context.html`);
+
+      const results = await new AxeBuilder({ page })
+        .include('.include')
+        .include('.include2')
+        .analyze();
+      const flattenTarget = flatPassesTargets(results);
+
+      assert.strictEqual(flattenTarget[0], '.include');
+      assert.strictEqual(flattenTarget[1], '.include2');
+      assert.notInclude(flattenTarget, '.exclude');
+      assert.notInclude(flattenTarget, '.exclude2');
+    });
+
+    it('with chaining excludes', async () => {
+      await page.goto(`${addr}/context.html`);
+      const results = await new AxeBuilder({ page })
+        .exclude('.exclude')
+        .exclude('.exclude2')
+        .analyze();
+      const flattenTarget = flatPassesTargets(results);
+
+      assert.notInclude(flattenTarget, '.exclude');
+      assert.notInclude(flattenTarget, '.exclude2');
+    });
+
+    it('with chaining includes and excludes', async () => {
+      await page.goto(`${addr}/context.html`);
+      const results = await new AxeBuilder({ page })
+        .include('.include')
+        .include('.include2')
+        .exclude('.exclude')
+        .exclude('.exclude2')
+        .analyze();
+      const flattenTarget = flatPassesTargets(results);
+
+      assert.strictEqual(flattenTarget[0], '.include');
+      assert.strictEqual(flattenTarget[1], '.include2');
+      assert.notInclude(flattenTarget, '.exclude');
+      assert.notInclude(flattenTarget, '.exclude2');
+    });
+
+    it('with include using an array of strings', async () => {
+      await page.goto(`${addr}/context.html`);
+
+      const axeSource = `
+      window.axe = {
+        configure(){},
+          run({ include }){
+            return Promise.resolve({ include })
+          }
+      }
+    `;
+      const results = await new AxeBuilder({ page, axeSource: axeSource })
+        .include(['.selector-one', '.selector-two', '.selector-three'])
+        .analyze();
+
+      const flattenTarget = flatPassesTargets(results);
+
+      assert.strictEqual(flattenTarget[0], '.selector-one');
+      assert.strictEqual(flattenTarget[1], '.selector-two');
+    });
+
+    it('with exclude using an array of strings', async () => {
+      await page.goto(`${addr}/context.html`);
+
+      const axeSource = `
+      window.axe = {
+        configure(){},
+          run({ exclude }){
+            return Promise.resolve({ exclude })
+          }
+      }
+    `;
+
+      const results = await new AxeBuilder({ page, axeSource: axeSource })
+        .exclude(['.selector-one', '.selector-two', '.selector-three'])
+        .analyze();
+      const flattenTarget = flatPassesTargets(results);
+
+      assert.notInclude(flattenTarget, '.selector-one');
+      assert.notInclude(flattenTarget, '.selector-two');
+    });
+    it('with chaining include/exclude using an array of strings', async () => {
+      await page.goto(`${addr}/context.html`);
+
+      const axeSource = `
+      window.axe = {
+        configure(){},
+          run({ exclude }){
+            return Promise.resolve({ exclude })
+          }
+      }
+    `;
+
+      const results = await new AxeBuilder({ page, axeSource: axeSource })
+        .include(['.include', '.include2'])
+        .exclude(['.exclude', '.exclude2'])
+        .analyze();
+      const flattenTarget = flatPassesTargets(results);
+
+      assert.strictEqual(flattenTarget[0], '.include');
+      assert.strictEqual(flattenTarget[1], '.include2');
+      assert.notInclude(flattenTarget, '.exclude');
+      assert.notInclude(flattenTarget, '.exclude2');
+    });
   });
 
   describe('axe.finishRun errors', () => {
@@ -437,7 +545,7 @@ describe('@axe-core/playwright', () => {
         assert.fail('Should have thrown');
       } catch (err) {
         assert.match(
-          err.message,
+          (err as Error).message,
           /Please make sure that you have popup blockers disabled./
         );
       }
@@ -453,7 +561,7 @@ describe('@axe-core/playwright', () => {
         }).analyze();
         assert.fail('Should have thrown');
       } catch (err) {
-        assert.match(err.message, /Please check out/);
+        assert.match((err as Error).message, /Please check out/);
       }
     });
   });
@@ -527,7 +635,7 @@ describe('@axe-core/playwright', () => {
             axeSource: axeLegacySource + axeCrasherSource
           }).analyze();
         } catch (e) {
-          error = e;
+          error = e as Error;
         }
         assert.isNotNull(error);
       });
