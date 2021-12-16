@@ -57,7 +57,7 @@ export default class AxeBuilder {
 
   public exclude(selector: string | string[]): this {
     selector = Array.isArray(selector) ? selector : [selector];
-    for (var selection of selector) {
+    for (const selection of selector) {
       this.excludes.push([selection]);
     }
     return this;
