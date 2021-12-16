@@ -459,7 +459,6 @@ describe('@axe-core/playwright', () => {
 
     it('with include using an array of strings', async () => {
       await page.goto(`${addr}/context.html`);
-      const expected = ['.selector-one', '.selector-two', '.selector-three'];
 
       const axeSource = `
       window.axe = {
@@ -469,20 +468,18 @@ describe('@axe-core/playwright', () => {
           }
       }
     `;
-      const results = new AxeBuilder({ page, axeSource: axeSource }).include([
-        '.selector-one',
-        '.selector-two',
-        '.selector-three'
-      ]);
+      const results = await new AxeBuilder({ page, axeSource: axeSource })
+        .include(['.selector-one', '.selector-two', '.selector-three'])
+        .analyze();
 
-      const { include: actual } = (await results.analyze()) as any;
+      const flattenTarget = flatPassesTargets(results);
 
-      assert.deepEqual(actual[0], expected);
+      assert.strictEqual(flattenTarget[0], '.selector-one');
+      assert.strictEqual(flattenTarget[1], '.selector-two');
     });
 
     it('with exclude using an array of strings', async () => {
       await page.goto(`${addr}/context.html`);
-      const expected = ['.selector-one', '.selector-two', '.selector-three'];
 
       const axeSource = `
       window.axe = {
@@ -492,15 +489,37 @@ describe('@axe-core/playwright', () => {
           }
       }
     `;
-      const results = new AxeBuilder({ page, axeSource: axeSource }).exclude([
-        '.selector-one',
-        '.selector-two',
-        '.selector-three'
-      ]);
 
-      const { exclude: actual } = (await results.analyze()) as any;
+      const results = await new AxeBuilder({ page, axeSource: axeSource })
+        .exclude(['.selector-one', '.selector-two', '.selector-three'])
+        .analyze();
+      const flattenTarget = flatPassesTargets(results);
 
-      assert.deepEqual(actual[0], expected);
+      assert.notInclude(flattenTarget, '.selector-one');
+      assert.notInclude(flattenTarget, '.selector-two');
+    });
+    it('with chaining include/exclude using an array of strings', async () => {
+      await page.goto(`${addr}/context.html`);
+
+      const axeSource = `
+      window.axe = {
+        configure(){},
+          run({ exclude }){
+            return Promise.resolve({ exclude })
+          }
+      }
+    `;
+
+      const results = await new AxeBuilder({ page, axeSource: axeSource })
+        .include(['.include', '.include2'])
+        .exclude(['.exclude', '.exclude2'])
+        .analyze();
+      const flattenTarget = flatPassesTargets(results);
+
+      assert.strictEqual(flattenTarget[0], '.include');
+      assert.strictEqual(flattenTarget[1], '.include2');
+      assert.notInclude(flattenTarget, '.exclude');
+      assert.notInclude(flattenTarget, '.exclude2');
     });
   });
 
