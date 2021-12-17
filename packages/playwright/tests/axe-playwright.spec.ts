@@ -460,13 +460,13 @@ describe('@axe-core/playwright', () => {
     it('with include using an array of strings', async () => {
       await page.goto(`${addr}/context.html`);
       const results = await new AxeBuilder({ page })
-        .include(['.selector-one', '.selector-two', '.selector-three'])
+        .include(['.include', '.include2'])
         .analyze();
 
       const flattenTarget = flatPassesTargets(results);
 
-      assert.strictEqual(flattenTarget[0], '.selector-one');
-      assert.strictEqual(flattenTarget[1], '.selector-two');
+      assert.strictEqual(flattenTarget[0], '.include');
+      assert.strictEqual(flattenTarget[1], '.include2');
     });
 
     it('with exclude using an array of strings', async () => {
