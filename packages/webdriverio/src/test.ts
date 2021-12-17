@@ -13,6 +13,7 @@ import delay from 'delay';
 import AxeBuilder from '.';
 import { logOrRethrowError } from './utils';
 import { WdioBrowser } from './types';
+import type { AxeResults } from 'axe-core';
 
 const connectToChromeDriver = (port: number): Promise<void> => {
   let socket: net.Socket;
@@ -853,48 +854,128 @@ describe('@axe-core/webdriverio', () => {
         });
 
         describe('include/exclude', () => {
+          const flatPassesTargets = (results: AxeResults): string[] => {
+            return results.passes
+              .reduce((acc, pass) => {
+                return acc.concat(pass.nodes as any);
+              }, [])
+              .reduce((acc, node: any) => {
+                return acc.concat(node.target);
+              }, []);
+          };
+
           it('with include and exclude', async () => {
-            let error: unknown = null;
-            await client.url(`${addr}/nested-iframes.html`);
+            await client.url(`${addr}/context-include-exclude.html`);
+
             const builder = new AxeBuilder({ client })
-              .include('#ifr-foo')
-              .exclude('#ifr-bar');
+              .include('.include')
+              .exclude('.exclude');
+            const results = await builder.analyze();
 
-            try {
-              await builder.analyze();
-            } catch (e) {
-              error = e;
-            }
-
-            assert.strictEqual(error, null);
+            assert.isTrue(flatPassesTargets(results).includes('.include'));
+            assert.isFalse(flatPassesTargets(results).includes('.exclude'));
           });
 
           it('with only include', async () => {
-            let error: unknown = null;
-            await client.url(`${addr}/nested-iframes.html`);
-            const builder = new AxeBuilder({ client }).include('#ifr-foo');
+            await client.url(`${addr}/context-include-exclude.html`);
 
-            try {
-              await builder.analyze();
-            } catch (e) {
-              error = e;
-            }
+            const builder = new AxeBuilder({ client }).include('.include');
+            const results = await builder.analyze();
 
-            assert.strictEqual(error, null);
+            assert.isTrue(flatPassesTargets(results).includes('.include'));
           });
 
-          it('wth only exclude', async () => {
-            let error: unknown = null;
-            await client.url(`${addr}/nested-iframes.html`);
-            const builder = new AxeBuilder({ client }).exclude('#ifr-bar');
+          it('with only exclude', async () => {
+            await client.url(`${addr}/context-include-exclude.html`);
 
-            try {
-              await builder.analyze();
-            } catch (e) {
-              error = e;
-            }
+            const builder = new AxeBuilder({ client }).exclude('.exclude');
+            const results = await builder.analyze();
 
-            assert.strictEqual(error, null);
+            assert.isFalse(flatPassesTargets(results).includes('.exclude'));
+          });
+
+          it('with only chaining include', async () => {
+            await client.url(`${addr}/context-include-exclude.html`);
+
+            const builder = new AxeBuilder({ client })
+              .include('.include')
+              .include('.include2');
+
+            const results = await builder.analyze();
+
+            assert.isTrue(flatPassesTargets(results).includes('.include'));
+            assert.isTrue(flatPassesTargets(results).includes('.include2'));
+          });
+
+          it('with only chaining exclude', async () => {
+            await client.url(`${addr}/context-include-exclude.html`);
+
+            const builder = new AxeBuilder({ client })
+              .exclude('.exclude')
+              .exclude('.exclude2');
+
+            const results = await builder.analyze();
+
+            assert.isFalse(flatPassesTargets(results).includes('.exclude'));
+            assert.isFalse(flatPassesTargets(results).includes('.exclude2'));
+          });
+
+          it('with chaining include and exclude', async () => {
+            await client.url(`${addr}/context-include-exclude.html`);
+
+            const builder = new AxeBuilder({ client })
+              .include('.include')
+              .include('.include2')
+              .exclude('.exclude')
+              .exclude('.exclude2');
+
+            const results = await builder.analyze();
+
+            assert.isTrue(flatPassesTargets(results).includes('.include'));
+            assert.isTrue(flatPassesTargets(results).includes('.include2'));
+            assert.isFalse(flatPassesTargets(results).includes('.exclude'));
+            assert.isFalse(flatPassesTargets(results).includes('.exclude2'));
+          });
+
+          it('with include and exclude iframes', async () => {
+            await client.url(`${addr}/context-include-exclude.html`);
+
+            const builder = new AxeBuilder({ client })
+              .include(['#ifr-inc-excl', 'html'])
+              .exclude(['#ifr-inc-excl', '#foo-bar'])
+              .include(['#ifr-inc-excl', '#foo-baz', 'html'])
+              .exclude(['#ifr-inc-excl', '#foo-baz', 'input']);
+
+            const results = await builder.analyze();
+            const labelResult = results.incomplete.find(
+              ({ id }) => id === 'label'
+            );
+
+            assert.isFalse(flatPassesTargets(results).includes('#foo-bar'));
+            assert.isFalse(flatPassesTargets(results).includes('input'));
+            assert.isUndefined(labelResult);
+          });
+
+          it('with include and exclude iframes', async () => {
+            await client.url(`${addr}/context-include-exclude.html`);
+
+            const builder = new AxeBuilder({ client })
+              .include(['#ifr-inc-excl', '#foo-baz', 'html'])
+              .include(['#ifr-inc-excl', '#foo-baz', 'input'])
+              // does not exist
+              .include(['#hazaar', 'html']);
+
+            const results = await builder.analyze();
+            const labelResult = results.violations.find(
+              ({ id }) => id === 'label'
+            );
+            assert.isTrue(flatPassesTargets(results).includes('#ifr-inc-excl'));
+            assert.isTrue(flatPassesTargets(results).includes('#foo-baz'));
+            assert.isTrue(flatPassesTargets(results).includes('input'));
+            assert.isFalse(flatPassesTargets(results).includes('#foo-bar'));
+            // does not exist
+            assert.isFalse(flatPassesTargets(results).includes('#hazaar'));
+            assert.isDefined(labelResult);
           });
         });
 

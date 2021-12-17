@@ -19,14 +19,15 @@ import type {
   CallbackFunction,
   WdioBrowser,
   WdioElement,
-  PartialResults
+  PartialResults,
+  Selector
 } from './types';
 
 export default class AxeBuilder {
   private client: Browser<'async'>;
   private axeSource: string;
-  private includes: string[] = [];
-  private excludes: string[] = [];
+  private includes: Selector[] = [];
+  private excludes: Selector[] = [];
   private option: RunOptions = {};
   private disableFrameSelectors: string[] = [];
   private legacyMode = false;
@@ -68,7 +69,8 @@ export default class AxeBuilder {
    * Selector to include in analysis.
    * This may be called any number of times.
    */
-  public include(selector: string): this {
+  public include(selector: Selector): this {
+    selector = Array.isArray(selector) ? selector : [selector];
     this.includes.push(selector);
     return this;
   }
@@ -77,7 +79,8 @@ export default class AxeBuilder {
    * Selector to exclude in analysis.
    * This may be called any number of times.
    */
-  public exclude(selector: string): this {
+  public exclude(selector: Selector): this {
+    selector = Array.isArray(selector) ? selector : [selector];
     this.excludes.push(selector);
     return this;
   }
