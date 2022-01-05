@@ -31,7 +31,6 @@ const cli = async (
     chromeOptions,
     verbose,
     timeout,
-    path,
     include,
     exclude,
     tags,
