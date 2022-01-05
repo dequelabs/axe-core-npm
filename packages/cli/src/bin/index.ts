@@ -37,7 +37,8 @@ const cli = async (
     tags,
     rules,
     disable,
-    loadDelay
+    loadDelay,
+    chromedriverPath
   } = args;
 
   const silentMode = !!stdout;
@@ -66,7 +67,7 @@ const cli = async (
     browser: args.browser,
     timeout,
     chromeOptions,
-    path
+    chromedriverPath
   };
 
   args.driver = startDriver(driverConfigs);
