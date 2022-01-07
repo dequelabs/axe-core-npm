@@ -4,6 +4,7 @@
     "moduleResolution": "node",
     "declaration": true,
     "sourceMap": true,
+    "inlineSources": true,
     "allowJs": false,
     "module": "commonjs",
     "target": "es5",
