@@ -150,7 +150,7 @@ const cli = async (
     if (!showErrors) {
       console.error(error('An error occurred while testing this page.'));
     } else {
-      console.error(error('Error: %s \n%s'), e.message, e.stack);
+      console.error(error('Error: %s\n%s'), e.message, e.stack);
     }
 
     console.error(
