@@ -162,3 +162,13 @@ const axe = new AxeBuilder(driver).setLegacyMode();
 const result = await axe.analyze();
 axe.setLegacyMode(false); // Disables legacy mode
 ```
+
+### WebdriverJS Deque example
+
+We have created an example [test suite](https://github.com/dequelabs/axe-core-npm/tree/develop/packages/webdriverjs/tests/examples/webdriverjs-example.ts) showing the functionality
+
+To run the test:
+
+- Navigate to: `/webdriverjs/test/example`
+- Install node modules: `npm install`
+- Run tests: `npm test`
