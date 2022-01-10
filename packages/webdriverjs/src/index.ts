@@ -1,12 +1,7 @@
 import { WebDriver } from 'selenium-webdriver';
 import { RunOptions, Spec, AxeResults, ContextObject } from 'axe-core';
 import { source } from 'axe-core';
-import {
-  CallbackFunction,
-  BuilderOptions,
-  PartialResults,
-  Selector
-} from './types';
+import { CallbackFunction, BuilderOptions, Selector } from './types';
 import { normalizeContext } from './utils/index';
 import AxeInjector from './axe-injector';
 import {
@@ -136,7 +131,7 @@ class AxeBuilder {
         .catch((err: Error) => {
           // When using a callback, do *not* reject the wrapping Promise. This prevents having to handle the same error twice.
           if (callback) {
-            callback(err.message, null);
+            callback(err, null);
           } else {
             reject(err);
           }
