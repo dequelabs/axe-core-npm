@@ -6,13 +6,25 @@ Previous versions of this program were maintained at [dequelabs/axe-webdriverjs]
 
 ## Getting Started
 
-Install [Node.js](https://docs.npmjs.com/getting-started/installing-node) if you haven't already. For running axe-webdriverjs tests read more about [setting up your environment](CONTRIBUTING.md).
+Install [Node.js](https://docs.npmjs.com/getting-started/installing-node) if you haven't already.
 
 > Download and install any necessary browser drivers on your machine's PATH. [More on Webdriver setup](https://www.selenium.dev/documentation/en/webdriver/).
 
 Install Selenium Webdriver: `npm install selenium-webdriver --no-save`
 
-Install @axe-core/webdriverjs and its dependencies: `npm install @axe-core/webdriverjs`
+Install @axe-core/webdriverjs and its dependencies:
+
+NPM:
+
+```console
+npm install @axe-core/webdriverjs
+```
+
+Yarn:
+
+```console
+yarn add @axe-core/webdriverjs
+```
 
 ## Usage
 
