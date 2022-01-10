@@ -69,16 +69,16 @@ describe('Deque Webdriverjs example', () => {
         .analyze();
 
       assert.isEmpty(
-        results.inapplicable.filter(pass => pass.id === 'color-contrast')
+        results.inapplicable.filter(rule => rule.id === 'color-contrast')
       );
       assert.isEmpty(
-        results.incomplete.filter(pass => pass.id === 'color-contrast')
+        results.incomplete.filter(rule => rule.id === 'color-contrast')
       );
       assert.isEmpty(
-        results.violations.filter(pass => pass.id === 'color-contrast')
+        results.violations.filter(rule => rule.id === 'color-contrast')
       );
       assert.isEmpty(
-        results.passes.filter(pass => pass.id === 'color-contrast')
+        results.passes.filter(rule => rule.id === 'color-contrast')
       );
     });
   });
