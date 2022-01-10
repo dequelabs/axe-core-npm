@@ -7,6 +7,9 @@
       "name": "Michael Siek (me@michaelsiek.com)"
     }
   ],
+  "files": [
+    "/dist"
+  ],
   "keywords": [
     "a11y",
     "unit",
