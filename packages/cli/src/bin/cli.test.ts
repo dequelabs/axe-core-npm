@@ -180,6 +180,29 @@ describe('cli', () => {
         'Violation of "marquee" with 1 occurrences!'
       );
     });
+
+    it('should throw error is CSS selector is not found', async () => {
+      const result = await runCLI(
+        `file://${SIMPLE_HTML_FILE}`,
+        '--include',
+        '#hazaar'
+      );
+
+      assert.include(
+        result.stderr,
+        'javascript error: No elements found for include in page Context'
+      );
+    });
+
+    it('should throw error if invalid selector is provided', async () => {
+      const result = await runCLI(
+        `file://${SIMPLE_HTML_FILE}`,
+        '--include',
+        '#123'
+      );
+
+      assert.include(result.stderr, 'is not a valid selector');
+    });
   });
 
   describe('--exclude', () => {
@@ -193,6 +216,16 @@ describe('cli', () => {
         result.stdout,
         'Violation of "marquee" with 1 occurrences!'
       );
+    });
+
+    it('should throw error if invalid selector is provided', async () => {
+      const result = await runCLI(
+        `file://${SIMPLE_HTML_FILE}`,
+        '--exclude',
+        '#123'
+      );
+
+      assert.include(result.stderr, 'is not a valid selector');
     });
   });
 
