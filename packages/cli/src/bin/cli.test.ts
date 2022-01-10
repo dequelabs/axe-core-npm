@@ -185,7 +185,8 @@ describe('cli', () => {
       const result = await runCLI(
         `file://${SIMPLE_HTML_FILE}`,
         '--include',
-        '#hazaar'
+        '#hazaar',
+        '--show-errors'
       );
 
       assert.include(
@@ -199,7 +200,8 @@ describe('cli', () => {
       const result = await runCLI(
         `file://${SIMPLE_HTML_FILE}`,
         '--include',
-        '#123'
+        '#123',
+        '--show-errors'
       );
 
       assert.include(result.stderr, 'is not a valid selector');
@@ -224,7 +226,8 @@ describe('cli', () => {
       const result = await runCLI(
         `file://${SIMPLE_HTML_FILE}`,
         '--exclude',
-        '#123'
+        '#123',
+        '--show-errors'
       );
 
       assert.include(result.stderr, 'is not a valid selector');
