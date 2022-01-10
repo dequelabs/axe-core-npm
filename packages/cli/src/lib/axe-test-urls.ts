@@ -1,7 +1,6 @@
 import * as WebDriver from 'selenium-webdriver';
 import AxeBuilder from '@axe-core/webdriverjs';
 import { AxeResults } from 'axe-core';
-import { error } from '../lib/utils';
 import { EventResponse, ConfigParams } from '../types';
 
 const testPages = async (
