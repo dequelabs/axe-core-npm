@@ -181,7 +181,7 @@ describe('cli', () => {
       );
     });
 
-    it('should throw error is CSS selector is not found', async () => {
+    it('should throw error if CSS selector is not found', async () => {
       const result = await runCLI(
         `file://${SIMPLE_HTML_FILE}`,
         '--include',
@@ -192,6 +192,7 @@ describe('cli', () => {
         result.stderr,
         'javascript error: No elements found for include in page Context'
       );
+      assert.equal(result.exitCode, 1);
     });
 
     it('should throw error if invalid selector is provided', async () => {
@@ -202,6 +203,7 @@ describe('cli', () => {
       );
 
       assert.include(result.stderr, 'is not a valid selector');
+      assert.equal(result.exitCode, 1);
     });
   });
 
@@ -226,6 +228,7 @@ describe('cli', () => {
       );
 
       assert.include(result.stderr, 'is not a valid selector');
+      assert.equal(result.exitCode, 1);
     });
   });
 

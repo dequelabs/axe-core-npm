@@ -93,7 +93,7 @@ const testPages = async (
           /* istanbul ignore if */
           if (err) {
             console.error(error(err));
-            return reject(err);
+            process.exit(1);
           }
 
           // Notify about the update
