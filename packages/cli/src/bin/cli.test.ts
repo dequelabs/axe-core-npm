@@ -315,4 +315,18 @@ describe('cli', () => {
       }
     });
   });
+
+  describe('--chromedriver-path', () => {
+    it('should throw error if path does not exist', async () => {
+      const result = await runCLI(
+        `file://${SIMPLE_HTML_FILE}`,
+        '--chromedriver-path="someinvalidpath"',
+        '--show-errors'
+      );
+      assert.include(
+        result.stderr,
+        'The specified executable path does not exist'
+      );
+    });
+  });
 });
