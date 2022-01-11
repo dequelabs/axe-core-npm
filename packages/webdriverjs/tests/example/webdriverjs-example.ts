@@ -1,12 +1,23 @@
 import { assert } from 'chai';
 import { Builder, WebDriver } from 'selenium-webdriver';
-import * as chrome from 'selenium-webdriver/chrome';
 import AxeBuilder from '@axe-core/webdriverjs';
+import testListen = require('test-listen');
+import { Server, createServer } from 'http';
+import * as chrome from 'selenium-webdriver/chrome';
+import * as express from 'express';
+import * as path from 'path';
 
-describe('Deque Webdriverjs example', () => {
+describe('@axe-core/webdriverjs example', () => {
   let driver: WebDriver;
+  let server: Server;
+  let addr: string;
 
-  beforeEach(() => {
+  beforeEach(async () => {
+    const app = express();
+    app.use(express.static(path.resolve(__dirname, '..', 'fixtures')));
+    server = createServer(app);
+    addr = await testListen(server);
+
     driver = new Builder()
       .forBrowser('chrome')
       .setChromeOptions(new chrome.Options().headless())
@@ -15,71 +26,72 @@ describe('Deque Webdriverjs example', () => {
 
   afterEach(() => {
     driver.close();
+    server.close();
   });
 
-  describe('Deqeue Homepage', () => {
-    it('should run analysis', async () => {
-      await driver.get('https://deque.com/');
+  it('should run analysis', async () => {
+    await driver.get(`${addr}/context.html`);
 
-      const results = await new AxeBuilder(driver).analyze();
+    const results = await new AxeBuilder(driver).analyze();
 
-      assert.isNotNull(results.inapplicable);
-      assert.isNotNull(results.incomplete);
-      assert.isNotNull(results.violations);
-      assert.isNotNull(results.passes);
-    });
+    assert.isNotNull(results.inapplicable);
+    assert.isNotNull(results.incomplete);
+    assert.isNotNull(results.violations);
+    assert.isNotNull(results.passes);
+  });
 
-    it('should find violations', async () => {
-      await driver.get('https://deque.com/');
+  it('should find violations', async () => {
+    await driver.get(`${addr}/context.html`);
 
-      const results = await new AxeBuilder(driver).analyze();
+    const results = await new AxeBuilder(driver).analyze();
 
-      assert.lengthOf(results.violations, 2);
-      assert.equal(results.violations[0].id, 'landmark-no-duplicate-banner');
-      assert.equal(results.violations[1].id, 'landmark-unique');
-    });
+    assert.isDefined(
+      results.violations.find(rule => rule.id === 'frame-title')
+    );
+    assert.isDefined(results.violations.find(rule => rule.id === 'image-alt'));
+    assert.isDefined(results.violations.find(rule => rule.id === 'region'));
+  });
 
-    it('should exclude CSS selector', async () => {
-      await driver.get('https://deque.com/');
+  it('should exclude CSS selector', async () => {
+    await driver.get(`${addr}/context.html`);
 
-      const results = await new AxeBuilder(driver)
-        .exclude('#masthead')
-        .analyze();
+    const results = await new AxeBuilder(driver).exclude('#ifr-one').analyze();
 
-      assert.lengthOf(results.violations, 1);
-      assert.equal(results.violations[0].id, 'landmark-no-duplicate-banner');
-    });
+    assert.isUndefined(
+      results.violations.find(rule => rule.id === 'frame-title')
+    );
+    assert.isUndefined(
+      results.violations.find(rule => rule.id === 'image-alt')
+    );
+  });
 
-    it('should include CSS selector', async () => {
-      await driver.get('https://deque.com/');
+  it('should include CSS selector', async () => {
+    await driver.get(`${addr}/context.html`);
 
-      const results = await new AxeBuilder(driver)
-        .include('#masthead')
-        .analyze();
+    const results = await new AxeBuilder(driver)
+      .include('.include')
+      .include('.include2')
+      .analyze();
 
-      assert.lengthOf(results.violations, 1);
-      assert.equal(results.violations[0].id, 'landmark-no-duplicate-banner');
-    });
+    assert.isEmpty(results.violations);
+  });
 
-    it('should disable rule', async () => {
-      await driver.get('https://deque.com/');
+  it('should disable rule', async () => {
+    await driver.get(`${addr}/context.html`);
 
-      const results = await new AxeBuilder(driver)
-        .disableRules('color-contrast')
-        .analyze();
+    const results = await new AxeBuilder(driver)
+      .disableRules('image-alt')
+      .analyze();
 
-      assert.isEmpty(
-        results.inapplicable.filter(rule => rule.id === 'color-contrast')
-      );
-      assert.isEmpty(
-        results.incomplete.filter(rule => rule.id === 'color-contrast')
-      );
-      assert.isEmpty(
-        results.violations.filter(rule => rule.id === 'color-contrast')
-      );
-      assert.isEmpty(
-        results.passes.filter(rule => rule.id === 'color-contrast')
-      );
-    });
+    assert.isUndefined(
+      results.inapplicable.find(rule => rule.id === 'image-alt')
+    );
+    assert.isUndefined(
+      results.incomplete.find(rule => rule.id === 'image-alt')
+    );
+    assert.isUndefined(
+      results.violations.find(rule => rule.id === 'image-alt')
+    );
+    assert.isUndefined(results.passes.find(rule => rule.id === 'image-alt'));
   });
 });
