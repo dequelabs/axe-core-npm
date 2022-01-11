@@ -249,6 +249,9 @@ workflows:
       - webdriverjs:
           requires:
             - lint
+      - webdriverjs-example:
+          requires:
+            - lint
       - webdriverio:
           requires:
             - lint
@@ -274,6 +277,7 @@ workflows:
             - cli
             - puppeteer
             - webdriverjs
+            - webdriverjs-example
             - webdriverio
             - reporter-earl
             - react
@@ -289,6 +293,7 @@ workflows:
             - cli
             - puppeteer
             - webdriverjs
+            - webdriverjs-example
             - webdriverio
             - reporter-earl
             - react
