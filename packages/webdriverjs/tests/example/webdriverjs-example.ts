@@ -1,6 +1,6 @@
 import { assert } from 'chai';
 import { Builder, WebDriver } from 'selenium-webdriver';
-import AxeBuilder from '@axe-core/webdriverjs';
+import AxeBuilder from '../../src';
 import testListen = require('test-listen');
 import { Server, createServer } from 'http';
 import * as chrome from 'selenium-webdriver/chrome';
