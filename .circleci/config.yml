@@ -107,7 +107,7 @@ jobs:
             - packages/playwright/node_modules
             - packages/puppeteer/node_modules
             - packages/webdriverjs/node_modules
-            - packages/webdriverjs/tests/example
+            - packages/webdriverjs/tests/example/node_modules
             - packages/webdriverio/node_modules
             - packages/reporter-earl/node_modules
             - packages/react/node_modules
