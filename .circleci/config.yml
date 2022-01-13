@@ -151,7 +151,7 @@ jobs:
     steps:
       - checkout
       - restore_dependency_cache
-      - run: npm run test --prefix=packages/webdriverjs/example
+      - run: npm run test --prefix=packages/webdriverjs/tests/example
 
   webdriverio:
     <<: *defaults
