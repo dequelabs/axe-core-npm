@@ -41,7 +41,7 @@ jobs:
             - v2-webdriverjs-npm-{{ checksum "packages/webdriverjs/package-lock.json" }}
       - restore_cache:
           keys:
-            - v2-webdriverjs-npm-example-{{ checksum "packages/webdriverjs/example/package-lock.json" }}
+            - v2-webdriverjs-npm-example-{{ checksum "packages/webdriverjs/tests/example/package-lock.json" }}
       - restore_cache:
           keys:
             - v2-webdriverio-npm-{{ checksum "packages/webdriverio/package-lock.json" }}
@@ -80,9 +80,9 @@ jobs:
           paths:
             - packages/webdriverjs/node_modules
       - save_cache:
-          key: v2-webdriverjs-npm-example-{{ checksum "packages/webdriverjs/example/package-lock.json" }}
+          key: v2-webdriverjs-npm-example-{{ checksum "packages/webdriverjs/tests/example/package-lock.json" }}
           paths:
-            - packages/webdriverjs/example/node_modules
+            - packages/webdriverjs/tests/example/node_modules
       - save_cache:
           key: v2-webdriverio-npm-{{ checksum "packages/webdriverio/package-lock.json" }}
           paths:
@@ -107,7 +107,7 @@ jobs:
             - packages/playwright/node_modules
             - packages/puppeteer/node_modules
             - packages/webdriverjs/node_modules
-            - packages/webdriverjs/example/node_modules
+            - packages/webdriverjs/tests/example/node_modules
             - packages/webdriverio/node_modules
             - packages/reporter-earl/node_modules
             - packages/react/node_modules

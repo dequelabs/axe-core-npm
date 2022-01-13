@@ -14,7 +14,7 @@ describe('@axe-core/webdriverjs example', () => {
 
   before(async () => {
     const app = express();
-    app.use(express.static(path.resolve(__dirname, '..', 'tests', 'fixtures')));
+    app.use(express.static(path.resolve(__dirname, '..', 'fixtures')));
     server = createServer(app);
     addr = await testListen(server);
   });
