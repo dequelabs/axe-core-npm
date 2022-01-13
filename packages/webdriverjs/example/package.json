@@ -10,6 +10,7 @@
     "@types/chai": "^4.2.22",
     "@types/node": "^14.17.32",
     "@types/selenium-webdriver": "^4.0.16",
+    "@axe-core/webdriverjs": "*",
     "chai": "^4.3.0",
     "express": "^4.17.2",
     "mocha": "^8.4.0",
@@ -17,8 +18,5 @@
     "test-listen": "^1.1.0",
     "ts-node": "^9.1.1",
     "typescript": "^4.4.4"
-  },
-  "dependencies": {
-    "@axe-core/webdriverjs": "*"
   }
 }
