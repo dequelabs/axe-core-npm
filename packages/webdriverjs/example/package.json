@@ -1,6 +1,6 @@
 {
   "name": "@axe-core-npm/webdriverjs-example",
-  "private": "true",
+  "private": true,
   "scripts": {
     "test": "mocha --timeout 60000 -r ts-node/register 'webdriverjs-example.ts'"
   },
@@ -17,5 +17,8 @@
     "test-listen": "^1.1.0",
     "ts-node": "^9.1.1",
     "typescript": "^4.4.4"
+  },
+  "dependencies": {
+    "@axe-core/webdriverjs": "*"
   }
 }

@@ -1,8 +1,8 @@
 import { assert } from 'chai';
 import { Builder, WebDriver } from 'selenium-webdriver';
-import AxeBuilder from '../../src';
 import testListen = require('test-listen');
 import { Server, createServer } from 'http';
+import AxeBuilder from '@axe-core/webdriverjs';
 import * as chrome from 'selenium-webdriver/chrome';
 import * as express from 'express';
 import * as path from 'path';
@@ -12,12 +12,14 @@ describe('@axe-core/webdriverjs example', () => {
   let server: Server;
   let addr: string;
 
-  beforeEach(async () => {
+  before(async () => {
     const app = express();
-    app.use(express.static(path.resolve(__dirname, '..', 'fixtures')));
+    app.use(express.static(path.resolve(__dirname, '..', 'tests', 'fixtures')));
     server = createServer(app);
     addr = await testListen(server);
+  });
 
+  beforeEach(async () => {
     driver = new Builder()
       .forBrowser('chrome')
       .setChromeOptions(new chrome.Options().headless())
@@ -26,6 +28,9 @@ describe('@axe-core/webdriverjs example', () => {
 
   afterEach(() => {
     driver.close();
+  });
+
+  after(() => {
     server.close();
   });
 
