@@ -30,11 +30,11 @@ const testPages = async (
       .get(currentUrl)
       .then(() => {
         return driver.executeAsyncScript(`
-      const callback = arguments[arguments.length - 1];
-      const script = document.createElement('script');
-      script.innerHTML = 'document.documentElement.classList.add("deque-axe-is-ready");'
-      document.documentElement.appendChild(script);
-      callback();
+          const callback = arguments[arguments.length - 1];
+          const script = document.createElement('script');
+          script.innerHTML = 'document.documentElement.classList.add("deque-axe-is-ready");'
+          document.documentElement.appendChild(script);
+          callback();
       `);
       })
       .then(() => {
@@ -84,7 +84,7 @@ const testPages = async (
           events?.startTimer('axe-core execution time');
         }
 
-        axe.analyze((err: string, results: AxeResults) => {
+        axe.analyze((err: Error | null, results: AxeResults) => {
           if (config.timer) {
             events?.endTimer('axe-core execution time');
           }
