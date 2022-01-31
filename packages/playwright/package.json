@@ -39,7 +39,7 @@
     "prepare": "npm run build"
   },
   "dependencies": {
-    "axe-core": "^4.3.5",
+    "axe-core": "^4.4.0",
     "playwright": "^1.16.2"
   },
   "devDependencies": {
