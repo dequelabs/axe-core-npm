@@ -142,9 +142,11 @@ function logFailureMessage(
 ): void {
   // this exists on axe but we don't export it as part of the typescript
   // namespace, so just let me use it as I need
-  const message: string = ((axeCore as unknown) as AxeWithAudit)._audit.data.failureSummaries[
-    key
-  ].failureMessage(node[key].map(check => check.message || ''));
+  const message: string = (
+    axeCore as unknown as AxeWithAudit
+  )._audit.data.failureSummaries[key].failureMessage(
+    node[key].map(check => check.message || '')
+  );
 
   console.error(message);
 }
@@ -208,30 +210,31 @@ function checkAndReport(node: Node, timeout: number): Promise<void> {
           }
         }
         axeCore.configure({ allowedOrigins: ['<unsafe_all_origins>'] });
-        axeCore.run(n, { reporter: 'v2' }, function (
-          error: Error,
-          results: axeCore.AxeResults
-        ) {
-          if (error) {
-            return reject(error);
-          }
+        axeCore.run(
+          n,
+          { reporter: 'v2' },
+          function (error: Error, results: axeCore.AxeResults) {
+            if (error) {
+              return reject(error);
+            }
 
-          results.violations = results.violations.filter(result => {
-            result.nodes = result.nodes.filter(node => {
-              const key: string = node.target.toString() + result.id;
-              const retVal = !cache[key];
-              cache[key] = key;
-              return disableDeduplicate || retVal;
+            results.violations = results.violations.filter(result => {
+              result.nodes = result.nodes.filter(node => {
+                const key: string = node.target.toString() + result.id;
+                const retVal = !cache[key];
+                cache[key] = key;
+                return disableDeduplicate || retVal;
+              });
+              return !!result.nodes.length;
             });
-            return !!result.nodes.length;
-          });
 
-          if (results.violations.length) {
-            logger(results);
+            if (results.violations.length) {
+              logger(results);
+            }
+
+            resolve();
           }
-
-          resolve();
-        });
+        );
       },
       {
         timeout: timeout
@@ -286,6 +289,8 @@ function addComponent(component: any): void {
   const reactInstanceDebugID = reactInstance._debugID;
   const reactFiberInstance = component._reactInternalFiber || {};
   const reactFiberInstanceDebugID = reactFiberInstance._debugID;
+  const reactInternals = component._reactInternals || {};
+  const reactInternalsDebugID = reactInternals._debugID;
 
   if (reactInstanceDebugID && !components[reactInstanceDebugID]) {
     components[reactInstanceDebugID] = component;
@@ -295,6 +300,9 @@ function addComponent(component: any): void {
     !components[reactFiberInstanceDebugID]
   ) {
     components[reactFiberInstanceDebugID] = component;
+    componentAfterRender(component);
+  } else if (reactInternalsDebugID && !components[reactInternalsDebugID]) {
+    components[reactInternalsDebugID] = component;
     componentAfterRender(component);
   }
 }
