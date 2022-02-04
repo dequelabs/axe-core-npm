@@ -29,8 +29,8 @@ export function normalizeContext(
   includes: string[][],
   excludes: string[][],
   disabledFrameSelectors: string[]
-): Axe.ContextObject {
-  const base: Axe.ContextObject = {
+): Axe.SerialContextObject {
+  const base: Axe.SerialContextObject = {
     exclude: []
   };
   if (excludes.length && Array.isArray(base.exclude)) {
