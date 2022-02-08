@@ -4,7 +4,7 @@ import type { Page, Frame, ElementHandle } from 'playwright';
 import type {
   RunOptions,
   AxeResults,
-  ContextObject,
+  SerialContextObject,
   PartialResults
 } from 'axe-core';
 import { normalizeContext, analyzePage } from './utils';
@@ -203,7 +203,7 @@ export default class AxeBuilder {
     `;
   }
 
-  private async runLegacy(context: ContextObject): Promise<AxeResults> {
+  private async runLegacy(context: SerialContextObject): Promise<AxeResults> {
     // in playwright all frames are available in `.frames()`, even nested and
     // shadowDOM iframes. also navigating to a url causes it to be put into
     // an iframe so we don't need to inject into the page object itself
@@ -237,7 +237,7 @@ export default class AxeBuilder {
 
   private async runPartialRecursive(
     frame: Frame,
-    context: ContextObject
+    context: SerialContextObject
   ): Promise<AxePartialRunner> {
     const frameContexts = await frame.evaluate(axeGetFrameContexts, {
       context

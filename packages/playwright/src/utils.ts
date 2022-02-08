@@ -1,18 +1,18 @@
-import type { AxeResults, ContextObject } from 'axe-core';
+import type { AxeResults, SerialContextObject } from 'axe-core';
 import type { AnalyzePageParams, AnalyzePageResponse } from './types';
 
 /**
  * Get running context
  * @param Array include
  * @param Array exclude
- * @returns ContextObject
+ * @returns SerialContextObject
  */
 
 export const normalizeContext = (
   includes: string[][],
   excludes: string[][]
-): ContextObject => {
-  const base: ContextObject = {
+): SerialContextObject => {
+  const base: SerialContextObject = {
     exclude: []
   };
   if (excludes.length && Array.isArray(base.exclude)) {
