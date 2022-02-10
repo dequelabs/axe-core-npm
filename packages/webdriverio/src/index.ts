@@ -141,7 +141,7 @@ export default class AxeBuilder {
    * axe.finishRun() which is called in a blank page. This uses axe.run() instead,
    * but with the restriction that cross-origin frames will not be tested.
    */
-  public setLegacyMode(legacyMode = true): AxeBuilder {
+  public setLegacyMode(legacyMode = true): this {
     this.legacyMode = legacyMode;
     return this;
   }
