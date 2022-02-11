@@ -3,14 +3,6 @@ version: 2.1
 defaults: &defaults
   docker:
     - image: circleci/node:12-browsers
-  steps:
-    - browser-tools/install-chrome
-    - browser-tools/install-chromedriver
-    - run:
-        command: |
-          google-chrome --version
-          chromedriver --version
-        name: Check install
   working_directory: ~/axe-core-npm
 
 commands:
@@ -26,12 +18,18 @@ commands:
           keys:
             - v3-npm-cache-{{ .Environment.CIRCLE_SHA1 }}
 
+  install_chrome_chromedriver:
+    description: 'Install matching Chrome browser and ChromeDriver version'
+    steps:
+      - run: npx browser-driver-manager@1.0.4 install chrome chromedriver --verbose
+
 jobs:
   dependencies:
     <<: *defaults
     steps:
       - checkout
       - configure_npm
+      - install_chrome_chromedriver
       - restore_cache:
           keys:
             - v2-root-npm-{{ checksum "package-lock.json" }}
@@ -66,9 +64,6 @@ jobs:
       - run:
           name: Install top-level dependencies
           command: npm ci
-      - run:
-          name: Install matching Chrome browser ChromeDriver version
-          command: npx browser-driver-manager@1.0.4 install chrome chromedriver --verbose
       - save_cache:
           key: v2-root-npm-{{ checksum "package-lock.json" }}
           paths:
