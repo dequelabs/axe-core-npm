@@ -127,6 +127,7 @@ jobs:
     steps:
       - checkout
       - restore_dependency_cache
+      - run: npx browser-driver-manager@1.0.4 install chrome chromedriver
       # Re-build packages, ensuring packages/webdriverjs/dist exists.
       - run: npx lerna run prepare
       - run: npm run coverage --prefix=packages/cli
