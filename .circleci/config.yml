@@ -24,7 +24,6 @@ jobs:
     steps:
       - checkout
       - configure_npm
-      - run: npx browser-driver-manager@1.0.4 install chrome chromedriver --verbose
       - restore_cache:
           keys:
             - v2-root-npm-{{ checksum "package-lock.json" }}
@@ -59,6 +58,7 @@ jobs:
       - run:
           name: Install top-level dependencies
           command: npm ci
+      - run: npx browser-driver-manager@1.0.4 install chrome chromedriver --verbose
       - save_cache:
           key: v2-root-npm-{{ checksum "package-lock.json" }}
           paths:
