@@ -24,6 +24,7 @@ jobs:
     steps:
       - checkout
       - configure_npm
+      - run: npx browser-driver-manager@1.0.4 install chrome chromedriver --verbose
       - restore_cache:
           keys:
             - v2-root-npm-{{ checksum "package-lock.json" }}
@@ -127,7 +128,6 @@ jobs:
     steps:
       - checkout
       - restore_dependency_cache
-      - run: npx browser-driver-manager@1.0.4 install chrome chromedriver
       # Re-build packages, ensuring packages/webdriverjs/dist exists.
       - run: npx lerna run prepare
       - run: npm run coverage --prefix=packages/cli
@@ -145,7 +145,6 @@ jobs:
     steps:
       - checkout
       - restore_dependency_cache
-      - run: npx browser-driver-manager@1.0.4 install chrome chromedriver
       - run: npm run coverage --prefix=packages/webdriverjs
 
   webdriverjs-example:
@@ -153,7 +152,6 @@ jobs:
     steps:
       - checkout
       - restore_dependency_cache
-      - run: npx browser-driver-manager@1.0.4 install chrome chromedriver
       - run: npm --prefix=packages/webdriverjs run build
       - run: npm run test --prefix=packages/webdriverjs/tests/example
 
@@ -162,7 +160,6 @@ jobs:
     steps:
       - checkout
       - restore_dependency_cache
-      - run: npx browser-driver-manager@1.0.4 install chrome chromedriver
       - run: npm run coverage --prefix=packages/webdriverio
 
   reporter-earl:
