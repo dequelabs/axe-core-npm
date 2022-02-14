@@ -31,13 +31,13 @@ const cli = async (
     chromeOptions,
     verbose,
     timeout,
-    path,
     include,
     exclude,
     tags,
     rules,
     disable,
-    loadDelay
+    loadDelay,
+    chromedriverPath
   } = args;
 
   const silentMode = !!stdout;
@@ -66,7 +66,7 @@ const cli = async (
     browser: args.browser,
     timeout,
     chromeOptions,
-    path
+    chromedriverPath
   };
 
   args.driver = startDriver(driverConfigs);
@@ -150,7 +150,7 @@ const cli = async (
     if (!showErrors) {
       console.error(error('An error occurred while testing this page.'));
     } else {
-      console.error(error('Error: %j \n $s'), e.message, e.stack);
+      console.error(error('Error: %s'), e);
     }
 
     console.error(

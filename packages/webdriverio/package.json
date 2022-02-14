@@ -1,11 +1,14 @@
 {
   "name": "@axe-core/webdriverio",
-  "version": "4.3.2",
+  "version": "4.4.0",
   "description": "Provides a method to inject and analyze web pages using axe",
   "contributors": [
     {
       "name": "Michael Siek (me@michaelsiek.com)"
     }
+  ],
+  "files": [
+    "/dist"
   ],
   "repository": {
     "type": "git",
@@ -33,18 +36,18 @@
     "webdriverio"
   ],
   "dependencies": {
-    "axe-core": "^4.3.3",
+    "axe-core": "^4.4.1",
     "cssesc": "^3.0.0"
   },
   "devDependencies": {
-    "@types/chai": "^4.2.21",
+    "@types/chai": "^4.2.22",
     "@types/chromedriver": "^81.0.0",
     "@types/cssesc": "^3.0.0",
     "@types/express": "^4.17.13",
     "@types/mocha": "^8.2.3",
-    "@types/node": "^14.17.9",
+    "@types/node": "^14.17.32",
     "@types/test-listen": "^1.1.0",
-    "@wdio/sync": "^7.12.4",
+    "@wdio/sync": "^7.16.3",
     "axe-test-fixtures": "github:dequelabs/axe-test-fixtures#v1",
     "chai": "^4.3.0",
     "chromedriver": "^96.0.0",
@@ -53,15 +56,15 @@
     "mocha": "^8.4.0",
     "nyc": "^15.1.0",
     "rimraf": "^3.0.2",
-    "source-map-support": "^0.5.19",
+    "source-map-support": "^0.5.20",
     "test-listen": "^1.1.0",
     "ts-node": "^9.1.1",
     "tsc-silent": "^1.2.1",
-    "typescript": "^4.3.5",
-    "webdriverio": "^7.12.4"
+    "typescript": "^4.4.4",
+    "webdriverio": "^7.14.1"
   },
   "peerDependencies": {
-    "webdriverio": "^7.0.0 || ^6.0.0 || ^5.0.0"
+    "webdriverio": "^5 || ^6 ||7 - 7.14.1"
   },
   "nyc": {
     "include": [

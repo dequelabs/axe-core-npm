@@ -1,5 +1,5 @@
 import assert from 'assert';
-import { RunOptions, ContextObject, Spec, AxeResults } from 'axe-core';
+import { RunOptions, SerialContextObject, Spec, AxeResults } from 'axe-core';
 import { Frame, JSONArray, JSONObject, Page } from 'puppeteer';
 import {
   axeGetFrameContext,
@@ -190,7 +190,7 @@ export class AxePuppeteer {
       return axeResults;
     } catch (err) {
       if (callback) {
-        callback(err);
+        callback(err as Error);
         return null;
       }
       throw err;
@@ -221,14 +221,16 @@ export class AxePuppeteer {
       return await this.finishRun(partials);
     } catch (error) {
       throw new Error(
-        `${error.message}\n Please check out https://github.com/dequelabs/axe-core-npm/blob/develop/packages/puppeteer/error-handling.md`
+        `${
+          (error as Error).message
+        }\n Please check out https://github.com/dequelabs/axe-core-npm/blob/develop/packages/puppeteer/error-handling.md`
       );
     }
   }
 
   private async runPartialRecursive(
     frame: Frame,
-    context: ContextObject
+    context: SerialContextObject
   ): Promise<AxePartialRunner> {
     // IMPORTANT: axeGetFrameContext MUST be called before axeRunPartial
     const frameContexts = await frame.evaluate(axeGetFrameContext, context);
@@ -283,7 +285,7 @@ export class AxePuppeteer {
       });
   }
 
-  private async runLegacy(context: ContextObject): Promise<AxeResults> {
+  private async runLegacy(context: SerialContextObject): Promise<AxeResults> {
     const options = this.axeOptions as JSONObject;
     const selector = iframeSelector(this.disabledFrameSelectors);
     const source = this.axeSource;

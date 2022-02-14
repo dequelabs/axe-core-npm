@@ -180,6 +180,33 @@ describe('cli', () => {
         'Violation of "marquee" with 1 occurrences!'
       );
     });
+
+    it('should throw error if CSS selector is not found', async () => {
+      const result = await runCLI(
+        `file://${SIMPLE_HTML_FILE}`,
+        '--include',
+        '#hazaar',
+        '--show-errors'
+      );
+
+      assert.include(
+        result.stderr,
+        'javascript error: No elements found for include in page Context'
+      );
+      assert.equal(result.exitCode, 1);
+    });
+
+    it('should throw error if invalid selector is provided', async () => {
+      const result = await runCLI(
+        `file://${SIMPLE_HTML_FILE}`,
+        '--include',
+        '#123',
+        '--show-errors'
+      );
+
+      assert.include(result.stderr, 'is not a valid selector');
+      assert.equal(result.exitCode, 1);
+    });
   });
 
   describe('--exclude', () => {
@@ -193,6 +220,18 @@ describe('cli', () => {
         result.stdout,
         'Violation of "marquee" with 1 occurrences!'
       );
+    });
+
+    it('should throw error if invalid selector is provided', async () => {
+      const result = await runCLI(
+        `file://${SIMPLE_HTML_FILE}`,
+        '--exclude',
+        '#123',
+        '--show-errors'
+      );
+
+      assert.include(result.stderr, 'is not a valid selector');
+      assert.equal(result.exitCode, 1);
     });
   });
 
@@ -313,6 +352,20 @@ describe('cli', () => {
           'An error occurred while testing this page.'
         );
       }
+    });
+  });
+
+  describe('--chromedriver-path', () => {
+    it('should throw error if path does not exist', async () => {
+      const result = await runCLI(
+        `file://${SIMPLE_HTML_FILE}`,
+        '--chromedriver-path="someinvalidpath"',
+        '--show-errors'
+      );
+      assert.include(
+        result.stderr,
+        'The specified executable path does not exist'
+      );
     });
   });
 });

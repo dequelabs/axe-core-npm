@@ -4,7 +4,7 @@ import type { Page, Frame, ElementHandle } from 'playwright';
 import type {
   RunOptions,
   AxeResults,
-  ContextObject,
+  SerialContextObject,
   PartialResults
 } from 'axe-core';
 import { normalizeContext, analyzePage } from './utils';
@@ -19,8 +19,8 @@ import AxePartialRunner from './AxePartialRunner';
 
 export default class AxeBuilder {
   private page: Page;
-  private includes: string[];
-  private excludes: string[];
+  private includes: string[][];
+  private excludes: string[][];
   private option: RunOptions;
   private source: string;
   private legacyMode = false;
@@ -42,7 +42,8 @@ export default class AxeBuilder {
    * @returns this
    */
 
-  public include(selector: string): this {
+  public include(selector: string | string[]): this {
+    selector = Array.isArray(selector) ? selector : [selector];
     this.includes.push(selector);
     return this;
   }
@@ -54,7 +55,8 @@ export default class AxeBuilder {
    * @returns this
    */
 
-  public exclude(selector: string): this {
+  public exclude(selector: string | string[]): this {
+    selector = Array.isArray(selector) ? selector : [selector];
     this.excludes.push(selector);
     return this;
   }
@@ -167,7 +169,9 @@ export default class AxeBuilder {
       return await this.finishRun(partials);
     } catch (error) {
       throw new Error(
-        `${error.message}\n Please check out https://github.com/dequelabs/axe-core-npm/blob/develop/packages/playwright/error-handling.md`
+        `${
+          (error as Error).message
+        }\n Please check out https://github.com/dequelabs/axe-core-npm/blob/develop/packages/playwright/error-handling.md`
       );
     }
   }
@@ -199,7 +203,7 @@ export default class AxeBuilder {
     `;
   }
 
-  private async runLegacy(context: ContextObject): Promise<AxeResults> {
+  private async runLegacy(context: SerialContextObject): Promise<AxeResults> {
     // in playwright all frames are available in `.frames()`, even nested and
     // shadowDOM iframes. also navigating to a url causes it to be put into
     // an iframe so we don't need to inject into the page object itself
@@ -233,7 +237,7 @@ export default class AxeBuilder {
 
   private async runPartialRecursive(
     frame: Frame,
-    context: ContextObject
+    context: SerialContextObject
   ): Promise<AxePartialRunner> {
     const frameContexts = await frame.evaluate(axeGetFrameContexts, {
       context

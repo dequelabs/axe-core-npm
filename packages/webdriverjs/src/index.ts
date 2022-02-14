@@ -1,7 +1,7 @@
 import { WebDriver } from 'selenium-webdriver';
 import { RunOptions, Spec, AxeResults, ContextObject } from 'axe-core';
 import { source } from 'axe-core';
-import { CallbackFunction, BuilderOptions, PartialResults } from './types';
+import { CallbackFunction, BuilderOptions, Selector } from './types';
 import { normalizeContext } from './utils/index';
 import AxeInjector from './axe-injector';
 import {
@@ -16,8 +16,8 @@ import * as assert from 'assert';
 class AxeBuilder {
   private driver: WebDriver;
   private axeSource: string;
-  private includes: string[];
-  private excludes: string[];
+  private includes: Selector[];
+  private excludes: Selector[];
   private option: RunOptions;
   private config: Spec | null;
   private builderOptions: BuilderOptions;
@@ -41,7 +41,8 @@ class AxeBuilder {
    * Selector to include in analysis.
    * This may be called any number of times.
    */
-  public include(selector: string): this {
+  public include(selector: Selector): this {
+    selector = Array.isArray(selector) ? selector : [selector];
     this.includes.push(selector);
     return this;
   }
@@ -50,7 +51,8 @@ class AxeBuilder {
    * Selector to exclude in analysis.
    * This may be called any number of times.
    */
-  public exclude(selector: string): this {
+  public exclude(selector: Selector): this {
+    selector = Array.isArray(selector) ? selector : [selector];
     this.excludes.push(selector);
     return this;
   }
@@ -129,7 +131,7 @@ class AxeBuilder {
         .catch((err: Error) => {
           // When using a callback, do *not* reject the wrapping Promise. This prevents having to handle the same error twice.
           if (callback) {
-            callback(err.message, null);
+            callback(err, null);
           } else {
             reject(err);
           }
@@ -144,7 +146,7 @@ class AxeBuilder {
    * axe.finishRun() which is called in a blank page. This uses axe.run() instead,
    * but with the restriction that cross-origin frames will not be tested.
    */
-  public setLegacyMode(legacyMode = true): AxeBuilder {
+  public setLegacyMode(legacyMode = true): this {
     this.legacyMode = legacyMode;
     return this;
   }
@@ -170,7 +172,9 @@ class AxeBuilder {
       return await this.finishRun(partials);
     } catch (error) {
       throw new Error(
-        `${error.message}\n Please check out https://github.com/dequelabs/axe-core-npm/blob/develop/packages/webdriverjs/error-handling.md`
+        `${
+          (error as Error).message
+        }\n Please check out https://github.com/dequelabs/axe-core-npm/blob/develop/packages/webdriverjs/error-handling.md`
       );
     }
   }
