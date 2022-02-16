@@ -178,7 +178,6 @@ jobs:
     steps:
       - checkout
       - restore_dependency_cache
-      - run: npm install cypress --prefix=packages/react
       - run: npm run build --prefix=packages/react
       - run: npm run test --prefix=packages/react
 
