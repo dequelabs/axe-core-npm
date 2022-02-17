@@ -5,7 +5,7 @@ import { mount } from 'enzyme';
 import sinon from 'sinon';
 import { assert } from 'chai';
 import axe from 'axe-core';
-import reactAxe from '../dist/index.js';
+import reactAxe, { _reset } from '../dist/index.js';
 
 class App extends React.Component {
   constructor(props) {
@@ -62,6 +62,8 @@ describe(`@axe-core/react using react@${React.version}`, () => {
   });
 
   afterEach(() => {
+    _reset();
+
     divWrapper.remove();
     mountedComps.forEach(comp => comp.unmount());
 
@@ -88,6 +90,10 @@ describe(`@axe-core/react using react@${React.version}`, () => {
     assert.isTrue(
       logger.calledWith(
         sinon.match({
+          passes: sinon.match.array,
+          violations: sinon.match.array,
+          incomplete: sinon.match.array,
+          inapplicable: sinon.match.array,
           testEngine: {
             name: 'axe-core',
             version: axe.version
@@ -97,14 +103,42 @@ describe(`@axe-core/react using react@${React.version}`, () => {
     );
   });
 
+  it('should deduplicate results', async () => {
+    mountedComps.push(mount(<App />, { attachTo: divWrapper }));
+
+    const logger = sinon.stub();
+    await reactAxe(React, ReactDOM, 1000, undefined, undefined, logger);
+    logger.resetHistory();
+    await reactAxe(React, ReactDOM, 1000, undefined, undefined, logger);
+
+    assert.isFalse(logger.called);
+  });
+
+  it('should not deduplicate results with disableDeduplicate', async () => {
+    mountedComps.push(mount(<App />, { attachTo: divWrapper }));
+
+    const logger = sinon.stub();
+    await reactAxe(React, ReactDOM, 1000, undefined, undefined, logger);
+    logger.resetHistory();
+    await reactAxe(
+      React,
+      ReactDOM,
+      1000,
+      { disableDeduplicate: true },
+      undefined,
+      logger
+    );
+
+    assert.isTrue(logger.called);
+  });
+
   it('should configure axe', async () => {
     mountedComps.push(mount(<App />, { attachTo: divWrapper }));
 
     const logger = sinon.stub();
     const config = {
       rules: [{ id: 'button-name', enabled: true }],
-      disableOtherRules: true,
-      disableDeduplicate: true
+      disableOtherRules: true
     };
 
     await reactAxe(React, ReactDOM, 1000, config, undefined, logger);
@@ -116,14 +150,58 @@ describe(`@axe-core/react using react@${React.version}`, () => {
     assert.lengthOf(results.inapplicable, 0);
   });
 
+  it('should configure axe with runOnly (tags)', async () => {
+    mountedComps.push(mount(<App />, { attachTo: divWrapper }));
+
+    const logger = sinon.stub();
+
+    // first prove there are non-wcag2a rules returned
+    await reactAxe(React, ReactDOM, 1000, undefined, undefined, logger);
+
+    let results = logger.firstCall.firstArg;
+    let rules = [
+      ...results.passes,
+      ...results.violations,
+      ...results.incomplete,
+      ...results.inapplicable
+    ];
+
+    assert.isTrue(rules.length > 0);
+    assert.isFalse(rules.every(rule => rule.tags.includes('wcag2a')));
+
+    // now prove config fixes that
+    logger.resetHistory();
+    await reactAxe(
+      React,
+      ReactDOM,
+      1000,
+      {
+        runOnly: ['wcag2a'],
+        disableDeduplicate: true
+      },
+      undefined,
+      logger
+    );
+
+    results = logger.firstCall.firstArg;
+    rules = [
+      ...results.passes,
+      ...results.violations,
+      ...results.incomplete,
+      ...results.inapplicable
+    ];
+
+    assert.isTrue(rules.length > 0);
+    assert.isTrue(rules.every(rule => rule.tags.includes('wcag2a')));
+  });
+
   it('should only call the logger when there are violations', async () => {
     mountedComps.push(mount(<App />, { attachTo: divWrapper }));
 
     const logger = sinon.stub();
     const config = {
       rules: [{ id: 'heading-order', enabled: true }],
-      disableOtherRules: true,
-      disableDeduplicate: true
+      disableOtherRules: true
     };
 
     await reactAxe(React, ReactDOM, 1000, config, undefined, logger);
@@ -137,8 +215,7 @@ describe(`@axe-core/react using react@${React.version}`, () => {
 
     const config = {
       rules: [{ id: 'button-name', enabled: true }],
-      disableOtherRules: true,
-      disableDeduplicate: true
+      disableOtherRules: true
     };
 
     await reactAxe(React, ReactDOM, 1000, config);
@@ -169,8 +246,7 @@ describe(`@axe-core/react using react@${React.version}`, () => {
           any: ['failure']
         }
       ],
-      disableOtherRules: true,
-      disableDeduplicate: true
+      disableOtherRules: true
     };
 
     await reactAxe(React, ReactDOM, 1000, config);
@@ -206,8 +282,7 @@ describe(`@axe-core/react using react@${React.version}`, () => {
           any: ['critical']
         }
       ],
-      disableOtherRules: true,
-      disableDeduplicate: true
+      disableOtherRules: true
     };
 
     await reactAxe(React, ReactDOM, 1000, config);
@@ -246,8 +321,7 @@ describe(`@axe-core/react using react@${React.version}`, () => {
           any: ['serious']
         }
       ],
-      disableOtherRules: true,
-      disableDeduplicate: true
+      disableOtherRules: true
     };
 
     await reactAxe(React, ReactDOM, 1000, config);
@@ -286,8 +360,7 @@ describe(`@axe-core/react using react@${React.version}`, () => {
           any: ['moderate']
         }
       ],
-      disableOtherRules: true,
-      disableDeduplicate: true
+      disableOtherRules: true
     };
 
     await reactAxe(React, ReactDOM, 1000, config);
@@ -326,8 +399,7 @@ describe(`@axe-core/react using react@${React.version}`, () => {
           any: ['minor']
         }
       ],
-      disableOtherRules: true,
-      disableDeduplicate: true
+      disableOtherRules: true
     };
 
     await reactAxe(React, ReactDOM, 1000, config);
@@ -337,54 +409,6 @@ describe(`@axe-core/react using react@${React.version}`, () => {
     assert.isTrue(
       groupCollapsedArgs.includes('color:#d24700;font-weight:normal;')
     );
-  });
-
-  it('should configure axe with runOnly (tags)', async () => {
-    mountedComps.push(mount(<App />, { attachTo: divWrapper }));
-
-    const logger = sinon.stub();
-    const config = {
-      disableDeduplicate: true
-    };
-
-    // first prove there are non-wcag2a rules returned
-    await reactAxe(React, ReactDOM, 1000, config, undefined, logger);
-
-    let results = logger.firstCall.firstArg;
-    let rules = [
-      ...results.passes,
-      ...results.violations,
-      ...results.incomplete,
-      ...results.inapplicable
-    ];
-
-    assert.isTrue(rules.length > 0);
-    assert.isFalse(rules.every(rule => rule.tags.includes('wcag2a')));
-
-    // now prove config fixes that
-    logger.resetHistory();
-    await reactAxe(
-      React,
-      ReactDOM,
-      1000,
-      {
-        runOnly: ['wcag2a'],
-        ...config
-      },
-      undefined,
-      logger
-    );
-
-    results = logger.firstCall.firstArg;
-    rules = [
-      ...results.passes,
-      ...results.violations,
-      ...results.incomplete,
-      ...results.inapplicable
-    ];
-
-    assert.isTrue(rules.length > 0);
-    assert.isTrue(rules.every(rule => rule.tags.includes('wcag2a')));
   });
 
   it('should call the logger when a component updates', done => {
@@ -402,8 +426,7 @@ describe(`@axe-core/react using react@${React.version}`, () => {
     });
     const config = {
       rules: [{ id: 'button-name', enabled: true }],
-      disableOtherRules: true,
-      disableDeduplicate: true
+      disableOtherRules: true
     };
 
     reactAxe(React, ReactDOM, 1000, config, undefined, logger).then(() => {
@@ -418,9 +441,9 @@ describe(`@axe-core/react using react@${React.version}`, () => {
             { attachTo: divWrapper }
           )
         );
+
         logger.resetHistory();
         assert.isFalse(logger.called);
-
         trigger = true;
         window.AppComp.setState({ text: '    ' });
       } catch (err) {
@@ -444,16 +467,14 @@ describe(`@axe-core/react using react@${React.version}`, () => {
     });
     const config = {
       rules: [{ id: 'button-name', enabled: true }],
-      disableOtherRules: true,
-      disableDeduplicate: true
+      disableOtherRules: true
     };
 
     reactAxe(React, ReactDOM, 1000, config, undefined, logger).then(() => {
       try {
         mountedComps.push(mount(<ShadowApp />, { attachTo: divWrapper }));
-        logger.resetHistory();
-        assert.isFalse(logger.called);
 
+        logger.resetHistory();
         trigger = true;
         window.AppComp.setState({ text: '    ' });
       } catch (err) {
@@ -478,8 +499,7 @@ describe(`@axe-core/react using react@${React.version}`, () => {
     });
     const config = {
       rules: [{ id: 'button-name', enabled: true }],
-      disableOtherRules: true,
-      disableDeduplicate: true
+      disableOtherRules: true
     };
 
     reactAxe(React, ReactDOM, 1000, config, undefined, logger).then(() => {
@@ -509,8 +529,8 @@ describe(`@axe-core/react using react@${React.version}`, () => {
             { attachTo: div2 }
           )
         );
-        logger.resetHistory();
 
+        logger.resetHistory();
         trigger = true;
         window.AppComp1.setState({ text: '    ' });
         window.AppComp2.setState({ text: '    ' });
