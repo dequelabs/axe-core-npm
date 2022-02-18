@@ -412,4 +412,14 @@ function reactAxe(
   return checkAndReport(document.body, timeout);
 }
 
-export = reactAxe;
+// export function just for tests so we can have a clean state
+// between tests
+export function _reset() {
+  Object.keys(cache).forEach(key => {
+    delete cache[key];
+  });
+
+  axeCore.reset();
+}
+
+export default reactAxe;
