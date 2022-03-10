@@ -2,7 +2,7 @@ version: 2.1
 
 defaults: &defaults
   docker:
-    - image: cimg/node:16.14-browsers
+    - image: cimg/node:14.19-browsers
   working_directory: ~/axe-core-npm
 
 commands:
@@ -155,6 +155,7 @@ jobs:
     steps:
       - checkout
       - restore_dependency_cache
+      - run: npx browser-driver-manager@1.0.4 install chrome chromedriver
       - run: npm --prefix=packages/webdriverjs run build
       - run: npm run test --prefix=packages/webdriverjs/tests/example
 
