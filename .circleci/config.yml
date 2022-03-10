@@ -157,8 +157,9 @@ jobs:
     steps:
       - checkout
       - restore_dependency_cache
-      - run: npx browser-driver-manager@1.0.4 install chrome chromedriver
-      - run: npm --prefix=packages/webdriverjs/tests/example run build
+      - run: npm --prefix=packages/webdriverjs run build
+      - run: npm install browser-driver-manager@1.0.4 install chrome chromedriver
+      - run: npx lerna link
       - run: npm run test --prefix=packages/webdriverjs/tests/example
 
   webdriverio:
