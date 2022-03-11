@@ -1,4 +1,3 @@
-import * as fs from 'fs';
 import * as assert from 'assert';
 import type { Page, Frame, ElementHandle } from 'playwright';
 import type {
@@ -7,6 +6,7 @@ import type {
   SerialContextObject,
   PartialResults
 } from 'axe-core';
+import { source } from 'axe-core';
 import { normalizeContext, analyzePage } from './utils';
 import type { AxePlaywrightParams } from './types';
 import {
@@ -26,8 +26,6 @@ export default class AxeBuilder {
   private legacyMode = false;
 
   constructor({ page, axeSource }: AxePlaywrightParams) {
-    const axePath = require.resolve('axe-core');
-    const source = fs.readFileSync(axePath, 'utf-8');
     this.page = page;
     this.includes = [];
     this.excludes = [];
