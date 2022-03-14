@@ -28,7 +28,7 @@ if (process.env.NODE_ENV !== 'production') {
 }
 ```
 
-Be sure to only run the module in your development environment (as shown in the code above) or else your application will use more resources than necessary when in production. You can use [envify](https://www.npmjs.com/package/envify) to do this as is shown in the [example](./examples/shadow-dom/package.json#L37).
+Be sure to only run the module in your development environment (as shown in the code above) or else your application will use more resources than necessary when in production. You can use [envify](https://www.npmjs.com/package/envify) to do this as is shown in the [example](https://github.com/dequelabs/axe-core-npm/blob/develop/packages/react/examples/shadow-dom/package.json#L37).
 
 Once initialized, the module will output accessibility defect information to the Chrome Devtools console every time a component updates.
 
