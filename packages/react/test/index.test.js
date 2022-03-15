@@ -5,7 +5,8 @@ import { mount } from 'enzyme';
 import sinon from 'sinon';
 import { assert } from 'chai';
 import axe from 'axe-core';
-import reactAxe, { _reset } from '../dist/index.js';
+import reactAxe from '../dist/index.js';
+import cache from '../dist/cache.js';
 
 class App extends React.Component {
   constructor(props) {
@@ -62,7 +63,8 @@ describe(`@axe-core/react using react@${React.version}`, () => {
   });
 
   afterEach(() => {
-    _reset();
+    cache.clear();
+    axe.reset();
 
     divWrapper.remove();
     mountedComps.forEach(comp => comp.unmount());
