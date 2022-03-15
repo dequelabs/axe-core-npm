@@ -1,8 +1,13 @@
 version: 2.1
 
+orbs:
+  browser-tools: circleci/browser-tools@1.2.4
+
 defaults: &defaults
   docker:
-    - image: circleci/node:12-browsers
+    # using a node14 image instead of a node16 image due to WDIO
+    # @see https://webdriver.io/blog/2021/07/28/sync-api-deprecation/
+    - image: cimg/node:14.19-browsers
   working_directory: ~/axe-core-npm
 
 commands:
@@ -155,6 +160,8 @@ jobs:
     steps:
       - checkout
       - restore_dependency_cache
+      - browser-tools/install-chrome
+      - browser-tools/install-chromedriver
       - run: npm --prefix=packages/webdriverjs run build
       - run: npm run test --prefix=packages/webdriverjs/tests/example
 
@@ -178,7 +185,6 @@ jobs:
     steps:
       - checkout
       - restore_dependency_cache
-      - run: npm install cypress --prefix=packages/react
       - run: npm run build --prefix=packages/react
       - run: npm run test --prefix=packages/react
 
