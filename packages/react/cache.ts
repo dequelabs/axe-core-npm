@@ -1,12 +1,6 @@
 const _cache: { [key: string]: string } = {};
 
-interface Cache {
-  set(key: string, value: string): void;
-  get(key: string): string;
-  clear(): void;
-}
-
-const cache: Cache = {
+const cache = {
   set(key: string, value: string): void {
     _cache[key] = value;
   },
