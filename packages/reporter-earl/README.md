@@ -31,7 +31,7 @@ const reporter = require('@axe-core/reporter-earl').default;
 axe.run({ reporter }).then(earlResults => console.log(earlResults));
 ```
 
-ES6 Import Syntax
+ES6 Import Syntax:
 
 ```js
 import reporter from '@axe-core/reporter-earl';
