@@ -2,7 +2,7 @@
 import axeCore = require('axe-core');
 import rIC = require('requestidlecallback');
 import after = require('./after');
-import cache = require('./cache');
+import cache from './cache';
 
 const requestIdleCallback = rIC.request;
 const cancelIdleCallback = rIC.cancel;
