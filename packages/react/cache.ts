@@ -14,4 +14,4 @@ const cache = {
   }
 };
 
-export = cache;
+export default cache;
