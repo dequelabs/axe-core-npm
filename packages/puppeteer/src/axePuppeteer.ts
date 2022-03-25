@@ -280,8 +280,8 @@ export class AxePuppeteer {
         partialResults as JSONArray,
         axeOptions as JSONObject
       )
-      .finally(() => {
-        blankPage.close();
+      .finally(async () => {
+        await blankPage.close();
       });
   }
 
