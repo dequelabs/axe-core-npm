@@ -290,8 +290,8 @@ export default class AxeBuilder {
         partialResults,
         options
       })
-      .finally(() => {
-        blankPage.close();
+      .finally(async () => {
+        await blankPage.close();
       });
   }
 }
