@@ -134,7 +134,7 @@ jobs:
       - restore_dependency_cache
       # Re-build packages, ensuring packages/webdriverjs/dist exists.
       - run: npx lerna run prepare
-      - run: npx browser-driver-manager@1.0.4 install chrome chromedriver
+      - run: npx browser-driver-manager@1.0.4 install chrome chromedriver --verbose
       - run: npm run coverage --prefix=packages/cli
 
   puppeteer:
