@@ -5,101 +5,38 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 
 ## [4.4.2](https://github.com/dequelabs/axe-core-npm/compare/v4.1.1...v4.4.2) (2022-03-14)
 
-
-### Bug Fixes
-
-* **cli,reporter-earl,react:** use correct version of axe-core ([#378](https://github.com/dequelabs/axe-core-npm/issues/378)) ([0c7d050](https://github.com/dequelabs/axe-core-npm/commit/0c7d0506b7d397df3c96414fc37a408e90fe9a9c))
-* **cli:** add `endTimer()` for page load timer ([#236](https://github.com/dequelabs/axe-core-npm/issues/236)) ([e0a19a3](https://github.com/dequelabs/axe-core-npm/commit/e0a19a3bad9b9965df9b98f391efb3403ab737ae))
-* **cli:** add timeout waiting for page to be ready ([#250](https://github.com/dequelabs/axe-core-npm/issues/250)) ([cbb795f](https://github.com/dequelabs/axe-core-npm/commit/cbb795f1a92c419794a5f1f9645e28493d7c9bdb))
-* **cli:** find axe-core when installed globally ([#232](https://github.com/dequelabs/axe-core-npm/issues/232)) ([75c273d](https://github.com/dequelabs/axe-core-npm/commit/75c273d6b8b4dcec1f953605a5bf4c9b818436cb))
-* **cli:** pass chromedriver-path arg to webdriver ([#416](https://github.com/dequelabs/axe-core-npm/issues/416)) ([14e5125](https://github.com/dequelabs/axe-core-npm/commit/14e512551506a333b0249049c3c08c605b2026c3))
-* **cli:** provide a more robust error message if analysis fails ([#421](https://github.com/dequelabs/axe-core-npm/issues/421)) ([9f1fa5d](https://github.com/dequelabs/axe-core-npm/commit/9f1fa5d8cb7c2c87bd6e92fe7b13b961e3d73f37))
-* **cli:** update packages to use `latest` version of ChromeDriver ([#454](https://github.com/dequelabs/axe-core-npm/issues/454)) ([607fa1b](https://github.com/dequelabs/axe-core-npm/commit/607fa1b3f9d7f0d8181a2ef19df03d53e65f7237))
-* pass chrome options to `chromeOptions.addArguments()` ([#262](https://github.com/dequelabs/axe-core-npm/issues/262)) ([715f463](https://github.com/dequelabs/axe-core-npm/commit/715f463c1324d11cafec4a357ee55f446584cd1c))
-* selenium-webdriverjs peer dependency to allow newer versions ([#258](https://github.com/dequelabs/axe-core-npm/issues/258)) ([2dc2788](https://github.com/dequelabs/axe-core-npm/commit/2dc27883aa4aa40e64766b0bc60191cb1a4f8963))
-* update axe-core to 4.2.1 ([#254](https://github.com/dequelabs/axe-core-npm/issues/254)) ([9d90185](https://github.com/dequelabs/axe-core-npm/commit/9d9018525a4d799f6d763d0329f05ccbfd20dbe4))
-* **webdriverjs:** prevent selnium undefined -> null transformation ([#402](https://github.com/dequelabs/axe-core-npm/issues/402)) ([5095f43](https://github.com/dequelabs/axe-core-npm/commit/5095f43d371a3ad5c8b5a6b3f94e0ad686e85d7b))
-* **webdriverjs:** prevent selnium undefined -> null transformation ([#402](https://github.com/dequelabs/axe-core-npm/issues/402)) ([be3912d](https://github.com/dequelabs/axe-core-npm/commit/be3912d47f6a9d5507aec6af2a01484de554daec))
-* **webdriverjs:** Reject with actual `Error`s (not strings) ([#423](https://github.com/dequelabs/axe-core-npm/issues/423)) ([3fdb50a](https://github.com/dequelabs/axe-core-npm/commit/3fdb50ad7b9106fa288d7c2b3092ec31de5d984b)), closes [#422](https://github.com/dequelabs/axe-core-npm/issues/422) [#421](https://github.com/dequelabs/axe-core-npm/issues/421) [#387](https://github.com/dequelabs/axe-core-npm/issues/387) [#308](https://github.com/dequelabs/axe-core-npm/issues/308) [#207](https://github.com/dequelabs/axe-core-npm/issues/207)
-
-
-### Features
-
-* **react:** Add configuration option to optional disable cache (deduplication) ([#309](https://github.com/dequelabs/axe-core-npm/issues/309)) ([435811c](https://github.com/dequelabs/axe-core-npm/commit/435811cb3957cf84b1c1701f6de5c4eb740c8301))
-* update `axe-core@4.2.2` ([#263](https://github.com/dequelabs/axe-core-npm/issues/263)) ([8c609e1](https://github.com/dequelabs/axe-core-npm/commit/8c609e1e3580a63f8697ca94e146b0e2ed28e579))
-* update axe-core to 4.2.0 ([#240](https://github.com/dequelabs/axe-core-npm/issues/240)) ([4e8f7fe](https://github.com/dequelabs/axe-core-npm/commit/4e8f7fee9db09fb56f91ea34f9984be66a29033e))
-* update to use `axe-core@4.2.3` ([#280](https://github.com/dequelabs/axe-core-npm/issues/280)) ([8aebba5](https://github.com/dequelabs/axe-core-npm/commit/8aebba5c6069ca047f649446e072259c069c9a22))
-* upgrade axe-core to 4.4.1 ([#441](https://github.com/dequelabs/axe-core-npm/issues/441)) ([765c81a](https://github.com/dequelabs/axe-core-npm/commit/765c81a2ae63e8c72ec086b86174a5c5f343ea9b))
-* **webdriverjs:** upgrade to axe-core 4.3 ([#312](https://github.com/dequelabs/axe-core-npm/issues/312)) ([b416e74](https://github.com/dequelabs/axe-core-npm/commit/b416e74fb56526021b010996c0e1382269627efa))
-
-
-
-
+**Note:** Version bump only for package @axe-core/cli
 
 ## [4.4.1](https://github.com/dequelabs/axe-core-npm/compare/v4.1.1...v4.4.1) (2022-02-15)
 
-
 ### Bug Fixes
 
-* **cli,reporter-earl,react:** use correct version of axe-core ([#378](https://github.com/dequelabs/axe-core-npm/issues/378)) ([0c7d050](https://github.com/dequelabs/axe-core-npm/commit/0c7d0506b7d397df3c96414fc37a408e90fe9a9c))
-* **cli:** add `endTimer()` for page load timer ([#236](https://github.com/dequelabs/axe-core-npm/issues/236)) ([e0a19a3](https://github.com/dequelabs/axe-core-npm/commit/e0a19a3bad9b9965df9b98f391efb3403ab737ae))
-* **cli:** add timeout waiting for page to be ready ([#250](https://github.com/dequelabs/axe-core-npm/issues/250)) ([cbb795f](https://github.com/dequelabs/axe-core-npm/commit/cbb795f1a92c419794a5f1f9645e28493d7c9bdb))
-* **cli:** find axe-core when installed globally ([#232](https://github.com/dequelabs/axe-core-npm/issues/232)) ([75c273d](https://github.com/dequelabs/axe-core-npm/commit/75c273d6b8b4dcec1f953605a5bf4c9b818436cb))
-* **cli:** pass chromedriver-path arg to webdriver ([#416](https://github.com/dequelabs/axe-core-npm/issues/416)) ([14e5125](https://github.com/dequelabs/axe-core-npm/commit/14e512551506a333b0249049c3c08c605b2026c3))
-* **cli:** provide a more robust error message if analysis fails ([#421](https://github.com/dequelabs/axe-core-npm/issues/421)) ([9f1fa5d](https://github.com/dequelabs/axe-core-npm/commit/9f1fa5d8cb7c2c87bd6e92fe7b13b961e3d73f37))
-* **cli:** update packages to use `latest` version of ChromeDriver ([#454](https://github.com/dequelabs/axe-core-npm/issues/454)) ([607fa1b](https://github.com/dequelabs/axe-core-npm/commit/607fa1b3f9d7f0d8181a2ef19df03d53e65f7237))
-* pass chrome options to `chromeOptions.addArguments()` ([#262](https://github.com/dequelabs/axe-core-npm/issues/262)) ([715f463](https://github.com/dequelabs/axe-core-npm/commit/715f463c1324d11cafec4a357ee55f446584cd1c))
-* selenium-webdriverjs peer dependency to allow newer versions ([#258](https://github.com/dequelabs/axe-core-npm/issues/258)) ([2dc2788](https://github.com/dequelabs/axe-core-npm/commit/2dc27883aa4aa40e64766b0bc60191cb1a4f8963))
-* update axe-core to 4.2.1 ([#254](https://github.com/dequelabs/axe-core-npm/issues/254)) ([9d90185](https://github.com/dequelabs/axe-core-npm/commit/9d9018525a4d799f6d763d0329f05ccbfd20dbe4))
-* **webdriverjs:** prevent selnium undefined -> null transformation ([#402](https://github.com/dequelabs/axe-core-npm/issues/402)) ([5095f43](https://github.com/dequelabs/axe-core-npm/commit/5095f43d371a3ad5c8b5a6b3f94e0ad686e85d7b))
-* **webdriverjs:** prevent selnium undefined -> null transformation ([#402](https://github.com/dequelabs/axe-core-npm/issues/402)) ([be3912d](https://github.com/dequelabs/axe-core-npm/commit/be3912d47f6a9d5507aec6af2a01484de554daec))
-* **webdriverjs:** Reject with actual `Error`s (not strings) ([#423](https://github.com/dequelabs/axe-core-npm/issues/423)) ([3fdb50a](https://github.com/dequelabs/axe-core-npm/commit/3fdb50ad7b9106fa288d7c2b3092ec31de5d984b)), closes [#422](https://github.com/dequelabs/axe-core-npm/issues/422) [#421](https://github.com/dequelabs/axe-core-npm/issues/421) [#387](https://github.com/dequelabs/axe-core-npm/issues/387) [#308](https://github.com/dequelabs/axe-core-npm/issues/308) [#207](https://github.com/dequelabs/axe-core-npm/issues/207)
-
-
-### Features
-
-* **react:** Add configuration option to optional disable cache (deduplication) ([#309](https://github.com/dequelabs/axe-core-npm/issues/309)) ([435811c](https://github.com/dequelabs/axe-core-npm/commit/435811cb3957cf84b1c1701f6de5c4eb740c8301))
-* update `axe-core@4.2.2` ([#263](https://github.com/dequelabs/axe-core-npm/issues/263)) ([8c609e1](https://github.com/dequelabs/axe-core-npm/commit/8c609e1e3580a63f8697ca94e146b0e2ed28e579))
-* update axe-core to 4.2.0 ([#240](https://github.com/dequelabs/axe-core-npm/issues/240)) ([4e8f7fe](https://github.com/dequelabs/axe-core-npm/commit/4e8f7fee9db09fb56f91ea34f9984be66a29033e))
-* update to use `axe-core@4.2.3` ([#280](https://github.com/dequelabs/axe-core-npm/issues/280)) ([8aebba5](https://github.com/dequelabs/axe-core-npm/commit/8aebba5c6069ca047f649446e072259c069c9a22))
-* upgrade axe-core to 4.4.1 ([#441](https://github.com/dequelabs/axe-core-npm/issues/441)) ([765c81a](https://github.com/dequelabs/axe-core-npm/commit/765c81a2ae63e8c72ec086b86174a5c5f343ea9b))
-* **webdriverjs:** upgrade to axe-core 4.3 ([#312](https://github.com/dequelabs/axe-core-npm/issues/312)) ([b416e74](https://github.com/dequelabs/axe-core-npm/commit/b416e74fb56526021b010996c0e1382269627efa))
-
-
-
-
+- **cli:** update packages to use `latest` version of ChromeDriver ([#454](https://github.com/dequelabs/axe-core-npm/issues/454)) ([607fa1b](https://github.com/dequelabs/axe-core-npm/commit/607fa1b3f9d7f0d8181a2ef19df03d53e65f7237))
 
 # [4.4.0](https://github.com/dequelabs/axe-core-npm/compare/v4.1.1...v4.4.0) (2022-02-10)
 
-
 ### Bug Fixes
 
-* **cli,reporter-earl,react:** use correct version of axe-core ([#378](https://github.com/dequelabs/axe-core-npm/issues/378)) ([0c7d050](https://github.com/dequelabs/axe-core-npm/commit/0c7d0506b7d397df3c96414fc37a408e90fe9a9c))
-* **cli:** add `endTimer()` for page load timer ([#236](https://github.com/dequelabs/axe-core-npm/issues/236)) ([e0a19a3](https://github.com/dequelabs/axe-core-npm/commit/e0a19a3bad9b9965df9b98f391efb3403ab737ae))
-* **cli:** add timeout waiting for page to be ready ([#250](https://github.com/dequelabs/axe-core-npm/issues/250)) ([cbb795f](https://github.com/dequelabs/axe-core-npm/commit/cbb795f1a92c419794a5f1f9645e28493d7c9bdb))
-* **cli:** find axe-core when installed globally ([#232](https://github.com/dequelabs/axe-core-npm/issues/232)) ([75c273d](https://github.com/dequelabs/axe-core-npm/commit/75c273d6b8b4dcec1f953605a5bf4c9b818436cb))
-* **cli:** pass chromedriver-path arg to webdriver ([#416](https://github.com/dequelabs/axe-core-npm/issues/416)) ([14e5125](https://github.com/dequelabs/axe-core-npm/commit/14e512551506a333b0249049c3c08c605b2026c3))
-* **cli:** provide a more robust error message if analysis fails ([#421](https://github.com/dequelabs/axe-core-npm/issues/421)) ([9f1fa5d](https://github.com/dequelabs/axe-core-npm/commit/9f1fa5d8cb7c2c87bd6e92fe7b13b961e3d73f37))
-* pass chrome options to `chromeOptions.addArguments()` ([#262](https://github.com/dequelabs/axe-core-npm/issues/262)) ([715f463](https://github.com/dequelabs/axe-core-npm/commit/715f463c1324d11cafec4a357ee55f446584cd1c))
-* selenium-webdriverjs peer dependency to allow newer versions ([#258](https://github.com/dequelabs/axe-core-npm/issues/258)) ([2dc2788](https://github.com/dequelabs/axe-core-npm/commit/2dc27883aa4aa40e64766b0bc60191cb1a4f8963))
-* update axe-core to 4.2.1 ([#254](https://github.com/dequelabs/axe-core-npm/issues/254)) ([9d90185](https://github.com/dequelabs/axe-core-npm/commit/9d9018525a4d799f6d763d0329f05ccbfd20dbe4))
-* **webdriverjs:** prevent selnium undefined -> null transformation ([#402](https://github.com/dequelabs/axe-core-npm/issues/402)) ([5095f43](https://github.com/dequelabs/axe-core-npm/commit/5095f43d371a3ad5c8b5a6b3f94e0ad686e85d7b))
-* **webdriverjs:** prevent selnium undefined -> null transformation ([#402](https://github.com/dequelabs/axe-core-npm/issues/402)) ([be3912d](https://github.com/dequelabs/axe-core-npm/commit/be3912d47f6a9d5507aec6af2a01484de554daec))
-* **webdriverjs:** Reject with actual `Error`s (not strings) ([#423](https://github.com/dequelabs/axe-core-npm/issues/423)) ([3fdb50a](https://github.com/dequelabs/axe-core-npm/commit/3fdb50ad7b9106fa288d7c2b3092ec31de5d984b)), closes [#422](https://github.com/dequelabs/axe-core-npm/issues/422) [#421](https://github.com/dequelabs/axe-core-npm/issues/421) [#387](https://github.com/dequelabs/axe-core-npm/issues/387) [#308](https://github.com/dequelabs/axe-core-npm/issues/308) [#207](https://github.com/dequelabs/axe-core-npm/issues/207)
-
+- **cli:** add `endTimer()` for page load timer ([#236](https://github.com/dequelabs/axe-core-npm/issues/236)) ([e0a19a3](https://github.com/dequelabs/axe-core-npm/commit/e0a19a3bad9b9965df9b98f391efb3403ab737ae))
+- **cli:** add timeout waiting for page to be ready ([#250](https://github.com/dequelabs/axe-core-npm/issues/250)) ([cbb795f](https://github.com/dequelabs/axe-core-npm/commit/cbb795f1a92c419794a5f1f9645e28493d7c9bdb))
+- **cli:** find axe-core when installed globally ([#232](https://github.com/dequelabs/axe-core-npm/issues/232)) ([75c273d](https://github.com/dequelabs/axe-core-npm/commit/75c273d6b8b4dcec1f953605a5bf4c9b818436cb))
+- **cli:** pass chromedriver-path arg to webdriver ([#416](https://github.com/dequelabs/axe-core-npm/issues/416)) ([14e5125](https://github.com/dequelabs/axe-core-npm/commit/14e512551506a333b0249049c3c08c605b2026c3))
+- **cli:** provide a more robust error message if analysis fails ([#421](https://github.com/dequelabs/axe-core-npm/issues/421)) ([9f1fa5d](https://github.com/dequelabs/axe-core-npm/commit/9f1fa5d8cb7c2c87bd6e92fe7b13b961e3d73f37))
+- pass chrome options to `chromeOptions.addArguments()` ([#262](https://github.com/dequelabs/axe-core-npm/issues/262)) ([715f463](https://github.com/dequelabs/axe-core-npm/commit/715f463c1324d11cafec4a357ee55f446584cd1c))
+- selenium-webdriverjs peer dependency to allow newer versions ([#258](https://github.com/dequelabs/axe-core-npm/issues/258)) ([2dc2788](https://github.com/dequelabs/axe-core-npm/commit/2dc27883aa4aa40e64766b0bc60191cb1a4f8963))
+- update axe-core to 4.2.1 ([#254](https://github.com/dequelabs/axe-core-npm/issues/254)) ([9d90185](https://github.com/dequelabs/axe-core-npm/commit/9d9018525a4d799f6d763d0329f05ccbfd20dbe4))
+- **webdriverjs:** prevent selnium undefined -> null transformation ([#402](https://github.com/dequelabs/axe-core-npm/issues/402)) ([5095f43](https://github.com/dequelabs/axe-core-npm/commit/5095f43d371a3ad5c8b5a6b3f94e0ad686e85d7b))
+- **webdriverjs:** prevent selnium undefined -> null transformation ([#402](https://github.com/dequelabs/axe-core-npm/issues/402)) ([be3912d](https://github.com/dequelabs/axe-core-npm/commit/be3912d47f6a9d5507aec6af2a01484de554daec))
+- **webdriverjs:** Reject with actual `Error`s (not strings) ([#423](https://github.com/dequelabs/axe-core-npm/issues/423)) ([3fdb50a](https://github.com/dequelabs/axe-core-npm/commit/3fdb50ad7b9106fa288d7c2b3092ec31de5d984b)), closes [#422](https://github.com/dequelabs/axe-core-npm/issues/422) [#421](https://github.com/dequelabs/axe-core-npm/issues/421) [#387](https://github.com/dequelabs/axe-core-npm/issues/387) [#308](https://github.com/dequelabs/axe-core-npm/issues/308) [#207](https://github.com/dequelabs/axe-core-npm/issues/207)
 
 ### Features
 
-* **react:** Add configuration option to optional disable cache (deduplication) ([#309](https://github.com/dequelabs/axe-core-npm/issues/309)) ([435811c](https://github.com/dequelabs/axe-core-npm/commit/435811cb3957cf84b1c1701f6de5c4eb740c8301))
-* update `axe-core@4.2.2` ([#263](https://github.com/dequelabs/axe-core-npm/issues/263)) ([8c609e1](https://github.com/dequelabs/axe-core-npm/commit/8c609e1e3580a63f8697ca94e146b0e2ed28e579))
-* update axe-core to 4.2.0 ([#240](https://github.com/dequelabs/axe-core-npm/issues/240)) ([4e8f7fe](https://github.com/dequelabs/axe-core-npm/commit/4e8f7fee9db09fb56f91ea34f9984be66a29033e))
-* update to use `axe-core@4.2.3` ([#280](https://github.com/dequelabs/axe-core-npm/issues/280)) ([8aebba5](https://github.com/dequelabs/axe-core-npm/commit/8aebba5c6069ca047f649446e072259c069c9a22))
-* upgrade axe-core to 4.4.1 ([#441](https://github.com/dequelabs/axe-core-npm/issues/441)) ([765c81a](https://github.com/dequelabs/axe-core-npm/commit/765c81a2ae63e8c72ec086b86174a5c5f343ea9b))
-* **webdriverjs:** upgrade to axe-core 4.3 ([#312](https://github.com/dequelabs/axe-core-npm/issues/312)) ([b416e74](https://github.com/dequelabs/axe-core-npm/commit/b416e74fb56526021b010996c0e1382269627efa))
-
-
-
-
+- **react:** Add configuration option to optional disable cache (deduplication) ([#309](https://github.com/dequelabs/axe-core-npm/issues/309)) ([435811c](https://github.com/dequelabs/axe-core-npm/commit/435811cb3957cf84b1c1701f6de5c4eb740c8301))
+- update `axe-core@4.2.2` ([#263](https://github.com/dequelabs/axe-core-npm/issues/263)) ([8c609e1](https://github.com/dequelabs/axe-core-npm/commit/8c609e1e3580a63f8697ca94e146b0e2ed28e579))
+- update axe-core to 4.2.0 ([#240](https://github.com/dequelabs/axe-core-npm/issues/240)) ([4e8f7fe](https://github.com/dequelabs/axe-core-npm/commit/4e8f7fee9db09fb56f91ea34f9984be66a29033e))
+- update to use `axe-core@4.2.3` ([#280](https://github.com/dequelabs/axe-core-npm/issues/280)) ([8aebba5](https://github.com/dequelabs/axe-core-npm/commit/8aebba5c6069ca047f649446e072259c069c9a22))
+- upgrade axe-core to 4.4.1 ([#441](https://github.com/dequelabs/axe-core-npm/issues/441)) ([765c81a](https://github.com/dequelabs/axe-core-npm/commit/765c81a2ae63e8c72ec086b86174a5c5f343ea9b))
+- **webdriverjs:** upgrade to axe-core 4.3 ([#312](https://github.com/dequelabs/axe-core-npm/issues/312)) ([b416e74](https://github.com/dequelabs/axe-core-npm/commit/b416e74fb56526021b010996c0e1382269627efa))
 
 ## [4.3.1](https://github.com/dequelabs/axe-core-npm/compare/v4.3.0...v4.3.1) (2021-09-20)
 
