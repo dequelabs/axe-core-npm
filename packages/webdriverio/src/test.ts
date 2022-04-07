@@ -106,7 +106,7 @@ describe('@axe-core/webdriverio', () => {
           capabilities: {
             browserName: 'chrome',
             'goog:chromeOptions': {
-              // args: ['--headless'],
+              args: ['--headless'],
               binary: binaryPath
             }
           },
@@ -119,7 +119,7 @@ describe('@axe-core/webdriverio', () => {
       });
 
       afterEach(async () => {
-        // await client.deleteSession();
+        await client.deleteSession();
         server.close();
       });
       describe('AxeBuilder', () => {
