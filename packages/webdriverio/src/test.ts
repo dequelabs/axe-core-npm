@@ -106,7 +106,7 @@ describe('@axe-core/webdriverio', () => {
           capabilities: {
             browserName: 'chrome',
             'goog:chromeOptions': {
-              args: ['--headless'],
+              // args: ['--headless'],
               binary: binaryPath
             }
           },
@@ -119,7 +119,7 @@ describe('@axe-core/webdriverio', () => {
       });
 
       afterEach(async () => {
-        await client.deleteSession();
+        // await client.deleteSession();
         server.close();
       });
       describe('AxeBuilder', () => {
@@ -446,13 +446,13 @@ describe('@axe-core/webdriverio', () => {
           it('returns the same results from runPartial as from legacy mode', async () => {
             await client.url(`${addr}/nested-iframes.html`);
             const legacyResults = await new AxeBuilder({
-              axeSource: axeSource + noHtmlConfig + axeForceLegacy,
+              axeSource: axeSource + axeForceLegacy,
               client
             }).analyze();
             assert.equal(legacyResults.testEngine.name, 'axe-legacy');
 
             const normalResults = await new AxeBuilder({
-              axeSource: axeSource + noHtmlConfig,
+              axeSource: axeSource,
               client
             }).analyze();
             normalResults.timestamp = legacyResults.timestamp;
