@@ -122,7 +122,7 @@ describe('AxePuppeteer', function () {
     });
 
     it('returns correct results metadata', async () => {
-      await page.goto(`${addr}/index.html`);
+      await page.goto(`${addr}/external/index.html`);
       const results = await new AxePuppeteer(page).analyze();
       assert.isDefined(results.testEngine.name);
       assert.isDefined(results.testEngine.version);
@@ -133,7 +133,7 @@ describe('AxePuppeteer', function () {
       assert.isDefined(results.testEnvironment.windowWidth);
       assert.isDefined(results.testRunner.name);
       assert.isDefined(results.toolOptions.reporter);
-      assert.equal(results.url, `${addr}/index.html`);
+      assert.equal(results.url, `${addr}/external/index.html`);
     });
 
     it('properly isolates the call to axe.finishRun', async () => {
@@ -148,7 +148,7 @@ describe('AxePuppeteer', function () {
     });
 
     it('returns the same results from runPartial as from legacy mode', async () => {
-      await page.goto(`${addr}/nested-iframes.html`);
+      await page.goto(`${addr}/external/nested-iframes.html`);
       const legacyResults = await new AxePuppeteer(
         page,
         axeSource + axeForceLegacy
@@ -163,7 +163,7 @@ describe('AxePuppeteer', function () {
 
     describe('returned promise', () => {
       it("returns results through analyze's promise", async () => {
-        await page.goto(`${addr}/external/index.html`);
+        await page.goto(`${addr}/external/external/index.html`);
         const results = await new AxePuppeteer(page)
           .withRules('label')
           .analyze();
@@ -245,7 +245,7 @@ describe('AxePuppeteer', function () {
 
       it('throws when injecting a problematic source', done => {
         page
-          .goto(`${addr}/crash.html`)
+          .goto(`${addr}/external/crash.html`)
           .then(() => {
             return new AxePuppeteer(page, 'throw new Error()').analyze();
           })
@@ -258,7 +258,7 @@ describe('AxePuppeteer', function () {
       it('throws when a setup fails', done => {
         const brokenSource = axeSource + `;window.axe.utils = {}`;
         page
-          .goto(`${addr}/index.html`)
+          .goto(`${addr}/external/index.html`)
           .then(() => {
             return new AxePuppeteer(page, brokenSource)
               .withRules('label')
@@ -307,7 +307,7 @@ describe('AxePuppeteer', function () {
       });
 
       it('gives a helpful error', done => {
-        const gotoP = page.goto(`${addr2}/index.html`);
+        const gotoP = page.goto(`${addr2}/external/index.html`);
         gotoP.catch(() => ({})); // suppress Node error
 
         // Delay so that page load can actually start
