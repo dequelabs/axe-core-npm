@@ -86,7 +86,6 @@ describe('@axe-core/webdriverio', () => {
         path.join(axeTestFixtures, 'axe-force-legacy.js'),
         'utf8'
       );
-      const noHtmlConfig = `;axe.configure({ noHtml: true })`;
 
       beforeEach(async () => {
         const app = express();
