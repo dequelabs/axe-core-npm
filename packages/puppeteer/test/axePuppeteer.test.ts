@@ -2,7 +2,7 @@ import 'mocha';
 import Axe from 'axe-core';
 import * as fs from 'fs';
 import * as path from 'path';
-import { assert, expect } from 'chai';
+import { assert } from 'chai';
 import Puppeteer, { Browser, Page } from 'puppeteer';
 import { createServer, Server } from 'http';
 import * as sinon from 'sinon';
@@ -70,7 +70,7 @@ describe('AxePuppeteer', function () {
   it('runs in parallel', async () => {
     // Just to prove Puppeteer runs scripts in parallel,
     // and so axe-core/puppeteer should too
-    await page.goto(`${addr}/external/index.html`);
+    const res = await page.goto(`${addr}/external/index.html`);
     const p1 = page.evaluate(() => {
       window.parallel = true;
       return new Promise(res => {
@@ -82,19 +82,25 @@ describe('AxePuppeteer', function () {
     });
     const p2 = page.evaluate(() => window.parallel);
     const out = await Promise.all([p1, p2]);
-    expect(out).to.deep.equal(['parallel', true]);
+
+    assert.equal(res.status(), 200);
+    assert.deepEqual(out, ['parallel', true]);
   });
 
   describe('constructor', () => {
     it('accepts a Page', async () => {
-      await page.goto(`${addr}/external/index.html`);
+      const res = await page.goto(`${addr}/external/index.html`);
       const axePup = new AxePuppeteer(page);
+
+      assert.equal(res.status(), 200);
       await expectAsyncToNotThrow(() => axePup.analyze());
     });
 
     it('accepts a Frame', async () => {
-      await page.goto(`${addr}/external/index.html`);
+      const res = await page.goto(`${addr}/external/index.html`);
       const axePup = new AxePuppeteer(page.mainFrame());
+
+      assert.equal(res.status(), 200);
       await expectAsyncToNotThrow(() => axePup.analyze());
     });
 
@@ -105,25 +111,31 @@ describe('AxePuppeteer', function () {
           configure: () => {}
         }
       `;
-      await page.goto(`${addr}/external/index.html`);
+      const res = await page.goto(`${addr}/external/index.html`);
       const evalSpy: SinonSpy = sinon.spy(page.mainFrame(), 'evaluate');
       await new AxePuppeteer(page, axeSource).analyze();
+
+      assert.equal(res.status(), 200);
       assert(evalSpy.calledWith(axeSource));
     });
   });
 
   describe('.analyze()', () => {
     it('sets the helpUrl application string', async () => {
-      await page.goto(`${addr}/external/iframes/baz.html`);
+      const res = await page.goto(`${addr}/external/iframes/baz.html`);
       const { violations } = await new AxePuppeteer(page)
         .withRules('label')
         .analyze();
+
+      assert.equal(res.status(), 200);
       assert.include(violations[0].helpUrl, 'application=axe-puppeteer');
     });
 
     it('returns correct results metadata', async () => {
-      await page.goto(`${addr}/external/index.html`);
+      const res = await page.goto(`${addr}/external/index.html`);
       const results = await new AxePuppeteer(page).analyze();
+
+      assert.equal(res.status(), 200);
       assert.isDefined(results.testEngine.name);
       assert.isDefined(results.testEngine.version);
       assert.isDefined(results.testEnvironment.orientationAngle);
@@ -138,21 +150,25 @@ describe('AxePuppeteer', function () {
 
     it('properly isolates the call to axe.finishRun', async () => {
       let err;
-      await page.goto(`${addr}/external/isolated-finish.html`);
+      const res = await page.goto(`${addr}/external/isolated-finish.html`);
       try {
         await new AxePuppeteer(page).analyze();
       } catch (e) {
         err = e;
       }
+
+      assert.equal(res.status(), 200);
       assert.isUndefined(err);
     });
 
     it('returns the same results from runPartial as from legacy mode', async () => {
-      await page.goto(`${addr}/external/nested-iframes.html`);
+      const res = await page.goto(`${addr}/external/nested-iframes.html`);
       const legacyResults = await new AxePuppeteer(
         page,
         axeSource + axeForceLegacy
       ).analyze();
+
+      assert.equal(res.status(), 200);
       assert.equal(legacyResults.testEngine.name, 'axe-legacy');
 
       const normalResults = await new AxePuppeteer(page, axeSource).analyze();
@@ -163,15 +179,17 @@ describe('AxePuppeteer', function () {
 
     describe('returned promise', () => {
       it("returns results through analyze's promise", async () => {
-        await page.goto(`${addr}/external/external/index.html`);
+        const res = await page.goto(`${addr}/external/index.html`);
         const results = await new AxePuppeteer(page)
           .withRules('label')
           .analyze();
-        expect(results).to.exist;
-        expect(results).to.have.property('passes');
-        expect(results).to.have.property('incomplete');
-        expect(results).to.have.property('inapplicable');
-        expect(results).to.have.property('violations');
+
+        assert.equal(res.status(), 200);
+        assert.isOk(results);
+        assert.property(results, 'passes');
+        assert.property(results, 'incomplete');
+        assert.property(results, 'inapplicable');
+        assert.property(results, 'violations');
       });
 
       it('lets axe-core errors bubble when using promise API', async () => {
@@ -182,25 +200,27 @@ describe('AxePuppeteer', function () {
           }
         `;
 
-        await page.goto(`${addr}/external/index.html`);
+        const res = await page.goto(`${addr}/external/index.html`);
 
         const axePup = new AxePuppeteer(page, axeSource);
+
+        assert.equal(res.status(), 200);
         (await expectAsync(async () => axePup.analyze())).to.throw('boom');
       });
     });
 
     describe('analyze callback', () => {
       it('returns results through the callback if passed', done => {
-        page.goto(`${addr}/external/index.html`).then(() => {
+        page.goto(`${addr}/external/index.html`).then(res => {
           new AxePuppeteer(page).analyze((err, results) => {
             try {
-              expect(err).to.be.null;
-
-              expect(results).to.exist;
-              expect(results).to.have.property('passes');
-              expect(results).to.have.property('incomplete');
-              expect(results).to.have.property('inapplicable');
-              expect(results).to.have.property('violations');
+              assert.equal(res.status(), 200);
+              assert.isNull(err);
+              assert.isOk(results);
+              assert.property(results, 'passes');
+              assert.property(results, 'incomplete');
+              assert.property(results, 'inapplicable');
+              assert.property(results, 'violations');
               done();
             } catch (e) {
               done(e);
@@ -217,12 +237,14 @@ describe('AxePuppeteer', function () {
           }
         `;
 
-        await page.goto(`${addr}/external/index.html`);
+        const res = await page.goto(`${addr}/external/index.html`);
+
+        assert.equal(res.status(), 200);
+
         await new AxePuppeteer(page, axeSource).analyze(err => {
-          expect(err)
-            .to.exist.and.be.instanceof(Error)
-            .and.have.property('message')
-            .that.includes('boom');
+          assert.instanceOf(err, Error);
+          assert.property(err, 'message');
+          assert.include(err!.message, 'boom');
         });
       });
     });
@@ -231,7 +253,8 @@ describe('AxePuppeteer', function () {
       it('throws if axe errors out on the top window', done => {
         page
           .goto(`${addr}/external/crash.html`)
-          .then(() => {
+          .then(res => {
+            assert.equal(res.status(), 200);
             return new AxePuppeteer(
               page,
               axeSource + axeCrasherSource
@@ -246,7 +269,8 @@ describe('AxePuppeteer', function () {
       it('throws when injecting a problematic source', done => {
         page
           .goto(`${addr}/external/crash.html`)
-          .then(() => {
+          .then(res => {
+            assert.equal(res.status(), 200);
             return new AxePuppeteer(page, 'throw new Error()').analyze();
           })
           .then(
@@ -259,7 +283,8 @@ describe('AxePuppeteer', function () {
         const brokenSource = axeSource + `;window.axe.utils = {}`;
         page
           .goto(`${addr}/external/index.html`)
-          .then(() => {
+          .then(res => {
+            assert.equal(res.status(), 200);
             return new AxePuppeteer(page, brokenSource)
               .withRules('label')
               .analyze();
@@ -307,8 +332,11 @@ describe('AxePuppeteer', function () {
       });
 
       it('gives a helpful error', done => {
-        const gotoP = page.goto(`${addr2}/external/index.html`);
-        gotoP.catch(() => ({})); // suppress Node error
+        page.goto(`${addr2}/external/index.html`).then(res => {
+          assert.equal(res.status(), 200);
+        });
+
+        // gotoP.catch(() => ({})); // suppress Node error
 
         // Delay so that page load can actually start
         setTimeout(() => {
@@ -322,7 +350,7 @@ describe('AxePuppeteer', function () {
                 );
               },
               e => {
-                expect(e.message).to.include('not ready');
+                assert.include(e.message, 'not ready');
                 done();
               }
             )
@@ -355,7 +383,8 @@ describe('AxePuppeteer', function () {
           }
         `;
 
-        await page.goto(`${addr}/context.html`);
+        const res = await page.goto(`${addr}/context.html`);
+        assert.equal(res.status(), 200);
 
         const axePip = new AxePuppeteer(page, axeSource)
           .include('.include')
@@ -379,7 +408,8 @@ describe('AxePuppeteer', function () {
           }
         `;
 
-        await page.goto(`${addr}/context.html`);
+        const res = await page.goto(`${addr}/context.html`);
+        assert.equal(res.status(), 200);
 
         const axePip = new AxePuppeteer(page, axeSource)
           .include('.include')
@@ -412,7 +442,7 @@ describe('AxePuppeteer', function () {
           }
         `;
 
-        await page.goto(`${addr}/context.html`);
+        const res = await page.goto(`${addr}/context.html`);
 
         const axePip = new AxePuppeteer(page, axeSource).include('.include');
 
@@ -442,7 +472,8 @@ describe('AxePuppeteer', function () {
           }
         `;
 
-        await page.goto(`${addr}/context.html`);
+        const res = await page.goto(`${addr}/context.html`);
+        assert.equal(res.status(), 200);
 
         const axePip = new AxePuppeteer(page, axeSource).exclude('.exclude');
 
@@ -464,7 +495,8 @@ describe('AxePuppeteer', function () {
           }
         `;
 
-      await page.goto(`${addr}/context.html`);
+      const res = await page.goto(`${addr}/context.html`);
+      assert.equal(res.status(), 200);
 
       const axePip = new AxePuppeteer(page, axeSource);
 
@@ -473,7 +505,7 @@ describe('AxePuppeteer', function () {
 
     describe('.disableFrame()', () => {
       it('disables the given rule(s)', async () => {
-        await page.goto(`${addr}/external/nested-iframes.html`);
+        const res = await page.goto(`${addr}/external/nested-iframes.html`);
         const results = await new AxePuppeteer(page)
           // Ignore all frames
           .disableFrame('#ifr-foo, #ifr-bar')
@@ -483,7 +515,8 @@ describe('AxePuppeteer', function () {
         const labelResult = results.violations.find(
           (r: Axe.Result) => r.id === 'label'
         );
-        expect(labelResult).to.be.undefined;
+        assert.equal(res.status(), 200);
+        assert.isUndefined(labelResult);
       });
     });
   });
@@ -509,17 +542,22 @@ describe('AxePuppeteer', function () {
         ]
       };
 
-      await page.goto(`${addr}/external/index.html`);
+      const res = await page.goto(`${addr}/external/index.html`);
       const results = await new AxePuppeteer(page)
         .configure(config)
         .withRules(['foo'])
         .analyze();
 
-      expect(results).to.have.property('passes').with.lengthOf(0);
-      expect(results).to.have.property('incomplete').with.lengthOf(0);
-      expect(results).to.have.property('inapplicable').with.lengthOf(0);
-      expect(results).to.have.property('violations').with.lengthOf(1);
-      expect(results.violations[0]).to.have.property('id', 'foo');
+      assert.equal(res.status(), 200);
+      assert.property(results, 'passes');
+      assert.lengthOf(results.passes, 0);
+      assert.property(results, 'incomplete');
+      assert.lengthOf(results.incomplete, 0);
+      assert.property(results, 'inapplicable');
+      assert.lengthOf(results.inapplicable, 0);
+      assert.property(results, 'violations');
+      assert.lengthOf(results.violations, 1);
+      assert.isDefined(results.violations.find(v => v.id === 'foo'));
     });
 
     it('gives a helpful error when not passed an object', () => {
@@ -527,14 +565,14 @@ describe('AxePuppeteer', function () {
 
       // Cast a string to a Spec to simulate incorrect usage with Javascript.
       const jsNotASpec = 'not an object' as unknown as Axe.Spec;
-      expect(() => axePup.configure(jsNotASpec)).to.throw('needs an object');
+      assert.throws(() => axePup.configure(jsNotASpec), 'needs an object');
     });
   });
 
   describe('options', () => {
     describe('.options()', () => {
       it('passes options to axe-core', async () => {
-        await page.goto(`${addr}/external/index.html`);
+        const res = await page.goto(`${addr}/external/index.html`);
 
         const results = await new AxePuppeteer(page)
           // Disable the `region` rule
@@ -548,14 +586,14 @@ describe('AxePuppeteer', function () {
           ...results.violations
         ];
 
-        expect(flatResults.find((r: Axe.Result) => r.id === 'region')).to.be
-          .undefined;
+        assert.equal(res.status(), 200);
+        assert.isUndefined(flatResults.find(res => res.id === 'region'));
       });
     });
 
     describe('.withTags()', () => {
       it('only rules with the given tag(s)', async () => {
-        await page.goto(`${addr}/external/index.html`);
+        const res = await page.goto(`${addr}/external/index.html`);
 
         const results = await new AxePuppeteer(page)
           .withTags(['best-practice'])
@@ -568,16 +606,18 @@ describe('AxePuppeteer', function () {
           ...results.violations
         ];
 
+        assert.equal(res.status(), 200);
+
         // Ensure all run rules had the 'best-practice' tag
         for (const rule of flatResults) {
-          expect(rule.tags).to.include('best-practice');
+          assert.include(rule.tags, 'best-practice');
         }
       });
     });
 
     describe('.withRules()', () => {
       it('only rules with the given rule(s)', async () => {
-        await page.goto(`${addr}/external/index.html`);
+        const res = await page.goto(`${addr}/external/index.html`);
 
         const results = await new AxePuppeteer(page)
           // Only enable the `region` rule
@@ -591,14 +631,15 @@ describe('AxePuppeteer', function () {
           ...results.violations
         ];
 
-        expect(flatResults).to.have.lengthOf(1);
-        expect(flatResults[0]).to.have.property('id', 'region');
+        assert.equal(res.status(), 200);
+        assert.lengthOf(flatResults, 1);
+        assert.isDefined(flatResults.find(r => r.id === 'region'));
       });
     });
 
     describe('.disableRules()', () => {
       it('disables the given rule(s)', async function () {
-        await page.goto(`${addr}/external/index.html`);
+        const res = await page.goto(`${addr}/external/index.html`);
 
         const results = await new AxePuppeteer(page)
           // Disable the `region` rule
@@ -612,15 +653,15 @@ describe('AxePuppeteer', function () {
           ...results.violations
         ];
 
-        expect(flatResults.find((r: Axe.Result) => r.id === 'region')).to.be
-          .undefined;
+        assert.equal(res.status(), 200);
+        assert.isUndefined(flatResults.find(res => res.id === 'region'));
       });
     });
   });
 
   describe('frame tests', () => {
     it('injects into nested iframes', async () => {
-      await page.goto(`${addr}/external/nested-iframes.html`);
+      const res = await page.goto(`${addr}/external/nested-iframes.html`);
 
       const { violations } = await new AxePuppeteer(page)
         .options({ runOnly: 'label' })
@@ -635,13 +676,15 @@ describe('AxePuppeteer', function () {
         '#bar-baz',
         'input'
       ]);
+
+      assert.equal(res.status(), 200);
       assert.deepEqual(nodes[1].target, ['#ifr-foo', '#foo-baz', 'input']);
       assert.deepEqual(nodes[2].target, ['#ifr-bar', '#bar-baz', 'input']);
       assert.deepEqual(nodes[3].target, ['#ifr-baz', 'input']);
     });
 
     it('tests framesets', async () => {
-      await page.goto(`${addr}/external/nested-frameset.html`);
+      const res = await page.goto(`${addr}/external/nested-frameset.html`);
       const { violations } = await new AxePuppeteer(page)
         .options({ runOnly: 'label' })
         .analyze();
@@ -655,13 +698,15 @@ describe('AxePuppeteer', function () {
         '#bar-baz',
         'input'
       ]);
+
+      assert.equal(res.status(), 200);
       assert.deepEqual(nodes[1].target, ['#frm-foo', '#foo-baz', 'input']);
       assert.deepEqual(nodes[2].target, ['#frm-bar', '#bar-baz', 'input']);
       assert.deepEqual(nodes[3].target, ['#frm-baz', 'input']);
     });
 
     it('tests frames in shadow DOM', async () => {
-      await page.goto(`${addr}/external/shadow-frames.html`);
+      const res = await page.goto(`${addr}/external/shadow-frames.html`);
       const { violations } = await new AxePuppeteer(page)
         .options({ runOnly: 'label' })
         .analyze();
@@ -679,11 +724,12 @@ describe('AxePuppeteer', function () {
     });
 
     it('reports erroring frames in frame-tested', async () => {
-      await page.goto(`${addr}/external/crash-parent.html`);
+      const res = await page.goto(`${addr}/external/crash-parent.html`);
       const results = await new AxePuppeteer(page, axeSource + axeCrasherSource)
         .options({ runOnly: ['label', 'frame-tested'] })
         .analyze();
 
+      assert.equal(res.status(), 200);
       assert.equal(results.incomplete[0].id, 'frame-tested');
       assert.lengthOf(results.incomplete[0].nodes, 1);
       assert.deepEqual(results.incomplete[0].nodes[0].target, ['#ifr-crash']);
@@ -701,7 +747,7 @@ describe('AxePuppeteer', function () {
     });
 
     it('runs the same when passed a Frame', async () => {
-      await page.goto(`${addr}/external/nested-iframes.html`);
+      const res = await page.goto(`${addr}/external/nested-iframes.html`);
       const pageResults = await new AxePuppeteer(page).analyze();
 
       // Calling AxePuppeteer with a frame is deprecated, and will show a warning
@@ -709,6 +755,8 @@ describe('AxePuppeteer', function () {
       const frameResults = await new AxePuppeteer(frame).analyze();
 
       pageResults.timestamp = frameResults.timestamp;
+
+      assert.equal(res.status(), 200);
       assert.deepEqual(pageResults, frameResults);
     });
   });
@@ -716,7 +764,7 @@ describe('AxePuppeteer', function () {
   describe('axe.finishRun errors', () => {
     const finishRunThrows = `;axe.finishRun = () => { throw new Error("No finishRun")}`;
     it('throws an error if window.open throws', async () => {
-      await page.goto(`${addr}/external/index.html`);
+      const res = await page.goto(`${addr}/external/index.html`);
       // eslint-disable-next-line @typescript-eslint/ban-ts-ignore
       // @ts-ignore
       delete page.browser().newPage();
@@ -726,6 +774,7 @@ describe('AxePuppeteer', function () {
         return null;
       };
 
+      assert.equal(res.status(), 200);
       try {
         await new AxePuppeteer(page, axeSource).analyze();
         assert.fail('Should have thrown');
@@ -737,7 +786,9 @@ describe('AxePuppeteer', function () {
       }
     });
     it('throws an error if axe.finishRun throws', async () => {
-      await page.goto(`${addr}/external/index.html`);
+      const res = await page.goto(`${addr}/external/index.html`);
+
+      assert.equal(res.status(), 200);
       try {
         await new AxePuppeteer(page, axeSource + finishRunThrows).analyze();
         assert.fail('Should have thrown');
@@ -750,15 +801,17 @@ describe('AxePuppeteer', function () {
   describe('setLegacyMode', () => {
     const runPartialThrows = `;axe.runPartial = () => { throw new Error("No runPartial")}`;
     it('runs legacy mode when used', async () => {
-      await page.goto(`${addr}/external/index.html`);
+      const res = await page.goto(`${addr}/external/index.html`);
       const results = await new AxePuppeteer(page, axeSource + runPartialThrows)
         .setLegacyMode()
         .analyze();
+
+      assert.equal(res.status(), 200);
       assert.isNotNull(results);
     });
 
     it('prevents cross-origin frame testing', async () => {
-      await page.goto(`${addr}/external/cross-origin.html`);
+      const res = await page.goto(`${addr}/external/cross-origin.html`);
       const results = await new AxePuppeteer(page, axeSource + runPartialThrows)
         .withRules('frame-tested')
         .setLegacyMode()
@@ -767,11 +820,13 @@ describe('AxePuppeteer', function () {
       const frameTested = results.incomplete.find(
         ({ id }) => id === 'frame-tested'
       );
+
+      assert.equal(res.status(), 200);
       assert.ok(frameTested);
     });
 
     it('can be disabled again', async () => {
-      await page.goto(`${addr}/external/cross-origin.html`);
+      const res = await page.goto(`${addr}/external/cross-origin.html`);
       const results = await new AxePuppeteer(page)
         .withRules('frame-tested')
         .setLegacyMode()
@@ -781,6 +836,8 @@ describe('AxePuppeteer', function () {
       const frameTested = results.incomplete.find(
         ({ id }) => id === 'frame-tested'
       );
+
+      assert.equal(res.status(), 200);
       assert.isUndefined(frameTested);
     });
   });
@@ -793,11 +850,12 @@ describe('AxePuppeteer', function () {
     });
 
     it('can run', async () => {
-      await page.goto(`${addr}/external/nested-iframes.html`);
+      const res = await page.goto(`${addr}/external/nested-iframes.html`);
       const results = await new AxePuppeteer(page, axe403Source)
         .withRules('label')
         .analyze();
 
+      assert.equal(res.status(), 200);
       assert.equal(results.violations[0].id, 'label');
       assert.lengthOf(results.violations[0].nodes, 4);
       assert.equal(results.testEngine.version, '4.0.3');
@@ -820,11 +878,12 @@ describe('AxePuppeteer', function () {
     });
 
     it('reports frame-tested', async () => {
-      await page.goto(`${addr}/external/crash-parent.html`);
+      const res = await page.goto(`${addr}/external/crash-parent.html`);
       const results = await new AxePuppeteer(page, axeSource + axeCrasherSource)
         .withRules(['label', 'frame-tested'])
         .analyze();
 
+      assert.equal(res.status(), 200);
       assert.equal(results.incomplete[0].id, 'frame-tested');
       assert.lengthOf(results.incomplete[0].nodes, 1);
       assert.equal(results.violations[0].id, 'label');
@@ -832,7 +891,7 @@ describe('AxePuppeteer', function () {
     });
 
     it('tests cross-origin pages', async () => {
-      await page.goto(`${addr}/external/cross-origin.html`);
+      const res = await page.goto(`${addr}/external/cross-origin.html`);
       const results = await new AxePuppeteer(page, axe403Source)
         .withRules('frame-tested')
         .analyze();
@@ -840,6 +899,8 @@ describe('AxePuppeteer', function () {
       const frameTested = results.incomplete.find(
         ({ id }) => id === 'frame-tested'
       );
+
+      assert.equal(res.status(), 200);
       assert.isUndefined(frameTested);
     });
   });
