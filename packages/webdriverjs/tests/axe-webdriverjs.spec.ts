@@ -80,7 +80,7 @@ describe('@axe-core/webdriverjs', () => {
     });
 
     it('returns correct results metadata', async () => {
-      await driver.get(`${addr}/index.html`);
+      await driver.get(`${addr}/external/index.html`);
       const results = await new AxeBuilder(driver).analyze();
       assert.isDefined(results.testEngine.name);
       assert.isDefined(results.testEngine.version);
@@ -91,7 +91,7 @@ describe('@axe-core/webdriverjs', () => {
       assert.isDefined(results.testEnvironment.windowWidth);
       assert.isDefined(results.testRunner.name);
       assert.isDefined(results.toolOptions.reporter);
-      assert.equal(results.url, `${addr}/index.html`);
+      assert.equal(results.url, `${addr}/external/index.html`);
     });
 
     it('properly isolates the call to axe.finishRun', async () => {
@@ -289,7 +289,7 @@ describe('@axe-core/webdriverjs', () => {
     });
 
     it('returns the same results from runPartial as from legacy mode', async () => {
-      await driver.get(`${addr}/nested-iframes.html`);
+      await driver.get(`${addr}/external/nested-iframes.html`);
       const legacyResults = await new AxeBuilder(
         driver,
         axeSource + axeForceLegacy
