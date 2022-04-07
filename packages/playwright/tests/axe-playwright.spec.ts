@@ -56,7 +56,7 @@ describe('@axe-core/playwright', () => {
 
   describe('analyze', () => {
     it('returns results using a different version of axe-core', async () => {
-      await page.goto(`${addr}/index.html`);
+      await page.goto(`${addr}/external/index.html`);
       const results = await new AxeBuilder({
         page,
         axeSource: axeLegacySource
@@ -70,7 +70,7 @@ describe('@axe-core/playwright', () => {
     });
 
     it('returns results', async () => {
-      await page.goto(`${addr}/index.html`);
+      await page.goto(`${addr}/external/index.html`);
       const results = await new AxeBuilder({ page }).analyze();
       assert.isNotNull(results);
       assert.isArray(results.violations);
@@ -137,7 +137,7 @@ describe('@axe-core/playwright', () => {
       let error: Error | null = null;
 
       const brokenSource = axeSource + `;window.axe.utils = {}`;
-      await page.goto(`${addr}/external/index.html`);
+      await page.goto(`${addr}/external/external/index.html`);
       try {
         await new AxeBuilder({ page, axeSource: brokenSource })
           .withRules('label')
@@ -150,7 +150,7 @@ describe('@axe-core/playwright', () => {
     });
 
     it('returns the same results from runPartial as from legacy mode', async () => {
-      await page.goto(`${addr}/nested-iframes.html`);
+      await page.goto(`${addr}/external/nested-iframes.html`);
       const legacyResults = await new AxeBuilder({
         page,
         axeSource: axeSource + axeForceLegacy
@@ -160,7 +160,17 @@ describe('@axe-core/playwright', () => {
       const normalResults = await new AxeBuilder({ page, axeSource }).analyze();
       normalResults.timestamp = legacyResults.timestamp;
       normalResults.testEngine.name = legacyResults.testEngine.name;
-      assert.deepEqual(normalResults, legacyResults);
+
+      /**
+       * we need to stringify and parse the results as
+       * deep equal thinks "messageKey": [undefined] and
+       * "shadowColor": [undefined] exist, but they do not appear
+       * in the results
+       */
+      assert.deepEqual(
+        JSON.parse(JSON.stringify(normalResults)),
+        JSON.parse(JSON.stringify(legacyResults))
+      );
     });
   });
 
