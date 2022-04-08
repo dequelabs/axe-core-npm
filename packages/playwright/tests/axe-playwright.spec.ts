@@ -86,6 +86,8 @@ describe('@axe-core/playwright', () => {
     it('returns correct results metadata', async () => {
       const res = await page.goto(`${addr}/external/index.html`);
       const results = await new AxeBuilder({ page }).analyze();
+
+      assert.equal(res?.status(), 200);
       assert.isDefined(results.testEngine.name);
       assert.isDefined(results.testEngine.version);
       assert.isDefined(results.testEnvironment.orientationAngle);
@@ -119,6 +121,8 @@ describe('@axe-core/playwright', () => {
       })
         .options({ runOnly: ['label', 'frame-tested'] })
         .analyze();
+
+      assert.equal(res?.status(), 200);
       assert.equal(results.incomplete[0].id, 'frame-tested');
       assert.lengthOf(results.incomplete[0].nodes, 1);
       assert.equal(results.violations[0].id, 'label');
@@ -284,6 +288,7 @@ describe('@axe-core/playwright', () => {
         ...results.violations,
         ...results.incomplete
       ];
+      assert.equal(res?.status(), 200);
       assert.isOk(all);
       for (const rule of all) {
         assert.include(rule.tags, 'best-practice');
@@ -441,6 +446,8 @@ describe('@axe-core/playwright', () => {
       const results = await new AxeBuilder({ page })
         .include('.include')
         .analyze();
+
+      assert.equal(res?.status(), 200);
       const flattenTarget = flatPassesTargets(results);
       assert.strictEqual(flattenTarget[0], '.include');
     });

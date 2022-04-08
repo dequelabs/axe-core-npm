@@ -332,11 +332,14 @@ describe('AxePuppeteer', function () {
       });
 
       it('gives a helpful error', done => {
-        page.goto(`${addr2}/external/index.html`).then(res => {
-          assert.equal(res.status(), 200);
-        });
-
-        // gotoP.catch(() => ({})); // suppress Node error
+        page
+          .goto(`${addr2}/external/index.html`)
+          .then(res => {
+            assert.equal(res.status(), 200);
+          })
+          .catch(() => {
+            // suppress Node error
+          });
 
         // Delay so that page load can actually start
         setTimeout(() => {
@@ -443,6 +446,7 @@ describe('AxePuppeteer', function () {
         `;
 
         const res = await page.goto(`${addr}/context.html`);
+        assert.equal(res.status(), 200);
 
         const axePip = new AxePuppeteer(page, axeSource).include('.include');
 
@@ -711,6 +715,7 @@ describe('AxePuppeteer', function () {
         .options({ runOnly: 'label' })
         .analyze();
 
+      assert.equal(res.status(), 200);
       assert.equal(violations[0].id, 'label');
       assert.lengthOf(violations[0].nodes, 3);
 
