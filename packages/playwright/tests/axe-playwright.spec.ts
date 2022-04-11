@@ -631,6 +631,7 @@ describe('@axe-core/playwright', () => {
       const frameTested = results.incomplete.find(
         ({ id }) => id === 'frame-tested'
       );
+      assert.equal(res?.status(), 200);
       assert.ok(frameTested);
     });
 
