@@ -117,54 +117,50 @@ describe('@axe-core/webdriverjs', () => {
       assert.isUndefined(err);
     });
 
-    it('throws if axe errors out on the top window', done => {
-      driver
-        .get(`${addr}/external/crash.html`)
-        .then(() => {
-          driver.getTitle().then(res => {
-            assert.notEqual(res, 'Error');
-          });
-          return new AxeBuilder(driver, axeSource + axeCrasherSource).analyze();
-        })
-        .then(
-          () => done(new Error('Expect async function to throw')),
-          () => done()
-        );
+    it('throws if axe errors out on the top window', async () => {
+      await driver.get(`${addr}/external/crash.html`);
+      const title = await driver.getTitle();
+      let err;
+
+      try {
+        await new AxeBuilder(driver, axeSource + axeCrasherSource).analyze();
+      } catch (error) {
+        err = error;
+      }
+
+      assert.notEqual(title, 'Error');
+      assert.isDefined(err);
     });
 
-    it('throws when injecting a problematic source', done => {
-      driver
-        .get(`${addr}/external/crash-me.html`)
-        .then(() => {
-          driver.getTitle().then(res => {
-            assert.notEqual(res, 'Error');
-          });
+    it('throws when injecting a problematic source', async () => {
+      await driver.get(`${addr}/external/crash.html`);
+      const title = await driver.getTitle();
+      let err;
 
-          return new AxeBuilder(driver, 'throw new Error()').analyze();
-        })
-        .then(
-          () => done(new Error('Expect async function to throw')),
-          () => done()
-        );
+      try {
+        await new AxeBuilder(driver, 'throw new Error()').analyze();
+      } catch (error) {
+        err = error;
+      }
+
+      assert.notEqual(title, 'Error');
+      assert.isDefined(err);
     });
 
-    it('throws when a setup fails', done => {
+    it('throws when a setup fails', async () => {
       const brokenSource = axeSource + `;window.axe.utils = {}`;
-      driver
-        .get(`${addr}/external/index.html`)
-        .then(() => {
-          driver.getTitle().then(res => {
-            assert.notEqual(res, 'Error');
-          });
+      await driver.get(`${addr}/external/index.html`);
+      const title = await driver.getTitle();
+      let err;
 
-          return new AxeBuilder(driver, brokenSource)
-            .withRules('label')
-            .analyze();
-        })
-        .then(
-          () => done(new Error(`Expect async function to throw`)),
-          () => done()
-        );
+      try {
+        await new AxeBuilder(driver, brokenSource).withRules('label').analyze();
+      } catch (error) {
+        err = error;
+      }
+
+      assert.notEqual(title, 'Error');
+      assert.isDefined(err);
     });
   });
 
@@ -606,43 +602,31 @@ describe('@axe-core/webdriverjs', () => {
   });
 
   describe('callback()', () => {
-    it('returns an error as the first argument', done => {
-      driver.get(`${addr}/external/index.html`).then(() => {
-        driver.getTitle().then(res => {
-          assert.notEqual(res, 'Error');
-        });
+    it('returns an error as the first argument', async () => {
+      await driver.get(`${addr}/external/index.html`);
+      const title = await driver.getTitle();
 
-        new AxeBuilder(driver, 'throw new Error()').analyze((err, results) => {
-          try {
-            assert.isNull(results);
-            assert.isNotNull(err);
-            done();
-          } catch (e) {
-            done(e);
-          }
-        });
+      assert.notEqual(title, 'Error');
+
+      new AxeBuilder(driver, 'throw new Error()').analyze((err, results) => {
+        assert.isNull(results);
+        assert.isNotNull(err);
       });
     });
 
-    it('returns as the second argument', done => {
-      driver.get(`${addr}/external/index.html`).then(() => {
-        driver.getTitle().then(res => {
-          assert.notEqual(res, 'Error');
-        });
+    it('returns as the second argument', async () => {
+      await driver.get(`${addr}/external/index.html`);
+      const title = await driver.getTitle();
 
-        new AxeBuilder(driver).analyze((err, results) => {
-          try {
-            assert.isNull(err);
-            assert.isNotNull(results);
-            assert.isArray(results?.violations);
-            assert.isArray(results?.incomplete);
-            assert.isArray(results?.passes);
-            assert.isArray(results?.inapplicable);
-            done();
-          } catch (e) {
-            done(e);
-          }
-        });
+      assert.notEqual(title, 'Error');
+
+      await new AxeBuilder(driver).analyze((err, results) => {
+        assert.isNull(err);
+        assert.isNotNull(results);
+        assert.isArray(results?.violations);
+        assert.isArray(results?.incomplete);
+        assert.isArray(results?.passes);
+        assert.isArray(results?.inapplicable);
       });
     });
   });
