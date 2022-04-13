@@ -56,11 +56,13 @@ describe('@axe-core/playwright', () => {
 
   describe('analyze', () => {
     it('returns results using a different version of axe-core', async () => {
-      await page.goto(`${addr}/index.html`);
+      const res = await page.goto(`${addr}/external/index.html`);
       const results = await new AxeBuilder({
         page,
         axeSource: axeLegacySource
       }).analyze();
+
+      assert.equal(res?.status(), 200);
       assert.strictEqual(results.testEngine.version, '4.0.3');
       assert.isNotNull(results);
       assert.isArray(results.violations);
@@ -70,8 +72,10 @@ describe('@axe-core/playwright', () => {
     });
 
     it('returns results', async () => {
-      await page.goto(`${addr}/index.html`);
+      const res = await page.goto(`${addr}/external/index.html`);
       const results = await new AxeBuilder({ page }).analyze();
+
+      assert.equal(res?.status(), 200);
       assert.isNotNull(results);
       assert.isArray(results.violations);
       assert.isArray(results.incomplete);
@@ -80,8 +84,10 @@ describe('@axe-core/playwright', () => {
     });
 
     it('returns correct results metadata', async () => {
-      await page.goto(`${addr}/external/index.html`);
+      const res = await page.goto(`${addr}/external/index.html`);
       const results = await new AxeBuilder({ page }).analyze();
+
+      assert.equal(res?.status(), 200);
       assert.isDefined(results.testEngine.name);
       assert.isDefined(results.testEngine.version);
       assert.isDefined(results.testEnvironment.orientationAngle);
@@ -96,23 +102,27 @@ describe('@axe-core/playwright', () => {
 
     it('properly isolates the call to axe.finishRun', async () => {
       let err;
-      await page.goto(`${addr}/external/isolated-finish.html`);
+      const res = await page.goto(`${addr}/external/isolated-finish.html`);
       try {
         await new AxeBuilder({ page }).analyze();
       } catch (e) {
         err = e;
       }
+
+      assert.equal(res?.status(), 200);
       assert.isUndefined(err);
     });
 
     it('reports frame-tested', async () => {
-      await page.goto(`${addr}/external/crash-parent.html`);
+      const res = await page.goto(`${addr}/external/crash-parent.html`);
       const results = await new AxeBuilder({
         page,
         axeSource: axeSource + axeCrasherSource
       })
         .options({ runOnly: ['label', 'frame-tested'] })
         .analyze();
+
+      assert.equal(res?.status(), 200);
       assert.equal(results.incomplete[0].id, 'frame-tested');
       assert.lengthOf(results.incomplete[0].nodes, 1);
       assert.equal(results.violations[0].id, 'label');
@@ -121,7 +131,7 @@ describe('@axe-core/playwright', () => {
 
     it('throws when injecting a problematic source', async () => {
       let error: Error | null = null;
-      await page.goto(`${addr}/external/crash-me.html`);
+      const res = await page.goto(`${addr}/external/crash.html`);
       try {
         await new AxeBuilder({
           page,
@@ -130,6 +140,8 @@ describe('@axe-core/playwright', () => {
       } catch (e) {
         error = e as Error;
       }
+
+      assert.equal(res?.status(), 200);
       assert.isNotNull(error);
     });
 
@@ -137,7 +149,7 @@ describe('@axe-core/playwright', () => {
       let error: Error | null = null;
 
       const brokenSource = axeSource + `;window.axe.utils = {}`;
-      await page.goto(`${addr}/external/index.html`);
+      const res = await page.goto(`${addr}/external/index.html`);
       try {
         await new AxeBuilder({ page, axeSource: brokenSource })
           .withRules('label')
@@ -146,11 +158,12 @@ describe('@axe-core/playwright', () => {
         error = e as Error;
       }
 
+      assert.equal(res?.status(), 200);
       assert.isNotNull(error);
     });
 
     it('returns the same results from runPartial as from legacy mode', async () => {
-      await page.goto(`${addr}/nested-iframes.html`);
+      const res = await page.goto(`${addr}/external/nested-iframes.html`);
       const legacyResults = await new AxeBuilder({
         page,
         axeSource: axeSource + axeForceLegacy
@@ -160,13 +173,24 @@ describe('@axe-core/playwright', () => {
       const normalResults = await new AxeBuilder({ page, axeSource }).analyze();
       normalResults.timestamp = legacyResults.timestamp;
       normalResults.testEngine.name = legacyResults.testEngine.name;
-      assert.deepEqual(normalResults, legacyResults);
+
+      /**
+       * we need to stringify and parse the results as
+       * deep equal thinks "messageKey": [undefined] and
+       * "shadowColor": [undefined] exist, but they do not appear
+       * in the results
+       */
+      assert.deepEqual(
+        JSON.parse(JSON.stringify(normalResults)),
+        JSON.parse(JSON.stringify(legacyResults))
+      );
+      assert.equal(res?.status(), 200);
     });
   });
 
   describe('disableRules', () => {
     it('disables the given rules(s) as array', async () => {
-      await page.goto(`${addr}/external/index.html`);
+      const res = await page.goto(`${addr}/external/index.html`);
       const results = await new AxeBuilder({ page })
         .disableRules(['region'])
         .analyze();
@@ -176,11 +200,13 @@ describe('@axe-core/playwright', () => {
         ...results.violations,
         ...results.incomplete
       ];
+
+      assert.equal(res?.status(), 200);
       assert.isTrue(!all.find(r => r.id === 'region'));
     });
 
     it('disables the given rules(s) as string', async () => {
-      await page.goto(`${addr}/external/index.html`);
+      const res = await page.goto(`${addr}/external/index.html`);
       const results = await new AxeBuilder({ page })
         .disableRules('region')
         .analyze();
@@ -190,13 +216,15 @@ describe('@axe-core/playwright', () => {
         ...results.violations,
         ...results.incomplete
       ];
+
+      assert.equal(res?.status(), 200);
       assert.isTrue(!all.find(r => r.id === 'region'));
     });
   });
 
   describe('withRules', () => {
     it('only runs the provided rules as an array', async () => {
-      await page.goto(`${addr}/external/index.html`);
+      const res = await page.goto(`${addr}/external/index.html`);
       const results = await new AxeBuilder({ page })
         .withRules(['region'])
         .analyze();
@@ -206,12 +234,14 @@ describe('@axe-core/playwright', () => {
         ...results.violations,
         ...results.incomplete
       ];
+
+      assert.equal(res?.status(), 200);
       assert.strictEqual(all.length, 1);
       assert.strictEqual(all[0].id, 'region');
     });
 
     it('only runs the provided rules as a string', async () => {
-      await page.goto(`${addr}/external/index.html`);
+      const res = await page.goto(`${addr}/external/index.html`);
       const results = await new AxeBuilder({ page })
         .withRules('region')
         .analyze();
@@ -221,6 +251,8 @@ describe('@axe-core/playwright', () => {
         ...results.violations,
         ...results.incomplete
       ];
+
+      assert.equal(res?.status(), 200);
       assert.strictEqual(all.length, 1);
       assert.strictEqual(all[0].id, 'region');
     });
@@ -228,7 +260,7 @@ describe('@axe-core/playwright', () => {
 
   describe('options', () => {
     it('passes options to axe-core', async () => {
-      await page.goto(`${addr}/external/index.html`);
+      const res = await page.goto(`${addr}/external/index.html`);
       const results = await new AxeBuilder({ page })
         .options({ rules: { region: { enabled: false } } })
         .analyze();
@@ -238,13 +270,15 @@ describe('@axe-core/playwright', () => {
         ...results.violations,
         ...results.incomplete
       ];
+
+      assert.equal(res?.status(), 200);
       assert.isTrue(!all.find(r => r.id === 'region'));
     });
   });
 
   describe('withTags', () => {
     it('only rules rules with the given tag(s) as an array', async () => {
-      await page.goto(`${addr}/external/index.html`);
+      const res = await page.goto(`${addr}/external/index.html`);
       const results = await new AxeBuilder({ page })
         .withTags(['best-practice'])
         .analyze();
@@ -254,6 +288,7 @@ describe('@axe-core/playwright', () => {
         ...results.violations,
         ...results.incomplete
       ];
+      assert.equal(res?.status(), 200);
       assert.isOk(all);
       for (const rule of all) {
         assert.include(rule.tags, 'best-practice');
@@ -261,7 +296,7 @@ describe('@axe-core/playwright', () => {
     });
 
     it('only rules rules with the given tag(s) as a string', async () => {
-      await page.goto(`${addr}/external/index.html`);
+      const res = await page.goto(`${addr}/external/index.html`);
       const results = await new AxeBuilder({ page })
         .withTags('best-practice')
         .analyze();
@@ -271,6 +306,8 @@ describe('@axe-core/playwright', () => {
         ...results.violations,
         ...results.incomplete
       ];
+
+      assert.equal(res?.status(), 200);
       assert.isOk(all);
       for (const rule of all) {
         assert.include(rule.tags, 'best-practice');
@@ -278,7 +315,7 @@ describe('@axe-core/playwright', () => {
     });
 
     it('No results provided when the given tag(s) is invalid', async () => {
-      await page.goto(`${addr}/external/index.html`);
+      const res = await page.goto(`${addr}/external/index.html`);
       const results = await new AxeBuilder({ page })
         .withTags(['foobar'])
         .analyze();
@@ -289,6 +326,8 @@ describe('@axe-core/playwright', () => {
         ...results.violations,
         ...results.incomplete
       ];
+
+      assert.equal(res?.status(), 200);
       // Ensure all run rules had the "foobar" tag
       assert.deepStrictEqual(0, all.length);
     });
@@ -296,7 +335,7 @@ describe('@axe-core/playwright', () => {
 
   describe('frame tests', () => {
     it('injects into nested iframes', async () => {
-      await page.goto(`${addr}/external/nested-iframes.html`);
+      const res = await page.goto(`${addr}/external/nested-iframes.html`);
       const { violations } = await new AxeBuilder({ page })
         .options({ runOnly: 'label' })
         .analyze();
@@ -310,13 +349,15 @@ describe('@axe-core/playwright', () => {
         '#bar-baz',
         'input'
       ]);
+
+      assert.equal(res?.status(), 200);
       assert.deepEqual(nodes[1].target, ['#ifr-foo', '#foo-baz', 'input']);
       assert.deepEqual(nodes[2].target, ['#ifr-bar', '#bar-baz', 'input']);
       assert.deepEqual(nodes[3].target, ['#ifr-baz', 'input']);
     });
 
     it('injects into nested frameset', async () => {
-      await page.goto(`${addr}/external/nested-frameset.html`);
+      const res = await page.goto(`${addr}/external/nested-frameset.html`);
       const { violations } = await new AxeBuilder({ page })
         .options({ runOnly: 'label' })
         .analyze();
@@ -331,17 +372,20 @@ describe('@axe-core/playwright', () => {
         '#bar-baz',
         'input'
       ]);
+
+      assert.equal(res?.status(), 200);
       assert.deepEqual(nodes[1].target, ['#frm-foo', '#foo-baz', 'input']);
       assert.deepEqual(nodes[2].target, ['#frm-bar', '#bar-baz', 'input']);
       assert.deepEqual(nodes[3].target, ['#frm-baz', 'input']);
     });
 
     it('should work on shadow DOM iframes', async () => {
-      await page.goto(`${addr}/external/shadow-frames.html`);
+      const res = await page.goto(`${addr}/external/shadow-frames.html`);
       const { violations } = await new AxeBuilder({ page })
         .options({ runOnly: 'label' })
         .analyze();
 
+      assert.equal(res?.status(), 200);
       assert.equal(violations[0].id, 'label');
       assert.lengthOf(violations[0].nodes, 3);
 
@@ -355,7 +399,7 @@ describe('@axe-core/playwright', () => {
     });
 
     it('injects once per iframe', async () => {
-      await page.goto(`${addr}/external/nested-iframes.html`);
+      const res = await page.goto(`${addr}/external/nested-iframes.html`);
 
       const builder = new AxeBuilder({ page });
       const origScript = (builder as any).script;
@@ -369,6 +413,7 @@ describe('@axe-core/playwright', () => {
 
       await builder.analyze();
 
+      assert.equal(res?.status(), 200);
       assert.strictEqual(count, 9);
     });
   });
@@ -384,38 +429,42 @@ describe('@axe-core/playwright', () => {
         }, []);
     };
     it('with include and exclude', async () => {
-      await page.goto(`${addr}/context.html`);
+      const res = await page.goto(`${addr}/context.html`);
       const results = await new AxeBuilder({ page })
         .include('.include')
         .exclude('.exclude')
         .analyze();
       const flattenTarget = flatPassesTargets(results);
 
+      assert.equal(res?.status(), 200);
       assert.strictEqual(flattenTarget[0], '.include');
       assert.notInclude(flattenTarget, '.exclude');
     });
 
     it('with only include', async () => {
-      await page.goto(`${addr}/context.html`);
+      const res = await page.goto(`${addr}/context.html`);
       const results = await new AxeBuilder({ page })
         .include('.include')
         .analyze();
+
+      assert.equal(res?.status(), 200);
       const flattenTarget = flatPassesTargets(results);
       assert.strictEqual(flattenTarget[0], '.include');
     });
 
     it('with only exclude', async () => {
-      await page.goto(`${addr}/context.html`);
+      const res = await page.goto(`${addr}/context.html`);
       const results = await new AxeBuilder({ page })
         .exclude('.exclude')
         .analyze();
       const flattenTarget = flatPassesTargets(results);
 
+      assert.equal(res?.status(), 200);
       assert.notInclude(flattenTarget, '.exclude');
     });
 
     it('with chaining includes', async () => {
-      await page.goto(`${addr}/context.html`);
+      const res = await page.goto(`${addr}/context.html`);
 
       const results = await new AxeBuilder({ page })
         .include('.include')
@@ -423,6 +472,7 @@ describe('@axe-core/playwright', () => {
         .analyze();
       const flattenTarget = flatPassesTargets(results);
 
+      assert.equal(res?.status(), 200);
       assert.strictEqual(flattenTarget[0], '.include');
       assert.strictEqual(flattenTarget[1], '.include2');
       assert.notInclude(flattenTarget, '.exclude');
@@ -430,19 +480,20 @@ describe('@axe-core/playwright', () => {
     });
 
     it('with chaining excludes', async () => {
-      await page.goto(`${addr}/context.html`);
+      const res = await page.goto(`${addr}/context.html`);
       const results = await new AxeBuilder({ page })
         .exclude('.exclude')
         .exclude('.exclude2')
         .analyze();
       const flattenTarget = flatPassesTargets(results);
 
+      assert.equal(res?.status(), 200);
       assert.notInclude(flattenTarget, '.exclude');
       assert.notInclude(flattenTarget, '.exclude2');
     });
 
     it('with chaining includes and excludes', async () => {
-      await page.goto(`${addr}/context.html`);
+      const res = await page.goto(`${addr}/context.html`);
       const results = await new AxeBuilder({ page })
         .include('.include')
         .include('.include2')
@@ -451,6 +502,7 @@ describe('@axe-core/playwright', () => {
         .analyze();
       const flattenTarget = flatPassesTargets(results);
 
+      assert.equal(res?.status(), 200);
       assert.strictEqual(flattenTarget[0], '.include');
       assert.strictEqual(flattenTarget[1], '.include2');
       assert.notInclude(flattenTarget, '.exclude');
@@ -458,7 +510,7 @@ describe('@axe-core/playwright', () => {
     });
 
     it('with include using an array of strings', async () => {
-      await page.goto(`${addr}/context.html`);
+      const res = await page.goto(`${addr}/context.html`);
       const expected = ['.selector-one', '.selector-two', '.selector-three'];
 
       const axeSource = `
@@ -477,11 +529,12 @@ describe('@axe-core/playwright', () => {
 
       const { include: actual } = (await results.analyze()) as any;
 
+      assert.equal(res?.status(), 200);
       assert.deepEqual(actual[0], expected);
     });
 
     it('with exclude using an array of strings', async () => {
-      await page.goto(`${addr}/context.html`);
+      const res = await page.goto(`${addr}/context.html`);
       const expected = ['.selector-one', '.selector-two', '.selector-three'];
 
       const axeSource = `
@@ -500,6 +553,7 @@ describe('@axe-core/playwright', () => {
 
       const { exclude: actual } = (await results.analyze()) as any;
 
+      assert.equal(res?.status(), 200);
       assert.deepEqual(actual[0], expected);
     });
   });
@@ -508,7 +562,7 @@ describe('@axe-core/playwright', () => {
     const finishRunThrows = `;axe.finishRun = () => { throw new Error("No finishRun")}`;
 
     it('throws an error if axe.finishRun throws', async () => {
-      await page.goto(`${addr}/external/index.html`);
+      const res = await page.goto(`${addr}/external/index.html`);
       // eslint-disable-next-line @typescript-eslint/ban-ts-ignore
       //@ts-ignore
       delete page.context().newPage;
@@ -518,6 +572,7 @@ describe('@axe-core/playwright', () => {
         return null;
       };
 
+      assert.equal(res?.status(), 200);
       try {
         await new AxeBuilder({
           page,
@@ -533,8 +588,9 @@ describe('@axe-core/playwright', () => {
     });
 
     it('throws an error if axe.finishRun throws', async () => {
-      await page.goto(`${addr}/external/index.html`);
+      const res = await page.goto(`${addr}/external/index.html`);
 
+      assert.equal(res?.status(), 200);
       try {
         await new AxeBuilder({
           page,
@@ -550,18 +606,20 @@ describe('@axe-core/playwright', () => {
   describe('setLegacyMode', () => {
     const runPartialThrows = `;axe.runPartial = () => { throw new Error("No runPartial")}`;
     it('runs legacy mode when used', async () => {
-      await page.goto(`${addr}/external/index.html`);
+      const res = await page.goto(`${addr}/external/index.html`);
       const results = await new AxeBuilder({
         page,
         axeSource: axeSource + runPartialThrows
       })
         .setLegacyMode()
         .analyze();
+
+      assert.equal(res?.status(), 200);
       assert.isNotNull(results);
     });
 
     it('prevents cross-origin frame testing', async () => {
-      await page.goto(`${addr}/external/cross-origin.html`);
+      const res = await page.goto(`${addr}/external/cross-origin.html`);
       const results = await new AxeBuilder({
         page,
         axeSource: axeSource + runPartialThrows
@@ -573,11 +631,12 @@ describe('@axe-core/playwright', () => {
       const frameTested = results.incomplete.find(
         ({ id }) => id === 'frame-tested'
       );
+      assert.equal(res?.status(), 200);
       assert.ok(frameTested);
     });
 
     it('can be disabled again', async () => {
-      await page.goto(`${addr}/external/cross-origin.html`);
+      const res = await page.goto(`${addr}/external/cross-origin.html`);
       const results = await new AxeBuilder({ page })
         .withRules('frame-tested')
         .setLegacyMode()
@@ -587,6 +646,7 @@ describe('@axe-core/playwright', () => {
       const frameTested = results.incomplete.find(
         ({ id }) => id === 'frame-tested'
       );
+      assert.equal(res?.status(), 200);
       assert.isUndefined(frameTested);
     });
   });
@@ -594,11 +654,13 @@ describe('@axe-core/playwright', () => {
   describe('for versions without axe.runPartial', () => {
     describe('analyze', () => {
       it('returns results', async () => {
-        await page.goto(`${addr}/external/index.html`);
+        const res = await page.goto(`${addr}/external/index.html`);
         const results = await new AxeBuilder({
           page,
           axeSource: axeLegacySource
         }).analyze();
+
+        assert.equal(res?.status(), 200);
         assert.strictEqual(results.testEngine.version, '4.0.3');
         assert.isNotNull(results);
         assert.isArray(results.violations);
@@ -609,7 +671,7 @@ describe('@axe-core/playwright', () => {
 
       it('throws if axe errors out on the top window', async () => {
         let error: Error | null = null;
-        await page.goto(`${addr}/external/crash.html`);
+        const res = await page.goto(`${addr}/external/crash.html`);
         try {
           await new AxeBuilder({
             page,
@@ -618,11 +680,13 @@ describe('@axe-core/playwright', () => {
         } catch (e) {
           error = e as Error;
         }
+
+        assert.equal(res?.status(), 200);
         assert.isNotNull(error);
       });
 
       it('tests cross-origin pages', async () => {
-        await page.goto(`${addr}/external/cross-origin.html`);
+        const res = await page.goto(`${addr}/external/cross-origin.html`);
         const results = await new AxeBuilder({
           page,
           axeSource: axeLegacySource
@@ -633,13 +697,15 @@ describe('@axe-core/playwright', () => {
         const frameTested = results.incomplete.find(
           ({ id }) => id === 'frame-tested'
         );
+
+        assert.equal(res?.status(), 200);
         assert.isUndefined(frameTested);
       });
     });
 
     describe('frame tests', () => {
       it('injects into nested iframes', async () => {
-        await page.goto(`${addr}/external/nested-iframes.html`);
+        const res = await page.goto(`${addr}/external/nested-iframes.html`);
         const { violations } = await new AxeBuilder({
           page,
           axeSource: axeLegacySource
@@ -656,13 +722,15 @@ describe('@axe-core/playwright', () => {
           '#bar-baz',
           'input'
         ]);
+
+        assert.equal(res?.status(), 200);
         assert.deepEqual(nodes[1].target, ['#ifr-foo', '#foo-baz', 'input']);
         assert.deepEqual(nodes[2].target, ['#ifr-bar', '#bar-baz', 'input']);
         assert.deepEqual(nodes[3].target, ['#ifr-baz', 'input']);
       });
 
       it('injects into nested frameset', async () => {
-        await page.goto(`${addr}/external/nested-frameset.html`);
+        const res = await page.goto(`${addr}/external/nested-frameset.html`);
         const { violations } = await new AxeBuilder({
           page,
           axeSource: axeLegacySource
@@ -680,13 +748,15 @@ describe('@axe-core/playwright', () => {
           '#bar-baz',
           'input'
         ]);
+
+        assert.equal(res?.status(), 200);
         assert.deepEqual(nodes[1].target, ['#frm-foo', '#foo-baz', 'input']);
         assert.deepEqual(nodes[2].target, ['#frm-bar', '#bar-baz', 'input']);
         assert.deepEqual(nodes[3].target, ['#frm-baz', 'input']);
       });
 
       it('should work on shadow DOM iframes', async () => {
-        await page.goto(`${addr}/external/shadow-frames.html`);
+        const res = await page.goto(`${addr}/external/shadow-frames.html`);
         const { violations } = await new AxeBuilder({
           page,
           axeSource: axeLegacySource
@@ -698,6 +768,8 @@ describe('@axe-core/playwright', () => {
         assert.lengthOf(violations[0].nodes, 3);
 
         const nodes = violations[0].nodes;
+
+        assert.equal(res?.status(), 200);
         assert.deepEqual(nodes[0].target, ['#light-frame', 'input']);
         assert.deepEqual(nodes[1].target, ['#slotted-frame', 'input']);
         assert.deepEqual(nodes[2].target, [
