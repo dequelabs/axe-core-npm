@@ -197,6 +197,8 @@ jobs:
       NODE_ENV: development
     working_directory: ~/axe-core-npm
     steps:
+      # We need to pin node@14 to run WDIO due to WDIO sync, only works on node@14
+      - run: npm install -g node@14 --force
       - checkout
       - restore_dependency_cache
       - run: npm install
