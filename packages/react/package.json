@@ -10,7 +10,7 @@
     "dist/after.js.map",
     "dist/cache.js",
     "dist/cache.d.ts",
-    "dist/cache.js.map"
+    "dist/cache.js.map",
     "dist/index.js",
     "dist/index.d.ts",
     "dist/index.js.map"
