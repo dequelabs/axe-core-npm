@@ -134,7 +134,9 @@ jobs:
       - restore_dependency_cache
       # Re-build packages, ensuring packages/webdriverjs/dist exists.
       - run: npx lerna run prepare
-      - run: npx browser-driver-manager@1.0.4 install chrome chromedriver
+      - run: cd packages/cli && npx browser-driver-manager@1.0.4 install chrome chromedriver --verbose
+      # lerna link after installing the latest version of chromedriver, as we depend on webdriverJS
+      - run: cd packages/cli && npx lerna link
       - run: npm run coverage --prefix=packages/cli
 
   puppeteer:
@@ -143,7 +145,7 @@ jobs:
       - checkout
       - restore_dependency_cache
       - run: npm run build --prefix=packages/puppeteer
-      - run: npx browser-driver-manager@1.0.4 install chrome chromedriver
+      - run: cd packages/puppeteer && npx browser-driver-manager@1.0.4 install chrome chromedriver --verbose
       - run: npm run coverage --prefix=packages/puppeteer
 
   webdriverjs:
@@ -151,7 +153,7 @@ jobs:
     steps:
       - checkout
       - restore_dependency_cache
-      - run: npx browser-driver-manager@1.0.4 install chrome chromedriver
+      - run: cd packages/webdriverjs && npx browser-driver-manager@1.0.4 install chrome chromedriver --verbose
       - run: npm --prefix=packages/webdriverjs run build
       - run: npm run coverage --prefix=packages/webdriverjs
 
@@ -170,7 +172,7 @@ jobs:
     steps:
       - checkout
       - restore_dependency_cache
-      - run: npx browser-driver-manager@1.0.4 install chrome chromedriver
+      - run: cd packages/webdriverio && npx browser-driver-manager@1.0.4 install chrome chromedriver --verbose
       - run: npm run coverage --prefix=packages/webdriverio
 
   reporter-earl:
@@ -195,6 +197,8 @@ jobs:
       NODE_ENV: development
     working_directory: ~/axe-core-npm
     steps:
+      # We need to pin node@14 to run WDIO due to WDIO sync, only works on node@14
+      - run: npm install -g node@14 --force
       - checkout
       - restore_dependency_cache
       - run: npm install
@@ -240,6 +244,20 @@ jobs:
           npx lerna publish from-package \
             --force-publish='*' \
             --yes
+
+  # Create a GitHub release.
+  github_release:
+    docker:
+      - image: cimg/go:1.17.1
+    steps:
+      - checkout
+      - run: go get gopkg.in/aktau/github-release.v0
+      - run:
+          name: Download and run GitHub release script
+          command: |
+            curl https://raw.githubusercontent.com/dequelabs/attest-release-scripts/develop/src/node-github-release.sh -s -o ./node-github-release.sh
+            chmod +x ./node-github-release.sh
+            ./node-github-release.sh
 
 workflows:
   version: 2
@@ -312,3 +330,6 @@ workflows:
           filters:
             branches:
               only: master
+      - github_release:
+          requires:
+            - production_release

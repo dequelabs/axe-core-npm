@@ -1,6 +1,6 @@
 {
   "name": "@axe-core/react",
-  "version": "4.4.2",
+  "version": "4.4.3",
   "description": "Dynamic accessibility analysis for React using axe-core",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -8,6 +8,9 @@
     "dist/after.js",
     "dist/after.d.ts",
     "dist/after.js.map",
+    "dist/cache.js",
+    "dist/cache.d.ts",
+    "dist/cache.js.map",
     "dist/index.js",
     "dist/index.d.ts",
     "dist/index.js.map"

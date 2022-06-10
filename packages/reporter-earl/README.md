@@ -16,6 +16,23 @@ npm install @axe-core/reporter-earl
 
 The EARL reporter can be passed to axe, either as part of configuration or as part of the run:
 
+CommonJS Require Syntax:
+
+```js
+const reporter = require('@axe-core/reporter-earl').default;
+// Define the reporter through axe.configure
+axe.configure({ reporter });
+axe.run().then(earlResults => console.log(earlResults));
+```
+
+```js
+const reporter = require('@axe-core/reporter-earl').default;
+// Use the reporter in a single axe.run call
+axe.run({ reporter }).then(earlResults => console.log(earlResults));
+```
+
+ES6 Import Syntax:
+
 ```js
 import reporter from '@axe-core/reporter-earl';
 // Define the reporter through axe.configure

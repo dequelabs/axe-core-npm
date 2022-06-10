@@ -2,6 +2,7 @@
 import axeCore = require('axe-core');
 import rIC = require('requestidlecallback');
 import after = require('./after');
+import cache from './cache';
 
 const requestIdleCallback = rIC.request;
 const cancelIdleCallback = rIC.cancel;
@@ -43,7 +44,6 @@ let conf: ReactSpec;
 let _createElement: typeof React.createElement;
 const components: { [id: number]: React.Component } = {};
 const nodes: Node[] = [document.documentElement];
-const cache: { [key: string]: string } = {};
 
 // Returns a function, that, as long as it continues to be invoked, will not
 // be triggered. The function will be called after it stops being called for
@@ -221,8 +221,8 @@ function checkAndReport(node: Node, timeout: number): Promise<void> {
             results.violations = results.violations.filter(result => {
               result.nodes = result.nodes.filter(node => {
                 const key: string = node.target.toString() + result.id;
-                const retVal = !cache[key];
-                cache[key] = key;
+                const retVal = !cache.get(key);
+                cache.set(key, key);
                 return disableDeduplicate || retVal;
               });
               return !!result.nodes.length;
@@ -412,14 +412,4 @@ function reactAxe(
   return checkAndReport(document.body, timeout);
 }
 
-// export function just for tests so we can have a clean state
-// between tests
-export function _reset() {
-  Object.keys(cache).forEach(key => {
-    delete cache[key];
-  });
-
-  axeCore.reset();
-}
-
-export default reactAxe;
+export = reactAxe;

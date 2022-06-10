@@ -3,18 +3,20 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
-## [4.4.2](https://github.com/dequelabs/axe-core-npm/compare/v4.1.1...v4.4.2) (2022-03-14)
+## [4.4.3](https://github.com/dequelabs/axe-core-npm/compare/v4.1.1...v4.4.3) (2022-06-03)
 
 
 ### Bug Fixes
 
 * **cli,reporter-earl,react:** use correct version of axe-core ([#378](https://github.com/dequelabs/axe-core-npm/issues/378)) ([0c7d050](https://github.com/dequelabs/axe-core-npm/commit/0c7d0506b7d397df3c96414fc37a408e90fe9a9c))
 * **react:**  fallback on _reactInternals ([#455](https://github.com/dequelabs/axe-core-npm/issues/455)) ([13f9fd0](https://github.com/dequelabs/axe-core-npm/commit/13f9fd07c24304f0f3dde74d7d41bc8222929c13))
+* **react:** revert export to not use default ([#481](https://github.com/dequelabs/axe-core-npm/issues/481)) ([d932c9d](https://github.com/dequelabs/axe-core-npm/commit/d932c9d33fa96e22dd1d202c36e482c5b1eee3d6))
 * update axe-core to 4.2.1 ([#254](https://github.com/dequelabs/axe-core-npm/issues/254)) ([9d90185](https://github.com/dequelabs/axe-core-npm/commit/9d9018525a4d799f6d763d0329f05ccbfd20dbe4))
 
 
 ### Features
 
+* include missing cache file ([#520](https://github.com/dequelabs/axe-core-npm/issues/520)) ([9b2b375](https://github.com/dequelabs/axe-core-npm/commit/9b2b375616988640dc836dad99a29f0c88bb20b8))
 * **react:** Add configuration option to optional disable cache (deduplication) ([#309](https://github.com/dequelabs/axe-core-npm/issues/309)) ([435811c](https://github.com/dequelabs/axe-core-npm/commit/435811cb3957cf84b1c1701f6de5c4eb740c8301))
 * **react:** Add support for custom logger ([#181](https://github.com/dequelabs/axe-core-npm/issues/181)) ([1f97433](https://github.com/dequelabs/axe-core-npm/commit/1f974338280460715e7b92d58279c3f18fa563f8))
 * update `axe-core@4.2.2` ([#263](https://github.com/dequelabs/axe-core-npm/issues/263)) ([8c609e1](https://github.com/dequelabs/axe-core-npm/commit/8c609e1e3580a63f8697ca94e146b0e2ed28e579))
@@ -25,51 +27,43 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 
 
 
+
+## [4.4.2](https://github.com/dequelabs/axe-core-npm/compare/v4.1.1...v4.4.2) (2022-03-14)
+
+### Bug Fixes
+
+**Note:** Version bump only for package @axe-core/react
 
 ## [4.4.1](https://github.com/dequelabs/axe-core-npm/compare/v4.1.1...v4.4.1) (2022-02-15)
 
-
 ### Bug Fixes
 
-* **cli,reporter-earl,react:** use correct version of axe-core ([#378](https://github.com/dequelabs/axe-core-npm/issues/378)) ([0c7d050](https://github.com/dequelabs/axe-core-npm/commit/0c7d0506b7d397df3c96414fc37a408e90fe9a9c))
-* **react:**  fallback on _reactInternals ([#455](https://github.com/dequelabs/axe-core-npm/issues/455)) ([13f9fd0](https://github.com/dequelabs/axe-core-npm/commit/13f9fd07c24304f0f3dde74d7d41bc8222929c13))
-* update axe-core to 4.2.1 ([#254](https://github.com/dequelabs/axe-core-npm/issues/254)) ([9d90185](https://github.com/dequelabs/axe-core-npm/commit/9d9018525a4d799f6d763d0329f05ccbfd20dbe4))
-
+- **react:** fallback on \_reactInternals ([#455](https://github.com/dequelabs/axe-core-npm/issues/455)) ([13f9fd0](https://github.com/dequelabs/axe-core-npm/commit/13f9fd07c24304f0f3dde74d7d41bc8222929c13))
 
 ### Features
 
-* **react:** Add configuration option to optional disable cache (deduplication) ([#309](https://github.com/dequelabs/axe-core-npm/issues/309)) ([435811c](https://github.com/dequelabs/axe-core-npm/commit/435811cb3957cf84b1c1701f6de5c4eb740c8301))
-* **react:** Add support for custom logger ([#181](https://github.com/dequelabs/axe-core-npm/issues/181)) ([1f97433](https://github.com/dequelabs/axe-core-npm/commit/1f974338280460715e7b92d58279c3f18fa563f8))
-* update `axe-core@4.2.2` ([#263](https://github.com/dequelabs/axe-core-npm/issues/263)) ([8c609e1](https://github.com/dequelabs/axe-core-npm/commit/8c609e1e3580a63f8697ca94e146b0e2ed28e579))
-* update axe-core to 4.2.0 ([#240](https://github.com/dequelabs/axe-core-npm/issues/240)) ([4e8f7fe](https://github.com/dequelabs/axe-core-npm/commit/4e8f7fee9db09fb56f91ea34f9984be66a29033e))
-* update to use `axe-core@4.2.3` ([#280](https://github.com/dequelabs/axe-core-npm/issues/280)) ([8aebba5](https://github.com/dequelabs/axe-core-npm/commit/8aebba5c6069ca047f649446e072259c069c9a22))
-* upgrade axe-core to 4.4.1 ([#441](https://github.com/dequelabs/axe-core-npm/issues/441)) ([765c81a](https://github.com/dequelabs/axe-core-npm/commit/765c81a2ae63e8c72ec086b86174a5c5f343ea9b))
-
-
-
-
+- **react:** Add configuration option to optional disable cache (deduplication) ([#309](https://github.com/dequelabs/axe-core-npm/issues/309)) ([435811c](https://github.com/dequelabs/axe-core-npm/commit/435811cb3957cf84b1c1701f6de5c4eb740c8301))
+- **react:** Add support for custom logger ([#181](https://github.com/dequelabs/axe-core-npm/issues/181)) ([1f97433](https://github.com/dequelabs/axe-core-npm/commit/1f974338280460715e7b92d58279c3f18fa563f8))
+- update `axe-core@4.2.2` ([#263](https://github.com/dequelabs/axe-core-npm/issues/263)) ([8c609e1](https://github.com/dequelabs/axe-core-npm/commit/8c609e1e3580a63f8697ca94e146b0e2ed28e579))
+- update axe-core to 4.2.0 ([#240](https://github.com/dequelabs/axe-core-npm/issues/240)) ([4e8f7fe](https://github.com/dequelabs/axe-core-npm/commit/4e8f7fee9db09fb56f91ea34f9984be66a29033e))
+- update to use `axe-core@4.2.3` ([#280](https://github.com/dequelabs/axe-core-npm/issues/280)) ([8aebba5](https://github.com/dequelabs/axe-core-npm/commit/8aebba5c6069ca047f649446e072259c069c9a22))
+- upgrade axe-core to 4.4.1 ([#441](https://github.com/dequelabs/axe-core-npm/issues/441)) ([765c81a](https://github.com/dequelabs/axe-core-npm/commit/765c81a2ae63e8c72ec086b86174a5c5f343ea9b))
 
 # [4.4.0](https://github.com/dequelabs/axe-core-npm/compare/v4.1.1...v4.4.0) (2022-02-10)
 
-
 ### Bug Fixes
 
-* **cli,reporter-earl,react:** use correct version of axe-core ([#378](https://github.com/dequelabs/axe-core-npm/issues/378)) ([0c7d050](https://github.com/dequelabs/axe-core-npm/commit/0c7d0506b7d397df3c96414fc37a408e90fe9a9c))
-* update axe-core to 4.2.1 ([#254](https://github.com/dequelabs/axe-core-npm/issues/254)) ([9d90185](https://github.com/dequelabs/axe-core-npm/commit/9d9018525a4d799f6d763d0329f05ccbfd20dbe4))
-
+- **cli,reporter-earl,react:** use correct version of axe-core ([#378](https://github.com/dequelabs/axe-core-npm/issues/378)) ([0c7d050](https://github.com/dequelabs/axe-core-npm/commit/0c7d0506b7d397df3c96414fc37a408e90fe9a9c))
+- update axe-core to 4.2.1 ([#254](https://github.com/dequelabs/axe-core-npm/issues/254)) ([9d90185](https://github.com/dequelabs/axe-core-npm/commit/9d9018525a4d799f6d763d0329f05ccbfd20dbe4))
 
 ### Features
 
-* **react:** Add configuration option to optional disable cache (deduplication) ([#309](https://github.com/dequelabs/axe-core-npm/issues/309)) ([435811c](https://github.com/dequelabs/axe-core-npm/commit/435811cb3957cf84b1c1701f6de5c4eb740c8301))
-* **react:** Add support for custom logger ([#181](https://github.com/dequelabs/axe-core-npm/issues/181)) ([1f97433](https://github.com/dequelabs/axe-core-npm/commit/1f974338280460715e7b92d58279c3f18fa563f8))
-* update `axe-core@4.2.2` ([#263](https://github.com/dequelabs/axe-core-npm/issues/263)) ([8c609e1](https://github.com/dequelabs/axe-core-npm/commit/8c609e1e3580a63f8697ca94e146b0e2ed28e579))
-* update axe-core to 4.2.0 ([#240](https://github.com/dequelabs/axe-core-npm/issues/240)) ([4e8f7fe](https://github.com/dequelabs/axe-core-npm/commit/4e8f7fee9db09fb56f91ea34f9984be66a29033e))
-* update to use `axe-core@4.2.3` ([#280](https://github.com/dequelabs/axe-core-npm/issues/280)) ([8aebba5](https://github.com/dequelabs/axe-core-npm/commit/8aebba5c6069ca047f649446e072259c069c9a22))
-* upgrade axe-core to 4.4.1 ([#441](https://github.com/dequelabs/axe-core-npm/issues/441)) ([765c81a](https://github.com/dequelabs/axe-core-npm/commit/765c81a2ae63e8c72ec086b86174a5c5f343ea9b))
-
-
-
-
+- **react:** Add configuration option to optional disable cache (deduplication) ([#309](https://github.com/dequelabs/axe-core-npm/issues/309)) ([435811c](https://github.com/dequelabs/axe-core-npm/commit/435811cb3957cf84b1c1701f6de5c4eb740c8301))
+- **react:** Add support for custom logger ([#181](https://github.com/dequelabs/axe-core-npm/issues/181)) ([1f97433](https://github.com/dequelabs/axe-core-npm/commit/1f974338280460715e7b92d58279c3f18fa563f8))
+- update `axe-core@4.2.2` ([#263](https://github.com/dequelabs/axe-core-npm/issues/263)) ([8c609e1](https://github.com/dequelabs/axe-core-npm/commit/8c609e1e3580a63f8697ca94e146b0e2ed28e579))
+- update axe-core to 4.2.0 ([#240](https://github.com/dequelabs/axe-core-npm/issues/240)) ([4e8f7fe](https://github.com/dequelabs/axe-core-npm/commit/4e8f7fee9db09fb56f91ea34f9984be66a29033e))
+- update to use `axe-core@4.2.3` ([#280](https://github.com/dequelabs/axe-core-npm/issues/280)) ([8aebba5](https://github.com/dequelabs/axe-core-npm/commit/8aebba5c6069ca047f649446e072259c069c9a22))
+- upgrade axe-core to 4.4.1 ([#441](https://github.com/dequelabs/axe-core-npm/issues/441)) ([765c81a](https://github.com/dequelabs/axe-core-npm/commit/765c81a2ae63e8c72ec086b86174a5c5f343ea9b))
 
 ## [4.3.1](https://github.com/dequelabs/axe-core-npm/compare/v4.3.0...v4.3.1) (2021-09-20)
 

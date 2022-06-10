@@ -86,7 +86,6 @@ describe('@axe-core/webdriverio', () => {
         path.join(axeTestFixtures, 'axe-force-legacy.js'),
         'utf8'
       );
-      const noHtmlConfig = `;axe.configure({ noHtml: true })`;
 
       beforeEach(async () => {
         const app = express();
@@ -147,10 +146,13 @@ describe('@axe-core/webdriverio', () => {
           describe('analyze', () => {
             it('returns results axe-core4.0.3', async () => {
               await client.url(`${addr}/index.html`);
+              const title = await client.getTitle();
               const results = await new AxeBuilder({
                 client,
                 axeSource: axeLegacySource
               }).analyze();
+
+              assert.notEqual(title, 'Error');
               assert.isNotNull(results);
               assert.isArray(results.violations);
               assert.isArray(results.incomplete);
@@ -161,6 +163,7 @@ describe('@axe-core/webdriverio', () => {
             it('throws if axe errors out on the top window', async () => {
               let error: unknown = null;
               await client.url(`${addr}/crash.html`);
+              const title = await client.getTitle();
               try {
                 await new AxeBuilder({
                   client,
@@ -169,11 +172,13 @@ describe('@axe-core/webdriverio', () => {
               } catch (e) {
                 error = e;
               }
+              assert.notEqual(title, 'Error');
               assert.isNotNull(error);
             });
 
             it('tests cross-origin pages', async () => {
               await client.url(`${addr}/cross-origin.html`);
+              const title = await client.getTitle();
               const results = await new AxeBuilder({
                 client,
                 axeSource: axeLegacySource
@@ -184,6 +189,7 @@ describe('@axe-core/webdriverio', () => {
               const frameTested = results.incomplete.find(
                 ({ id }) => id === 'frame-tested'
               );
+              assert.notEqual(title, 'Error');
               assert.isUndefined(frameTested);
             });
           });
@@ -191,6 +197,7 @@ describe('@axe-core/webdriverio', () => {
           describe('disableFrames', () => {
             it('does not return results from disabled iframes', async () => {
               await client.url(`${addr}/nested-iframes.html`);
+              const title = await client.getTitle();
               const { violations } = await new AxeBuilder({
                 client,
                 axeSource: axeLegacySource
@@ -199,6 +206,7 @@ describe('@axe-core/webdriverio', () => {
                 .disableFrame('[src*="iframes/baz.html"]')
                 .analyze();
 
+              assert.notEqual(title, 'Error');
               assert.equal(violations[0].id, 'label');
               const nodes = violations[0].nodes;
               assert.lengthOf(nodes, 3);
@@ -222,6 +230,8 @@ describe('@axe-core/webdriverio', () => {
 
             it('does not error when disabled iframe does not exist', async () => {
               await client.url(`${addr}/nested-iframes.html`);
+              const title = await client.getTitle();
+
               const { violations } = await new AxeBuilder({
                 client,
                 axeSource: axeLegacySource
@@ -230,6 +240,7 @@ describe('@axe-core/webdriverio', () => {
                 .disableFrame('[src*="does-not-exist.html"]')
                 .analyze();
 
+              assert.notEqual(title, 'Error');
               assert.equal(violations[0].id, 'label');
               const nodes = violations[0].nodes;
               assert.lengthOf(nodes, 4);
@@ -254,6 +265,8 @@ describe('@axe-core/webdriverio', () => {
 
             it('does not return results from disabled framesets', async () => {
               await client.url(`${addr}/nested-frameset.html`);
+              const title = await client.getTitle();
+
               const { violations } = await new AxeBuilder({
                 client,
                 axeSource: axeLegacySource
@@ -261,6 +274,8 @@ describe('@axe-core/webdriverio', () => {
                 .withRules('label')
                 .disableFrame('[src*="frameset/baz.html"]')
                 .analyze();
+
+              assert.notEqual(title, 'Error');
               assert.equal(violations[0].id, 'label');
               const nodes = violations[0].nodes;
               assert.lengthOf(nodes, 3);
@@ -284,6 +299,8 @@ describe('@axe-core/webdriverio', () => {
 
             it('does not error when disabled frameset does not exist', async () => {
               await client.url(`${addr}/nested-frameset.html`);
+              const title = await client.getTitle();
+
               const { violations } = await new AxeBuilder({
                 client,
                 axeSource: axeLegacySource
@@ -291,6 +308,8 @@ describe('@axe-core/webdriverio', () => {
                 .withRules('label')
                 .disableFrame('[src*="does-not-exist.html"]')
                 .analyze();
+
+              assert.notEqual(title, 'Error');
               assert.equal(violations[0].id, 'label');
               const nodes = violations[0].nodes;
               assert.lengthOf(nodes, 4);
@@ -316,12 +335,16 @@ describe('@axe-core/webdriverio', () => {
 
           it('reports frame-tested', async () => {
             await client.url(`${addr}/crash-parent.html`);
+            const title = await client.getTitle();
+
             const results = await new AxeBuilder({
               client,
               axeSource: axeLegacySource + axeCrasherSource
             })
               .options({ runOnly: ['label', 'frame-tested'] })
               .analyze();
+
+            assert.notEqual(title, 'Error');
             assert.equal(results.incomplete[0].id, 'frame-tested');
             assert.lengthOf(results.incomplete[0].nodes, 1);
             assert.equal(results.violations[0].id, 'label');
@@ -333,11 +356,14 @@ describe('@axe-core/webdriverio', () => {
           describe('axeSource', () => {
             it('returns results with different version of axeSource', async () => {
               await client.url(`${addr}/index.html`);
+              const title = await client.getTitle();
+
               const results = await new AxeBuilder({
                 client,
                 axeSource: axeLegacySource
               }).analyze();
 
+              assert.notEqual(title, 'Error');
               assert.isNotNull(results);
               assert.strictEqual(results.testEngine.version, '4.0.3');
               assert.isArray(results.violations);
@@ -349,7 +375,10 @@ describe('@axe-core/webdriverio', () => {
 
           it('returns results', async () => {
             await client.url(`${addr}/index.html`);
+            const title = await client.getTitle();
             const results = await new AxeBuilder({ client }).analyze();
+
+            assert.notEqual(title, 'Error');
             assert.isNotNull(results);
             assert.isArray(results.violations);
             assert.isArray(results.incomplete);
@@ -359,12 +388,15 @@ describe('@axe-core/webdriverio', () => {
 
           it('reports frame-tested', async () => {
             await client.url(`${addr}/crash-parent.html`);
+            const title = await client.getTitle();
             const results = await new AxeBuilder({
               client,
               axeSource: axeSource + axeCrasherSource
             })
               .options({ runOnly: ['label', 'frame-tested'] })
               .analyze();
+
+            assert.notEqual(title, 'Error');
             assert.equal(results.incomplete[0].id, 'frame-tested');
             assert.lengthOf(results.incomplete[0].nodes, 1);
             assert.equal(results.violations[0].id, 'label');
@@ -374,6 +406,9 @@ describe('@axe-core/webdriverio', () => {
           it('throws if axe errors out on the top window', async () => {
             let error: unknown = null;
             await client.url(`${addr}/crash.html`);
+            const title = await client.getTitle();
+
+            assert.notEqual(title, 'Error');
             try {
               await new AxeBuilder({
                 client,
@@ -387,7 +422,9 @@ describe('@axe-core/webdriverio', () => {
 
           it('throws when injecting a problematic source', async () => {
             let error: unknown = null;
-            await client.url(`${addr}/crash-me.html`);
+            await client.url(`${addr}/crash.html`);
+            const title = await client.getTitle();
+
             try {
               await new AxeBuilder({
                 client,
@@ -396,6 +433,8 @@ describe('@axe-core/webdriverio', () => {
             } catch (e) {
               error = e;
             }
+
+            assert.notEqual(title, 'Error');
             assert.isNotNull(error);
           });
 
@@ -404,6 +443,8 @@ describe('@axe-core/webdriverio', () => {
 
             const brokenSource = axeSource + `;window.axe.utils = {};`;
             await client.url(`${addr}/index.html`);
+            const title = await client.getTitle();
+
             try {
               await new AxeBuilder({ client, axeSource: brokenSource })
                 .withRules('label')
@@ -412,6 +453,7 @@ describe('@axe-core/webdriverio', () => {
               error = e;
             }
 
+            assert.notEqual(title, 'Error');
             assert.isNotNull(error);
           });
 
@@ -419,18 +461,25 @@ describe('@axe-core/webdriverio', () => {
             let error: unknown = null;
 
             await client.url(`${addr}/isolated-finish.html`);
+            const title = await client.getTitle();
+
             try {
               await new AxeBuilder({ client }).analyze();
             } catch (e) {
               error = e;
             }
 
+            assert.notEqual(title, 'Error');
             assert.isNull(error);
           });
 
           it('returns correct results metadata', async () => {
             await client.url(`${addr}/index.html`);
+            const title = await client.getTitle();
+
             const results = await new AxeBuilder({ client }).analyze();
+
+            assert.notEqual(title, 'Error');
             assert.isDefined(results.testEngine.name);
             assert.isDefined(results.testEngine.version);
             assert.isDefined(results.testEnvironment.orientationAngle);
@@ -445,18 +494,22 @@ describe('@axe-core/webdriverio', () => {
 
           it('returns the same results from runPartial as from legacy mode', async () => {
             await client.url(`${addr}/nested-iframes.html`);
+            const title = await client.getTitle();
+
             const legacyResults = await new AxeBuilder({
-              axeSource: axeSource + noHtmlConfig + axeForceLegacy,
+              axeSource: axeSource + axeForceLegacy,
               client
             }).analyze();
             assert.equal(legacyResults.testEngine.name, 'axe-legacy');
 
             const normalResults = await new AxeBuilder({
-              axeSource: axeSource + noHtmlConfig,
+              axeSource: axeSource,
               client
             }).analyze();
             normalResults.timestamp = legacyResults.timestamp;
             normalResults.testEngine.name = legacyResults.testEngine.name;
+
+            assert.notEqual(title, 'Error');
             assert.deepEqual(normalResults, legacyResults);
           });
         });
@@ -464,11 +517,14 @@ describe('@axe-core/webdriverio', () => {
         describe('disableFrame', () => {
           it('does not inject into disabled iframes', async () => {
             await client.url(`${addr}/nested-iframes.html`);
+            const title = await client.getTitle();
+
             const { violations } = await new AxeBuilder({ client })
               .withRules('label')
               .disableFrame('[src*="iframes/baz.html"]')
               .analyze();
 
+            assert.notEqual(title, 'Error');
             assert.equal(violations[0].id, 'label');
             const nodes = violations[0].nodes;
             assert.lengthOf(nodes, 3);
@@ -492,11 +548,14 @@ describe('@axe-core/webdriverio', () => {
 
           it('does not error when disabled iframe does not exist', async () => {
             await client.url(`${addr}/nested-iframes.html`);
+            const title = await client.getTitle();
+
             const { violations } = await new AxeBuilder({ client })
               .options({ runOnly: 'label' })
               .disableFrame('[src*="does-not-exist.html"]')
               .analyze();
 
+            assert.notEqual(title, 'Error');
             assert.equal(violations[0].id, 'label');
             const nodes = violations[0].nodes;
             assert.lengthOf(nodes, 4);
@@ -521,10 +580,14 @@ describe('@axe-core/webdriverio', () => {
 
           it('does not inject into disabled frameset', async () => {
             await client.url(`${addr}/nested-frameset.html`);
+            const title = await client.getTitle();
+
             const { violations } = await new AxeBuilder({ client })
               .withRules('label')
               .disableFrame('[src*="frameset/baz.html"]')
               .analyze();
+
+            assert.notEqual(title, 'Error');
             assert.equal(violations[0].id, 'label');
             const nodes = violations[0].nodes;
             assert.lengthOf(nodes, 3);
@@ -548,10 +611,14 @@ describe('@axe-core/webdriverio', () => {
 
           it('does not error when disabled frameset does not exist', async () => {
             await client.url(`${addr}/nested-frameset.html`);
+            const title = await client.getTitle();
+
             const { violations } = await new AxeBuilder({ client })
               .options({ runOnly: 'label' })
               .disableFrame('[src*="does-not-exist.html"]')
               .analyze();
+
+            assert.notEqual(title, 'Error');
             assert.equal(violations[0].id, 'label');
             const nodes = violations[0].nodes;
             assert.lengthOf(nodes, 4);
@@ -578,6 +645,8 @@ describe('@axe-core/webdriverio', () => {
         describe('disableRules', () => {
           it('disables the given rules(s) as array', async () => {
             await client.url(`${addr}/index.html`);
+            const title = await client.getTitle();
+
             const results = await new AxeBuilder({ client })
               .disableRules(['region'])
               .analyze();
@@ -587,11 +656,15 @@ describe('@axe-core/webdriverio', () => {
               ...results.violations,
               ...results.incomplete
             ];
+
+            assert.notEqual(title, 'Error');
             assert.isTrue(!all.find(r => r.id === 'region'));
           });
 
           it('disables the given rules(s) as string', async () => {
             await client.url(`${addr}/index.html`);
+            const title = await client.getTitle();
+
             const results = await new AxeBuilder({ client })
               .disableRules('region')
               .analyze();
@@ -601,6 +674,8 @@ describe('@axe-core/webdriverio', () => {
               ...results.violations,
               ...results.incomplete
             ];
+
+            assert.notEqual(title, 'Error');
             assert.isTrue(!all.find(r => r.id === 'region'));
           });
         });
@@ -608,10 +683,13 @@ describe('@axe-core/webdriverio', () => {
         describe('frame tests', () => {
           it('injects into nested iframes', async () => {
             await client.url(`${addr}/nested-iframes.html`);
+            const title = await client.getTitle();
+
             const { violations } = await new AxeBuilder({ client })
               .options({ runOnly: 'label' })
               .analyze();
 
+            assert.notEqual(title, 'Error');
             assert.equal(violations[0].id, 'label');
             const nodes = violations[0].nodes;
             assert.lengthOf(nodes, 4);
@@ -636,10 +714,13 @@ describe('@axe-core/webdriverio', () => {
 
           it('injects into nested frameset', async () => {
             await client.url(`${addr}/nested-frameset.html`);
+            const title = await client.getTitle();
+
             const { violations } = await new AxeBuilder({ client })
               .options({ runOnly: 'label' })
               .analyze();
 
+            assert.notEqual(title, 'Error');
             assert.equal(violations[0].id, 'label');
             assert.lengthOf(violations[0].nodes, 4);
 
@@ -665,10 +746,13 @@ describe('@axe-core/webdriverio', () => {
 
           it('should not work on shadow DOM iframes', async () => {
             await client.url(`${addr}/shadow-frames.html`);
+            const title = await client.getTitle();
+
             const { violations, incomplete } = await new AxeBuilder({ client })
               .options({ runOnly: ['label', 'frame-tested'] })
               .analyze();
 
+            assert.notEqual(title, 'Error');
             assert.equal(violations[0].id, 'label');
             assert.lengthOf(violations[0].nodes, 2);
 
@@ -685,6 +769,8 @@ describe('@axe-core/webdriverio', () => {
 
           it('reports erroring frames in frame-tested', async () => {
             await client.url(`${addr}/crash-parent.html`);
+            const title = await client.getTitle();
+
             const results = await new AxeBuilder({
               client,
               axeSource: axeSource + axeCrasherSource
@@ -692,6 +778,7 @@ describe('@axe-core/webdriverio', () => {
               .options({ runOnly: ['label', 'frame-tested'] })
               .analyze();
 
+            assert.notEqual(title, 'Error');
             assert.equal(results.incomplete[0].id, 'frame-tested');
             assert.lengthOf(results.incomplete[0].nodes, 1);
             assert.deepEqual(results.incomplete[0].nodes[0].target, [
@@ -712,10 +799,14 @@ describe('@axe-core/webdriverio', () => {
 
           it('returns the same results from runPartial as from legacy mode', async () => {
             await client.url(`${addr}/nested-iframes.html`);
+            const title = await client.getTitle();
+
             const legacyResults = await new AxeBuilder({
               client,
               axeSource: axeSource + axeForceLegacy
             }).analyze();
+
+            assert.notEqual(title, 'Error');
             assert.equal(legacyResults.testEngine.name, 'axe-legacy');
 
             const normalResults = await new AxeBuilder({
@@ -756,6 +847,8 @@ describe('@axe-core/webdriverio', () => {
         describe('withRules', () => {
           it('only runs the provided rules as an array', async () => {
             await client.url(`${addr}/index.html`);
+            const title = await client.getTitle();
+
             const results = await new AxeBuilder({ client })
               .withRules(['region'])
               .analyze();
@@ -765,12 +858,16 @@ describe('@axe-core/webdriverio', () => {
               ...results.violations,
               ...results.incomplete
             ];
+
+            assert.notEqual(title, 'Error');
             assert.strictEqual(all.length, 1);
             assert.strictEqual(all[0].id, 'region');
           });
 
           it('only runs the provided rules as a string', async () => {
             await client.url(`${addr}/index.html`);
+            const title = await client.getTitle();
+
             const results = await new AxeBuilder({ client })
               .withRules('region')
               .analyze();
@@ -780,6 +877,8 @@ describe('@axe-core/webdriverio', () => {
               ...results.violations,
               ...results.incomplete
             ];
+
+            assert.notEqual(title, 'Error');
             assert.strictEqual(all.length, 1);
             assert.strictEqual(all[0].id, 'region');
           });
@@ -788,6 +887,8 @@ describe('@axe-core/webdriverio', () => {
         describe('options', () => {
           it('passes options to axe-core', async () => {
             await client.url(`${addr}/index.html`);
+            const title = await client.getTitle();
+
             const results = await new AxeBuilder({ client })
               .options({ rules: { region: { enabled: false } } })
               .analyze();
@@ -797,6 +898,8 @@ describe('@axe-core/webdriverio', () => {
               ...results.violations,
               ...results.incomplete
             ];
+
+            assert.notEqual(title, 'Error');
             assert.isTrue(!all.find(r => r.id === 'region'));
           });
         });
@@ -804,6 +907,8 @@ describe('@axe-core/webdriverio', () => {
         describe('withTags', () => {
           it('only rules rules with the given tag(s) as an array', async () => {
             await client.url(`${addr}/index.html`);
+            const title = await client.getTitle();
+
             const results = await new AxeBuilder({ client })
               .withTags(['best-practice'])
               .analyze();
@@ -813,6 +918,8 @@ describe('@axe-core/webdriverio', () => {
               ...results.violations,
               ...results.incomplete
             ];
+
+            assert.notEqual(title, 'Error');
             assert.isOk(all);
             for (const rule of all) {
               assert.include(rule.tags, 'best-practice');
@@ -821,6 +928,8 @@ describe('@axe-core/webdriverio', () => {
 
           it('only rules rules with the given tag(s) as a string', async () => {
             await client.url(`${addr}/index.html`);
+            const title = await client.getTitle();
+
             const results = await new AxeBuilder({ client })
               .withTags('best-practice')
               .analyze();
@@ -830,6 +939,8 @@ describe('@axe-core/webdriverio', () => {
               ...results.violations,
               ...results.incomplete
             ];
+
+            assert.notEqual(title, 'Error');
             assert.isOk(all);
             for (const rule of all) {
               assert.include(rule.tags, 'best-practice');
@@ -838,6 +949,8 @@ describe('@axe-core/webdriverio', () => {
 
           it('No results provided when the given tag(s) is invalid', async () => {
             await client.url(`${addr}/index.html`);
+            const title = await client.getTitle();
+
             const results = await new AxeBuilder({ client })
               .withTags(['foobar'])
               .analyze();
@@ -848,6 +961,9 @@ describe('@axe-core/webdriverio', () => {
               ...results.violations,
               ...results.incomplete
             ];
+
+            assert.notEqual(title, 'Error');
+
             // Ensure all run rules had the "foobar" tag
             assert.lengthOf(all, 0);
           });
@@ -866,36 +982,43 @@ describe('@axe-core/webdriverio', () => {
 
           it('with include and exclude', async () => {
             await client.url(`${addr}/context-include-exclude.html`);
+            const title = await client.getTitle();
 
             const builder = new AxeBuilder({ client })
               .include('.include')
               .exclude('.exclude');
             const results = await builder.analyze();
 
+            assert.notEqual(title, 'Error');
             assert.isTrue(flatPassesTargets(results).includes('.include'));
             assert.isFalse(flatPassesTargets(results).includes('.exclude'));
           });
 
           it('with only include', async () => {
             await client.url(`${addr}/context-include-exclude.html`);
+            const title = await client.getTitle();
 
             const builder = new AxeBuilder({ client }).include('.include');
             const results = await builder.analyze();
 
+            assert.notEqual(title, 'Error');
             assert.isTrue(flatPassesTargets(results).includes('.include'));
           });
 
           it('with only exclude', async () => {
             await client.url(`${addr}/context-include-exclude.html`);
+            const title = await client.getTitle();
 
             const builder = new AxeBuilder({ client }).exclude('.exclude');
             const results = await builder.analyze();
 
+            assert.notEqual(title, 'Error');
             assert.isFalse(flatPassesTargets(results).includes('.exclude'));
           });
 
           it('with only chaining include', async () => {
             await client.url(`${addr}/context-include-exclude.html`);
+            const title = await client.getTitle();
 
             const builder = new AxeBuilder({ client })
               .include('.include')
@@ -903,12 +1026,14 @@ describe('@axe-core/webdriverio', () => {
 
             const results = await builder.analyze();
 
+            assert.notEqual(title, 'Error');
             assert.isTrue(flatPassesTargets(results).includes('.include'));
             assert.isTrue(flatPassesTargets(results).includes('.include2'));
           });
 
           it('with only chaining exclude', async () => {
             await client.url(`${addr}/context-include-exclude.html`);
+            const title = await client.getTitle();
 
             const builder = new AxeBuilder({ client })
               .exclude('.exclude')
@@ -916,12 +1041,14 @@ describe('@axe-core/webdriverio', () => {
 
             const results = await builder.analyze();
 
+            assert.notEqual(title, 'Error');
             assert.isFalse(flatPassesTargets(results).includes('.exclude'));
             assert.isFalse(flatPassesTargets(results).includes('.exclude2'));
           });
 
           it('with chaining include and exclude', async () => {
             await client.url(`${addr}/context-include-exclude.html`);
+            const title = await client.getTitle();
 
             const builder = new AxeBuilder({ client })
               .include('.include')
@@ -931,6 +1058,7 @@ describe('@axe-core/webdriverio', () => {
 
             const results = await builder.analyze();
 
+            assert.notEqual(title, 'Error');
             assert.isTrue(flatPassesTargets(results).includes('.include'));
             assert.isTrue(flatPassesTargets(results).includes('.include2'));
             assert.isFalse(flatPassesTargets(results).includes('.exclude'));
@@ -939,6 +1067,7 @@ describe('@axe-core/webdriverio', () => {
 
           it('with include and exclude iframes', async () => {
             await client.url(`${addr}/context-include-exclude.html`);
+            const title = await client.getTitle();
 
             const builder = new AxeBuilder({ client })
               .include(['#ifr-inc-excl', 'html'])
@@ -951,6 +1080,7 @@ describe('@axe-core/webdriverio', () => {
               ({ id }) => id === 'label'
             );
 
+            assert.notEqual(title, 'Error');
             assert.isFalse(flatPassesTargets(results).includes('#foo-bar'));
             assert.isFalse(flatPassesTargets(results).includes('input'));
             assert.isUndefined(labelResult);
@@ -958,6 +1088,7 @@ describe('@axe-core/webdriverio', () => {
 
           it('with include and exclude iframes', async () => {
             await client.url(`${addr}/context-include-exclude.html`);
+            const title = await client.getTitle();
 
             const builder = new AxeBuilder({ client })
               .include(['#ifr-inc-excl', '#foo-baz', 'html'])
@@ -969,6 +1100,8 @@ describe('@axe-core/webdriverio', () => {
             const labelResult = results.violations.find(
               ({ id }) => id === 'label'
             );
+
+            assert.notEqual(title, 'Error');
             assert.isTrue(flatPassesTargets(results).includes('#ifr-inc-excl'));
             assert.isTrue(flatPassesTargets(results).includes('#foo-baz'));
             assert.isTrue(flatPassesTargets(results).includes('input'));
@@ -983,17 +1116,23 @@ describe('@axe-core/webdriverio', () => {
           const runPartialThrows = `;axe.runPartial = () => { throw new Error("No runPartial")}`;
           it('runs legacy mode when used', async () => {
             await client.url(`${addr}/index.html`);
+            const title = await client.getTitle();
+
             const results = await new AxeBuilder({
               client,
               axeSource: axeSource + runPartialThrows
             })
               .setLegacyMode()
               .analyze();
+
+            assert.notEqual(title, 'Error');
             assert.isNotNull(results);
           });
 
           it('prevents cross-origin frame testing', async () => {
             await client.url(`${addr}/cross-origin.html`);
+            const title = await client.getTitle();
+
             const results = await new AxeBuilder({
               client,
               axeSource: axeSource + runPartialThrows
@@ -1005,11 +1144,15 @@ describe('@axe-core/webdriverio', () => {
             const frameTested = results.incomplete.find(
               ({ id }) => id === 'frame-tested'
             );
+
+            assert.notEqual(title, 'Error');
             assert.ok(frameTested);
           });
 
           it('can be disabled again', async () => {
             await client.url(`${addr}/cross-origin.html`);
+            const title = await client.getTitle();
+
             const results = await new AxeBuilder({ client })
               .withRules('frame-tested')
               .setLegacyMode()
@@ -1019,6 +1162,8 @@ describe('@axe-core/webdriverio', () => {
             const frameTested = results.incomplete.find(
               ({ id }) => id === 'frame-tested'
             );
+
+            assert.notEqual(title, 'Error');
             assert.isUndefined(frameTested);
           });
         });
@@ -1026,6 +1171,10 @@ describe('@axe-core/webdriverio', () => {
         describe('callback()', () => {
           it('returns results when callback is provided', async () => {
             await client.url(`${addr}/index.html`);
+            const title = await client.getTitle();
+
+            assert.notEqual(title, 'Error');
+
             new AxeBuilder({ client }).analyze((err, results) => {
               assert.isNull(err);
               assert.isNotNull(results);
@@ -1058,6 +1207,10 @@ describe('@axe-core/webdriverio', () => {
 
         it('throws an error if window.open throws', async () => {
           await client.url(`${addr}/index.html`);
+          const title = await client.getTitle();
+
+          assert.notEqual(title, 'Error');
+
           // eslint-disable-next-line @typescript-eslint/ban-ts-ignore
           // @ts-ignore
           delete client.createWindow;
@@ -1082,6 +1235,10 @@ describe('@axe-core/webdriverio', () => {
 
         it('throws an error if axe.finishRun throws', async () => {
           await client.url(`${addr}/index.html`);
+          const title = await client.getTitle();
+
+          assert.notEqual(title, 'Error');
+
           try {
             await new AxeBuilder({
               client,

@@ -61,7 +61,10 @@ describe('@axe-core/webdriverjs', () => {
   describe('analyze', () => {
     it('returns results', async () => {
       await driver.get(`${addr}/external/index.html`);
+      const title = await driver.getTitle();
       const results = await new AxeBuilder(driver).analyze();
+
+      assert.notEqual(title, 'Error');
       assert.isNotNull(results);
       assert.isArray(results.violations);
       assert.isArray(results.incomplete);
@@ -71,7 +74,10 @@ describe('@axe-core/webdriverjs', () => {
 
     it('handles undefineds', async () => {
       await driver.get(`${addr}/external/index.html`);
+      const title = await driver.getTitle();
       const results = await new AxeBuilder(driver).analyze();
+
+      assert.notEqual(title, 'Error');
       assert.isNotNull(results);
       assert.isArray(results.violations);
       assert.isArray(results.incomplete);
@@ -80,8 +86,11 @@ describe('@axe-core/webdriverjs', () => {
     });
 
     it('returns correct results metadata', async () => {
-      await driver.get(`${addr}/index.html`);
+      await driver.get(`${addr}/external/index.html`);
+      const title = await driver.getTitle();
       const results = await new AxeBuilder(driver).analyze();
+
+      assert.notEqual(title, 'Error');
       assert.isDefined(results.testEngine.name);
       assert.isDefined(results.testEngine.version);
       assert.isDefined(results.testEnvironment.orientationAngle);
@@ -91,67 +100,80 @@ describe('@axe-core/webdriverjs', () => {
       assert.isDefined(results.testEnvironment.windowWidth);
       assert.isDefined(results.testRunner.name);
       assert.isDefined(results.toolOptions.reporter);
-      assert.equal(results.url, `${addr}/index.html`);
+      assert.equal(results.url, `${addr}/external/index.html`);
     });
 
     it('properly isolates the call to axe.finishRun', async () => {
       let err;
       await driver.get(`${addr}/external/isolated-finish.html`);
+      const title = await driver.getTitle();
       try {
         await new AxeBuilder(driver).analyze();
       } catch (e) {
         err = e;
       }
+
+      assert.notEqual(title, 'Error');
       assert.isUndefined(err);
     });
 
-    it('throws if axe errors out on the top window', done => {
-      driver
-        .get(`${addr}/external/crash.html`)
-        .then(() => {
-          return new AxeBuilder(driver, axeSource + axeCrasherSource).analyze();
-        })
-        .then(
-          () => done(new Error('Expect async function to throw')),
-          () => done()
-        );
+    it('throws if axe errors out on the top window', async () => {
+      await driver.get(`${addr}/external/crash.html`);
+      const title = await driver.getTitle();
+      let err;
+
+      try {
+        await new AxeBuilder(driver, axeSource + axeCrasherSource).analyze();
+      } catch (error) {
+        err = error;
+      }
+
+      assert.notEqual(title, 'Error');
+      assert.isDefined(err);
     });
 
-    it('throws when injecting a problematic source', done => {
-      driver
-        .get(`${addr}/external/crash-me.html`)
-        .then(() => {
-          return new AxeBuilder(driver, 'throw new Error()').analyze();
-        })
-        .then(
-          () => done(new Error('Expect async function to throw')),
-          () => done()
-        );
+    it('throws when injecting a problematic source', async () => {
+      await driver.get(`${addr}/external/crash.html`);
+      const title = await driver.getTitle();
+      let err;
+
+      try {
+        await new AxeBuilder(driver, 'throw new Error()').analyze();
+      } catch (error) {
+        err = error;
+      }
+
+      assert.notEqual(title, 'Error');
+      assert.isDefined(err);
     });
 
-    it('throws when a setup fails', done => {
+    it('throws when a setup fails', async () => {
       const brokenSource = axeSource + `;window.axe.utils = {}`;
-      driver
-        .get(`${addr}/external/index.html`)
-        .then(() => {
-          return new AxeBuilder(driver, brokenSource)
-            .withRules('label')
-            .analyze();
-        })
-        .then(
-          () => done(new Error(`Expect async function to throw`)),
-          () => done()
-        );
+      await driver.get(`${addr}/external/index.html`);
+      const title = await driver.getTitle();
+      let err;
+
+      try {
+        await new AxeBuilder(driver, brokenSource).withRules('label').analyze();
+      } catch (error) {
+        err = error;
+      }
+
+      assert.notEqual(title, 'Error');
+      assert.isDefined(err);
     });
   });
 
   describe('configure', () => {
     it('should find configured violations in all iframes', async () => {
       await driver.get(`${addr}/external/nested-iframes.html`);
+      const title = await driver.getTitle();
+
       const results = await new AxeBuilder(driver)
         .configure(dylangConfig)
         .analyze();
 
+      assert.notEqual(title, 'Error');
       assert.equal(results.violations[0].id, 'dylang');
       // the second violation is in a iframe
       assert.equal(results.violations[0].nodes.length, 8);
@@ -159,10 +181,13 @@ describe('@axe-core/webdriverjs', () => {
 
     it('should find configured violations in all framesets', async () => {
       await driver.get(`${addr}/external/nested-frameset.html`);
+      const title = await driver.getTitle();
+
       const results = await new AxeBuilder(driver)
         .configure(dylangConfig)
         .analyze();
 
+      assert.notEqual(title, 'Error');
       assert.equal(results.violations[0].id, 'dylang');
       // the second violation is in a frame
       assert.equal(results.violations[0].nodes.length, 8);
@@ -179,6 +204,8 @@ describe('@axe-core/webdriverjs', () => {
   describe('disableRules', () => {
     it('disables the given rules(s) as array', async () => {
       await driver.get(`${addr}/external/index.html`);
+      const title = await driver.getTitle();
+
       const results = await new AxeBuilder(driver)
         .disableRules(['region'])
         .analyze();
@@ -188,11 +215,15 @@ describe('@axe-core/webdriverjs', () => {
         ...results.violations,
         ...results.incomplete
       ];
+
+      assert.notEqual(title, 'Error');
       assert.isTrue(!all.find(r => r.id === 'region'));
     });
 
     it('disables the given rules(s) as string', async () => {
       await driver.get(`${addr}/external/index.html`);
+      const title = await driver.getTitle();
+
       const results = await new AxeBuilder(driver)
         .disableRules('region')
         .analyze();
@@ -202,6 +233,8 @@ describe('@axe-core/webdriverjs', () => {
         ...results.violations,
         ...results.incomplete
       ];
+
+      assert.notEqual(title, 'Error');
       assert.isTrue(!all.find(r => r.id === 'region'));
     });
   });
@@ -209,6 +242,8 @@ describe('@axe-core/webdriverjs', () => {
   describe('frame tests', () => {
     it('injects into nested iframes', async () => {
       await driver.get(`${addr}/external/nested-iframes.html`);
+      const title = await driver.getTitle();
+
       const { violations } = await new AxeBuilder(driver)
         .options({ runOnly: 'label' })
         .analyze();
@@ -222,6 +257,8 @@ describe('@axe-core/webdriverjs', () => {
         '#bar-baz',
         'input'
       ]);
+
+      assert.notEqual(title, 'Error');
       assert.deepEqual(nodes[1].target, ['#ifr-foo', '#foo-baz', 'input']);
       assert.deepEqual(nodes[2].target, ['#ifr-bar', '#bar-baz', 'input']);
       assert.deepEqual(nodes[3].target, ['#ifr-baz', 'input']);
@@ -229,6 +266,8 @@ describe('@axe-core/webdriverjs', () => {
 
     it('injects into nested frameset', async () => {
       await driver.get(`${addr}/external/nested-frameset.html`);
+      const title = await driver.getTitle();
+
       const { violations } = await new AxeBuilder(driver)
         .options({ runOnly: 'label' })
         .analyze();
@@ -243,6 +282,8 @@ describe('@axe-core/webdriverjs', () => {
         '#bar-baz',
         'input'
       ]);
+
+      assert.notEqual(title, 'Error');
       assert.deepEqual(nodes[1].target, ['#frm-foo', '#foo-baz', 'input']);
       assert.deepEqual(nodes[2].target, ['#frm-bar', '#bar-baz', 'input']);
       assert.deepEqual(nodes[3].target, ['#frm-baz', 'input']);
@@ -250,10 +291,13 @@ describe('@axe-core/webdriverjs', () => {
 
     it('should work on shadow DOM iframes', async () => {
       await driver.get(`${addr}/external/shadow-frames.html`);
+      const title = await driver.getTitle();
+
       const { violations } = await new AxeBuilder(driver)
         .options({ runOnly: 'label' })
         .analyze();
 
+      assert.notEqual(title, 'Error');
       assert.equal(violations[0].id, 'label');
       assert.lengthOf(violations[0].nodes, 3);
 
@@ -268,10 +312,13 @@ describe('@axe-core/webdriverjs', () => {
 
     it('reports erroring frames in frame-tested', async () => {
       await driver.get(`${addr}/external/crash-parent.html`);
+      const title = await driver.getTitle();
+
       const results = await new AxeBuilder(driver, axeSource + axeCrasherSource)
         .options({ runOnly: ['label', 'frame-tested'] })
         .analyze();
 
+      assert.notEqual(title, 'Error');
       assert.equal(results.incomplete[0].id, 'frame-tested');
       assert.lengthOf(results.incomplete[0].nodes, 1);
       assert.deepEqual(results.incomplete[0].nodes[0].target, ['#ifr-crash']);
@@ -289,11 +336,15 @@ describe('@axe-core/webdriverjs', () => {
     });
 
     it('returns the same results from runPartial as from legacy mode', async () => {
-      await driver.get(`${addr}/nested-iframes.html`);
+      await driver.get(`${addr}/external/nested-iframes.html`);
+      const title = await driver.getTitle();
+
       const legacyResults = await new AxeBuilder(
         driver,
         axeSource + axeForceLegacy
       ).analyze();
+
+      assert.notEqual(title, 'Error');
       assert.equal(legacyResults.testEngine.name, 'axe-legacy');
 
       const normalResults = await new AxeBuilder(driver, axeSource).analyze();
@@ -306,6 +357,8 @@ describe('@axe-core/webdriverjs', () => {
   describe('withRules', () => {
     it('only runs the provided rules as an array', async () => {
       await driver.get(`${addr}/external/index.html`);
+      const title = await driver.getTitle();
+
       const results = await new AxeBuilder(driver)
         .withRules(['region'])
         .analyze();
@@ -315,12 +368,16 @@ describe('@axe-core/webdriverjs', () => {
         ...results.violations,
         ...results.incomplete
       ];
+
+      assert.notEqual(title, 'Error');
       assert.strictEqual(all.length, 1);
       assert.strictEqual(all[0].id, 'region');
     });
 
     it('only runs the provided rules as a string', async () => {
       await driver.get(`${addr}/external/index.html`);
+      const title = await driver.getTitle();
+
       const results = await new AxeBuilder(driver)
         .withRules('region')
         .analyze();
@@ -330,6 +387,8 @@ describe('@axe-core/webdriverjs', () => {
         ...results.violations,
         ...results.incomplete
       ];
+
+      assert.notEqual(title, 'Error');
       assert.strictEqual(all.length, 1);
       assert.strictEqual(all[0].id, 'region');
     });
@@ -338,6 +397,8 @@ describe('@axe-core/webdriverjs', () => {
   describe('options', () => {
     it('passes options to axe-core', async () => {
       await driver.get(`${addr}/external/index.html`);
+      const title = await driver.getTitle();
+
       const results = await new AxeBuilder(driver)
         .options({ rules: { region: { enabled: false } } })
         .analyze();
@@ -347,6 +408,8 @@ describe('@axe-core/webdriverjs', () => {
         ...results.violations,
         ...results.incomplete
       ];
+
+      assert.notEqual(title, 'Error');
       assert.isTrue(!all.find(r => r.id === 'region'));
     });
   });
@@ -354,6 +417,8 @@ describe('@axe-core/webdriverjs', () => {
   describe('withTags', () => {
     it('only rules rules with the given tag(s) as an array', async () => {
       await driver.get(`${addr}/external/index.html`);
+      const title = await driver.getTitle();
+
       const results = await new AxeBuilder(driver)
         .withTags(['best-practice'])
         .analyze();
@@ -363,6 +428,8 @@ describe('@axe-core/webdriverjs', () => {
         ...results.violations,
         ...results.incomplete
       ];
+
+      assert.notEqual(title, 'Error');
       assert.isOk(all);
       for (const rule of all) {
         assert.include(rule.tags, 'best-practice');
@@ -371,6 +438,8 @@ describe('@axe-core/webdriverjs', () => {
 
     it('only rules rules with the given tag(s) as a string', async () => {
       await driver.get(`${addr}/external/index.html`);
+      const title = await driver.getTitle();
+
       const results = await new AxeBuilder(driver)
         .withTags('best-practice')
         .analyze();
@@ -380,6 +449,8 @@ describe('@axe-core/webdriverjs', () => {
         ...results.violations,
         ...results.incomplete
       ];
+
+      assert.notEqual(title, 'Error');
       assert.isOk(all);
       for (const rule of all) {
         assert.include(rule.tags, 'best-practice');
@@ -388,6 +459,8 @@ describe('@axe-core/webdriverjs', () => {
 
     it('No results provided when the given tag(s) is invalid', async () => {
       await driver.get(`${addr}/external/index.html`);
+      const title = await driver.getTitle();
+
       const results = await new AxeBuilder(driver)
         .withTags(['foobar'])
         .analyze();
@@ -398,6 +471,8 @@ describe('@axe-core/webdriverjs', () => {
         ...results.violations,
         ...results.incomplete
       ];
+
+      assert.notEqual(title, 'Error');
       // Ensure all run rules had the "foobar" tag
       assert.deepStrictEqual(0, all.length);
     });
@@ -415,55 +490,72 @@ describe('@axe-core/webdriverjs', () => {
     };
     it('with include and exclude', async () => {
       await driver.get(`${addr}/context.html`);
+      const title = await driver.getTitle();
+
       const builder = new AxeBuilder(driver)
         .include('.include')
         .exclude('.exclude');
       const results = await builder.analyze();
 
+      assert.notEqual(title, 'Error');
       assert.isTrue(flatPassesTargets(results).includes('.include'));
       assert.isFalse(flatPassesTargets(results).includes('.exclude'));
     });
 
     it('with only include', async () => {
       await driver.get(`${addr}/context.html`);
+      const title = await driver.getTitle();
+
       const builder = new AxeBuilder(driver).include('.include');
       const results = await builder.analyze();
 
+      assert.notEqual(title, 'Error');
       assert.isTrue(flatPassesTargets(results).includes('.include'));
     });
 
     it('with only exclude', async () => {
       await driver.get(`${addr}/context.html`);
+      const title = await driver.getTitle();
+
       const builder = new AxeBuilder(driver).exclude('.exclude');
       const results = await builder.analyze();
 
+      assert.notEqual(title, 'Error');
       assert.isFalse(flatPassesTargets(results).includes('.exclude'));
     });
 
     it('with chaining only include', async () => {
       await driver.get(`${addr}/context.html`);
+      const title = await driver.getTitle();
+
       const builder = new AxeBuilder(driver)
         .include('.include')
         .include('.include2');
       const results = await builder.analyze();
 
+      assert.notEqual(title, 'Error');
       assert.isTrue(flatPassesTargets(results).includes('.include'));
       assert.isTrue(flatPassesTargets(results).includes('.include2'));
     });
 
     it('with chaining only exclude', async () => {
       await driver.get(`${addr}/context.html`);
+      const title = await driver.getTitle();
+
       const builder = new AxeBuilder(driver)
         .exclude('.exclude')
         .exclude('.exclude2');
       const results = await builder.analyze();
 
+      assert.notEqual(title, 'Error');
       assert.isFalse(flatPassesTargets(results).includes('.exclude'));
       assert.isFalse(flatPassesTargets(results).includes('.exclude2'));
     });
 
     it('with chaining include and exclude', async () => {
       await driver.get(`${addr}/context.html`);
+      const title = await driver.getTitle();
+
       const builder = new AxeBuilder(driver)
         .include('.include')
         .include('.include2')
@@ -471,6 +563,7 @@ describe('@axe-core/webdriverjs', () => {
         .exclude('.exclude2');
       const results = await builder.analyze();
 
+      assert.notEqual(title, 'Error');
       assert.isTrue(flatPassesTargets(results).includes('.include'));
       assert.isTrue(flatPassesTargets(results).includes('.include2'));
       assert.isFalse(flatPassesTargets(results).includes('.exclude'));
@@ -479,6 +572,8 @@ describe('@axe-core/webdriverjs', () => {
 
     it('with include and exclude iframe selectors with no violations', async () => {
       await driver.get(`${addr}/context.html`);
+      const title = await driver.getTitle();
+
       const builder = new AxeBuilder(driver)
         .include(['#ifr-one', 'html'])
         .exclude(['#ifr-one', 'main'])
@@ -486,16 +581,20 @@ describe('@axe-core/webdriverjs', () => {
 
       const results = await builder.analyze();
 
+      assert.notEqual(title, 'Error');
       assert.lengthOf(results.violations, 0);
     });
 
     it('with include and exclude iframe selectors with violations', async () => {
       await driver.get(`${addr}/context.html`);
+      const title = await driver.getTitle();
+
       const builder = new AxeBuilder(driver)
         .include(['#ifr-one', 'html'])
         .exclude(['#ifr-one', 'main']);
       const results = await builder.analyze();
 
+      assert.notEqual(title, 'Error');
       assert.lengthOf(results.violations, 2);
       assert.strictEqual(results.violations[0].id, 'image-alt');
       assert.strictEqual(results.violations[1].id, 'region');
@@ -503,35 +602,31 @@ describe('@axe-core/webdriverjs', () => {
   });
 
   describe('callback()', () => {
-    it('returns an error as the first argument', done => {
-      driver.get(`${addr}/external/index.html`).then(() => {
-        new AxeBuilder(driver, 'throw new Error()').analyze((err, results) => {
-          try {
-            assert.isNull(results);
-            assert.isNotNull(err);
-            done();
-          } catch (e) {
-            done(e);
-          }
-        });
+    it('returns an error as the first argument', async () => {
+      await driver.get(`${addr}/external/index.html`);
+      const title = await driver.getTitle();
+
+      assert.notEqual(title, 'Error');
+
+      new AxeBuilder(driver, 'throw new Error()').analyze((err, results) => {
+        assert.isNull(results);
+        assert.isNotNull(err);
       });
     });
 
-    it('returns as the second argument', done => {
-      driver.get(`${addr}/external/index.html`).then(() => {
-        new AxeBuilder(driver).analyze((err, results) => {
-          try {
-            assert.isNull(err);
-            assert.isNotNull(results);
-            assert.isArray(results?.violations);
-            assert.isArray(results?.incomplete);
-            assert.isArray(results?.passes);
-            assert.isArray(results?.inapplicable);
-            done();
-          } catch (e) {
-            done(e);
-          }
-        });
+    it('returns as the second argument', async () => {
+      await driver.get(`${addr}/external/index.html`);
+      const title = await driver.getTitle();
+
+      assert.notEqual(title, 'Error');
+
+      await new AxeBuilder(driver).analyze((err, results) => {
+        assert.isNull(err);
+        assert.isNotNull(results);
+        assert.isArray(results?.violations);
+        assert.isArray(results?.incomplete);
+        assert.isArray(results?.passes);
+        assert.isArray(results?.inapplicable);
       });
     });
   });
@@ -543,6 +638,9 @@ describe('@axe-core/webdriverjs', () => {
     it('throws an error if window.open throws', async () => {
       const source = axeSource + windowOpenThrows;
       await driver.get(`${addr}/external/index.html`);
+      const title = await driver.getTitle();
+
+      assert.notEqual(title, 'Error');
 
       try {
         await new AxeBuilder(driver, source).analyze();
@@ -555,6 +653,9 @@ describe('@axe-core/webdriverjs', () => {
     it('throws an error if axe.finishRun throws', async () => {
       const source = axeSource + finishRunThrows;
       await driver.get(`${addr}/external/index.html`);
+      const title = await driver.getTitle();
+
+      assert.notEqual(title, 'Error');
 
       try {
         await new AxeBuilder(driver, source).analyze();
@@ -569,14 +670,20 @@ describe('@axe-core/webdriverjs', () => {
     const runPartialThrows = `;axe.runPartial = () => { throw new Error("No runPartial")}`;
     it('runs legacy mode when used', async () => {
       await driver.get(`${addr}/external/index.html`);
+      const title = await driver.getTitle();
+
       const results = await new AxeBuilder(driver, axeSource + runPartialThrows)
         .setLegacyMode()
         .analyze();
+
+      assert.notEqual(title, 'Error');
       assert.isNotNull(results);
     });
 
     it('prevents cross-origin frame testing', async () => {
       await driver.get(`${addr}/external/cross-origin.html`);
+      const title = await driver.getTitle();
+
       const results = await new AxeBuilder(driver, axeSource + runPartialThrows)
         .withRules(['frame-tested'])
         .setLegacyMode()
@@ -585,11 +692,15 @@ describe('@axe-core/webdriverjs', () => {
       const frameTested = results.incomplete.find(
         ({ id }) => id === 'frame-tested'
       );
+
+      assert.notEqual(title, 'Error');
       assert.ok(frameTested);
     });
 
     it('can be disabled again', async () => {
       await driver.get(`${addr}/external/cross-origin.html`);
+      const title = await driver.getTitle();
+
       const results = await new AxeBuilder(driver)
         .withRules(['frame-tested'])
         .setLegacyMode()
@@ -599,6 +710,8 @@ describe('@axe-core/webdriverjs', () => {
       const frameTested = results.incomplete.find(
         ({ id }) => id === 'frame-tested'
       );
+
+      assert.notEqual(title, 'Error');
       assert.isUndefined(frameTested);
     });
   });
@@ -606,6 +719,10 @@ describe('@axe-core/webdriverjs', () => {
   describe('browser functions', () => {
     it('serializes results', async () => {
       await driver.get(`${addr}/external/nested-iframes.html`);
+      const title = await driver.getTitle();
+
+      assert.notEqual(title, 'Error');
+
       await driver.executeScript(`
                                  window.axe = {
                                    runPartial: (c, o) => Promise.resolve({ violations: [], passes: [] })
@@ -629,10 +746,13 @@ describe('@axe-core/webdriverjs', () => {
 
     it('can run', async () => {
       await driver.get(`${addr}/external/nested-iframes.html`);
+      const title = await driver.getTitle();
+
       const results = await new AxeBuilder(driver, axe403Source)
         .options({ runOnly: ['label'] })
         .analyze();
 
+      assert.notEqual(title, 'Error');
       assert.equal(results.violations[0].id, 'label');
       assert.lengthOf(results.violations[0].nodes, 4);
       assert.equal(results.testEngine.version, '4.0.3');
@@ -655,21 +775,29 @@ describe('@axe-core/webdriverjs', () => {
 
     it('can be configured', async () => {
       await driver.get(`${addr}/external/nested-iframes.html`);
+      const title = await driver.getTitle();
+
       const results = await new AxeBuilder(driver, axe403Source)
         .configure(dylangConfig)
         .analyze();
+
+      assert.notEqual(title, 'Error');
       assert.equal(results.violations[0].id, 'dylang');
       assert.equal(results.violations[0].nodes.length, 8);
     });
 
     it('reports frame-tested', async () => {
       await driver.get(`${addr}/external/crash-parent.html`);
+      const title = await driver.getTitle();
+
       const results = await new AxeBuilder(
         driver,
         axe403Source + axeCrasherSource
       )
         .options({ runOnly: ['label', 'frame-tested'] })
         .analyze();
+
+      assert.notEqual(title, 'Error');
       assert.equal(results.incomplete[0].id, 'frame-tested');
       assert.lengthOf(results.incomplete[0].nodes, 1);
       assert.equal(results.violations[0].id, 'label');
@@ -678,6 +806,8 @@ describe('@axe-core/webdriverjs', () => {
 
     it('tests cross-origin pages', async () => {
       await driver.get(`${addr}/external/cross-origin.html`);
+      const title = await driver.getTitle();
+
       const results = await new AxeBuilder(driver, axe403Source)
         .withRules(['frame-tested'])
         .analyze();
@@ -685,6 +815,8 @@ describe('@axe-core/webdriverjs', () => {
       const frameTested = results.incomplete.find(
         ({ id }) => id === 'frame-tested'
       );
+
+      assert.notEqual(title, 'Error');
       assert.isUndefined(frameTested);
     });
   });
