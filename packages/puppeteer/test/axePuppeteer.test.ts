@@ -83,7 +83,7 @@ describe('AxePuppeteer', function () {
     const p2 = page.evaluate(() => window.parallel);
     const out = await Promise.all([p1, p2]);
 
-    assert.equal(res.status(), 200);
+    assert.equal(res?.status(), 200);
     assert.deepEqual(out, ['parallel', true]);
   });
 
@@ -92,7 +92,7 @@ describe('AxePuppeteer', function () {
       const res = await page.goto(`${addr}/external/index.html`);
       const axePup = new AxePuppeteer(page);
 
-      assert.equal(res.status(), 200);
+      assert.equal(res?.status(), 200);
       await expectAsyncToNotThrow(() => axePup.analyze());
     });
 
@@ -100,7 +100,7 @@ describe('AxePuppeteer', function () {
       const res = await page.goto(`${addr}/external/index.html`);
       const axePup = new AxePuppeteer(page.mainFrame());
 
-      assert.equal(res.status(), 200);
+      assert.equal(res?.status(), 200);
       await expectAsyncToNotThrow(() => axePup.analyze());
     });
 
@@ -115,7 +115,7 @@ describe('AxePuppeteer', function () {
       const evalSpy: SinonSpy = sinon.spy(page.mainFrame(), 'evaluate');
       await new AxePuppeteer(page, axeSource).analyze();
 
-      assert.equal(res.status(), 200);
+      assert.equal(res?.status(), 200);
       assert(evalSpy.calledWith(axeSource));
     });
   });
@@ -127,7 +127,7 @@ describe('AxePuppeteer', function () {
         .withRules('label')
         .analyze();
 
-      assert.equal(res.status(), 200);
+      assert.equal(res?.status(), 200);
       assert.include(violations[0].helpUrl, 'application=axe-puppeteer');
     });
 
@@ -135,7 +135,7 @@ describe('AxePuppeteer', function () {
       const res = await page.goto(`${addr}/external/index.html`);
       const results = await new AxePuppeteer(page).analyze();
 
-      assert.equal(res.status(), 200);
+      assert.equal(res?.status(), 200);
       assert.isDefined(results.testEngine.name);
       assert.isDefined(results.testEngine.version);
       assert.isDefined(results.testEnvironment.orientationAngle);
@@ -157,7 +157,7 @@ describe('AxePuppeteer', function () {
         err = e;
       }
 
-      assert.equal(res.status(), 200);
+      assert.equal(res?.status(), 200);
       assert.isUndefined(err);
     });
 
@@ -168,7 +168,7 @@ describe('AxePuppeteer', function () {
         axeSource + axeForceLegacy
       ).analyze();
 
-      assert.equal(res.status(), 200);
+      assert.equal(res?.status(), 200);
       assert.equal(legacyResults.testEngine.name, 'axe-legacy');
 
       const normalResults = await new AxePuppeteer(page, axeSource).analyze();
@@ -184,7 +184,7 @@ describe('AxePuppeteer', function () {
           .withRules('label')
           .analyze();
 
-        assert.equal(res.status(), 200);
+        assert.equal(res?.status(), 200);
         assert.isOk(results);
         assert.property(results, 'passes');
         assert.property(results, 'incomplete');
@@ -204,7 +204,7 @@ describe('AxePuppeteer', function () {
 
         const axePup = new AxePuppeteer(page, axeSource);
 
-        assert.equal(res.status(), 200);
+        assert.equal(res?.status(), 200);
         (await expectAsync(async () => axePup.analyze())).to.throw('boom');
       });
     });
@@ -214,7 +214,7 @@ describe('AxePuppeteer', function () {
         page.goto(`${addr}/external/index.html`).then(res => {
           new AxePuppeteer(page).analyze((err, results) => {
             try {
-              assert.equal(res.status(), 200);
+              assert.equal(res?.status(), 200);
               assert.isNull(err);
               assert.isOk(results);
               assert.property(results, 'passes');
@@ -239,7 +239,7 @@ describe('AxePuppeteer', function () {
 
         const res = await page.goto(`${addr}/external/index.html`);
 
-        assert.equal(res.status(), 200);
+        assert.equal(res?.status(), 200);
 
         await new AxePuppeteer(page, axeSource).analyze(err => {
           assert.instanceOf(err, Error);
@@ -254,7 +254,7 @@ describe('AxePuppeteer', function () {
         page
           .goto(`${addr}/external/crash.html`)
           .then(res => {
-            assert.equal(res.status(), 200);
+            assert.equal(res?.status(), 200);
             return new AxePuppeteer(
               page,
               axeSource + axeCrasherSource
@@ -270,7 +270,7 @@ describe('AxePuppeteer', function () {
         page
           .goto(`${addr}/external/crash.html`)
           .then(res => {
-            assert.equal(res.status(), 200);
+            assert.equal(res?.status(), 200);
             return new AxePuppeteer(page, 'throw new Error()').analyze();
           })
           .then(
@@ -284,7 +284,7 @@ describe('AxePuppeteer', function () {
         page
           .goto(`${addr}/external/index.html`)
           .then(res => {
-            assert.equal(res.status(), 200);
+            assert.equal(res?.status(), 200);
             return new AxePuppeteer(page, brokenSource)
               .withRules('label')
               .analyze();
@@ -335,7 +335,7 @@ describe('AxePuppeteer', function () {
         page
           .goto(`${addr2}/external/index.html`)
           .then(res => {
-            assert.equal(res.status(), 200);
+            assert.equal(res?.status(), 200);
           })
           .catch(() => {
             // suppress Node error
@@ -387,7 +387,7 @@ describe('AxePuppeteer', function () {
         `;
 
         const res = await page.goto(`${addr}/context.html`);
-        assert.equal(res.status(), 200);
+        assert.equal(res?.status(), 200);
 
         const axePip = new AxePuppeteer(page, axeSource)
           .include('.include')
@@ -412,7 +412,7 @@ describe('AxePuppeteer', function () {
         `;
 
         const res = await page.goto(`${addr}/context.html`);
-        assert.equal(res.status(), 200);
+        assert.equal(res?.status(), 200);
 
         const axePip = new AxePuppeteer(page, axeSource)
           .include('.include')
@@ -446,7 +446,7 @@ describe('AxePuppeteer', function () {
         `;
 
         const res = await page.goto(`${addr}/context.html`);
-        assert.equal(res.status(), 200);
+        assert.equal(res?.status(), 200);
 
         const axePip = new AxePuppeteer(page, axeSource).include('.include');
 
@@ -477,7 +477,7 @@ describe('AxePuppeteer', function () {
         `;
 
         const res = await page.goto(`${addr}/context.html`);
-        assert.equal(res.status(), 200);
+        assert.equal(res?.status(), 200);
 
         const axePip = new AxePuppeteer(page, axeSource).exclude('.exclude');
 
@@ -500,7 +500,7 @@ describe('AxePuppeteer', function () {
         `;
 
       const res = await page.goto(`${addr}/context.html`);
-      assert.equal(res.status(), 200);
+      assert.equal(res?.status(), 200);
 
       const axePip = new AxePuppeteer(page, axeSource);
 
@@ -519,7 +519,7 @@ describe('AxePuppeteer', function () {
         const labelResult = results.violations.find(
           (r: Axe.Result) => r.id === 'label'
         );
-        assert.equal(res.status(), 200);
+        assert.equal(res?.status(), 200);
         assert.isUndefined(labelResult);
       });
     });
@@ -552,7 +552,7 @@ describe('AxePuppeteer', function () {
         .withRules(['foo'])
         .analyze();
 
-      assert.equal(res.status(), 200);
+      assert.equal(res?.status(), 200);
       assert.property(results, 'passes');
       assert.lengthOf(results.passes, 0);
       assert.property(results, 'incomplete');
@@ -590,7 +590,7 @@ describe('AxePuppeteer', function () {
           ...results.violations
         ];
 
-        assert.equal(res.status(), 200);
+        assert.equal(res?.status(), 200);
         assert.isUndefined(flatResults.find(res => res.id === 'region'));
       });
     });
@@ -610,7 +610,7 @@ describe('AxePuppeteer', function () {
           ...results.violations
         ];
 
-        assert.equal(res.status(), 200);
+        assert.equal(res?.status(), 200);
 
         // Ensure all run rules had the 'best-practice' tag
         for (const rule of flatResults) {
@@ -635,7 +635,7 @@ describe('AxePuppeteer', function () {
           ...results.violations
         ];
 
-        assert.equal(res.status(), 200);
+        assert.equal(res?.status(), 200);
         assert.lengthOf(flatResults, 1);
         assert.isDefined(flatResults.find(r => r.id === 'region'));
       });
@@ -657,7 +657,7 @@ describe('AxePuppeteer', function () {
           ...results.violations
         ];
 
-        assert.equal(res.status(), 200);
+        assert.equal(res?.status(), 200);
         assert.isUndefined(flatResults.find(res => res.id === 'region'));
       });
     });
@@ -681,7 +681,7 @@ describe('AxePuppeteer', function () {
         'input'
       ]);
 
-      assert.equal(res.status(), 200);
+      assert.equal(res?.status(), 200);
       assert.deepEqual(nodes[1].target, ['#ifr-foo', '#foo-baz', 'input']);
       assert.deepEqual(nodes[2].target, ['#ifr-bar', '#bar-baz', 'input']);
       assert.deepEqual(nodes[3].target, ['#ifr-baz', 'input']);
@@ -703,7 +703,7 @@ describe('AxePuppeteer', function () {
         'input'
       ]);
 
-      assert.equal(res.status(), 200);
+      assert.equal(res?.status(), 200);
       assert.deepEqual(nodes[1].target, ['#frm-foo', '#foo-baz', 'input']);
       assert.deepEqual(nodes[2].target, ['#frm-bar', '#bar-baz', 'input']);
       assert.deepEqual(nodes[3].target, ['#frm-baz', 'input']);
@@ -715,7 +715,7 @@ describe('AxePuppeteer', function () {
         .options({ runOnly: 'label' })
         .analyze();
 
-      assert.equal(res.status(), 200);
+      assert.equal(res?.status(), 200);
       assert.equal(violations[0].id, 'label');
       assert.lengthOf(violations[0].nodes, 3);
 
@@ -734,7 +734,7 @@ describe('AxePuppeteer', function () {
         .options({ runOnly: ['label', 'frame-tested'] })
         .analyze();
 
-      assert.equal(res.status(), 200);
+      assert.equal(res?.status(), 200);
       assert.equal(results.incomplete[0].id, 'frame-tested');
       assert.lengthOf(results.incomplete[0].nodes, 1);
       assert.deepEqual(results.incomplete[0].nodes[0].target, ['#ifr-crash']);
@@ -761,7 +761,7 @@ describe('AxePuppeteer', function () {
 
       pageResults.timestamp = frameResults.timestamp;
 
-      assert.equal(res.status(), 200);
+      assert.equal(res?.status(), 200);
       assert.deepEqual(pageResults, frameResults);
     });
   });
@@ -779,7 +779,7 @@ describe('AxePuppeteer', function () {
         return null;
       };
 
-      assert.equal(res.status(), 200);
+      assert.equal(res?.status(), 200);
       try {
         await new AxePuppeteer(page, axeSource).analyze();
         assert.fail('Should have thrown');
@@ -793,7 +793,7 @@ describe('AxePuppeteer', function () {
     it('throws an error if axe.finishRun throws', async () => {
       const res = await page.goto(`${addr}/external/index.html`);
 
-      assert.equal(res.status(), 200);
+      assert.equal(res?.status(), 200);
       try {
         await new AxePuppeteer(page, axeSource + finishRunThrows).analyze();
         assert.fail('Should have thrown');
@@ -811,7 +811,7 @@ describe('AxePuppeteer', function () {
         .setLegacyMode()
         .analyze();
 
-      assert.equal(res.status(), 200);
+      assert.equal(res?.status(), 200);
       assert.isNotNull(results);
     });
 
@@ -826,7 +826,7 @@ describe('AxePuppeteer', function () {
         ({ id }) => id === 'frame-tested'
       );
 
-      assert.equal(res.status(), 200);
+      assert.equal(res?.status(), 200);
       assert.ok(frameTested);
     });
 
@@ -842,7 +842,7 @@ describe('AxePuppeteer', function () {
         ({ id }) => id === 'frame-tested'
       );
 
-      assert.equal(res.status(), 200);
+      assert.equal(res?.status(), 200);
       assert.isUndefined(frameTested);
     });
   });
@@ -860,7 +860,7 @@ describe('AxePuppeteer', function () {
         .withRules('label')
         .analyze();
 
-      assert.equal(res.status(), 200);
+      assert.equal(res?.status(), 200);
       assert.equal(results.violations[0].id, 'label');
       assert.lengthOf(results.violations[0].nodes, 4);
       assert.equal(results.testEngine.version, '4.0.3');
@@ -888,7 +888,7 @@ describe('AxePuppeteer', function () {
         .withRules(['label', 'frame-tested'])
         .analyze();
 
-      assert.equal(res.status(), 200);
+      assert.equal(res?.status(), 200);
       assert.equal(results.incomplete[0].id, 'frame-tested');
       assert.lengthOf(results.incomplete[0].nodes, 1);
       assert.equal(results.violations[0].id, 'label');
@@ -905,7 +905,7 @@ describe('AxePuppeteer', function () {
         ({ id }) => id === 'frame-tested'
       );
 
-      assert.equal(res.status(), 200);
+      assert.equal(res?.status(), 200);
       assert.isUndefined(frameTested);
     });
   });
