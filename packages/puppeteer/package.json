@@ -27,7 +27,7 @@
     "@types/express": "^4.17.13",
     "@types/mocha": "^5.2.5",
     "@types/node": "^12.20.36",
-    "@types/puppeteer": "^5.4.4",
+    "@types/puppeteer": "^5.4.6",
     "@types/sinon": "^7.0.13",
     "@types/test-listen": "^1.1.0",
     "axe-test-fixtures": "github:dequelabs/axe-test-fixtures#v1",
@@ -35,7 +35,7 @@
     "express": "^4.16.4",
     "mocha": "^5.2.0",
     "nyc": "^14.1.1",
-    "puppeteer": "^14.3.0",
+    "puppeteer": "^15.0.1",
     "sinon": "^7.3.2",
     "source-map-support": "^0.5.20",
     "test-listen": "^1.1.0",
@@ -46,7 +46,7 @@
     "axe-core": "^4.4.1"
   },
   "peerDependencies": {
-    "puppeteer": ">=1.10.0 <= 14"
+    "puppeteer": ">=1.10.0 <= 15"
   },
   "engines": {
     "node": ">=6.4.0"

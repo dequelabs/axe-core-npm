@@ -18,7 +18,10 @@
     "noImplicitThis": true,
     "noImplicitReturns": true,
     "moduleResolution": "node",
-    "esModuleInterop": true
+    "esModuleInterop": true,
+    "paths": {
+      "*": ["./node_modules/@types/*"]
+    }
   },
   "include": ["src"]
 }

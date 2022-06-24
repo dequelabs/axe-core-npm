@@ -61,7 +61,7 @@ function injectJSSource(
   source: string | Function,
   args: any[] = []
 ): Promise<void> {
-  return frame.evaluate(source as any, ...args);
+  return frame.evaluate(source as any, ...args) as Promise<void>;
 }
 
 export function iframeSelector(disabledFrameSelectors: string[]): string {
