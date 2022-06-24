@@ -236,7 +236,7 @@ export class AxePuppeteer {
     const frameContexts = await frame.evaluate(axeGetFrameContext, context);
 
     // Start testing the parent frame - don't await, so runs are in parallel
-    const options = this.axeOptions
+    const options = this.axeOptions;
     const partialPromise = frame.evaluate(axeRunPartial, context, options);
     const initiator = frame === this.frame;
     const axePartialRunner = new AxePartialRunner(partialPromise, initiator);
@@ -275,11 +275,7 @@ export class AxePuppeteer {
 
     await frameSourceInject(blankPage.mainFrame(), axeSource, config);
     return await blankPage
-      .evaluate(
-        axeFinishRun,
-        partialResults,
-        axeOptions 
-      )
+      .evaluate(axeFinishRun, partialResults, axeOptions)
       .finally(async () => {
         await blankPage.close();
       });
