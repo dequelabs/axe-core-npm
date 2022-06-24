@@ -15,7 +15,7 @@ export async function frameSourceInject(
     source = fs.readFileSync(pathFile, 'utf8');
   }
   await frame.evaluate(source);
-  await frame.evaluate(axeConfigure as unknown as string, config);
+  await frame.evaluate(axeConfigure, config as Axe.Spec);
 }
 
 export function arrayify<T>(src: T | T[]): T[] {
