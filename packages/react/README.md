@@ -6,8 +6,6 @@ Previous versions of this program were maintained at [dequelabs/react-axe](https
 
 ## Usage
 
-[![Greenkeeper badge](https://badges.greenkeeper.io/dequelabs/react-axe.svg)](https://greenkeeper.io/)
-
 Install the module from NPM or elsewhere
 
 ```sh
