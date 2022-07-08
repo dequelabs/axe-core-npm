@@ -11,7 +11,7 @@ import {
   axeSourceInject,
   axeFinishRun
 } from './browser';
-import * as assert from 'assert';
+import assert from 'assert';
 
 class AxeBuilder {
   private driver: WebDriver;

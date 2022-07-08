@@ -1,11 +1,11 @@
 import 'mocha';
 import { assert } from 'chai';
-import * as tempy from 'tempy';
-import * as http from 'http';
-import * as https from 'https';
-import * as net from 'net';
-import * as path from 'path';
-import * as fs from 'fs';
+import tempy from 'tempy';
+import http from 'http';
+import https from 'https';
+import net from 'net';
+import path from 'path';
+import fs from 'fs';
 import { version } from '../../package.json';
 import runCLI from '../testutils/';
 

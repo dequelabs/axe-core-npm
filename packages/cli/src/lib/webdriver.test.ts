@@ -1,10 +1,10 @@
 import 'mocha';
 import { assert } from 'chai';
 import { startDriver } from './webdriver';
-import * as chromedriver from 'chromedriver';
-import * as chrome from 'selenium-webdriver/chrome';
+import chromedriver from 'chromedriver';
+import chrome from 'selenium-webdriver/chrome';
 import type { Options } from 'selenium-webdriver/chrome';
-import * as path from 'path';
+import path from 'path';
 import { WebdriverConfigParams } from '../types';
 describe('startDriver', () => {
   let config: WebdriverConfigParams;

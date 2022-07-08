@@ -1,6 +1,6 @@
-import * as chromedriver from 'chromedriver';
+import chromedriver from 'chromedriver';
 import { Builder, Capabilities, WebDriver } from 'selenium-webdriver';
-import * as chrome from 'selenium-webdriver/chrome';
+import chrome from 'selenium-webdriver/chrome';
 import { WebdriverConfigParams } from '../types';
 
 const startDriver = async (

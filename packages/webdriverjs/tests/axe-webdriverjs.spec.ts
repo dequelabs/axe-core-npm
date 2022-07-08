@@ -1,13 +1,13 @@
 import 'mocha';
 import { AxeResults, Spec } from 'axe-core';
 import { WebDriver } from 'selenium-webdriver';
-import * as express from 'express';
-import * as chromedriver from 'chromedriver';
-import testListen = require('test-listen');
+import express from 'express';
+import chromedriver from 'chromedriver';
+import testListen from 'test-listen';
 import delay from 'delay';
 import { assert } from 'chai';
-import * as path from 'path';
-import * as fs from 'fs';
+import path from 'path';
+import fs from 'fs';
 import { Server, createServer } from 'http';
 import { Webdriver, connectToChromeDriver } from './test-utils';
 import AxeBuilder from '../src';
