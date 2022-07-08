@@ -9,9 +9,8 @@
     "bootstrap": "lerna bootstrap"
   },
   "devDependencies": {
-    "@typescript-eslint/eslint-plugin": "^2.34.0",
-    "@typescript-eslint/parser": "^2.34.0",
-    "axe-core": "^4.2.0",
+    "@typescript-eslint/eslint-plugin": "^5.30.5",
+    "@typescript-eslint/parser": "^5.30.5",
     "eslint": "^7.32.0",
     "eslint-config-prettier": "^6.15.0",
     "eslint-plugin-react": "^7.24.0",
@@ -20,7 +19,7 @@
     "lint-staged": "^10.5.4",
     "prettier": "^2.3.2",
     "react": "^16.14.0",
-    "typescript": "^3.9.10"
+    "typescript": "^4.7.4"
   },
   "prettier": {
     "semi": true,
