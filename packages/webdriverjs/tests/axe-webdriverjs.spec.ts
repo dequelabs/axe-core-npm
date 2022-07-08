@@ -14,7 +14,7 @@ import AxeBuilder from '../src';
 import { axeRunPartial } from '../src/browser';
 const dylangConfig = JSON.parse(
   fs.readFileSync(
-    require.resolve('../fixtures/external/dylang-config.json'),
+    require.resolve('./fixtures/external/dylang-config.json'),
     'utf8'
   )
 );
