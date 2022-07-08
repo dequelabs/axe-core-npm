@@ -12,7 +12,12 @@ import { Server, createServer } from 'http';
 import { Webdriver, connectToChromeDriver } from './test-utils';
 import AxeBuilder from '../src';
 import { axeRunPartial } from '../src/browser';
-import dylangConfig from './fixtures/external/dylang-config.json';
+const dylangConfig = JSON.parse(
+  fs.readFileSync(
+    require.resolve('../fixtures/external/dylang-config.json'),
+    'utf8'
+  )
+);
 
 describe('@axe-core/webdriverjs', () => {
   const port = 9515;
