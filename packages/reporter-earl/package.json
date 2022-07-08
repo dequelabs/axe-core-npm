@@ -4,9 +4,9 @@
   "description": "A EARL+JSON-LD reporter for axe-core",
   "main": "dist/axeReporterEarl.js",
   "scripts": {
-    "start": "jest --watch --env=jsdom",
+    "start": "node --experimental-vm-modules node_modules/.bin/jest --watch --env=jsdom",
     "test": "npm run build && npm run test:unit",
-    "test:unit": "jest --collectCoverage",
+    "test:unit": "node --experimental-vm-modules node_modules/.bin/jest --collectCoverage",
     "build": "tsc",
     "prepublishOnly": "npm run build"
   },
@@ -30,16 +30,18 @@
   },
   "license": "MPL-2.0",
   "devDependencies": {
-    "@types/clone": "^0.1.30",
-    "@types/jest": "^23.3.9",
+    "@types/clone": "^2.1.1",
+    "@types/jest": "^28.1.4",
     "@types/jsonld": "github:types/jsonld",
-    "@types/node": "^10.17.60",
-    "axe-core": "^4.4.1",
+    "@types/node": "^18.0.3",
+    "axe-core": "^4.4.2",
     "clone": "^2.1.2",
-    "jest": "^23.6.0",
-    "jsonld": "^1.1.0",
-    "ts-jest": "^23.10.4",
-    "ts-node": "^7.0.1",
-    "typescript": "^3.9.10"
+    "cross-env": "^7.0.3",
+    "jest": "^28.1.2",
+    "jest-environment-jsdom": "^28.1.2",
+    "jsonld": "^6.0.0",
+    "ts-jest": "^28.0.5",
+    "ts-node": "^10.8.2",
+    "typescript": "^4.7.4"
   }
 }

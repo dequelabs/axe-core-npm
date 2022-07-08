@@ -1,4 +1,4 @@
-import * as axe from 'axe-core';
+import axe from 'axe-core';
 /**
  * This class parallelizes the async calls to axe.runPartial.
  *

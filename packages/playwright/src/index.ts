@@ -1,4 +1,4 @@
-import * as assert from 'assert';
+import assert from 'assert';
 import type { Page, Frame, ElementHandle } from 'playwright';
 import type {
   RunOptions,
