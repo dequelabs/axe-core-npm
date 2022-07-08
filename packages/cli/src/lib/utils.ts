@@ -126,7 +126,7 @@ export const selectorToString = (
 export const reporter = (
   noReporter: boolean,
   silentMode: boolean
-): (() => void) => {
+): Function => {
   if (!noReporter || silentMode) {
     return () => {};
   } else {
