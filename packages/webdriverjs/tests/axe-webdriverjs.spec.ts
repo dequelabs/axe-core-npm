@@ -12,7 +12,7 @@ import { Server, createServer } from 'http';
 import { Webdriver, connectToChromeDriver } from './test-utils';
 import AxeBuilder from '../src';
 import { axeRunPartial } from '../src/browser';
-const dylangConfig = require('./fixtures/external/dylang-config.json') as Spec;
+import dylangConfig from './fixtures/external/dylang-config.json';
 
 describe('@axe-core/webdriverjs', () => {
   const port = 9515;
@@ -195,6 +195,7 @@ describe('@axe-core/webdriverjs', () => {
 
     it('throws when passed a non-object', () => {
       assert.throws(() => {
+        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
         /* @ts-expect-error */
         new AxeBuilder(driver, axe403Source).configure('abc123');
       });

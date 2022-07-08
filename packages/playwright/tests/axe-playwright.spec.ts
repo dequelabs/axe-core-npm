@@ -563,10 +563,10 @@ describe('@axe-core/playwright', () => {
 
     it('throws an error if axe.finishRun throws', async () => {
       const res = await page.goto(`${addr}/external/index.html`);
-      // eslint-disable-next-line @typescript-eslint/ban-ts-ignore
+      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
       //@ts-ignore
       delete page.context().newPage;
-      // eslint-disable-next-line @typescript-eslint/ban-ts-ignore
+      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
       //@ts-ignore
       page.context().newPage = () => {
         return null;

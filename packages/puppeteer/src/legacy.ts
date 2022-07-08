@@ -2,7 +2,7 @@ import * as fs from 'fs';
 import { Frame } from 'puppeteer';
 
 interface IInjectAxeArgs {
-  source?: string | Function;
+  source?: string | (() => void);
   selector: string;
   logOnError?: boolean;
   args?: any[];
@@ -58,7 +58,7 @@ async function injectJSModule(frame: Frame): Promise<void> {
 
 function injectJSSource(
   frame: Frame,
-  source: string | Function,
+  source: string | (() => void),
   args: any[] = []
 ): Promise<void> {
   return frame.evaluate(source as any, ...args) as Promise<void>;

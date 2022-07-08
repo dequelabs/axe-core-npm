@@ -12,7 +12,8 @@ module.exports = {
   rules: {
     '@typescript-eslint/camelcase': 'off',
     '@typescript-eslint/interface-name-prefix': 'off',
-    '@typescript-eslint/no-use-before-define': 'off'
+    '@typescript-eslint/no-use-before-define': 'off',
+    '@typescript-eslint/ban-types': 'off'
   },
   settings: {
     react: {

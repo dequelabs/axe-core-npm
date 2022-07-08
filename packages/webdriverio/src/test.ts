@@ -1210,10 +1210,10 @@ describe('@axe-core/webdriverio', () => {
 
           assert.notEqual(title, 'Error');
 
-          // eslint-disable-next-line @typescript-eslint/ban-ts-ignore
+          // eslint-disable-next-line @typescript-eslint/ban-ts-comment
           // @ts-ignore
           delete client.createWindow;
-          // eslint-disable-next-line @typescript-eslint/ban-ts-ignore
+          // eslint-disable-next-line @typescript-eslint/ban-ts-comment
           // @ts-ignore
           client.createWindow = () => {
             return { handle: null };
