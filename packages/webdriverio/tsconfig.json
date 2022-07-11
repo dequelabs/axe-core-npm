@@ -12,6 +12,6 @@
     "typeRoots": ["node_modules/@types"],
     "esModuleInterop": true
   },
-  "include": ["src", "test/index.ts"],
-  "exclude": ["test/index.ts"]
+  "include": ["src"],
+  "exclude": ["test"]
 }

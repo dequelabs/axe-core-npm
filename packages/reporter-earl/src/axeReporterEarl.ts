@@ -6,6 +6,7 @@ export function createEarlReport(
   rawResults: RawResult[],
   url?: string
 ): EarlResult {
+  debugger;
   return {
     '@context': context,
     '@type': EarlType.WebPage,
