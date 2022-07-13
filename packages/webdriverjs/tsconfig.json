@@ -9,7 +9,9 @@
     "sourceMap": true,
     "declaration": true,
     "outDir": "dist",
-    "typeRoots": ["node_modules/@types"]
+    "typeRoots": ["node_modules/@types"],
+    "esModuleInterop": true,
+    "skipLibCheck": true
   },
   "include": ["src"]
 }

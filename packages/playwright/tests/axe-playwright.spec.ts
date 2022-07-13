@@ -1,11 +1,11 @@
 import 'mocha';
-import * as fs from 'fs';
-import * as playwright from 'playwright';
-import * as express from 'express';
+import fs from 'fs';
+import playwright from 'playwright';
+import express from 'express';
 import type { AxeResults } from 'axe-core';
-import testListen = require('test-listen');
+import testListen from 'test-listen';
 import { assert } from 'chai';
-import * as path from 'path';
+import path from 'path';
 import { Server, createServer } from 'http';
 import AxeBuilder from '../src';
 
@@ -563,10 +563,10 @@ describe('@axe-core/playwright', () => {
 
     it('throws an error if axe.finishRun throws', async () => {
       const res = await page.goto(`${addr}/external/index.html`);
-      // eslint-disable-next-line @typescript-eslint/ban-ts-ignore
+      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
       //@ts-ignore
       delete page.context().newPage;
-      // eslint-disable-next-line @typescript-eslint/ban-ts-ignore
+      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
       //@ts-ignore
       page.context().newPage = () => {
         return null;

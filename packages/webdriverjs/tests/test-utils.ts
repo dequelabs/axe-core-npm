@@ -1,6 +1,6 @@
 import { WebDriver, Builder } from 'selenium-webdriver';
-import * as net from 'net';
-import * as chrome from 'selenium-webdriver/chrome';
+import net from 'net';
+import chrome from 'selenium-webdriver/chrome';
 
 export const Webdriver = (): WebDriver => {
   let webdriver: WebDriver;

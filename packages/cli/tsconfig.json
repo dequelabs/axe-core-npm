@@ -9,7 +9,9 @@
     "target": "es2015",
     "resolveJsonModule": true,
     "allowJs": true,
-    "lib": ["dom", "es2015", "esnext.asynciterable"]
+    "lib": ["dom", "es2015", "esnext.asynciterable"],
+    "esModuleInterop": true,
+    "skipLibCheck": true
   },
   "include": ["./src/lib", "./src/bin"]
 }

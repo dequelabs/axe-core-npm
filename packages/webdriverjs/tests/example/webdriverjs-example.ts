@@ -1,11 +1,11 @@
 import { assert } from 'chai';
 import { Builder, WebDriver } from 'selenium-webdriver';
-import testListen = require('test-listen');
+import testListen from 'test-listen';
 import { Server, createServer } from 'http';
 import AxeBuilder from '@axe-core/webdriverjs';
-import * as chrome from 'selenium-webdriver/chrome';
-import * as express from 'express';
-import * as path from 'path';
+import chrome from 'selenium-webdriver/chrome';
+import express from 'express';
+import path from 'path';
 
 describe('@axe-core/webdriverjs example', () => {
   let driver: WebDriver;

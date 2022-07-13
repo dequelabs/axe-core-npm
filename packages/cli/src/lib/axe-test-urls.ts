@@ -1,4 +1,4 @@
-import * as WebDriver from 'selenium-webdriver';
+import WebDriver from 'selenium-webdriver';
 import AxeBuilder from '@axe-core/webdriverjs';
 import { AxeResults } from 'axe-core';
 import { EventResponse, ConfigParams } from '../types';

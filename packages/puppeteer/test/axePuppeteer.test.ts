@@ -770,10 +770,10 @@ describe('AxePuppeteer', function () {
     const finishRunThrows = `;axe.finishRun = () => { throw new Error("No finishRun")}`;
     it('throws an error if window.open throws', async () => {
       const res = await page.goto(`${addr}/external/index.html`);
-      // eslint-disable-next-line @typescript-eslint/ban-ts-ignore
+      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
       // @ts-ignore
       delete page.browser().newPage();
-      // eslint-disable-next-line @typescript-eslint/ban-ts-ignore
+      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
       // @ts-ignore
       page.browser().newPage = async () => {
         return null;

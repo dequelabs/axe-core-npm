@@ -1,5 +1,5 @@
 import type { OptionValues } from 'commander';
-import * as colors from 'colors';
+import colors from 'colors';
 import {
   parseBrowser,
   parseUrl,
