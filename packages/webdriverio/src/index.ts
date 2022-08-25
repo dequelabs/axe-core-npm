@@ -1,6 +1,6 @@
-import * as fs from 'fs';
-import * as assert from 'assert';
-import * as cssesc from 'cssesc';
+import fs from 'fs';
+import assert from 'assert';
+import cssesc from 'cssesc';
 import {
   isWebdriverClient,
   normalizeContext,

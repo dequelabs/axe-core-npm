@@ -1,4 +1,4 @@
-import * as assert from 'assert';
+import assert from 'assert';
 import type { Browser } from 'webdriverio';
 import type {
   AxeResults,

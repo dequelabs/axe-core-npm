@@ -1,5 +1,5 @@
 import * as fs from 'fs';
-import { Frame, ElementHandle } from 'puppeteer';
+import { Frame } from 'puppeteer';
 
 interface IInjectAxeArgs {
   source?: string | Function;
@@ -33,7 +33,7 @@ export async function injectJS(
     console.error(`Failed to inject axe-core into frame (${frame.url()})`);
   };
 
-  let injectP: Promise<ElementHandle<Element> | void>;
+  let injectP: Promise<void>;
   if (!source) {
     injectP = injectJSModule(frame);
   } else {
@@ -61,7 +61,7 @@ function injectJSSource(
   source: string | Function,
   args: any[] = []
 ): Promise<void> {
-  return frame.evaluate(source as any, ...args);
+  return frame.evaluate(source as any, ...args) as Promise<void>;
 }
 
 export function iframeSelector(disabledFrameSelectors: string[]): string {

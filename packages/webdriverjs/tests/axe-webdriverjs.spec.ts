@@ -1,18 +1,23 @@
 import 'mocha';
 import { AxeResults, Spec } from 'axe-core';
 import { WebDriver } from 'selenium-webdriver';
-import * as express from 'express';
-import * as chromedriver from 'chromedriver';
-import testListen = require('test-listen');
+import express from 'express';
+import chromedriver from 'chromedriver';
+import testListen from 'test-listen';
 import delay from 'delay';
 import { assert } from 'chai';
-import * as path from 'path';
-import * as fs from 'fs';
+import path from 'path';
+import fs from 'fs';
 import { Server, createServer } from 'http';
 import { Webdriver, connectToChromeDriver } from './test-utils';
 import AxeBuilder from '../src';
 import { axeRunPartial } from '../src/browser';
-const dylangConfig = require('./fixtures/external/dylang-config.json') as Spec;
+const dylangConfig = JSON.parse(
+  fs.readFileSync(
+    require.resolve('./fixtures/external/dylang-config.json'),
+    'utf8'
+  )
+);
 
 describe('@axe-core/webdriverjs', () => {
   const port = 9515;
@@ -195,6 +200,7 @@ describe('@axe-core/webdriverjs', () => {
 
     it('throws when passed a non-object', () => {
       assert.throws(() => {
+        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
         /* @ts-expect-error */
         new AxeBuilder(driver, axe403Source).configure('abc123');
       });

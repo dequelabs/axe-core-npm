@@ -1,6 +1,6 @@
-import * as execa from 'execa';
-import * as path from 'path';
-import * as fs from 'fs';
+import execa from 'execa';
+import path from 'path';
+import fs from 'fs';
 
 const TS_NODE = require.resolve('ts-node/dist/bin.js');
 const CLI = path.resolve(__dirname, '..', 'bin', 'cli.ts');

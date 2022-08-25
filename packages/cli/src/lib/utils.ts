@@ -1,6 +1,6 @@
-import * as fs from 'fs';
-import * as path from 'path';
-import * as colors from 'colors';
+import fs from 'fs';
+import path from 'path';
+import colors from 'colors';
 import { AxeResults } from 'axe-core';
 
 export const saveOutcome = (

@@ -1,6 +1,6 @@
 import assert from 'assert';
 import { RunOptions, SerialContextObject, Spec, AxeResults } from 'axe-core';
-import { Frame, JSONArray, JSONObject, Page } from 'puppeteer';
+import { Frame, Page } from 'puppeteer';
 import {
   axeGetFrameContext,
   axeRunPartial,
@@ -236,7 +236,7 @@ export class AxePuppeteer {
     const frameContexts = await frame.evaluate(axeGetFrameContext, context);
 
     // Start testing the parent frame - don't await, so runs are in parallel
-    const options = this.axeOptions as JSONObject;
+    const options = this.axeOptions;
     const partialPromise = frame.evaluate(axeRunPartial, context, options);
     const initiator = frame === this.frame;
     const axePartialRunner = new AxePartialRunner(partialPromise, initiator);
@@ -275,18 +275,14 @@ export class AxePuppeteer {
 
     await frameSourceInject(blankPage.mainFrame(), axeSource, config);
     return await blankPage
-      .evaluate(
-        axeFinishRun,
-        partialResults as JSONArray,
-        axeOptions as JSONObject
-      )
+      .evaluate(axeFinishRun, partialResults, axeOptions)
       .finally(async () => {
         await blankPage.close();
       });
   }
 
   private async runLegacy(context: SerialContextObject): Promise<AxeResults> {
-    const options = this.axeOptions as JSONObject;
+    const options = this.axeOptions;
     const selector = iframeSelector(this.disabledFrameSelectors);
     const source = this.axeSource;
     let config = this.config;

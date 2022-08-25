@@ -1,6 +1,6 @@
 import type { WebDriver } from 'selenium-webdriver';
 import type { Spec, AxeResults, BaseSelector } from 'axe-core';
-import * as axe from 'axe-core';
+import axe from 'axe-core';
 
 export interface Options {
   driver: WebDriver;

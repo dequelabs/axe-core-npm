@@ -1,9 +1,11 @@
 #!/usr/bin/env node
 
-import * as program from 'commander';
+import { Command } from 'commander';
 import { version } from '../../package.json';
 import { splitList } from '../lib/utils';
 import cli from '.';
+
+const program = new Command();
 
 program
   .version(version)

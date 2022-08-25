@@ -6,7 +6,7 @@ import type {
   ShadowSelectParams
 } from './types';
 import { FrameContext, AxeResults, PartialResult } from 'axe-core';
-import * as axeCore from 'axe-core';
+import axeCore from 'axe-core';
 
 // Expect axe to be set up.
 // Tell Typescript that there should be a global variable called `axe` that follows

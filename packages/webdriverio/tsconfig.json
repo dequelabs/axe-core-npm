@@ -9,8 +9,9 @@
     "sourceMap": true,
     "declaration": true,
     "outDir": "dist",
-    "typeRoots": ["node_modules/@types"]
+    "typeRoots": ["node_modules/@types"],
+    "esModuleInterop": true
   },
   "include": ["src"],
-  "exclude": ["src/test.ts"]
+  "exclude": ["test"]
 }

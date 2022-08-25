@@ -6,8 +6,6 @@ Previous versions of this program were maintained at [dequelabs/react-axe](https
 
 ## Usage
 
-[![Greenkeeper badge](https://badges.greenkeeper.io/dequelabs/react-axe.svg)](https://greenkeeper.io/)
-
 Install the module from NPM or elsewhere
 
 ```sh
@@ -102,14 +100,3 @@ npm run test:debug
 ## Compatibility
 
 react-axe uses advanced console logging features and works best in the Chrome browser, with limited functionality in Safari and Firefox.
-
-## Advantages
-
-I have been asked how this is different from modules like react-a11y which test the jsx.
-
-The main difference is that react-axe tests the accessibility of the rendered DOM. This is important because many accessibility issues exist at the intersection of the DOM and the CSS and unless you have a fully rendered DOM, you will get two sorts of inaccuracies:
-
-1. False negatives because of lacking information. Example is in order to test color contrast you must know the foreground and background colors, and
-1. False positives because the element being evaluated is not in its final state and the information to communicate this to the testing algorithm is not available. Example is an inert piece of code that will be augmented once it becomes active.
-
-If you have nice clean code, number 2 will be negligible but number 1 will always be a concern.

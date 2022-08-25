@@ -1,14 +1,13 @@
-import 'mocha';
 import * as webdriverio from 'webdriverio';
 import sync from '@wdio/sync';
-import * as express from 'express';
-import testListen = require('test-listen');
+import express from 'express';
+import testListen from 'test-listen';
 import { assert } from 'chai';
-import * as chromedriver from 'chromedriver';
-import * as path from 'path';
+import chromedriver from 'chromedriver';
+import path from 'path';
 import { Server, createServer } from 'http';
-import * as net from 'net';
-import * as fs from 'fs';
+import net from 'net';
+import fs from 'fs';
 import delay from 'delay';
 import AxeBuilder from '.';
 import { logOrRethrowError } from './utils';
@@ -1211,10 +1210,10 @@ describe('@axe-core/webdriverio', () => {
 
           assert.notEqual(title, 'Error');
 
-          // eslint-disable-next-line @typescript-eslint/ban-ts-ignore
+          // eslint-disable-next-line @typescript-eslint/ban-ts-comment
           // @ts-ignore
           delete client.createWindow;
-          // eslint-disable-next-line @typescript-eslint/ban-ts-ignore
+          // eslint-disable-next-line @typescript-eslint/ban-ts-comment
           // @ts-ignore
           client.createWindow = () => {
             return { handle: null };
