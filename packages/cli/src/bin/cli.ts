@@ -63,7 +63,7 @@ program
     'Set how much time (seconds) axe has to run (default: 90)'
   )
   .option('--timer', 'Log the time it takes to run')
-  .option('--show-errors', 'Display the full error stack')
+  .option('--show-errors <boolean>', 'Display the full error stack', true)
   // TODO: Replace this with a reporter option, this required adding
   .option('--no-reporter', 'Turn the CLI reporter off')
   .option(
