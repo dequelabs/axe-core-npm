@@ -684,6 +684,31 @@ describe('@axe-core/webdriverjs', () => {
         assert.fail('Should have thrown');
       } catch (err) {
         assert.match((err as Error).message, /Please check out/);
+        assert.include(
+          (err as Error).message,
+          'Please check out https://github.com/dequelabs/axe-core-npm/blob/develop/packages/webdriverjs/error-handling.md'
+        );
+      }
+    });
+
+    it('throw an error with modified url', async () => {
+      const source = axeSource + finishRunThrows;
+      await driver.get(`${addr}/external/index.html`);
+      const title = await driver.getTitle();
+
+      assert.notEqual(title, 'Error');
+
+      try {
+        const builder = new AxeBuilder(driver, source) as any;
+        builder.errorUrl = 'https://deque.biz';
+        await builder.analyze();
+        assert.fail('Should have thrown');
+      } catch (err) {
+        assert.match((err as Error).message, /Please check out/);
+        assert.include(
+          (err as Error).message,
+          'Please check out https://deque.biz'
+        );
       }
     });
   });

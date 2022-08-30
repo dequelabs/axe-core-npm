@@ -1245,6 +1245,44 @@ describe('@axe-core/webdriverio', () => {
               (err as Error).message,
               /Please make sure that you have popup blockers disabled./
             );
+            assert.include(
+              (err as Error).message,
+              'Please check out https://github.com/dequelabs/axe-core-npm/blob/develop/packages/webdriverio/error-handling.md'
+            );
+          }
+        });
+
+        it('throw an error with modified url', async () => {
+          await client.url(`${addr}/index.html`);
+          const title = await client.getTitle();
+
+          assert.notEqual(title, 'Error');
+
+          // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+          // @ts-ignore
+          delete client.createWindow;
+          // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+          // @ts-ignore
+          client.createWindow = () => {
+            return { handle: null };
+          };
+          try {
+            const builder = new AxeBuilder({
+              client,
+              axeSource: axeSource
+            }) as any;
+            builder.errorUrl = 'https://deque.biz';
+            await builder.analyze();
+            assert.fail('Should have thrown');
+          } catch (err) {
+            assert.match(
+              (err as Error).message,
+              /Please make sure that you have popup blockers disabled./
+            );
+            assert.include(
+              (err as Error).message,
+              'Please check out https://deque.biz'
+            );
           }
         });
 
