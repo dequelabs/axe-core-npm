@@ -120,6 +120,22 @@ describe('AxePuppeteer', function () {
     });
   });
 
+  describe('errorUrl', () => {
+    it('returns correct errorUrl', () => {
+      const errorUrl = (new AxePuppeteer(page) as any).errorUrl;
+      assert.equal(
+        errorUrl,
+        'https://github.com/dequelabs/axe-core-npm/blob/develop/packages/puppeteer/error-handling.md'
+      );
+    });
+
+    it('returns modified errorUrl', () => {
+      const builder = new AxePuppeteer(page) as any;
+      builder.errorUrl = 'https://deque.biz';
+      assert.equal(builder.errorUrl, 'https://deque.biz');
+    });
+  });
+
   describe('.analyze()', () => {
     it('sets the helpUrl application string', async () => {
       const res = await page.goto(`${addr}/external/iframes/baz.html`);

@@ -169,6 +169,22 @@ describe('@axe-core/webdriverjs', () => {
     });
   });
 
+  describe('errorUrl', () => {
+    it('returns correct errorUrl', () => {
+      const errorUrl = (new AxeBuilder(driver) as any).errorUrl;
+      assert.equal(
+        errorUrl,
+        'https://github.com/dequelabs/axe-core-npm/blob/develop/packages/webdriverjs/error-handling.md'
+      );
+    });
+
+    it('returns modified errorUrl', () => {
+      const builder = new AxeBuilder(driver) as any;
+      builder.errorUrl = 'https://deque.biz';
+      assert.equal(builder.errorUrl, 'https://deque.biz');
+    });
+  });
+
   describe('configure', () => {
     it('should find configured violations in all iframes', async () => {
       await driver.get(`${addr}/external/nested-iframes.html`);

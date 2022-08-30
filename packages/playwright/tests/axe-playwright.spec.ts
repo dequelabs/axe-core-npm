@@ -603,6 +603,21 @@ describe('@axe-core/playwright', () => {
     });
   });
 
+  describe('errorUrl', () => {
+    it('returns correct errorUrl', () => {
+      const errorUrl = (new AxeBuilder({ page }) as any).errorUrl;
+      assert.equal(
+        errorUrl,
+        'https://github.com/dequelabs/axe-core-npm/blob/develop/packages/playwright/error-handling.md'
+      );
+    });
+    it('return modified errorUrl', () => {
+      const builder = new AxeBuilder({ page }) as any;
+      builder.errorUrl = 'https://deque.biz';
+      assert.equal(builder.errorUrl, 'https://deque.biz');
+    });
+  });
+
   describe('setLegacyMode', () => {
     const runPartialThrows = `;axe.runPartial = () => { throw new Error("No runPartial")}`;
     it('runs legacy mode when used', async () => {

@@ -141,6 +141,22 @@ describe('@axe-core/webdriverio', () => {
           );
         });
 
+        describe('errorUrl', () => {
+          it('returns correct errorUrl', () => {
+            const errorUrl = (new AxeBuilder({ client }) as any).errorUrl;
+            assert.equal(
+              errorUrl,
+              'https://github.com/dequelabs/axe-core-npm/blob/develop/packages/webdriverio/error-handling.md'
+            );
+          });
+
+          it('returns modified errorUrl', () => {
+            const builder = new AxeBuilder({ client }) as any;
+            builder.errorUrl = 'https://deque.biz';
+            assert.equal(builder.errorUrl, 'https://deque.biz');
+          });
+        });
+
         describe('for versions without axe.runPartial', () => {
           describe('analyze', () => {
             it('returns results axe-core4.0.3', async () => {
