@@ -282,15 +282,31 @@ describe('cli', () => {
   });
 
   describe('--show-errors', () => {
-    it('should log the time it takes to run', async () => {
+    it('should log the time it takes to run defaults to show errors', async () => {
       const result = await runCLI(
         `file://${SIMPLE_HTML_FILE}`,
-        '--show-errors'
+        '--include',
+        '#hazaar'
       );
-      assert.equal(result.exitCode, 0);
+      assert.equal(result.exitCode, 1);
       assert.include(
-        result.stdout,
-        'Violation of "marquee" with 1 occurrences!'
+        result.stderr,
+        'Error: JavascriptError: javascript error:'
+      );
+    });
+
+    it('do not show errors when passed false', async () => {
+      const result = await runCLI(
+        `file://${SIMPLE_HTML_FILE}`,
+        '--include',
+        '#hazaar',
+        '--show-errors',
+        'false'
+      );
+      assert.equal(result.exitCode, 1);
+      assert.include(
+        result.stderr,
+        'An error occurred while testing this page.'
       );
     });
   });

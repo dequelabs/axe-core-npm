@@ -26,7 +26,6 @@ const cli = async (
     dir,
     exit,
     timer,
-    showErrors,
     reporter: noReporter,
     chromeOptions,
     verbose,
@@ -39,6 +38,8 @@ const cli = async (
     loadDelay,
     chromedriverPath
   } = args;
+
+  const showErrors = args.showErrors === true;
 
   const silentMode = !!stdout;
   args.axeSource = getAxeSource(args.axeSource);
