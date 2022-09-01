@@ -128,12 +128,6 @@ describe('AxePuppeteer', function () {
         'https://github.com/dequelabs/axe-core-npm/blob/develop/packages/puppeteer/error-handling.md'
       );
     });
-
-    it('returns modified errorUrl', () => {
-      const builder = new AxePuppeteer(page) as any;
-      builder.errorUrl = 'https://deque.biz';
-      assert.equal(builder.errorUrl, 'https://deque.biz');
-    });
   });
 
   describe('.analyze()', () => {

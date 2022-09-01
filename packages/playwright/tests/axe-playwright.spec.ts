@@ -647,11 +647,6 @@ describe('@axe-core/playwright', () => {
         'https://github.com/dequelabs/axe-core-npm/blob/develop/packages/playwright/error-handling.md'
       );
     });
-    it('return modified errorUrl', () => {
-      const builder = new AxeBuilder({ page }) as any;
-      builder.errorUrl = 'https://deque.biz';
-      assert.equal(builder.errorUrl, 'https://deque.biz');
-    });
   });
 
   describe('setLegacyMode', () => {
