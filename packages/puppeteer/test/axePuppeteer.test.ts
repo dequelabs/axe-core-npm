@@ -120,6 +120,16 @@ describe('AxePuppeteer', function () {
     });
   });
 
+  describe('errorUrl', () => {
+    it('returns correct errorUrl', () => {
+      const errorUrl = (new AxePuppeteer(page) as any).errorUrl;
+      assert.equal(
+        errorUrl,
+        'https://github.com/dequelabs/axe-core-npm/blob/develop/packages/puppeteer/error-handling.md'
+      );
+    });
+  });
+
   describe('.analyze()', () => {
     it('sets the helpUrl application string', async () => {
       const res = await page.goto(`${addr}/external/iframes/baz.html`);
@@ -788,8 +798,42 @@ describe('AxePuppeteer', function () {
           (err as Error).message,
           /Please make sure that you have popup blockers disabled./
         );
+        assert.include(
+          (err as Error).message,
+          'Please check out https://github.com/dequelabs/axe-core-npm/blob/develop/packages/puppeteer/error-handling.md'
+        );
       }
     });
+
+    it('throw an error with modified url', async () => {
+      const res = await page.goto(`${addr}/external/index.html`);
+      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+      // @ts-ignore
+      delete page.browser().newPage();
+      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+      // @ts-ignore
+      page.browser().newPage = async () => {
+        return null;
+      };
+
+      assert.equal(res?.status(), 200);
+      try {
+        const builder = new AxePuppeteer(page, axeSource) as any;
+        builder.errorUrl = 'https://deque.biz';
+        await builder.analyze();
+        assert.fail('Should have thrown');
+      } catch (err) {
+        assert.match(
+          (err as Error).message,
+          /Please make sure that you have popup blockers disabled./
+        );
+        assert.include(
+          (err as Error).message,
+          'Please check out https://deque.biz'
+        );
+      }
+    });
+
     it('throws an error if axe.finishRun throws', async () => {
       const res = await page.goto(`${addr}/external/index.html`);
 

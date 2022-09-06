@@ -584,6 +584,42 @@ describe('@axe-core/playwright', () => {
           (err as Error).message,
           /Please make sure that you have popup blockers disabled./
         );
+        assert.include(
+          (err as Error).message,
+          'Please check out https://github.com/dequelabs/axe-core-npm/blob/develop/packages/playwright/error-handling.md'
+        );
+      }
+    });
+
+    it('throw an error with modified url', async () => {
+      const res = await page.goto(`${addr}/external/index.html`);
+      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+      //@ts-ignore
+      delete page.context().newPage;
+      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+      //@ts-ignore
+      page.context().newPage = () => {
+        return null;
+      };
+
+      assert.equal(res?.status(), 200);
+      try {
+        const builder = new AxeBuilder({
+          page,
+          axeSource: axeSource
+        }) as any;
+        builder.errorUrl = 'https://deque.biz';
+        await builder.analyze();
+        assert.fail('Should have thrown');
+      } catch (err) {
+        assert.match(
+          (err as Error).message,
+          /Please make sure that you have popup blockers disabled./
+        );
+        assert.include(
+          (err as Error).message,
+          'Please check out https://deque.biz'
+        );
       }
     });
 
@@ -600,6 +636,16 @@ describe('@axe-core/playwright', () => {
       } catch (err) {
         assert.match((err as Error).message, /Please check out/);
       }
+    });
+  });
+
+  describe('errorUrl', () => {
+    it('returns correct errorUrl', () => {
+      const errorUrl = (new AxeBuilder({ page }) as any).errorUrl;
+      assert.equal(
+        errorUrl,
+        'https://github.com/dequelabs/axe-core-npm/blob/develop/packages/playwright/error-handling.md'
+      );
     });
   });
 

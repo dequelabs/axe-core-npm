@@ -24,6 +24,7 @@ export default class AxeBuilder {
   private option: RunOptions;
   private source: string;
   private legacyMode = false;
+  private errorUrl: string;
 
   constructor({ page, axeSource }: AxePlaywrightParams) {
     this.page = page;
@@ -31,6 +32,8 @@ export default class AxeBuilder {
     this.excludes = [];
     this.option = {};
     this.source = axeSource || source;
+    this.errorUrl =
+      'https://github.com/dequelabs/axe-core-npm/blob/develop/packages/playwright/error-handling.md';
   }
 
   /**
@@ -167,9 +170,7 @@ export default class AxeBuilder {
       return await this.finishRun(partials);
     } catch (error) {
       throw new Error(
-        `${
-          (error as Error).message
-        }\n Please check out https://github.com/dequelabs/axe-core-npm/blob/develop/packages/playwright/error-handling.md`
+        `${(error as Error).message}\n Please check out ${this.errorUrl}`
       );
     }
   }

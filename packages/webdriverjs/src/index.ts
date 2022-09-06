@@ -22,6 +22,7 @@ class AxeBuilder {
   private config: Spec | null;
   private builderOptions: BuilderOptions;
   private legacyMode = false;
+  private errorUrl: string;
 
   constructor(
     driver: WebDriver,
@@ -35,6 +36,8 @@ class AxeBuilder {
     this.option = {};
     this.config = null;
     this.builderOptions = builderOptions || {};
+    this.errorUrl =
+      'https://github.com/dequelabs/axe-core-npm/blob/develop/packages/webdriverjs/error-handling.md';
   }
 
   /**
@@ -172,9 +175,7 @@ class AxeBuilder {
       return await this.finishRun(partials);
     } catch (error) {
       throw new Error(
-        `${
-          (error as Error).message
-        }\n Please check out https://github.com/dequelabs/axe-core-npm/blob/develop/packages/webdriverjs/error-handling.md`
+        `${(error as Error).message}\n Please check out ${this.errorUrl}`
       );
     }
   }
