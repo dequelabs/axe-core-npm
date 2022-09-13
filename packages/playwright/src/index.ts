@@ -1,5 +1,5 @@
 import assert from 'assert';
-import type { Page, Frame, ElementHandle } from 'playwright';
+import type { Page, Frame, ElementHandle } from 'playwright-core';
 import type {
   RunOptions,
   AxeResults,
