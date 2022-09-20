@@ -174,7 +174,6 @@ jobs:
     steps:
       - checkout
       - restore_dependency_cache
-      - run: cd packages/webdriverio && npx browser-driver-manager@1.0.4 install chrome chromedriver --verbose
       - run: npm run coverage --prefix=packages/webdriverio
 
   reporter-earl:
