@@ -183,6 +183,14 @@ export const axeFinishRun = (
   );
 };
 
+export const configureAxe = (client: Browser<'async'>): Promise<void> => {
+  return promisify(
+    client.execute(`
+      window.axe.configure({ allowedOrigins: ['<unsafe_all_origins>'] });
+    `)
+  );
+};
+
 /**
  * JSON.parse wrapper with types
  *

@@ -149,7 +149,7 @@ export default class AxeBuilder {
     const context = normalizeContext(this.includes, this.excludes);
     const { page, option: options } = this;
 
-    page.evaluate(this.script());
+    page.evaluate(await this.script());
     const runPartialDefined = await page.evaluate<boolean>(
       'typeof window.axe.runPartial === "function"'
     );
@@ -183,7 +183,8 @@ export default class AxeBuilder {
 
   private async inject(frames: Frame[]): Promise<void> {
     for (const iframe of frames) {
-      await iframe.evaluate(this.script());
+      await iframe.evaluate(await this.script());
+      await iframe.evaluate(await this.axeConfigure());
     }
   }
 
@@ -192,14 +193,8 @@ export default class AxeBuilder {
    * @returns String
    */
 
-  private script(): string {
-    return `
-      ${this.source}
-      axe.configure({
-        ${this.legacyMode ? '' : 'allowedOrigins: ["<unsafe_all_origins>"],'}
-        branding: { application: 'playwright' }
-      })
-    `;
+  private async script(): Promise<string> {
+    return this.source;
   }
 
   private async runLegacy(context: SerialContextObject): Promise<AxeResults> {
@@ -284,8 +279,8 @@ export default class AxeBuilder {
       'Please make sure that you have popup blockers disabled.'
     );
 
-    blankPage.evaluate(this.script());
-
+    blankPage.evaluate(await this.script());
+    blankPage.evaluate(await this.axeConfigure());
     return await blankPage
       .evaluate(axeFinishRun, {
         partialResults,
@@ -294,5 +289,22 @@ export default class AxeBuilder {
       .finally(async () => {
         await blankPage.close();
       });
+  }
+
+  private async axeConfigure(): Promise<string> {
+    const hasRunPartial = await this.page.evaluate<boolean>(
+      'typeof window.axe?.runPartial === "function"'
+    );
+
+    return `
+    ;axe.configure({
+      ${
+        !this.legacyMode && !hasRunPartial
+          ? 'allowedOrigins: ["<unsafe_all_origins>"],'
+          : 'allowedOrigins: ["<same_origin>"],'
+      }
+      branding: { application: 'playwright' }
+    })
+    `;
   }
 }

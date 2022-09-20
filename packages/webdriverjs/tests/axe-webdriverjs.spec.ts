@@ -861,4 +861,42 @@ describe('@axe-core/webdriverjs', () => {
       assert.isUndefined(frameTested);
     });
   });
+
+  describe('allowedOrigins', () => {
+    const getAllowedOrigins = async (): Promise<string[]> => {
+      return await driver.executeScript('return axe._audit.allowedOrigins');
+    };
+
+    it('should not set when running runPartial and not legacy mode', async () => {
+      await driver.get(`${addr}/index.html`);
+      await new AxeBuilder(driver).analyze();
+      const allowedOrigins = await getAllowedOrigins();
+      assert.deepEqual(allowedOrigins, [addr]);
+      assert.lengthOf(allowedOrigins, 1);
+    });
+
+    it('should not set when running runPartial and legacy mode', async () => {
+      await driver.get(`${addr}/index.html`);
+      await new AxeBuilder(driver).setLegacyMode(true).analyze();
+      const allowedOrigins = await getAllowedOrigins();
+      assert.deepEqual(allowedOrigins, [addr]);
+    });
+
+    it('should not set when running legacy source and legacy mode', async () => {
+      await driver.get(`${addr}/index.html`);
+      await new AxeBuilder(driver, axeSource + axeForceLegacy)
+        .setLegacyMode(true)
+        .analyze();
+      const allowedOrigins = await getAllowedOrigins();
+      assert.lengthOf(allowedOrigins, 1);
+    });
+
+    it('should set when running legacy source and not legacy mode', async () => {
+      await driver.get(`${addr}/index.html`);
+      await new AxeBuilder(driver, axeSource + axeForceLegacy).analyze();
+      const allowedOrigins = await getAllowedOrigins();
+      assert.deepEqual(allowedOrigins, ['*']);
+      assert.lengthOf(allowedOrigins, 1);
+    });
+  });
 });

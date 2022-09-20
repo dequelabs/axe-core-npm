@@ -9,7 +9,8 @@ import {
   axeGetFrameContext,
   axeRunPartial,
   axeFinishRun,
-  axeRunLegacy
+  axeRunLegacy,
+  configureAxe
 } from './utils';
 
 import type { Browser } from 'webdriverio';
@@ -177,7 +178,6 @@ export default class AxeBuilder {
     return `
       ${this.axeSource}
       axe.configure({
-        ${this.legacyMode ? '' : `allowedOrigins: ['<unsafe_all_origins>'],`}
         branding: { application: 'webdriverio' }
       })
       `;
@@ -223,6 +223,10 @@ export default class AxeBuilder {
     const runPartialSupported = await axeSourceInject(client, axeSource);
     if (!runPartialSupported || this.legacyMode) {
       return await this.runLegacy(context);
+    }
+
+    if (!runPartialSupported || !this.legacyMode) {
+      await configureAxe(client);
     }
     const partials = await this.runPartialRecursive(context);
 
@@ -295,7 +299,13 @@ export default class AxeBuilder {
         const frame = await this.client.$(frameSelector);
         assert(frame, `Expect frame of "${frameSelector}" to be defined`);
         await this.client.switchToFrame(frame);
-        await axeSourceInject(this.client, this.script);
+        const runPartialSupported = await axeSourceInject(
+          this.client,
+          this.script
+        );
+        if (!runPartialSupported || !this.legacyMode) {
+          await configureAxe(this.client);
+        }
         partials.push(...(await this.runPartialRecursive(frameContext)));
       } catch (error) {
         partials.push(null);
@@ -332,5 +342,22 @@ export default class AxeBuilder {
     await client.switchToWindow(win);
 
     return res;
+  }
+
+  private async axeConfigure(): Promise<string> {
+    const hasRunPartial = await this.client.execute(
+      'typeof window.axe?.runPartial === "function"'
+    );
+
+    return `
+    ;axe.configure({
+      ${
+        !this.legacyMode && !hasRunPartial
+          ? 'allowedOrigins: ["<unsafe_all_origins>"],'
+          : 'allowedOrigins: ["<same_origin>"],'
+      }
+      branding: { application: 'playwright' }
+    })
+    `;
   }
 }

@@ -1,4 +1,4 @@
-import * as webdriverio from 'webdriverio';
+import webdriverio from 'webdriverio';
 import sync from '@wdio/sync';
 import express from 'express';
 import testListen from 'test-listen';
@@ -1295,6 +1295,45 @@ describe('@axe-core/webdriverio', () => {
           } catch (err) {
             assert.match((err as Error).message, /Please check out/);
           }
+        });
+      });
+
+      describe('allowedOrigins', () => {
+        const getAllowedOrigins = async () => {
+          return await client.executeAsync('return axe._audit.allowedOrigins');
+        };
+
+        it('should not set when running runPartial and not legacy mode', async () => {
+          await client.url(`${addr}/index.html`);
+          await new AxeBuilder({ client }).analyze();
+          const allowedOrigins = await getAllowedOrigins();
+          assert.deepEqual(allowedOrigins, [addr]);
+        });
+
+        it('should not set when running runPartial and legacy mode', async () => {
+          await client.url(`${addr}/index.html`);
+          await new AxeBuilder({ client }).setLegacyMode(true).analyze();
+          const allowedOrigins = await getAllowedOrigins();
+          assert.deepEqual(allowedOrigins, [addr]);
+        });
+
+        it('should not set when running legacy source and legacy mode', async () => {
+          await client.url(`${addr}/index.html`);
+          await new AxeBuilder({ client, axeSource: axeLegacySource })
+            .setLegacyMode(true)
+            .analyze();
+          const allowedOrigins = await getAllowedOrigins();
+          assert.deepEqual(allowedOrigins, [addr]);
+        });
+
+        it('should set when running legacy source and not legacy mode', async () => {
+          await client.url(`${addr}/index.html`);
+          await new AxeBuilder({
+            client,
+            axeSource: axeLegacySource
+          }).analyze();
+          const allowedOrigins = await getAllowedOrigins();
+          assert.deepEqual(allowedOrigins, ['*']);
         });
       });
     });
