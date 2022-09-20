@@ -796,7 +796,7 @@ describe('@axe-core/webdriverjs', () => {
       assert.notEqual(title, 'Error');
       assert.equal(results.violations[0].id, 'label');
       assert.lengthOf(results.violations[0].nodes, 4);
-      assert.equal(results.testEngine.version, '4.0.3');
+      assert.equal(results.testEngine.version, '4.2.3');
     });
 
     it('throws if the top level errors', done => {

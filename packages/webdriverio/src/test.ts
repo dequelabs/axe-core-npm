@@ -153,7 +153,7 @@ describe('@axe-core/webdriverio', () => {
 
         describe('for versions without axe.runPartial', () => {
           describe('analyze', () => {
-            it('returns results axe-core4.0.3', async () => {
+            it('returns results axe-core4.2.3', async () => {
               await client.url(`${addr}/index.html`);
               const title = await client.getTitle();
               const results = await new AxeBuilder({
@@ -374,7 +374,7 @@ describe('@axe-core/webdriverio', () => {
 
               assert.notEqual(title, 'Error');
               assert.isNotNull(results);
-              assert.strictEqual(results.testEngine.version, '4.0.3');
+              assert.strictEqual(results.testEngine.version, '4.2.3');
               assert.isArray(results.violations);
               assert.isArray(results.incomplete);
               assert.isArray(results.passes);
