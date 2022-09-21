@@ -1,4 +1,4 @@
-import webdriverio from 'webdriverio';
+import * as webdriverio from 'webdriverio';
 import sync from '@wdio/sync';
 import express from 'express';
 import testListen from 'test-listen';
