@@ -10,7 +10,7 @@ import {
   axeRunPartial,
   axeFinishRun,
   axeRunLegacy,
-  configureAxe
+  configureAllowedOrigins
 } from './utils';
 
 import type { Browser } from 'webdriverio';
@@ -196,7 +196,7 @@ export default class AxeBuilder {
     );
 
     if (!this.legacyMode && !runPartialSupported) {
-      await configureAxe(this.client);
+      await configureAllowedOrigins(this.client);
     }
 
     const frames = (await this.client.$$(this.frameSelector())) || [];

@@ -149,7 +149,7 @@ export default class AxeBuilder {
     const context = normalizeContext(this.includes, this.excludes);
     const { page, option: options } = this;
 
-    page.evaluate(await this.script());
+    page.evaluate(this.script());
     const runPartialDefined = await page.evaluate<boolean>(
       'typeof window.axe.runPartial === "function"'
     );
@@ -193,7 +193,7 @@ export default class AxeBuilder {
    * @returns String
    */
 
-  private async script(): Promise<string> {
+  private script(): string {
     return this.source;
   }
 
@@ -279,7 +279,7 @@ export default class AxeBuilder {
       'Please make sure that you have popup blockers disabled.'
     );
 
-    blankPage.evaluate(await this.script());
+    blankPage.evaluate(this.script());
     blankPage.evaluate(await this.axeConfigure());
     return await blankPage
       .evaluate(axeFinishRun, {
