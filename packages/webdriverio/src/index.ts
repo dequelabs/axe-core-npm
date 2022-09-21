@@ -190,7 +190,13 @@ export default class AxeBuilder {
     browsingContext: WdioElement | null = null
   ): Promise<void> {
     await this.setBrowsingContext(browsingContext);
-    await this.client.execute(this.script);
+    const runPartialSupported = await axeSourceInject(
+      this.client,
+      this.axeSource
+    );
+    if (!runPartialSupported || !this.legacyMode) {
+      await configureAxe(this.client);
+    }
 
     const frames = (await this.client.$$(this.frameSelector())) || [];
     const iframes =
@@ -342,22 +348,5 @@ export default class AxeBuilder {
     await client.switchToWindow(win);
 
     return res;
-  }
-
-  private async axeConfigure(): Promise<string> {
-    const hasRunPartial = await this.client.execute(
-      'typeof window.axe?.runPartial === "function"'
-    );
-
-    return `
-    ;axe.configure({
-      ${
-        !this.legacyMode && !hasRunPartial
-          ? 'allowedOrigins: ["<unsafe_all_origins>"],'
-          : 'allowedOrigins: ["<same_origin>"],'
-      }
-      branding: { application: 'playwright' }
-    })
-    `;
   }
 }
