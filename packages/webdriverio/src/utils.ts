@@ -185,9 +185,8 @@ export const axeFinishRun = (
 
 export const configureAxe = (client: Browser<'async'>): Promise<void> => {
   return promisify(
-    client.executeAsync(`
-        var callback = arguments[arguments.length - 1];
-        callback(window.axe.configure({ allowedOrigins: ['<unsafe_all_origins>'] }))
+    client.execute(`
+      window.axe.configure({ allowedOrigins: ['<unsafe_all_origins>'] })
     `)
   );
 };
