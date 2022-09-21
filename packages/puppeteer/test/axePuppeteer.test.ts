@@ -800,7 +800,7 @@ describe('AxePuppeteer', function () {
 
       assert.equal(results.violations[0].id, 'label');
       assert.lengthOf(results.violations[0].nodes, 4);
-      assert.equal(results.testEngine.version, '4.0.3');
+      assert.equal(results.testEngine.version, '4.2.3');
     });
 
     it('throws if the top level errors', done => {
@@ -841,6 +841,46 @@ describe('AxePuppeteer', function () {
         ({ id }) => id === 'frame-tested'
       );
       assert.isUndefined(frameTested);
+    });
+  });
+
+  describe('allowedOrigins', () => {
+    const getAllowedOrigins = async (): Promise<string[]> => {
+      return (await page.evaluate(
+        'axe._audit.allowedOrigins'
+      )) as unknown as string[];
+    };
+
+    it('should not set when running runPartial and not legacy mode', async () => {
+      await page.goto(`${addr}/index.html`);
+      await new AxePuppeteer(page).analyze();
+      const allowedOrigins = await getAllowedOrigins();
+      assert.deepEqual(allowedOrigins, [addr]);
+      assert.lengthOf(allowedOrigins, 1);
+    });
+
+    it('should not set when running runPartial and legacy mode', async () => {
+      await page.goto(`${addr}/index.html`);
+      await new AxePuppeteer(page).setLegacyMode(true).analyze();
+      const allowedOrigins = await getAllowedOrigins();
+      assert.deepEqual(allowedOrigins, [addr]);
+    });
+
+    it('should not set when running legacy source and legacy mode', async () => {
+      await page.goto(`${addr}/index.html`);
+      await new AxePuppeteer(page, axeSource + axeForceLegacy)
+        .setLegacyMode(true)
+        .analyze();
+      const allowedOrigins = await getAllowedOrigins();
+      assert.deepEqual(allowedOrigins, [addr]);
+    });
+
+    it('should set when running legacy source and not legacy mode', async () => {
+      await page.goto(`${addr}/index.html`);
+      await new AxePuppeteer(page, axeSource + axeForceLegacy).analyze();
+      const allowedOrigins = await getAllowedOrigins();
+      assert.deepEqual(allowedOrigins, ['*']);
+      assert.lengthOf(allowedOrigins, 1);
     });
   });
 });
