@@ -232,10 +232,6 @@ export default class AxeBuilder {
       return await this.runLegacy(context);
     }
 
-    if (!runPartialSupported && !this.legacyMode) {
-      await configureAllowedOrigins(client);
-    }
-
     const partials = await this.runPartialRecursive(context);
 
     try {
