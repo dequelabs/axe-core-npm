@@ -61,7 +61,9 @@ describe('@axe-core/playwright', () => {
         page,
         axeSource: axeLegacySource
       }).analyze();
-      assert.strictEqual(results.testEngine.version, '4.0.3');
+
+      assert.equal(res?.status(), 200);
+      assert.strictEqual(results.testEngine.version, '4.2.3');
       assert.isNotNull(results);
       assert.isArray(results.violations);
       assert.isArray(results.incomplete);
@@ -351,6 +353,7 @@ describe('@axe-core/playwright', () => {
         ['#shadow-root', '#shadow-frame'],
         'input'
       ]);
+
       assert.deepEqual(nodes[2].target, ['#slotted-frame', 'input']);
     });
 
@@ -405,13 +408,108 @@ describe('@axe-core/playwright', () => {
     });
 
     it('with only exclude', async () => {
-      await page.goto(`${addr}/context.html`);
+      const res = await page.goto(`${addr}/context.html`);
       const results = await new AxeBuilder({ page })
         .exclude('.exclude')
         .analyze();
       const flattenTarget = flatPassesTargets(results);
 
+      assert.equal(res?.status(), 200);
       assert.notInclude(flattenTarget, '.exclude');
+    });
+
+    it('with chaining includes', async () => {
+      const res = await page.goto(`${addr}/context.html`);
+
+      const results = await new AxeBuilder({ page })
+        .include('.include')
+        .include('.include2')
+        .analyze();
+      const flattenTarget = flatPassesTargets(results);
+
+      assert.equal(res?.status(), 200);
+      assert.strictEqual(flattenTarget[0], '.include');
+      assert.strictEqual(flattenTarget[1], '.include2');
+      assert.notInclude(flattenTarget, '.exclude');
+      assert.notInclude(flattenTarget, '.exclude2');
+    });
+
+    it('with chaining excludes', async () => {
+      const res = await page.goto(`${addr}/context.html`);
+      const results = await new AxeBuilder({ page })
+        .exclude('.exclude')
+        .exclude('.exclude2')
+        .analyze();
+      const flattenTarget = flatPassesTargets(results);
+
+      assert.equal(res?.status(), 200);
+      assert.notInclude(flattenTarget, '.exclude');
+      assert.notInclude(flattenTarget, '.exclude2');
+    });
+
+    it('with chaining includes and excludes', async () => {
+      const res = await page.goto(`${addr}/context.html`);
+      const results = await new AxeBuilder({ page })
+        .include('.include')
+        .include('.include2')
+        .exclude('.exclude')
+        .exclude('.exclude2')
+        .analyze();
+      const flattenTarget = flatPassesTargets(results);
+
+      assert.equal(res?.status(), 200);
+      assert.strictEqual(flattenTarget[0], '.include');
+      assert.strictEqual(flattenTarget[1], '.include2');
+      assert.notInclude(flattenTarget, '.exclude');
+      assert.notInclude(flattenTarget, '.exclude2');
+    });
+
+    it('with include using an array of strings', async () => {
+      const res = await page.goto(`${addr}/context.html`);
+      const expected = ['.selector-one', '.selector-two', '.selector-three'];
+
+      const axeSource = `
+      window.axe = {
+        configure(){},
+          run({ include }){
+            return Promise.resolve({ include })
+          }
+      }
+    `;
+      const results = new AxeBuilder({ page, axeSource: axeSource }).include([
+        '.selector-one',
+        '.selector-two',
+        '.selector-three'
+      ]);
+
+      const { include: actual } = (await results.analyze()) as any;
+
+      assert.equal(res?.status(), 200);
+      assert.deepEqual(actual[0], expected);
+    });
+
+    it('with exclude using an array of strings', async () => {
+      const res = await page.goto(`${addr}/context.html`);
+      const expected = ['.selector-one', '.selector-two', '.selector-three'];
+
+      const axeSource = `
+      window.axe = {
+        configure(){},
+          run({ exclude }){
+            return Promise.resolve({ exclude })
+          }
+      }
+    `;
+      const results = new AxeBuilder({ page, axeSource: axeSource }).exclude([
+        '.selector-one',
+        '.selector-two',
+        '.selector-three'
+      ]);
+
+      const { exclude: actual } = (await results.analyze()) as any;
+
+      assert.equal(res?.status(), 200);
+      assert.deepEqual(actual[0], expected);
     });
   });
 
@@ -510,7 +608,9 @@ describe('@axe-core/playwright', () => {
           page,
           axeSource: axeLegacySource
         }).analyze();
-        assert.strictEqual(results.testEngine.version, '4.0.3');
+
+        assert.equal(res?.status(), 200);
+        assert.strictEqual(results.testEngine.version, '4.2.3');
         assert.isNotNull(results);
         assert.isArray(results.violations);
         assert.isArray(results.incomplete);
@@ -610,12 +710,55 @@ describe('@axe-core/playwright', () => {
 
         const nodes = violations[0].nodes;
         assert.deepEqual(nodes[0].target, ['#light-frame', 'input']);
-        assert.deepEqual(nodes[1].target, ['#slotted-frame', 'input']);
-        assert.deepEqual(nodes[2].target, [
+        assert.deepEqual(nodes[1].target, [
           ['#shadow-root', '#shadow-frame'],
           'input'
         ]);
+        assert.deepEqual(nodes[2].target, ['#slotted-frame', 'input']);
       });
+    });
+  });
+
+  describe('allowedOrigins', () => {
+    const getAllowedOrigins = async (): Promise<string[]> => {
+      return await page.evaluate('axe._audit.allowedOrigins');
+    };
+
+    it('should not set when running runPartial and not legacy mode', async () => {
+      await page.goto(`${addr}/index.html`);
+      await new AxeBuilder({ page }).analyze();
+      const allowedOrigins = await getAllowedOrigins();
+      assert.deepEqual(allowedOrigins, [addr]);
+      assert.lengthOf(allowedOrigins, 1);
+    });
+
+    it('should not set when running runPartial and legacy mode', async () => {
+      await page.goto(`${addr}/index.html`);
+      await new AxeBuilder({ page }).setLegacyMode(true).analyze();
+      const allowedOrigins = await getAllowedOrigins();
+      assert.deepEqual(allowedOrigins, [addr]);
+      assert.lengthOf(allowedOrigins, 1);
+    });
+
+    it('should not set when running legacy source and legacy mode', async () => {
+      await page.goto(`${addr}/index.html`);
+      await new AxeBuilder({ page, axeSource: axeLegacySource })
+        .setLegacyMode(true)
+        .analyze();
+      const allowedOrigins = await getAllowedOrigins();
+      assert.deepEqual(allowedOrigins, [addr]);
+      assert.lengthOf(allowedOrigins, 1);
+    });
+
+    it('should set when running legacy source and not legacy mode', async () => {
+      await page.goto(`${addr}/index.html`);
+      await new AxeBuilder({
+        page,
+        axeSource: axeLegacySource
+      }).analyze();
+      const allowedOrigins = await getAllowedOrigins();
+      assert.deepEqual(allowedOrigins, ['*']);
+      assert.lengthOf(allowedOrigins, 1);
     });
   });
 });
