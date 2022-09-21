@@ -56,12 +56,12 @@ describe('@axe-core/playwright', () => {
 
   describe('analyze', () => {
     it('returns results using a different version of axe-core', async () => {
-      await page.goto(`${addr}/index.html`);
+      const res = await page.goto(`${addr}/external/index.html`);
       const results = await new AxeBuilder({
         page,
         axeSource: axeLegacySource
       }).analyze();
-      assert.strictEqual(results.testEngine.version, '4.0.3');
+      assert.strictEqual(results.testEngine.version, '4.2.3');
       assert.isNotNull(results);
       assert.isArray(results.violations);
       assert.isArray(results.incomplete);
@@ -351,6 +351,7 @@ describe('@axe-core/playwright', () => {
         ['#shadow-root', '#shadow-frame'],
         'input'
       ]);
+
       assert.deepEqual(nodes[2].target, ['#slotted-frame', 'input']);
     });
 
@@ -505,12 +506,12 @@ describe('@axe-core/playwright', () => {
   describe('for versions without axe.runPartial', () => {
     describe('analyze', () => {
       it('returns results', async () => {
-        await page.goto(`${addr}/external/index.html`);
+        const res = await page.goto(`${addr}/external/index.html`);
         const results = await new AxeBuilder({
           page,
           axeSource: axeLegacySource
         }).analyze();
-        assert.strictEqual(results.testEngine.version, '4.0.3');
+        assert.strictEqual(results.testEngine.version, '4.2.3');
         assert.isNotNull(results);
         assert.isArray(results.violations);
         assert.isArray(results.incomplete);
@@ -610,12 +611,55 @@ describe('@axe-core/playwright', () => {
 
         const nodes = violations[0].nodes;
         assert.deepEqual(nodes[0].target, ['#light-frame', 'input']);
-        assert.deepEqual(nodes[1].target, ['#slotted-frame', 'input']);
-        assert.deepEqual(nodes[2].target, [
+        assert.deepEqual(nodes[1].target, [
           ['#shadow-root', '#shadow-frame'],
           'input'
         ]);
+        assert.deepEqual(nodes[2].target, ['#slotted-frame', 'input']);
       });
+    });
+  });
+
+  describe('allowedOrigins', () => {
+    const getAllowedOrigins = async (): Promise<string[]> => {
+      return await page.evaluate('axe._audit.allowedOrigins');
+    };
+
+    it('should not set when running runPartial and not legacy mode', async () => {
+      await page.goto(`${addr}/index.html`);
+      await new AxeBuilder({ page }).analyze();
+      const allowedOrigins = await getAllowedOrigins();
+      assert.deepEqual(allowedOrigins, [addr]);
+      assert.lengthOf(allowedOrigins, 1);
+    });
+
+    it('should not set when running runPartial and legacy mode', async () => {
+      await page.goto(`${addr}/index.html`);
+      await new AxeBuilder({ page }).setLegacyMode(true).analyze();
+      const allowedOrigins = await getAllowedOrigins();
+      assert.deepEqual(allowedOrigins, [addr]);
+      assert.lengthOf(allowedOrigins, 1);
+    });
+
+    it('should not set when running legacy source and legacy mode', async () => {
+      await page.goto(`${addr}/index.html`);
+      await new AxeBuilder({ page, axeSource: axeLegacySource })
+        .setLegacyMode(true)
+        .analyze();
+      const allowedOrigins = await getAllowedOrigins();
+      assert.deepEqual(allowedOrigins, [addr]);
+      assert.lengthOf(allowedOrigins, 1);
+    });
+
+    it('should set when running legacy source and not legacy mode', async () => {
+      await page.goto(`${addr}/index.html`);
+      await new AxeBuilder({
+        page,
+        axeSource: axeLegacySource
+      }).analyze();
+      const allowedOrigins = await getAllowedOrigins();
+      assert.deepEqual(allowedOrigins, ['*']);
+      assert.lengthOf(allowedOrigins, 1);
     });
   });
 });
