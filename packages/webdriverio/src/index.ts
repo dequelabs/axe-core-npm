@@ -194,7 +194,8 @@ export default class AxeBuilder {
       this.client,
       this.axeSource
     );
-    if (!runPartialSupported || !this.legacyMode) {
+
+    if (!this.legacyMode && !runPartialSupported) {
       await configureAxe(this.client);
     }
 
@@ -231,8 +232,8 @@ export default class AxeBuilder {
       return await this.runLegacy(context);
     }
 
-    if (!runPartialSupported || !this.legacyMode) {
-      await configureAxe(client);
+    if (!this.legacyMode && !runPartialSupported) {
+      await configureAxe(this.client);
     }
     const partials = await this.runPartialRecursive(context);
 
@@ -309,7 +310,7 @@ export default class AxeBuilder {
           this.client,
           this.script
         );
-        if (!runPartialSupported || !this.legacyMode) {
+        if (!this.legacyMode && !runPartialSupported) {
           await configureAxe(this.client);
         }
         partials.push(...(await this.runPartialRecursive(frameContext)));

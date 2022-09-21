@@ -1299,13 +1299,27 @@ describe('@axe-core/webdriverio', () => {
       });
 
       describe('allowedOrigins', () => {
-        const getAllowedOrigins = async () => {
-          return await client.executeAsync('return axe._audit.allowedOrigins');
+        const promisify = <T>(thenable: Promise<T>): Promise<T> => {
+          return new Promise((resolve, reject) => {
+            thenable.then(resolve, reject);
+          });
+        };
+
+        const getAllowedOrigins = async (): Promise<string[]> => {
+          return promisify(
+            client.executeAsync(
+              `
+              var callback = arguments[arguments.length - 1];
+              var allowedOrigins = axe._audit.allowedOrigins
+              callback(allowedOrigins);
+              `
+            ) as any
+          );
         };
 
         it('should not set when running runPartial and not legacy mode', async () => {
           await client.url(`${addr}/index.html`);
-          await new AxeBuilder({ client }).analyze();
+          const res = await new AxeBuilder({ client }).analyze();
           const allowedOrigins = await getAllowedOrigins();
           assert.deepEqual(allowedOrigins, [addr]);
         });
@@ -1328,7 +1342,7 @@ describe('@axe-core/webdriverio', () => {
 
         it('should set when running legacy source and not legacy mode', async () => {
           await client.url(`${addr}/index.html`);
-          await new AxeBuilder({
+          const res = await new AxeBuilder({
             client,
             axeSource: axeLegacySource
           }).analyze();
