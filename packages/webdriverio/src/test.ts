@@ -153,7 +153,7 @@ describe('@axe-core/webdriverio', () => {
 
         describe('for versions without axe.runPartial', () => {
           describe('analyze', () => {
-            it('returns results axe-core4.0.3', async () => {
+            it('returns results axe-core4.2.3', async () => {
               await client.url(`${addr}/index.html`);
               const title = await client.getTitle();
               const results = await new AxeBuilder({
@@ -374,7 +374,7 @@ describe('@axe-core/webdriverio', () => {
 
               assert.notEqual(title, 'Error');
               assert.isNotNull(results);
-              assert.strictEqual(results.testEngine.version, '4.0.3');
+              assert.strictEqual(results.testEngine.version, '4.2.3');
               assert.isArray(results.violations);
               assert.isArray(results.incomplete);
               assert.isArray(results.passes);
@@ -1295,6 +1295,59 @@ describe('@axe-core/webdriverio', () => {
           } catch (err) {
             assert.match((err as Error).message, /Please check out/);
           }
+        });
+      });
+
+      describe('allowedOrigins', () => {
+        const promisify = <T>(thenable: Promise<T>): Promise<T> => {
+          return new Promise((resolve, reject) => {
+            thenable.then(resolve, reject);
+          });
+        };
+
+        const getAllowedOrigins = async (): Promise<string[]> => {
+          return promisify(
+            client.executeAsync(
+              `
+              var callback = arguments[arguments.length - 1];
+              var allowedOrigins = axe._audit.allowedOrigins
+              callback(allowedOrigins);
+              `
+            ) as any
+          );
+        };
+
+        it('should not set when running runPartial and not legacy mode', async () => {
+          await client.url(`${addr}/index.html`);
+          const res = await new AxeBuilder({ client }).analyze();
+          const allowedOrigins = await getAllowedOrigins();
+          assert.deepEqual(allowedOrigins, [addr]);
+        });
+
+        it('should not set when running runPartial and legacy mode', async () => {
+          await client.url(`${addr}/index.html`);
+          await new AxeBuilder({ client }).setLegacyMode(true).analyze();
+          const allowedOrigins = await getAllowedOrigins();
+          assert.deepEqual(allowedOrigins, [addr]);
+        });
+
+        it('should not set when running legacy source and legacy mode', async () => {
+          await client.url(`${addr}/index.html`);
+          await new AxeBuilder({ client, axeSource: axeLegacySource })
+            .setLegacyMode(true)
+            .analyze();
+          const allowedOrigins = await getAllowedOrigins();
+          assert.deepEqual(allowedOrigins, [addr]);
+        });
+
+        it('should set when running legacy source and not legacy mode', async () => {
+          await client.url(`${addr}/index.html`);
+          const res = await new AxeBuilder({
+            client,
+            axeSource: axeLegacySource
+          }).analyze();
+          const allowedOrigins = await getAllowedOrigins();
+          assert.deepEqual(allowedOrigins, ['*']);
         });
       });
     });

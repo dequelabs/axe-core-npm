@@ -186,7 +186,7 @@ class AxeBuilder {
   private async runLegacy(context: ContextObject): Promise<AxeResults> {
     const { driver, axeSource, builderOptions } = this;
     let config = this.config;
-    if (this.legacyMode !== true) {
+    if (!this.legacyMode) {
       config = {
         ...(config || {}),
         allowedOrigins: ['<unsafe_all_origins>']

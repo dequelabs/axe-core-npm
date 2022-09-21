@@ -92,7 +92,7 @@ export const axeSourceInject = async (
       window.axe.configure({
         branding: { application: 'webdriverio' }
       });
-      var runPartial = typeof window.axe.runPartial === 'function';
+      var runPartial = typeof window.axe?.runPartial === 'function';
       callback(runPartial);
     `)
   );
@@ -180,6 +180,14 @@ export const axeFinishRun = (
       });`
       )
       .then((r: string) => deserialize<AxeResults>(r))
+  );
+};
+
+export const configureAllowedOrigins = (client: Browser<'async'>): Promise<void> => {
+  return promisify(
+    client.execute(`
+      window.axe.configure({ allowedOrigins: ['<unsafe_all_origins>'] })
+    `)
   );
 };
 
