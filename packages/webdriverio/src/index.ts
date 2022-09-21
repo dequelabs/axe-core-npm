@@ -172,6 +172,18 @@ export default class AxeBuilder {
   }
 
   /**
+   * Get axe-core source and configurations
+   */
+  private get script(): string {
+    return `
+        ${this.axeSource}
+        axe.configure({
+          branding: { application: 'webdriverio' }
+        })
+        `;
+  }
+
+  /**
    * Injects `axe-core` into all frames.
    */
   private async inject(
@@ -295,6 +307,13 @@ export default class AxeBuilder {
         const frame = await this.client.$(frameSelector);
         assert(frame, `Expect frame of "${frameSelector}" to be defined`);
         await this.client.switchToFrame(frame);
+        const runPartialSupported = await axeSourceInject(
+          this.client,
+          this.script
+        );
+        if (!this.legacyMode && !runPartialSupported) {
+          await configureAllowedOrigins(this.client);
+        }
         partials.push(...(await this.runPartialRecursive(frameContext)));
       } catch (error) {
         partials.push(null);
