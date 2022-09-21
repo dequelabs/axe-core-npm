@@ -1065,6 +1065,59 @@ describe('@axe-core/webdriverio', () => {
           assert.deepEqual(allowedOrigins, ['*']);
         });
       });
+
+      describe('allowedOrigins', () => {
+        const promisify = <T>(thenable: Promise<T>): Promise<T> => {
+          return new Promise((resolve, reject) => {
+            thenable.then(resolve, reject);
+          });
+        };
+
+        const getAllowedOrigins = async (): Promise<string[]> => {
+          return promisify(
+            client.executeAsync(
+              `
+              var callback = arguments[arguments.length - 1];
+              var allowedOrigins = axe._audit.allowedOrigins
+              callback(allowedOrigins);
+              `
+            ) as any
+          );
+        };
+
+        it('should not set when running runPartial and not legacy mode', async () => {
+          await client.url(`${addr}/index.html`);
+          const res = await new AxeBuilder({ client }).analyze();
+          const allowedOrigins = await getAllowedOrigins();
+          assert.deepEqual(allowedOrigins, [addr]);
+        });
+
+        it('should not set when running runPartial and legacy mode', async () => {
+          await client.url(`${addr}/index.html`);
+          await new AxeBuilder({ client }).setLegacyMode(true).analyze();
+          const allowedOrigins = await getAllowedOrigins();
+          assert.deepEqual(allowedOrigins, [addr]);
+        });
+
+        it('should not set when running legacy source and legacy mode', async () => {
+          await client.url(`${addr}/index.html`);
+          await new AxeBuilder({ client, axeSource: axeLegacySource })
+            .setLegacyMode(true)
+            .analyze();
+          const allowedOrigins = await getAllowedOrigins();
+          assert.deepEqual(allowedOrigins, [addr]);
+        });
+
+        it('should set when running legacy source and not legacy mode', async () => {
+          await client.url(`${addr}/index.html`);
+          const res = await new AxeBuilder({
+            client,
+            axeSource: axeLegacySource
+          }).analyze();
+          const allowedOrigins = await getAllowedOrigins();
+          assert.deepEqual(allowedOrigins, ['*']);
+        });
+      });
     });
   }
 
