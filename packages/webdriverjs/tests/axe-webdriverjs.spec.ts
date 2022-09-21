@@ -888,7 +888,7 @@ describe('@axe-core/webdriverjs', () => {
         .setLegacyMode(true)
         .analyze();
       const allowedOrigins = await getAllowedOrigins();
-      assert.lengthOf(allowedOrigins, 1);
+      assert.deepEqual(allowedOrigins, [addr]);
     });
 
     it('should set when running legacy source and not legacy mode', async () => {

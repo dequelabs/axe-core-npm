@@ -232,9 +232,6 @@ export default class AxeBuilder {
       return await this.runLegacy(context);
     }
 
-    if (!this.legacyMode && !runPartialSupported) {
-      await configureAxe(this.client);
-    }
     const partials = await this.runPartialRecursive(context);
 
     try {
@@ -306,13 +303,6 @@ export default class AxeBuilder {
         const frame = await this.client.$(frameSelector);
         assert(frame, `Expect frame of "${frameSelector}" to be defined`);
         await this.client.switchToFrame(frame);
-        const runPartialSupported = await axeSourceInject(
-          this.client,
-          this.script
-        );
-        if (!this.legacyMode && !runPartialSupported) {
-          await configureAxe(this.client);
-        }
         partials.push(...(await this.runPartialRecursive(frameContext)));
       } catch (error) {
         partials.push(null);

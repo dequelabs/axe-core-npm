@@ -850,7 +850,7 @@ describe('@axe-core/playwright', () => {
 
     it('should not set when running legacy source and legacy mode', async () => {
       await page.goto(`${addr}/index.html`);
-      await new AxeBuilder({ page, axeSource: axeSource + axeForceLegacy })
+      await new AxeBuilder({ page, axeSource: axeLegacySource })
         .setLegacyMode(true)
         .analyze();
       const allowedOrigins = await getAllowedOrigins();
@@ -862,7 +862,7 @@ describe('@axe-core/playwright', () => {
       await page.goto(`${addr}/index.html`);
       await new AxeBuilder({
         page,
-        axeSource: axeSource + axeForceLegacy
+        axeSource: axeLegacySource
       }).analyze();
       const allowedOrigins = await getAllowedOrigins();
       assert.deepEqual(allowedOrigins, ['*']);
