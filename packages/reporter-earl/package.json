@@ -1,6 +1,6 @@
 {
   "name": "@axe-core/reporter-earl",
-  "version": "4.4.4",
+  "version": "4.4.5",
   "description": "A EARL+JSON-LD reporter for axe-core",
   "main": "dist/axeReporterEarl.js",
   "scripts": {
@@ -34,7 +34,7 @@
     "@types/jest": "^28.1.4",
     "@types/jsonld": "github:types/jsonld",
     "@types/node": "^18.0.3",
-    "axe-core": "^4.4.2",
+    "axe-core": "^4.4.3",
     "clone": "^2.1.2",
     "cross-env": "^7.0.3",
     "jest": "^28.1.2",

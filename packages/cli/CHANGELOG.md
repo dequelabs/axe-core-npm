@@ -3,6 +3,18 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [4.4.5](https://github.com/dequelabs/axe-core-npm/compare/v4.4.4...v4.4.5) (2022-09-26)
+
+
+### Bug Fixes
+
+* **cli:** display stack trace on errors by default ([#555](https://github.com/dequelabs/axe-core-npm/issues/555)) ([a47100c](https://github.com/dequelabs/axe-core-npm/commit/a47100cc74ba3edc76bf49d4e6a7cba39a19a4ac))
+* provide proper typings for axe-cli ([#559](https://github.com/dequelabs/axe-core-npm/issues/559)) ([e4ccfa5](https://github.com/dequelabs/axe-core-npm/commit/e4ccfa5c404a0a2156008d5b1e57f6de2431a305))
+
+
+
+
+
 ## [4.4.4](https://github.com/dequelabs/axe-core-npm/compare/v4.4.3...v4.4.4) (2022-08-10)
 
 **Note:** Version bump only for package @axe-core/cli

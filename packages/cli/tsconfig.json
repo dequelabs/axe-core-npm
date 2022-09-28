@@ -11,7 +11,8 @@
     "allowJs": true,
     "lib": ["dom", "es2015", "esnext.asynciterable"],
     "esModuleInterop": true,
-    "skipLibCheck": true
+    "skipLibCheck": true,
+    "declaration": true
   },
   "include": ["./src/lib", "./src/bin"]
 }

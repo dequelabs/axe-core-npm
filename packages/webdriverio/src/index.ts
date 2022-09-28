@@ -9,7 +9,8 @@ import {
   axeGetFrameContext,
   axeRunPartial,
   axeFinishRun,
-  axeRunLegacy
+  axeRunLegacy,
+  configureAllowedOrigins
 } from './utils';
 
 import type { Browser } from 'webdriverio';
@@ -31,6 +32,7 @@ export default class AxeBuilder {
   private option: RunOptions = {};
   private disableFrameSelectors: string[] = [];
   private legacyMode = false;
+  private errorUrl: string;
 
   constructor({ client, axeSource }: Options) {
     assert(
@@ -41,6 +43,8 @@ export default class AxeBuilder {
     // - Anything sync can also run async, since JS can await sync functions
     // - Ignore MultiRemoteBrowser, which is just Browser with extra props
     this.client = client as Browser<'async'>;
+    this.errorUrl =
+      'https://github.com/dequelabs/axe-core-npm/blob/develop/packages/webdriverio/error-handling.md';
 
     if (axeSource) {
       this.axeSource = axeSource;
@@ -172,12 +176,11 @@ export default class AxeBuilder {
    */
   private get script(): string {
     return `
-      ${this.axeSource}
-      axe.configure({
-        ${this.legacyMode ? '' : `allowedOrigins: ['<unsafe_all_origins>'],`}
-        branding: { application: 'webdriverio' }
-      })
-      `;
+        ${this.axeSource}
+        axe.configure({
+          branding: { application: 'webdriverio' }
+        })
+        `;
   }
 
   /**
@@ -187,7 +190,14 @@ export default class AxeBuilder {
     browsingContext: WdioElement | null = null
   ): Promise<void> {
     await this.setBrowsingContext(browsingContext);
-    await this.client.execute(this.script);
+    const runPartialSupported = await axeSourceInject(
+      this.client,
+      this.axeSource
+    );
+
+    if (!this.legacyMode && !runPartialSupported) {
+      await configureAllowedOrigins(this.client);
+    }
 
     const frames = (await this.client.$$(this.frameSelector())) || [];
     const iframes =
@@ -221,15 +231,14 @@ export default class AxeBuilder {
     if (!runPartialSupported || this.legacyMode) {
       return await this.runLegacy(context);
     }
+
     const partials = await this.runPartialRecursive(context);
 
     try {
       return await this.finishRun(partials);
     } catch (error) {
       throw new Error(
-        `${
-          (error as Error).message
-        }\n Please check out https://github.com/dequelabs/axe-core-npm/blob/develop/packages/webdriverio/error-handling.md`
+        `${(error as Error).message}\n Please check out ${this.errorUrl}`
       );
     }
   }
