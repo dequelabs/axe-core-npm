@@ -3,6 +3,20 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [4.4.5](https://github.com/dequelabs/axe-core-npm/compare/v4.4.4...v4.4.5) (2022-09-26)
+
+
+### Bug Fixes
+
+* change `playwright` to devdep and use `playwright-core` types ([#563](https://github.com/dequelabs/axe-core-npm/issues/563)) ([c89fa58](https://github.com/dequelabs/axe-core-npm/commit/c89fa58aeb2d7d7cb3e4ab2daf63f2ad1a81e9f6))
+* **cli:** display stack trace on errors by default ([#555](https://github.com/dequelabs/axe-core-npm/issues/555)) ([a47100c](https://github.com/dequelabs/axe-core-npm/commit/a47100cc74ba3edc76bf49d4e6a7cba39a19a4ac))
+* only set allowedOrigin when needed ([#566](https://github.com/dequelabs/axe-core-npm/issues/566)) ([a83907b](https://github.com/dequelabs/axe-core-npm/commit/a83907b9cb9f0f1abad5527e1105de2d24f0b0a1))
+* provide proper typings for axe-cli ([#559](https://github.com/dequelabs/axe-core-npm/issues/559)) ([e4ccfa5](https://github.com/dequelabs/axe-core-npm/commit/e4ccfa5c404a0a2156008d5b1e57f6de2431a305))
+
+
+
+
+
 ## [4.4.4](https://github.com/dequelabs/axe-core-npm/compare/v4.4.3...v4.4.4) (2022-08-10)
 
 ### Bug Fixes

@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [4.4.5](https://github.com/dequelabs/axe-core-npm/compare/v4.4.4...v4.4.5) (2022-09-26)
+
+
+### Bug Fixes
+
+* only set allowedOrigin when needed ([#566](https://github.com/dequelabs/axe-core-npm/issues/566)) ([a83907b](https://github.com/dequelabs/axe-core-npm/commit/a83907b9cb9f0f1abad5527e1105de2d24f0b0a1))
+
+
+
+
+
 ## [4.4.4](https://github.com/dequelabs/axe-core-npm/compare/v4.4.3...v4.4.4) (2022-08-10)
 
 **Note:** Version bump only for package @axe-core/reporter-earl
