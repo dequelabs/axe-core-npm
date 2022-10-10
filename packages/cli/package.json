@@ -46,26 +46,26 @@
   "dependencies": {
     "@axe-core/webdriverjs": "^4.4.5",
     "axe-core": "^4.4.3",
-    "chromedriver": "^105.0.1",
+    "chromedriver": "^106.0.1",
     "colors": "^1.4.0",
-    "commander": "^9.3.0",
-    "selenium-webdriver": "4.3.0"
+    "commander": "^9.4.1",
+    "selenium-webdriver": "4.5.0"
   },
   "devDependencies": {
-    "@types/chai": "^4.3.1",
+    "@types/chai": "^4.3.3",
     "@types/chromedriver": "^81.0.1",
-    "@types/mocha": "^9.1.1",
+    "@types/mocha": "^10.0.0",
     "@types/mock-fs": "^4.13.1",
-    "@types/selenium-webdriver": "^4.1.1",
+    "@types/selenium-webdriver": "^4.1.5",
     "chai": "^4.3.6",
-    "execa": "^5.1.1",
+    "execa": "5.1.0",
     "mocha": "^10.0.0",
-    "mock-fs": "^5.1.2",
+    "mock-fs": "^5.1.4",
     "nyc": "^15.1.0",
     "rimraf": "^3.0.2",
-    "tempy": "^1.0.0",
-    "ts-node": "^10.8.2",
-    "typescript": "^4.7.4"
+    "tempy": "1.0.0",
+    "ts-node": "^10.9.1",
+    "typescript": "^4.8.4"
   },
   "nyc": {
     "checkCoverage": true,
