@@ -7,7 +7,7 @@
     "allowJs": false,
     "module": "commonjs",
     "target": "es5",
-    "lib": ["dom", "es5"],
+    "lib": ["dom", "es2015"],
     "resolveJsonModule": true,
     "esModuleInterop": true
   },
