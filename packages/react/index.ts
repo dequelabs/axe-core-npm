@@ -207,12 +207,11 @@ function checkAndReport(node: Node, timeout: number): Promise<void> {
             n = document;
           }
         }
-        axeCore.configure({ allowedOrigins: ['<unsafe_all_origins>'] });
         axeCore.run(n, { reporter: 'v2' }, function (
           error: Error,
           results: axeCore.AxeResults
         ) {
-          if (error) {
+           (error) {
             return reject(error);
           }
 
