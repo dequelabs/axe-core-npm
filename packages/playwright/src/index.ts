@@ -181,6 +181,7 @@ export default class AxeBuilder {
   private async inject(frames: Frame[]): Promise<void> {
     for (const iframe of frames) {
       await iframe.evaluate(this.script());
+      await iframe.evaluate(await this.axeConfigure());
     }
   }
 
@@ -190,13 +191,7 @@ export default class AxeBuilder {
    */
 
   private script(): string {
-    return `
-      ${this.source}
-      axe.configure({
-        ${this.legacyMode ? '' : 'allowedOrigins: ["<unsafe_all_origins>"],'}
-        branding: { application: 'playwright' }
-      })
-    `;
+    return this.source;
   }
 
   private async runLegacy(context: ContextObject): Promise<AxeResults> {
@@ -282,6 +277,7 @@ export default class AxeBuilder {
     );
 
     blankPage.evaluate(this.script());
+    blankPage.evaluate(await this.axeConfigure());
 
     return await blankPage
       .evaluate(axeFinishRun, {
@@ -291,5 +287,22 @@ export default class AxeBuilder {
       .finally(() => {
         blankPage.close();
       });
+  }
+
+  private async axeConfigure(): Promise<string> {
+    const hasRunPartial = await this.page.evaluate<boolean>(
+      'typeof window.axe?.runPartial === "function"'
+    );
+
+    return `
+    ;axe.configure({
+      ${
+        !this.legacyMode && !hasRunPartial
+          ? 'allowedOrigins: ["<unsafe_all_origins>"],'
+          : 'allowedOrigins: ["<same_origin>"],'
+      }
+      branding: { application: 'playwright' }
+    })
+    `;
   }
 }
