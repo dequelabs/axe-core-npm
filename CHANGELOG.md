@@ -98,6 +98,12 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 - **webdriverio:** Upgrade to axe-core@4.3.3 ([#331](https://github.com/dequelabs/axe-core-npm/issues/331)) ([2135347](https://github.com/dequelabs/axe-core-npm/commit/21353478bb4fb75688ffcfcd3a8a0e7198a8f0d3))
 - **webdriverjs:** upgrade to axe-core 4.3 ([#312](https://github.com/dequelabs/axe-core-npm/issues/312)) ([b416e74](https://github.com/dequelabs/axe-core-npm/commit/b416e74fb56526021b010996c0e1382269627efa))
 
+## [4.3.3](https://github.com/dequelabs/axe-core-npm/compare/v4.3.2...v4.3.3) (2021-10-26)
+
+### Bug Fixes
+
+* only set allowedOrigin when needed ([0561721](https://github.com/dequelabs/axe-core-npm/pull/590/files/0561721e63fa1d765f877c4b0de1bafbdfa07b7a))
+
 ## [4.3.1](https://github.com/dequelabs/axe-core-npm/compare/v4.3.0...v4.3.1) (2021-09-20)
 
 ### Bug Fixes
