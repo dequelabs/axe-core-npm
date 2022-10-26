@@ -255,21 +255,6 @@ workflows:
           context: html-tools
           requires:
             - dependencies
-            # - lint
-            # - cli
-            # - puppeteer
-            # - webdriverjs
-            # - webdriverio
-            # - reporter-earl
-            # - react
-          filters:
-            branches:
-              only:
-                - chore/release/4.3.3-1
-      - production_release:
-          context: html-tools
-          requires:
-            - dependencies
             - lint
             - cli
             - puppeteer
@@ -279,4 +264,19 @@ workflows:
             - react
           filters:
             branches:
-              only: master
+              only:
+                - develop
+      - production_release:
+          context: html-tools
+          requires:
+            - dependencies
+            # - lint
+            # - cli
+            # - puppeteer
+            # - webdriverjs
+            # - webdriverio
+            # - reporter-earl
+            # - react
+          filters:
+            branches:
+              only: chore/release/4.3.3-1
