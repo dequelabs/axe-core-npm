@@ -190,16 +190,16 @@ jobs:
       - restore_dependency_cache
       # Make sure the working tree is clean
       - run: git reset --hard HEAD
-      - run: >- 
-            npx lerna publish prepatch \
-              --no-verify-access \
-              --no-git-tag-version \
-              --no-push \
-              --canary \
-              --dist-tag=next \
-              --exact \
-              --force-publish \
-              --yes
+      - run: >-
+          npx lerna publish prepatch \
+            --no-verify-access \
+            --no-git-tag-version \
+            --no-push \
+            --canary \
+            --dist-tag=next \
+            --exact \
+            --force-publish \
+            --yes
 
   production_release:
     <<: *defaults
@@ -249,23 +249,23 @@ workflows:
           filters:
             branches:
               only:
-              - /^release*/
-              - master
+                - /^release*/
+                - master
       - canary_release:
           context: html-tools
           requires:
             - dependencies
-            - lint
-            - cli
-            - puppeteer
-            - webdriverjs
-            - webdriverio
-            - reporter-earl
-            - react
+            # - lint
+            # - cli
+            # - puppeteer
+            # - webdriverjs
+            # - webdriverio
+            # - reporter-earl
+            # - react
           filters:
             branches:
-              only: 
-                - develop
+              only:
+                - chore/release/4.3.3-1
       - production_release:
           context: html-tools
           requires:
