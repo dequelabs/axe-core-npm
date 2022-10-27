@@ -1,6 +1,6 @@
 {
   "name": "@axe-core/puppeteer",
-  "version": "4.4.5",
+  "version": "4.5.0",
   "description": "Provides a chainable axe API for Puppeteer and automatically injects into all frames",
   "repository": {
     "type": "git",
@@ -23,29 +23,29 @@
   "author": "Adam Cutler",
   "license": "MPL-2.0",
   "devDependencies": {
-    "@types/chai": "^4.3.1",
-    "@types/express": "^4.17.13",
-    "@types/mocha": "^9.1.1",
-    "@types/node": "^18.0.3",
-    "@types/sinon": "^10.0.12",
+    "@types/chai": "^4.3.3",
+    "@types/express": "^4.17.14",
+    "@types/mocha": "^10.0.0",
+    "@types/node": "^18.8.3",
+    "@types/sinon": "^10.0.13",
     "@types/test-listen": "^1.1.0",
-    "axe-test-fixtures": "github:dequelabs/axe-test-fixtures#v1",
+    "axe-test-fixtures": "github:dequelabs/axe-test-fixtures",
     "chai": "^4.3.6",
-    "express": "^4.18.1",
+    "express": "^4.18.2",
     "mocha": "^10.0.0",
     "nyc": "^15.1.0",
-    "puppeteer": "^16.2.0",
-    "sinon": "^14.0.0",
+    "puppeteer": "^18.2.1",
+    "sinon": "^14.0.1",
     "source-map-support": "^0.5.21",
     "test-listen": "^1.1.0",
-    "ts-node": "^10.8.2",
-    "typescript": "^4.7.4"
+    "ts-node": "^10.9.1",
+    "typescript": "^4.8.4"
   },
   "dependencies": {
-    "axe-core": "^4.4.3"
+    "axe-core": "^4.5.0"
   },
   "peerDependencies": {
-    "puppeteer": ">=1.10.0 <= 16"
+    "puppeteer": ">=1.10.0 <= 18"
   },
   "engines": {
     "node": ">=6.4.0"
