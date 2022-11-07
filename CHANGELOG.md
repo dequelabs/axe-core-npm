@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [4.5.1](https://github.com/dequelabs/axe-core-npm/compare/v4.5.0...v4.5.1) (2022-11-03)
+
+
+### Bug Fixes
+
+* update to use axe-core 4.5.1 ([#597](https://github.com/dequelabs/axe-core-npm/issues/597)) ([173bf05](https://github.com/dequelabs/axe-core-npm/commit/173bf0521fafc2be092bf61523e05cf3aab1de75))
+
+
+
+
+
 # [4.5.0](https://github.com/dequelabs/axe-core-npm/compare/v4.4.5...v4.5.0) (2022-10-26)
 
 
@@ -108,6 +119,12 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 - **webdriverio:** allow `AxeBuilder` to use different version of axe-core ([#333](https://github.com/dequelabs/axe-core-npm/issues/333)) ([25a8c1b](https://github.com/dequelabs/axe-core-npm/commit/25a8c1bae945b24661ac456d917ad76d22789e82))
 - **webdriverio:** Upgrade to axe-core@4.3.3 ([#331](https://github.com/dequelabs/axe-core-npm/issues/331)) ([2135347](https://github.com/dequelabs/axe-core-npm/commit/21353478bb4fb75688ffcfcd3a8a0e7198a8f0d3))
 - **webdriverjs:** upgrade to axe-core 4.3 ([#312](https://github.com/dequelabs/axe-core-npm/issues/312)) ([b416e74](https://github.com/dequelabs/axe-core-npm/commit/b416e74fb56526021b010996c0e1382269627efa))
+
+## [4.3.3](https://github.com/dequelabs/axe-core-npm/compare/v4.3.2...v4.3.3) (2021-10-26)
+
+### Bug Fixes
+
+* only set allowedOrigin when needed ([0561721](https://github.com/dequelabs/axe-core-npm/pull/590/files/0561721e63fa1d765f877c4b0de1bafbdfa07b7a))
 
 ## [4.3.1](https://github.com/dequelabs/axe-core-npm/compare/v4.3.0...v4.3.1) (2021-09-20)
 

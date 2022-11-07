@@ -1,6 +1,6 @@
 {
   "name": "@axe-core/playwright",
-  "version": "4.5.0",
+  "version": "4.5.1",
   "description": "Provides a method to inject and analyze web pages using axe",
   "contributors": [
     {
@@ -39,7 +39,7 @@
     "prepare": "npm run build"
   },
   "dependencies": {
-    "axe-core": "^4.5.0"
+    "axe-core": "^4.5.1"
   },
   "devDependencies": {
     "@types/chai": "^4.3.3",
