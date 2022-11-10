@@ -1,6 +1,8 @@
 import type { AxeResults } from 'axe-core';
 import type { WebDriver, Builder } from 'selenium-webdriver';
 
+export * from './lib';
+
 export interface EventParams {
   silentMode: boolean;
   timer: boolean;

@@ -1,6 +1,6 @@
 {
   "name": "@axe-core/reporter-earl",
-  "version": "4.4.5",
+  "version": "4.5.1",
   "description": "A EARL+JSON-LD reporter for axe-core",
   "main": "dist/axeReporterEarl.js",
   "scripts": {
@@ -31,17 +31,17 @@
   "license": "MPL-2.0",
   "devDependencies": {
     "@types/clone": "^2.1.1",
-    "@types/jest": "^28.1.4",
+    "@types/jest": "^29.1.2",
     "@types/jsonld": "github:types/jsonld",
-    "@types/node": "^18.0.3",
-    "axe-core": "^4.4.3",
+    "@types/node": "^18.8.3",
+    "axe-core": "^4.5.1",
     "clone": "^2.1.2",
     "cross-env": "^7.0.3",
-    "jest": "^28.1.2",
-    "jest-environment-jsdom": "^28.1.2",
-    "jsonld": "^6.0.0",
-    "ts-jest": "^28.0.5",
-    "ts-node": "^10.8.2",
-    "typescript": "^4.7.4"
+    "jest": "^29.1.2",
+    "jest-environment-jsdom": "^29.1.2",
+    "jsonld": "^8.1.0",
+    "ts-jest": "^29.0.3",
+    "ts-node": "^10.9.1",
+    "typescript": "^4.8.4"
   }
 }
