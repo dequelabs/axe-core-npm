@@ -29,6 +29,7 @@ export class AxePuppeteer {
   private disabledFrameSelectors: string[];
   private page: Page | undefined;
   private legacyMode = false;
+  private errorUrl: string;
 
   constructor(pageFrame: Page | Frame, source?: string) {
     if ('mainFrame' in pageFrame) {
@@ -53,6 +54,8 @@ export class AxePuppeteer {
     this.axeOptions = {};
     this.config = null;
     this.disabledFrameSelectors = [];
+    this.errorUrl =
+      'https://github.com/dequelabs/axe-core-npm/blob/develop/packages/puppeteer/error-handling.md';
   }
 
   /**
@@ -221,9 +224,7 @@ export class AxePuppeteer {
       return await this.finishRun(partials);
     } catch (error) {
       throw new Error(
-        `${
-          (error as Error).message
-        }\n Please check out https://github.com/dequelabs/axe-core-npm/blob/develop/packages/puppeteer/error-handling.md`
+        `${(error as Error).message}\n Please check out ${this.errorUrl}`
       );
     }
   }

@@ -3,37 +3,49 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
-## [4.4.3](https://github.com/dequelabs/axe-core-npm/compare/v4.1.1...v4.4.3) (2022-06-03)
+## [4.5.1](https://github.com/dequelabs/axe-core-npm/compare/v4.5.0...v4.5.1) (2022-11-03)
 
 **Note:** Version bump only for package @axe-core/react-example
 
 
 
 
+
+# [4.5.0](https://github.com/dequelabs/axe-core-npm/compare/v4.4.5...v4.5.0) (2022-10-26)
+
+**Note:** Version bump only for package @axe-core/react-example
+
+
+
+
+
+## [4.4.5](https://github.com/dequelabs/axe-core-npm/compare/v4.4.4...v4.4.5) (2022-09-26)
+
+**Note:** Version bump only for package @axe-core/react-example
+
+
+
+
+
+## [4.4.4](https://github.com/dequelabs/axe-core-npm/compare/v4.4.3...v4.4.4) (2022-08-10)
+
+**Note:** Version bump only for package @axe-core/react-example
+
+## [4.4.3](https://github.com/dequelabs/axe-core-npm/compare/v4.1.1...v4.4.3) (2022-06-03)
+
+**Note:** Version bump only for package @axe-core/react-example
 
 ## [4.4.2](https://github.com/dequelabs/axe-core-npm/compare/v4.1.1...v4.4.2) (2022-03-14)
 
 **Note:** Version bump only for package @axe-core/react-example
 
-
-
-
-
 ## [4.4.1](https://github.com/dequelabs/axe-core-npm/compare/v4.1.1...v4.4.1) (2022-02-15)
 
 **Note:** Version bump only for package @axe-core/react-example
 
-
-
-
-
 # [4.4.0](https://github.com/dequelabs/axe-core-npm/compare/v4.1.1...v4.4.0) (2022-02-10)
 
 **Note:** Version bump only for package @axe-core/react-example
-
-
-
-
 
 ## [4.3.1](https://github.com/dequelabs/axe-core-npm/compare/v4.3.0...v4.3.1) (2021-09-20)
 

@@ -120,6 +120,16 @@ describe('AxePuppeteer', function () {
     });
   });
 
+  describe('errorUrl', () => {
+    it('returns correct errorUrl', () => {
+      const errorUrl = (new AxePuppeteer(page) as any).errorUrl;
+      assert.equal(
+        errorUrl,
+        'https://github.com/dequelabs/axe-core-npm/blob/develop/packages/puppeteer/error-handling.md'
+      );
+    });
+  });
+
   describe('.analyze()', () => {
     it('sets the helpUrl application string', async () => {
       const res = await page.goto(`${addr}/external/iframes/baz.html`);
@@ -788,8 +798,42 @@ describe('AxePuppeteer', function () {
           (err as Error).message,
           /Please make sure that you have popup blockers disabled./
         );
+        assert.include(
+          (err as Error).message,
+          'Please check out https://github.com/dequelabs/axe-core-npm/blob/develop/packages/puppeteer/error-handling.md'
+        );
       }
     });
+
+    it('throw an error with modified url', async () => {
+      const res = await page.goto(`${addr}/external/index.html`);
+      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+      // @ts-ignore
+      delete page.browser().newPage();
+      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+      // @ts-ignore
+      page.browser().newPage = async () => {
+        return null;
+      };
+
+      assert.equal(res?.status(), 200);
+      try {
+        const builder = new AxePuppeteer(page, axeSource) as any;
+        builder.errorUrl = 'https://deque.biz';
+        await builder.analyze();
+        assert.fail('Should have thrown');
+      } catch (err) {
+        assert.match(
+          (err as Error).message,
+          /Please make sure that you have popup blockers disabled./
+        );
+        assert.include(
+          (err as Error).message,
+          'Please check out https://deque.biz'
+        );
+      }
+    });
+
     it('throws an error if axe.finishRun throws', async () => {
       const res = await page.goto(`${addr}/external/index.html`);
 
@@ -863,7 +907,7 @@ describe('AxePuppeteer', function () {
       assert.equal(res?.status(), 200);
       assert.equal(results.violations[0].id, 'label');
       assert.lengthOf(results.violations[0].nodes, 4);
-      assert.equal(results.testEngine.version, '4.0.3');
+      assert.equal(results.testEngine.version, '4.2.3');
     });
 
     it('throws if the top level errors', done => {
@@ -907,6 +951,46 @@ describe('AxePuppeteer', function () {
 
       assert.equal(res?.status(), 200);
       assert.isUndefined(frameTested);
+    });
+  });
+
+  describe('allowedOrigins', () => {
+    const getAllowedOrigins = async (): Promise<string[]> => {
+      return (await page.evaluate(
+        'axe._audit.allowedOrigins'
+      )) as unknown as string[];
+    };
+
+    it('should not set when running runPartial and not legacy mode', async () => {
+      await page.goto(`${addr}/index.html`);
+      await new AxePuppeteer(page).analyze();
+      const allowedOrigins = await getAllowedOrigins();
+      assert.deepEqual(allowedOrigins, [addr]);
+      assert.lengthOf(allowedOrigins, 1);
+    });
+
+    it('should not set when running runPartial and legacy mode', async () => {
+      await page.goto(`${addr}/index.html`);
+      await new AxePuppeteer(page).setLegacyMode(true).analyze();
+      const allowedOrigins = await getAllowedOrigins();
+      assert.deepEqual(allowedOrigins, [addr]);
+    });
+
+    it('should not set when running legacy source and legacy mode', async () => {
+      await page.goto(`${addr}/index.html`);
+      await new AxePuppeteer(page, axeSource + axeForceLegacy)
+        .setLegacyMode(true)
+        .analyze();
+      const allowedOrigins = await getAllowedOrigins();
+      assert.deepEqual(allowedOrigins, [addr]);
+    });
+
+    it('should set when running legacy source and not legacy mode', async () => {
+      await page.goto(`${addr}/index.html`);
+      await new AxePuppeteer(page, axeSource + axeForceLegacy).analyze();
+      const allowedOrigins = await getAllowedOrigins();
+      assert.deepEqual(allowedOrigins, ['*']);
+      assert.lengthOf(allowedOrigins, 1);
     });
   });
 });

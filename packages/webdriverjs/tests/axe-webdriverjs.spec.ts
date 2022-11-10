@@ -169,6 +169,16 @@ describe('@axe-core/webdriverjs', () => {
     });
   });
 
+  describe('errorUrl', () => {
+    it('returns correct errorUrl', () => {
+      const errorUrl = (new AxeBuilder(driver) as any).errorUrl;
+      assert.equal(
+        errorUrl,
+        'https://github.com/dequelabs/axe-core-npm/blob/develop/packages/webdriverjs/error-handling.md'
+      );
+    });
+  });
+
   describe('configure', () => {
     it('should find configured violations in all iframes', async () => {
       await driver.get(`${addr}/external/nested-iframes.html`);
@@ -668,6 +678,31 @@ describe('@axe-core/webdriverjs', () => {
         assert.fail('Should have thrown');
       } catch (err) {
         assert.match((err as Error).message, /Please check out/);
+        assert.include(
+          (err as Error).message,
+          'Please check out https://github.com/dequelabs/axe-core-npm/blob/develop/packages/webdriverjs/error-handling.md'
+        );
+      }
+    });
+
+    it('throw an error with modified url', async () => {
+      const source = axeSource + finishRunThrows;
+      await driver.get(`${addr}/external/index.html`);
+      const title = await driver.getTitle();
+
+      assert.notEqual(title, 'Error');
+
+      try {
+        const builder = new AxeBuilder(driver, source) as any;
+        builder.errorUrl = 'https://deque.biz';
+        await builder.analyze();
+        assert.fail('Should have thrown');
+      } catch (err) {
+        assert.match((err as Error).message, /Please check out/);
+        assert.include(
+          (err as Error).message,
+          'Please check out https://deque.biz'
+        );
       }
     });
   });
@@ -761,7 +796,7 @@ describe('@axe-core/webdriverjs', () => {
       assert.notEqual(title, 'Error');
       assert.equal(results.violations[0].id, 'label');
       assert.lengthOf(results.violations[0].nodes, 4);
-      assert.equal(results.testEngine.version, '4.0.3');
+      assert.equal(results.testEngine.version, '4.2.3');
     });
 
     it('throws if the top level errors', done => {
@@ -824,6 +859,44 @@ describe('@axe-core/webdriverjs', () => {
 
       assert.notEqual(title, 'Error');
       assert.isUndefined(frameTested);
+    });
+  });
+
+  describe('allowedOrigins', () => {
+    const getAllowedOrigins = async (): Promise<string[]> => {
+      return await driver.executeScript('return axe._audit.allowedOrigins');
+    };
+
+    it('should not set when running runPartial and not legacy mode', async () => {
+      await driver.get(`${addr}/index.html`);
+      await new AxeBuilder(driver).analyze();
+      const allowedOrigins = await getAllowedOrigins();
+      assert.deepEqual(allowedOrigins, [addr]);
+      assert.lengthOf(allowedOrigins, 1);
+    });
+
+    it('should not set when running runPartial and legacy mode', async () => {
+      await driver.get(`${addr}/index.html`);
+      await new AxeBuilder(driver).setLegacyMode(true).analyze();
+      const allowedOrigins = await getAllowedOrigins();
+      assert.deepEqual(allowedOrigins, [addr]);
+    });
+
+    it('should not set when running legacy source and legacy mode', async () => {
+      await driver.get(`${addr}/index.html`);
+      await new AxeBuilder(driver, axeSource + axeForceLegacy)
+        .setLegacyMode(true)
+        .analyze();
+      const allowedOrigins = await getAllowedOrigins();
+      assert.deepEqual(allowedOrigins, [addr]);
+    });
+
+    it('should set when running legacy source and not legacy mode', async () => {
+      await driver.get(`${addr}/index.html`);
+      await new AxeBuilder(driver, axeSource + axeForceLegacy).analyze();
+      const allowedOrigins = await getAllowedOrigins();
+      assert.deepEqual(allowedOrigins, ['*']);
+      assert.lengthOf(allowedOrigins, 1);
     });
   });
 });

@@ -1,5 +1,5 @@
 import assert from 'assert';
-import type { Page, Frame, ElementHandle } from 'playwright';
+import type { Page, Frame, ElementHandle } from 'playwright-core';
 import type {
   RunOptions,
   AxeResults,
@@ -24,6 +24,7 @@ export default class AxeBuilder {
   private option: RunOptions;
   private source: string;
   private legacyMode = false;
+  private errorUrl: string;
 
   constructor({ page, axeSource }: AxePlaywrightParams) {
     this.page = page;
@@ -31,6 +32,8 @@ export default class AxeBuilder {
     this.excludes = [];
     this.option = {};
     this.source = axeSource || source;
+    this.errorUrl =
+      'https://github.com/dequelabs/axe-core-npm/blob/develop/packages/playwright/error-handling.md';
   }
 
   /**
@@ -167,9 +170,7 @@ export default class AxeBuilder {
       return await this.finishRun(partials);
     } catch (error) {
       throw new Error(
-        `${
-          (error as Error).message
-        }\n Please check out https://github.com/dequelabs/axe-core-npm/blob/develop/packages/playwright/error-handling.md`
+        `${(error as Error).message}\n Please check out ${this.errorUrl}`
       );
     }
   }
@@ -182,7 +183,8 @@ export default class AxeBuilder {
 
   private async inject(frames: Frame[]): Promise<void> {
     for (const iframe of frames) {
-      await iframe.evaluate(this.script());
+      await iframe.evaluate(await this.script());
+      await iframe.evaluate(await this.axeConfigure());
     }
   }
 
@@ -192,13 +194,7 @@ export default class AxeBuilder {
    */
 
   private script(): string {
-    return `
-      ${this.source}
-      axe.configure({
-        ${this.legacyMode ? '' : 'allowedOrigins: ["<unsafe_all_origins>"],'}
-        branding: { application: 'playwright' }
-      })
-    `;
+    return this.source;
   }
 
   private async runLegacy(context: SerialContextObject): Promise<AxeResults> {
@@ -284,7 +280,7 @@ export default class AxeBuilder {
     );
 
     blankPage.evaluate(this.script());
-
+    blankPage.evaluate(await this.axeConfigure());
     return await blankPage
       .evaluate(axeFinishRun, {
         partialResults,
@@ -293,5 +289,22 @@ export default class AxeBuilder {
       .finally(async () => {
         await blankPage.close();
       });
+  }
+
+  private async axeConfigure(): Promise<string> {
+    const hasRunPartial = await this.page.evaluate<boolean>(
+      'typeof window.axe?.runPartial === "function"'
+    );
+
+    return `
+    ;axe.configure({
+      ${
+        !this.legacyMode && !hasRunPartial
+          ? 'allowedOrigins: ["<unsafe_all_origins>"],'
+          : 'allowedOrigins: ["<same_origin>"],'
+      }
+      branding: { application: 'playwright' }
+    })
+    `;
   }
 }
