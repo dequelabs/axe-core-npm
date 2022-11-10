@@ -5,33 +5,19 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 
 ## [4.5.1](https://github.com/dequelabs/axe-core-npm/compare/v4.5.0...v4.5.1) (2022-11-03)
 
-
 ### Bug Fixes
 
-* update to use axe-core 4.5.1 ([#597](https://github.com/dequelabs/axe-core-npm/issues/597)) ([173bf05](https://github.com/dequelabs/axe-core-npm/commit/173bf0521fafc2be092bf61523e05cf3aab1de75))
-
-
-
-
+- update to use axe-core 4.5.1 ([#597](https://github.com/dequelabs/axe-core-npm/issues/597)) ([173bf05](https://github.com/dequelabs/axe-core-npm/commit/173bf0521fafc2be092bf61523e05cf3aab1de75))
 
 # [4.5.0](https://github.com/dequelabs/axe-core-npm/compare/v4.4.5...v4.5.0) (2022-10-26)
 
-
 ### Features
 
-* upgrade to use axe-core@4.5.0 ([#589](https://github.com/dequelabs/axe-core-npm/issues/589)) ([4343d9d](https://github.com/dequelabs/axe-core-npm/commit/4343d9d633036ee10198f2a9b757de29b240624e))
-
-
-
-
+- upgrade to use axe-core@4.5.0 ([#589](https://github.com/dequelabs/axe-core-npm/issues/589)) ([4343d9d](https://github.com/dequelabs/axe-core-npm/commit/4343d9d633036ee10198f2a9b757de29b240624e))
 
 ## [4.4.5](https://github.com/dequelabs/axe-core-npm/compare/v4.4.4...v4.4.5) (2022-09-26)
 
 **Note:** Version bump only for package @axe-core/react
-
-
-
-
 
 ## [4.4.4](https://github.com/dequelabs/axe-core-npm/compare/v4.4.3...v4.4.4) (2022-08-10)
 
