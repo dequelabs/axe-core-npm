@@ -29,7 +29,7 @@ export interface WebdriverConfigParams {
 }
 
 export interface ConfigParams {
-  driver: Promise<WebDriver>;
+  driver: WebDriver;
   timer?: boolean;
   loadDelay?: number;
   axeSource?: string;
