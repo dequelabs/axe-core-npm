@@ -34,7 +34,7 @@
     "@types/jest": "^29.1.2",
     "@types/jsonld": "github:types/jsonld",
     "@types/node": "^18.8.3",
-    "axe-core": "^4.5.1",
+    "axe-core": "^4.5.2",
     "clone": "^2.1.2",
     "cross-env": "^7.0.3",
     "jest": "^29.1.2",
