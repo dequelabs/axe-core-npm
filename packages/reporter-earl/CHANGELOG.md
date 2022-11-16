@@ -3,38 +3,34 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
-## [4.5.1](https://github.com/dequelabs/axe-core-npm/compare/v4.5.0...v4.5.1) (2022-11-03)
+## [4.5.2](https://github.com/dequelabs/axe-core-npm/compare/v4.5.1...v4.5.2) (2022-11-15)
 
 
 ### Bug Fixes
 
-* update to use axe-core 4.5.1 ([#597](https://github.com/dequelabs/axe-core-npm/issues/597)) ([173bf05](https://github.com/dequelabs/axe-core-npm/commit/173bf0521fafc2be092bf61523e05cf3aab1de75))
+* update to use axe-core 4.5.2 ([#607](https://github.com/dequelabs/axe-core-npm/issues/607)) ([61312ff](https://github.com/dequelabs/axe-core-npm/commit/61312fff2e9ee4e0f218a29a1608f69b45206fad))
 
 
 
 
+
+## [4.5.1](https://github.com/dequelabs/axe-core-npm/compare/v4.5.0...v4.5.1) (2022-11-03)
+
+### Bug Fixes
+
+- update to use axe-core 4.5.1 ([#597](https://github.com/dequelabs/axe-core-npm/issues/597)) ([173bf05](https://github.com/dequelabs/axe-core-npm/commit/173bf0521fafc2be092bf61523e05cf3aab1de75))
 
 # [4.5.0](https://github.com/dequelabs/axe-core-npm/compare/v4.4.5...v4.5.0) (2022-10-26)
 
-
 ### Features
 
-* upgrade to use axe-core@4.5.0 ([#589](https://github.com/dequelabs/axe-core-npm/issues/589)) ([4343d9d](https://github.com/dequelabs/axe-core-npm/commit/4343d9d633036ee10198f2a9b757de29b240624e))
-
-
-
-
+- upgrade to use axe-core@4.5.0 ([#589](https://github.com/dequelabs/axe-core-npm/issues/589)) ([4343d9d](https://github.com/dequelabs/axe-core-npm/commit/4343d9d633036ee10198f2a9b757de29b240624e))
 
 ## [4.4.5](https://github.com/dequelabs/axe-core-npm/compare/v4.4.4...v4.4.5) (2022-09-26)
 
-
 ### Bug Fixes
 
-* only set allowedOrigin when needed ([#566](https://github.com/dequelabs/axe-core-npm/issues/566)) ([a83907b](https://github.com/dequelabs/axe-core-npm/commit/a83907b9cb9f0f1abad5527e1105de2d24f0b0a1))
-
-
-
-
+- only set allowedOrigin when needed ([#566](https://github.com/dequelabs/axe-core-npm/issues/566)) ([a83907b](https://github.com/dequelabs/axe-core-npm/commit/a83907b9cb9f0f1abad5527e1105de2d24f0b0a1))
 
 ## [4.4.4](https://github.com/dequelabs/axe-core-npm/compare/v4.4.3...v4.4.4) (2022-08-10)
 

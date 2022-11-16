@@ -1,6 +1,8 @@
 import type { AxeResults } from 'axe-core';
 import type { WebDriver, Builder } from 'selenium-webdriver';
 
+export * from './lib';
+
 export interface EventParams {
   silentMode: boolean;
   timer: boolean;
@@ -27,7 +29,7 @@ export interface WebdriverConfigParams {
 }
 
 export interface ConfigParams {
-  driver: Promise<WebDriver>;
+  driver: WebDriver;
   timer?: boolean;
   loadDelay?: number;
   axeSource?: string;

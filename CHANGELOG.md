@@ -3,41 +3,39 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
-## [4.5.1](https://github.com/dequelabs/axe-core-npm/compare/v4.5.0...v4.5.1) (2022-11-03)
+## [4.5.2](https://github.com/dequelabs/axe-core-npm/compare/v4.5.1...v4.5.2) (2022-11-15)
 
 
 ### Bug Fixes
 
-* update to use axe-core 4.5.1 ([#597](https://github.com/dequelabs/axe-core-npm/issues/597)) ([173bf05](https://github.com/dequelabs/axe-core-npm/commit/173bf0521fafc2be092bf61523e05cf3aab1de75))
+* **cli:** include all functions in types file ([#603](https://github.com/dequelabs/axe-core-npm/issues/603)) ([30042ef](https://github.com/dequelabs/axe-core-npm/commit/30042ef3acc0cab7f67ddcf284df089f243f53e6))
+* **cli:** use correct driver typings ([#604](https://github.com/dequelabs/axe-core-npm/issues/604)) ([d33bbdf](https://github.com/dequelabs/axe-core-npm/commit/d33bbdf2b3d05c3ba0106d717ba1c8d706c5e05c))
+* update to use axe-core 4.5.2 ([#607](https://github.com/dequelabs/axe-core-npm/issues/607)) ([61312ff](https://github.com/dequelabs/axe-core-npm/commit/61312fff2e9ee4e0f218a29a1608f69b45206fad))
 
 
 
 
+
+## [4.5.1](https://github.com/dequelabs/axe-core-npm/compare/v4.5.0...v4.5.1) (2022-11-03)
+
+### Bug Fixes
+
+- update to use axe-core 4.5.1 ([#597](https://github.com/dequelabs/axe-core-npm/issues/597)) ([173bf05](https://github.com/dequelabs/axe-core-npm/commit/173bf0521fafc2be092bf61523e05cf3aab1de75))
 
 # [4.5.0](https://github.com/dequelabs/axe-core-npm/compare/v4.4.5...v4.5.0) (2022-10-26)
 
-
 ### Features
 
-* upgrade to use axe-core@4.5.0 ([#589](https://github.com/dequelabs/axe-core-npm/issues/589)) ([4343d9d](https://github.com/dequelabs/axe-core-npm/commit/4343d9d633036ee10198f2a9b757de29b240624e))
-
-
-
-
+- upgrade to use axe-core@4.5.0 ([#589](https://github.com/dequelabs/axe-core-npm/issues/589)) ([4343d9d](https://github.com/dequelabs/axe-core-npm/commit/4343d9d633036ee10198f2a9b757de29b240624e))
 
 ## [4.4.5](https://github.com/dequelabs/axe-core-npm/compare/v4.4.4...v4.4.5) (2022-09-26)
 
-
 ### Bug Fixes
 
-* change `playwright` to devdep and use `playwright-core` types ([#563](https://github.com/dequelabs/axe-core-npm/issues/563)) ([c89fa58](https://github.com/dequelabs/axe-core-npm/commit/c89fa58aeb2d7d7cb3e4ab2daf63f2ad1a81e9f6))
-* **cli:** display stack trace on errors by default ([#555](https://github.com/dequelabs/axe-core-npm/issues/555)) ([a47100c](https://github.com/dequelabs/axe-core-npm/commit/a47100cc74ba3edc76bf49d4e6a7cba39a19a4ac))
-* only set allowedOrigin when needed ([#566](https://github.com/dequelabs/axe-core-npm/issues/566)) ([a83907b](https://github.com/dequelabs/axe-core-npm/commit/a83907b9cb9f0f1abad5527e1105de2d24f0b0a1))
-* provide proper typings for axe-cli ([#559](https://github.com/dequelabs/axe-core-npm/issues/559)) ([e4ccfa5](https://github.com/dequelabs/axe-core-npm/commit/e4ccfa5c404a0a2156008d5b1e57f6de2431a305))
-
-
-
-
+- change `playwright` to devdep and use `playwright-core` types ([#563](https://github.com/dequelabs/axe-core-npm/issues/563)) ([c89fa58](https://github.com/dequelabs/axe-core-npm/commit/c89fa58aeb2d7d7cb3e4ab2daf63f2ad1a81e9f6))
+- **cli:** display stack trace on errors by default ([#555](https://github.com/dequelabs/axe-core-npm/issues/555)) ([a47100c](https://github.com/dequelabs/axe-core-npm/commit/a47100cc74ba3edc76bf49d4e6a7cba39a19a4ac))
+- only set allowedOrigin when needed ([#566](https://github.com/dequelabs/axe-core-npm/issues/566)) ([a83907b](https://github.com/dequelabs/axe-core-npm/commit/a83907b9cb9f0f1abad5527e1105de2d24f0b0a1))
+- provide proper typings for axe-cli ([#559](https://github.com/dequelabs/axe-core-npm/issues/559)) ([e4ccfa5](https://github.com/dequelabs/axe-core-npm/commit/e4ccfa5c404a0a2156008d5b1e57f6de2431a305))
 
 ## [4.4.4](https://github.com/dequelabs/axe-core-npm/compare/v4.4.3...v4.4.4) (2022-08-10)
 
@@ -124,7 +122,7 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 
 ### Bug Fixes
 
-* only set allowedOrigin when needed ([0561721](https://github.com/dequelabs/axe-core-npm/pull/590/files/0561721e63fa1d765f877c4b0de1bafbdfa07b7a))
+- only set allowedOrigin when needed ([0561721](https://github.com/dequelabs/axe-core-npm/pull/590/files/0561721e63fa1d765f877c4b0de1bafbdfa07b7a))
 
 ## [4.3.1](https://github.com/dequelabs/axe-core-npm/compare/v4.3.0...v4.3.1) (2021-09-20)
 
