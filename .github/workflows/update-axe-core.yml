@@ -11,7 +11,7 @@ jobs:
         with:
           node-version: 16
       - id: update
-        uses: dequelabs/update-axe-core@main
+        uses: dequelabs/update-axe-core@v1
       - id: type
         run: |
           CommitType=""
