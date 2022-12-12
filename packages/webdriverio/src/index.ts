@@ -14,7 +14,13 @@ import {
 } from './utils';
 
 import type { Browser } from 'webdriverio';
-import type { RunOptions, AxeResults, ContextObject } from 'axe-core';
+import type {
+  RunOptions,
+  AxeResults,
+  ContextObject,
+  SerialSelectorList,
+  SerialFrameSelector
+} from 'axe-core';
 import type {
   Options,
   CallbackFunction,
@@ -27,8 +33,8 @@ import type {
 export default class AxeBuilder {
   private client: Browser<'async'>;
   private axeSource: string;
-  private includes: Selector[] = [];
-  private excludes: Selector[] = [];
+  private includes: SerialSelectorList = [];
+  private excludes: SerialSelectorList = [];
   private option: RunOptions = {};
   private disableFrameSelectors: string[] = [];
   private legacyMode = false;
@@ -73,8 +79,7 @@ export default class AxeBuilder {
    * Selector to include in analysis.
    * This may be called any number of times.
    */
-  public include(selector: Selector): this {
-    selector = Array.isArray(selector) ? selector : [selector];
+  public include(selector: SerialFrameSelector): this {
     this.includes.push(selector);
     return this;
   }
@@ -83,8 +88,7 @@ export default class AxeBuilder {
    * Selector to exclude in analysis.
    * This may be called any number of times.
    */
-  public exclude(selector: Selector): this {
-    selector = Array.isArray(selector) ? selector : [selector];
+  public exclude(selector: SerialFrameSelector): this {
     this.excludes.push(selector);
     return this;
   }

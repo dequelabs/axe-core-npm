@@ -6,7 +6,8 @@ import type {
   ContextObject,
   RunOptions,
   Spec,
-  PartialResults
+  PartialResults,
+  SerialSelectorList
 } from 'axe-core';
 import type { Selector, WdioBrowser } from './types';
 
@@ -33,12 +34,13 @@ export const isWebdriverClient = (client: WdioBrowser): boolean => {
  * Get running context
  */
 export const normalizeContext = (
-  includes: Selector[],
-  excludes: Selector[],
+  includes: SerialSelectorList,
+  excludes: SerialSelectorList,
   disabledFrameSelectors: string[]
 ): ContextObject => {
   const base: ContextObject = {
-    exclude: []
+    exclude: [],
+    include: []
   };
   if (excludes.length && Array.isArray(base.exclude)) {
     base.exclude.push(...excludes);
@@ -183,7 +185,9 @@ export const axeFinishRun = (
   );
 };
 
-export const configureAllowedOrigins = (client: Browser<'async'>): Promise<void> => {
+export const configureAllowedOrigins = (
+  client: Browser<'async'>
+): Promise<void> => {
   return promisify(
     client.execute(`
       window.axe.configure({ allowedOrigins: ['<unsafe_all_origins>'] })

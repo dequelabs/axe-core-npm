@@ -26,8 +26,8 @@ export function arrayify<T>(src: T | T[]): T[] {
 }
 
 export function normalizeContext(
-  includes: string[][],
-  excludes: string[][],
+  includes: Axe.SerialSelectorList,
+  excludes: Axe.SerialSelectorList,
   disabledFrameSelectors: string[]
 ): Axe.SerialContextObject {
   const base: Axe.SerialContextObject = {

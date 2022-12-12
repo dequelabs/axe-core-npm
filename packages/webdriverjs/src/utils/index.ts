@@ -1,15 +1,15 @@
-import type { ContextObject } from 'axe-core';
-import { Selector } from '../types';
+import type { ContextObject, SerialSelectorList } from 'axe-core';
 
 /**
  * Get running context
  */
 export const normalizeContext = (
-  include: Selector[],
-  exclude: Selector[]
+  include: SerialSelectorList,
+  exclude: SerialSelectorList
 ): ContextObject => {
   const base: ContextObject = {
-    exclude: []
+    exclude: [],
+    include: []
   };
   if (exclude.length && Array.isArray(base.exclude)) {
     base.exclude.push(...exclude);

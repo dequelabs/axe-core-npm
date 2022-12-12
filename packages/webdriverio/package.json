@@ -36,7 +36,7 @@
     "webdriverio"
   ],
   "dependencies": {
-    "axe-core": "^4.5.2",
+    "axe-core": "^4.6.0",
     "cssesc": "^3.0.0"
   },
   "devDependencies": {
@@ -48,7 +48,7 @@
     "@types/node": "^18.8.3",
     "@types/test-listen": "^1.1.0",
     "@wdio/sync": "^7.25.1",
-    "axe-test-fixtures": "github:dequelabs/axe-test-fixtures",
+    "axe-test-fixtures": "github:dequelabs/axe-test-fixtures#v1",
     "chai": "^4.3.6",
     "chromedriver": "^106.0.1",
     "delay": "^5.0.0",

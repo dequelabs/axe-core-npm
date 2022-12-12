@@ -39,7 +39,7 @@
     "prepare": "npm run build"
   },
   "dependencies": {
-    "axe-core": "^4.5.2"
+    "axe-core": "^4.6.0"
   },
   "devDependencies": {
     "@types/chai": "^4.3.3",
@@ -47,7 +47,7 @@
     "@types/mocha": "^10.0.0",
     "@types/node": "^18.8.3",
     "@types/test-listen": "^1.1.0",
-    "axe-test-fixtures": "github:dequelabs/axe-test-fixtures",
+    "axe-test-fixtures": "github:dequelabs/axe-test-fixtures#v1",
     "chai": "^4.3.6",
     "express": "^4.18.2",
     "mocha": "^10.0.0",
