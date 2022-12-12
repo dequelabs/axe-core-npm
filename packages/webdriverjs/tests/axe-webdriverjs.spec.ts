@@ -501,7 +501,7 @@ describe('@axe-core/webdriverjs', () => {
           return acc.concat(pass.nodes as any);
         }, [])
         .reduce((acc, node: any) => {
-          return acc.concat(node.target);
+          return acc.concat(node.target.flat(1));
         }, []);
     };
     it('with include and exclude', async () => {
@@ -631,7 +631,7 @@ describe('@axe-core/webdriverjs', () => {
       assert.isFalse(flatPassesTargets(results).includes('input'));
       assert.isUndefined(labelResult);
     });
-    it('with include shadow DOM', async () => {
+    it.only('with include shadow DOM', async () => {
       await driver.get(`${addr}/external/shadow-dom.html`);
       const results = await new AxeBuilder(driver)
         .include([['#shadow-root-1', '#shadow-button-1']])

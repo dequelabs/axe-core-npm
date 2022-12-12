@@ -49,8 +49,7 @@ describe('@axe-core/playwright', () => {
 
   beforeEach(async () => {
     browser = await playwright.chromium.launch({
-      args: ['--disable-dev-shm-usage'],
-      headless: false
+      args: ['--disable-dev-shm-usage']
     });
     const context = await browser.newContext();
     page = await context.newPage();
