@@ -8,6 +8,7 @@
     "pretty": true,
     "sourceMap": true,
     "declaration": true,
+    "skipLibCheck": true,
     "outDir": "dist",
     "typeRoots": ["node_modules/@types"],
     "esModuleInterop": true
