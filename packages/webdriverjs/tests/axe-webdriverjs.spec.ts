@@ -631,7 +631,8 @@ describe('@axe-core/webdriverjs', () => {
       assert.isFalse(flatPassesTargets(results).includes('input'));
       assert.isUndefined(labelResult);
     });
-    it.only('with include shadow DOM', async () => {
+
+    it('with include shadow DOM', async () => {
       await driver.get(`${addr}/external/shadow-dom.html`);
       const results = await new AxeBuilder(driver)
         .include([['#shadow-root-1', '#shadow-button-1']])
@@ -641,6 +642,7 @@ describe('@axe-core/webdriverjs', () => {
       assert.isTrue(flatPassesTargets(results).includes('#shadow-button-2'));
       assert.isFalse(flatPassesTargets(results).includes('#button'));
     });
+
     it('with exclude shadow DOM', async () => {
       await driver.get(`${addr}/external/shadow-dom.html`);
       const results = await new AxeBuilder(driver)
@@ -651,6 +653,7 @@ describe('@axe-core/webdriverjs', () => {
       assert.isFalse(flatPassesTargets(results).includes('#shadow-button-2'));
       assert.isTrue(flatPassesTargets(results).includes('#button'));
     });
+
     it('with labelled shadow DOM', async () => {
       await driver.get(`${addr}/external/shadow-dom.html`);
       const results = await new AxeBuilder(driver)
@@ -660,6 +663,7 @@ describe('@axe-core/webdriverjs', () => {
       assert.isTrue(flatPassesTargets(results).includes('#shadow-button-1'));
       assert.isFalse(flatPassesTargets(results).includes('#shadow-button-2'));
     });
+
     it('with labelled iframe and shadow DOM', async () => {
       await driver.get(`${addr}/external/shadow-frames.html`);
       const { violations } = await new AxeBuilder(driver)
