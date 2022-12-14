@@ -3,10 +3,10 @@ import type { Browser } from 'webdriverio';
 import type {
   AxeResults,
   PartialResult,
-  ContextObject,
   RunOptions,
   Spec,
-  PartialResults
+  PartialResults,
+  SerialContextObject
 } from 'axe-core';
 import type { Selector, WdioBrowser } from './types';
 
@@ -36,8 +36,8 @@ export const normalizeContext = (
   includes: Selector[],
   excludes: Selector[],
   disabledFrameSelectors: string[]
-): ContextObject => {
-  const base: ContextObject = {
+): SerialContextObject => {
+  const base: SerialContextObject = {
     exclude: []
   };
   if (excludes.length && Array.isArray(base.exclude)) {
@@ -100,7 +100,7 @@ export const axeSourceInject = async (
 
 export const axeRunPartial = (
   client: Browser<'async'>,
-  context?: ContextObject,
+  context?: SerialContextObject,
   options?: RunOptions
 ): Promise<PartialResult> => {
   return promisify(
@@ -120,7 +120,7 @@ export const axeRunPartial = (
 
 export const axeGetFrameContext = (
   client: Browser<'async'>,
-  context: ContextObject
+  context: SerialContextObject
 ): Promise<any[]> => {
   return promisify(
     // Had to use executeAsync() because we could not use multiline statements in client.execute()
@@ -136,7 +136,7 @@ export const axeGetFrameContext = (
 
 export const axeRunLegacy = (
   client: Browser<'async'>,
-  context: ContextObject,
+  context: SerialContextObject,
   options: RunOptions,
   config?: Spec
 ): Promise<AxeResults> => {
@@ -183,7 +183,9 @@ export const axeFinishRun = (
   );
 };
 
-export const configureAllowedOrigins = (client: Browser<'async'>): Promise<void> => {
+export const configureAllowedOrigins = (
+  client: Browser<'async'>
+): Promise<void> => {
   return promisify(
     client.execute(`
       window.axe.configure({ allowedOrigins: ['<unsafe_all_origins>'] })
