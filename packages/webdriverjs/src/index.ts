@@ -1,5 +1,5 @@
 import { WebDriver } from 'selenium-webdriver';
-import { RunOptions, Spec, AxeResults, ContextObject } from 'axe-core';
+import { RunOptions, Spec, AxeResults, SerialContextObject } from 'axe-core';
 import { source } from 'axe-core';
 import { CallbackFunction, BuilderOptions, Selector } from './types';
 import { normalizeContext } from './utils/index';
@@ -183,7 +183,7 @@ class AxeBuilder {
   /**
    * Use axe.run() to get results from the page
    */
-  private async runLegacy(context: ContextObject): Promise<AxeResults> {
+  private async runLegacy(context: SerialContextObject): Promise<AxeResults> {
     const { driver, axeSource, builderOptions } = this;
     let config = this.config;
     if (!this.legacyMode) {
@@ -206,7 +206,7 @@ class AxeBuilder {
    * Get partial results from the current context and its child frames
    */
   private async runPartialRecursive(
-    context: ContextObject,
+    context: SerialContextObject,
     initiator = false
   ): Promise<string[]> {
     if (!initiator) {
