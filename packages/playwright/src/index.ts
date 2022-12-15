@@ -4,7 +4,11 @@ import type {
   RunOptions,
   AxeResults,
   SerialContextObject,
-  PartialResults
+  PartialResults,
+  ContextObject,
+  SerialSelectorList,
+  SerialSelector,
+  SerialFrameSelector
 } from 'axe-core';
 import { source } from 'axe-core';
 import { normalizeContext, analyzePage } from './utils';
@@ -19,8 +23,8 @@ import AxePartialRunner from './AxePartialRunner';
 
 export default class AxeBuilder {
   private page: Page;
-  private includes: string[][];
-  private excludes: string[][];
+  private includes: SerialSelectorList;
+  private excludes: SerialSelectorList;
   private option: RunOptions;
   private source: string;
   private legacyMode = false;
@@ -43,8 +47,7 @@ export default class AxeBuilder {
    * @returns this
    */
 
-  public include(selector: string | string[]): this {
-    selector = Array.isArray(selector) ? selector : [selector];
+  public include(selector: SerialFrameSelector): this {
     this.includes.push(selector);
     return this;
   }
@@ -56,8 +59,7 @@ export default class AxeBuilder {
    * @returns this
    */
 
-  public exclude(selector: string | string[]): this {
-    selector = Array.isArray(selector) ? selector : [selector];
+  public exclude(selector: SerialFrameSelector): this {
     this.excludes.push(selector);
     return this;
   }

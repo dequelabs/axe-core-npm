@@ -1,5 +1,12 @@
 import assert from 'assert';
-import { RunOptions, SerialContextObject, Spec, AxeResults } from 'axe-core';
+import {
+  RunOptions,
+  SerialContextObject,
+  Spec,
+  AxeResults,
+  SerialSelectorList,
+  SerialFrameSelector
+} from 'axe-core';
 import { Frame, Page } from 'puppeteer';
 import {
   axeGetFrameContext,
@@ -22,8 +29,8 @@ import {
 export class AxePuppeteer {
   private frame: Frame;
   private axeSource?: string;
-  private includes: string[][];
-  private excludes: string[][];
+  private includes: SerialSelectorList;
+  private excludes: SerialSelectorList;
   private axeOptions: RunOptions;
   private config: Spec | null;
   private disabledFrameSelectors: string[];
@@ -62,8 +69,7 @@ export class AxePuppeteer {
    * Selector to include in analysis.
    * This may be called any number of times.
    */
-  public include(selector: string | string[]): this {
-    selector = arrayify(selector);
+  public include(selector: SerialFrameSelector): this {
     this.includes.push(selector);
     return this;
   }
@@ -72,8 +78,7 @@ export class AxePuppeteer {
    * Selector to exclude in analysis.
    * This may be called any number of times.
    */
-  public exclude(selector: string | string[]): this {
-    selector = arrayify(selector);
+  public exclude(selector: SerialFrameSelector): this {
     this.excludes.push(selector);
     return this;
   }

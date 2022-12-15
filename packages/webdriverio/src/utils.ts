@@ -6,6 +6,7 @@ import type {
   RunOptions,
   Spec,
   PartialResults,
+  SerialSelectorList,
   SerialContextObject
 } from 'axe-core';
 import type { Selector, WdioBrowser } from './types';
@@ -33,8 +34,8 @@ export const isWebdriverClient = (client: WdioBrowser): boolean => {
  * Get running context
  */
 export const normalizeContext = (
-  includes: Selector[],
-  excludes: Selector[],
+  includes: SerialSelectorList,
+  excludes: SerialSelectorList,
   disabledFrameSelectors: string[]
 ): SerialContextObject => {
   const base: SerialContextObject = {

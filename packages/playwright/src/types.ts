@@ -4,14 +4,15 @@ import type {
   AxeResults,
   ContextObject,
   CrossTreeSelector,
-  PartialResult
+  PartialResult,
+  SerialContextObject
 } from 'axe-core';
 
 export type PartialResults = PartialResult | null;
 
 export interface AnalyzePageParams {
-  context: ContextObject;
-  options: RunOptions | null;
+  context: SerialContextObject;
+  options: RunOptions;
 }
 
 export interface AxePlaywrightParams {
