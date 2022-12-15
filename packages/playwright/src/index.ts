@@ -20,7 +20,6 @@ import {
   axeShadowSelect
 } from './browser';
 import AxePartialRunner from './AxePartialRunner';
-type NewContextObject = ContextObject | SerialContextObject;
 
 export default class AxeBuilder {
   private page: Page;
