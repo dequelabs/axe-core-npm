@@ -151,7 +151,6 @@ export default class AxeBuilder {
   public async analyze(): Promise<AxeResults> {
     const context = normalizeContext(this.includes, this.excludes);
     const { page, option: options } = this;
-    console.log(JSON.stringify(context, null, 2));
 
     page.evaluate(this.script());
     const runPartialDefined = await page.evaluate<boolean>(
