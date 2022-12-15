@@ -3,11 +3,11 @@ import type { Browser } from 'webdriverio';
 import type {
   AxeResults,
   PartialResult,
-  ContextObject,
   RunOptions,
   Spec,
   PartialResults,
-  SerialSelectorList
+  SerialSelectorList,
+  SerialContextObject
 } from 'axe-core';
 import type { Selector, WdioBrowser } from './types';
 
@@ -37,10 +37,9 @@ export const normalizeContext = (
   includes: SerialSelectorList,
   excludes: SerialSelectorList,
   disabledFrameSelectors: string[]
-): ContextObject => {
-  const base: ContextObject = {
-    exclude: [],
-    include: []
+): SerialContextObject => {
+  const base: SerialContextObject = {
+    exclude: []
   };
   if (excludes.length && Array.isArray(base.exclude)) {
     base.exclude.push(...excludes);
@@ -102,7 +101,7 @@ export const axeSourceInject = async (
 
 export const axeRunPartial = (
   client: Browser<'async'>,
-  context?: ContextObject,
+  context?: SerialContextObject,
   options?: RunOptions
 ): Promise<PartialResult> => {
   return promisify(
@@ -122,7 +121,7 @@ export const axeRunPartial = (
 
 export const axeGetFrameContext = (
   client: Browser<'async'>,
-  context: ContextObject
+  context: SerialContextObject
 ): Promise<any[]> => {
   return promisify(
     // Had to use executeAsync() because we could not use multiline statements in client.execute()
@@ -138,7 +137,7 @@ export const axeGetFrameContext = (
 
 export const axeRunLegacy = (
   client: Browser<'async'>,
-  context: ContextObject,
+  context: SerialContextObject,
   options: RunOptions,
   config?: Spec
 ): Promise<AxeResults> => {

@@ -1,6 +1,6 @@
 import {
   AxeResults,
-  ContextObject,
+  SerialContextObject,
   FrameContext,
   RunOptions,
   Spec,
@@ -41,7 +41,7 @@ export function axeSourceInject(
 
 export function axeRunPartial(
   driver: WebDriver,
-  context: ContextObject,
+  context: SerialContextObject,
   options: RunOptions
 ): Promise<string> {
   return promisify(
@@ -90,7 +90,7 @@ export function axeFinishRun(
 
 export function axeGetFrameContext(
   driver: WebDriver,
-  context: ContextObject
+  context: SerialContextObject
 ): Promise<FrameContextWeb[]> {
   return promisify(
     driver.executeScript<FrameContextWeb[]>(`
@@ -108,7 +108,7 @@ export function axeGetFrameContext(
 
 export function axeRunLegacy(
   driver: WebDriver,
-  context: ContextObject,
+  context: SerialContextObject,
   options: RunOptions,
   config: Spec | null
 ): Promise<AxeResults> {

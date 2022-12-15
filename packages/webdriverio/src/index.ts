@@ -17,7 +17,7 @@ import type { Browser } from 'webdriverio';
 import type {
   RunOptions,
   AxeResults,
-  ContextObject,
+  SerialContextObject,
   SerialSelectorList,
   SerialFrameSelector
 } from 'axe-core';
@@ -247,7 +247,7 @@ export default class AxeBuilder {
     }
   }
 
-  private async runLegacy(context: ContextObject): Promise<AxeResults> {
+  private async runLegacy(context: SerialContextObject): Promise<AxeResults> {
     const { client, option } = this;
     await this.inject();
     return axeRunLegacy(client, context, option);
@@ -295,7 +295,7 @@ export default class AxeBuilder {
    */
 
   private async runPartialRecursive(
-    context: ContextObject
+    context: SerialContextObject
   ): Promise<PartialResults> {
     const frameContexts = await axeGetFrameContext(this.client, context);
     const partials: PartialResults = [
