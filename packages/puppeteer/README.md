@@ -225,3 +225,11 @@ const axe = new AxePuppeteer(page).setLegacyMode();
 const result = await axe.analyze();
 axe.setLegacyMode(false); // Disables legacy mode
 ```
+
+## Caveat
+
+Due to axe-core needing to be injected into the page and executed we are unable to do the following:
+
+```js
+await page.setJavaScriptEnabled(false);
+```
