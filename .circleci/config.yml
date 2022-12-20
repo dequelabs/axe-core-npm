@@ -336,5 +336,3 @@ workflows:
       - github_release:
           requires:
             - production_release
-
-# VS Code Extension Version: 1.4.0
