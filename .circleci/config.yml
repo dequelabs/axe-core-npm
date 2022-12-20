@@ -195,7 +195,7 @@ jobs:
 
   playwright:
     docker:
-      - image: mcr.microsoft.com/playwright:bionic
+      - image: mcr.microsoft.com/playwright:v1.29.0
     environment:
       NODE_ENV: development
     working_directory: ~/axe-core-npm
