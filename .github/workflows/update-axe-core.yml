@@ -1,0 +1,37 @@
+name: Update axe-core
+
+on: [workflow_dispatch]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-node@v3
+        with:
+          node-version: 16
+      - id: update
+        uses: dequelabs/update-axe-core@v1
+      - id: type
+        run: |
+          CommitType=""
+          if [ "${{ steps.update.outputs.patch_version_updated }}" == "true" ]; then
+            CommitType="fix"
+          elif [ "${{ steps.update.outputs.minor_version_updated }}" == "true" ]; then
+            CommitType="feat"
+          elif [ "${{ steps.update.outputs.major_version_updated }}" == "true" ]; then
+            CommitType="feat"
+          fi
+          echo "type=$CommitType" >>"$GITHUB_OUTPUT"
+      - name: Open PR
+        uses: peter-evans/create-pull-request@v4
+        with:
+          token: ${{ secrets.PAT }}
+          commit-message: '${{ steps.type.outputs.type }}: Update axe-core to v${{ steps.update.outputs.version }}'
+          branch: auto-update-axe-core
+          base: develop
+          title: '${{ steps.type.outputs.type }}: Update axe-core to v${{ steps.update.outputs.version }}'
+          body: |
+            This patch updates version of [`axe-core`](https://npmjs.org/axe-core) to v${{ steps.update.outputs.version }}.
+
+            This PR was opened by a robot :robot: :tada:.

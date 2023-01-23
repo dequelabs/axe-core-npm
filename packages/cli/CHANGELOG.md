@@ -3,6 +3,18 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [4.6.0](https://github.com/dequelabs/axe-core-npm/compare/v4.5.2...v4.6.0) (2023-01-19)
+
+
+### Features
+
+* support shadow dom selectors ([#619](https://github.com/dequelabs/axe-core-npm/issues/619)) ([6065b56](https://github.com/dequelabs/axe-core-npm/commit/6065b562adf289341033a7233426ba3dcfb8a24b))
+* Update axe-core to v4.6.1 ([#633](https://github.com/dequelabs/axe-core-npm/issues/633)) ([8bab5b2](https://github.com/dequelabs/axe-core-npm/commit/8bab5b23b3653a6a0603f10d889e22418a4fff3e))
+
+
+
+
+
 ## [4.5.2](https://github.com/dequelabs/axe-core-npm/compare/v4.5.1...v4.5.2) (2022-11-15)
 
 

@@ -1,6 +1,6 @@
 {
   "name": "@axe-core/playwright",
-  "version": "4.5.2",
+  "version": "4.6.0",
   "description": "Provides a method to inject and analyze web pages using axe",
   "contributors": [
     {
@@ -39,7 +39,7 @@
     "prepare": "npm run build"
   },
   "dependencies": {
-    "axe-core": "^4.5.2"
+    "axe-core": "^4.6.1"
   },
   "devDependencies": {
     "@types/chai": "^4.3.3",
@@ -47,13 +47,13 @@
     "@types/mocha": "^10.0.0",
     "@types/node": "^18.8.3",
     "@types/test-listen": "^1.1.0",
-    "axe-test-fixtures": "github:dequelabs/axe-test-fixtures",
+    "axe-test-fixtures": "github:dequelabs/axe-test-fixtures#v1",
     "chai": "^4.3.6",
     "express": "^4.18.2",
     "mocha": "^10.0.0",
     "nyc": "^15.1.0",
-    "playwright": "^1.27.0",
-    "playwright-core": "^1.27.0",
+    "playwright": "^1.29.0",
+    "playwright-core": "^1.29.0",
     "rimraf": "^3.0.2",
     "test-listen": "^1.1.0",
     "ts-node": "^10.9.1",

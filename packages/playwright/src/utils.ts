@@ -1,4 +1,8 @@
-import type { AxeResults, SerialContextObject } from 'axe-core';
+import type {
+  AxeResults,
+  SerialContextObject,
+  SerialSelectorList
+} from 'axe-core';
 import type { AnalyzePageParams, AnalyzePageResponse } from './types';
 
 /**
@@ -9,11 +13,12 @@ import type { AnalyzePageParams, AnalyzePageResponse } from './types';
  */
 
 export const normalizeContext = (
-  includes: string[][],
-  excludes: string[][]
+  includes: SerialSelectorList,
+  excludes: SerialSelectorList
 ): SerialContextObject => {
   const base: SerialContextObject = {
-    exclude: []
+    exclude: [],
+    include: []
   };
   if (excludes.length && Array.isArray(base.exclude)) {
     base.exclude.push(...excludes);

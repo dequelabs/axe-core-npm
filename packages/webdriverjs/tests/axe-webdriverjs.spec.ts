@@ -1,5 +1,5 @@
 import 'mocha';
-import { AxeResults, Spec } from 'axe-core';
+import { AxeResults, Result } from 'axe-core';
 import { WebDriver } from 'selenium-webdriver';
 import express from 'express';
 import chromedriver from 'chromedriver';
@@ -501,7 +501,7 @@ describe('@axe-core/webdriverjs', () => {
           return acc.concat(pass.nodes as any);
         }, [])
         .reduce((acc, node: any) => {
-          return acc.concat(node.target);
+          return acc.concat(node.target.flat(1));
         }, []);
     };
     it('with include and exclude', async () => {
@@ -614,6 +614,74 @@ describe('@axe-core/webdriverjs', () => {
       assert.lengthOf(results.violations, 2);
       assert.strictEqual(results.violations[0].id, 'image-alt');
       assert.strictEqual(results.violations[1].id, 'region');
+    });
+
+    it('with labelled frame', async () => {
+      await driver.get(`${addr}/external/context-include-exclude.html`);
+      const results = await new AxeBuilder(driver)
+        .include({ fromFrames: ['#ifr-inc-excl', 'html'] })
+        .exclude({ fromFrames: ['#ifr-inc-excl', '#foo-bar'] })
+        .include({ fromFrames: ['#ifr-inc-excl', '#foo-baz', 'html'] })
+        .exclude({ fromFrames: ['#ifr-inc-excl', '#foo-baz', 'input'] })
+        .analyze();
+      const labelResult = results.violations.find(
+        (r: Result) => r.id === 'label'
+      );
+      assert.isFalse(flatPassesTargets(results).includes('#foo-bar'));
+      assert.isFalse(flatPassesTargets(results).includes('input'));
+      assert.isUndefined(labelResult);
+    });
+
+    it('with include shadow DOM', async () => {
+      await driver.get(`${addr}/external/shadow-dom.html`);
+      const results = await new AxeBuilder(driver)
+        .include([['#shadow-root-1', '#shadow-button-1']])
+        .include([['#shadow-root-2', '#shadow-button-2']])
+        .analyze();
+      assert.isTrue(flatPassesTargets(results).includes('#shadow-button-1'));
+      assert.isTrue(flatPassesTargets(results).includes('#shadow-button-2'));
+      assert.isFalse(flatPassesTargets(results).includes('#button'));
+    });
+
+    it('with exclude shadow DOM', async () => {
+      await driver.get(`${addr}/external/shadow-dom.html`);
+      const results = await new AxeBuilder(driver)
+        .exclude([['#shadow-root-1', '#shadow-button-1']])
+        .exclude([['#shadow-root-2', '#shadow-button-2']])
+        .analyze();
+      assert.isFalse(flatPassesTargets(results).includes('#shadow-button-1'));
+      assert.isFalse(flatPassesTargets(results).includes('#shadow-button-2'));
+      assert.isTrue(flatPassesTargets(results).includes('#button'));
+    });
+
+    it('with labelled shadow DOM', async () => {
+      await driver.get(`${addr}/external/shadow-dom.html`);
+      const results = await new AxeBuilder(driver)
+        .include({ fromShadowDom: ['#shadow-root-1', '#shadow-button-1'] })
+        .exclude({ fromShadowDom: ['#shadow-root-2', '#shadow-button-2'] })
+        .analyze();
+      assert.isTrue(flatPassesTargets(results).includes('#shadow-button-1'));
+      assert.isFalse(flatPassesTargets(results).includes('#shadow-button-2'));
+    });
+
+    it('with labelled iframe and shadow DOM', async () => {
+      await driver.get(`${addr}/external/shadow-frames.html`);
+      const { violations } = await new AxeBuilder(driver)
+        .exclude({
+          fromFrames: [
+            {
+              fromShadowDom: ['#shadow-root', '#shadow-frame']
+            },
+            'input'
+          ]
+        })
+        .options({ runOnly: 'label' })
+        .analyze();
+      assert.equal(violations[0].id, 'label');
+      assert.lengthOf(violations[0].nodes, 2);
+      const nodes = violations[0].nodes;
+      assert.deepEqual(nodes[0].target, ['#light-frame', 'input']);
+      assert.deepEqual(nodes[1].target, ['#slotted-frame', 'input']);
     });
   });
 
