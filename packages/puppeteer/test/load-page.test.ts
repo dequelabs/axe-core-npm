@@ -4,7 +4,7 @@ import { Server } from 'http';
 import Puppeteer, { Browser } from 'puppeteer';
 import * as sinon from 'sinon';
 import { loadPage } from '../src/index';
-import { puppeteerArgs, startServer } from './utils';
+import { puppeteerOpts, startServer } from './utils';
 
 type SinonSpy = sinon.SinonSpy;
 
@@ -21,8 +21,8 @@ describe('loadPage', function () {
 
   before(async () => {
     ({ server, addr } = await startServer());
-    const args = puppeteerArgs();
-    browser = await Puppeteer.launch({ args });
+    const opts = puppeteerOpts();
+    browser = await Puppeteer.launch(opts);
   });
 
   after(async () => {

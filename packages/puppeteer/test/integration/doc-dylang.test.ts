@@ -5,7 +5,7 @@ import { assert } from 'chai';
 import * as fs from 'fs';
 import Puppeteer, { Browser, Page } from 'puppeteer';
 import AxePuppeteer from '../../src/index';
-import { puppeteerArgs, startServer } from '../utils';
+import { puppeteerOpts, startServer } from '../utils';
 import { Server } from 'http';
 
 const dylangConfig = JSON.parse(
@@ -24,8 +24,8 @@ describe('doc-dylang.html', function () {
   this.timeout(10000);
 
   before(async () => {
-    const args = puppeteerArgs();
-    browser = await Puppeteer.launch({ args });
+    const opts = puppeteerOpts();
+    browser = await Puppeteer.launch(opts);
     ({ server, addr } = await startServer());
   });
 
