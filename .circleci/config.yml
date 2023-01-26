@@ -141,6 +141,8 @@ jobs:
 
   puppeteer:
     <<: *defaults
+    environment:
+      PUPPETEER_SKIP_CHROMIUM_DOWNLOAD: true
     steps:
       - checkout
       - restore_dependency_cache
