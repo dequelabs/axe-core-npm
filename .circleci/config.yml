@@ -60,12 +60,12 @@ jobs:
       # Install and cache each package's dependencies.
       - run:
           name: Install top-level dependencies
-          command: npm ci
+          command: npm install
       - save_cache:
           key: v3-root-npm-{{ checksum "package.json" }}
           paths:
             - node_modules
-      - run: npm run bootstrap -- --ci
+      - run: npm run bootstrap
       - save_cache:
           key: v3-cli-npm-{{ checksum "packages/cli/package.json" }}
           paths:
@@ -211,7 +211,7 @@ jobs:
       - checkout
       - restore_dependency_cache
       - run: npm install
-      - run: npm run bootstrap -- --ci
+      - run: npm run bootstrap
       - run: npm run build --prefix=packages/playwright
       - run: npm run coverage --prefix=packages/playwright
 
