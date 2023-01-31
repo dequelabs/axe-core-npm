@@ -29,77 +29,77 @@ jobs:
       - configure_npm
       - restore_cache:
           keys:
-            - v2-root-npm-{{ checksum "package-lock.json" }}
+            - v3-root-npm-{{ checksum "package.json" }}
       - restore_cache:
           keys:
-            - v2-cli-npm-{{ checksum "packages/cli/package-lock.json" }}
+            - v3-cli-npm-{{ checksum "packages/cli/package.json" }}
       - restore_cache:
           keys:
-            - v2-playwright-npm-{{ checksum "packages/playwright/package-lock.json" }}
+            - v3-playwright-npm-{{ checksum "packages/playwright/package.json" }}
       - restore_cache:
           keys:
-            - v2-puppeteer-npm-{{ checksum "packages/puppeteer/package-lock.json" }}
+            - v3-puppeteer-npm-{{ checksum "packages/puppeteer/package.json" }}
       - restore_cache:
           keys:
-            - v2-webdriverjs-npm-{{ checksum "packages/webdriverjs/package-lock.json" }}
+            - v3-webdriverjs-npm-{{ checksum "packages/webdriverjs/package.json" }}
       - restore_cache:
           keys:
-            - v2-webdriverjs-npm-example-{{ checksum "packages/webdriverjs/tests/example/package-lock.json" }}
+            - v3-webdriverjs-npm-example-{{ checksum "packages/webdriverjs/tests/example/package.json" }}
       - restore_cache:
           keys:
-            - v2-webdriverio-npm-{{ checksum "packages/webdriverio/package-lock.json" }}
+            - v3-webdriverio-npm-{{ checksum "packages/webdriverio/package.json" }}
       - restore_cache:
           keys:
-            - v2-reporter-earl-npm-{{ checksum "packages/reporter-earl/package-lock.json" }}
+            - v3-reporter-earl-npm-{{ checksum "packages/reporter-earl/package.json" }}
       - restore_cache:
           keys:
-            - v2-react-npm-{{ checksum "packages/react/package-lock.json" }}
+            - v3-react-npm-{{ checksum "packages/react/package.json" }}
       - restore_cache:
           keys:
-            - v2-axe-core-test-npm-{{ checksum "axe_core_test/package-lock.json" }}
+            - v3-axe-core-test-npm-{{ checksum "axe_core_test/package.json" }}
       # Install and cache each package's dependencies.
       - run:
           name: Install top-level dependencies
           command: npm ci
       - save_cache:
-          key: v2-root-npm-{{ checksum "package-lock.json" }}
+          key: v3-root-npm-{{ checksum "package.json" }}
           paths:
             - node_modules
       - run: npm run bootstrap -- --ci
       - save_cache:
-          key: v2-cli-npm-{{ checksum "packages/cli/package-lock.json" }}
+          key: v3-cli-npm-{{ checksum "packages/cli/package.json" }}
           paths:
             - packages/cli/node_modules
       - save_cache:
-          key: v2-playwright-npm-{{ checksum "packages/playwright/package-lock.json" }}
+          key: v3-playwright-npm-{{ checksum "packages/playwright/package.json" }}
           paths:
             - packages/playwright/node_modules
       - save_cache:
-          key: v2-puppeteer-npm-{{ checksum "packages/puppeteer/package-lock.json" }}
+          key: v3-puppeteer-npm-{{ checksum "packages/puppeteer/package.json" }}
           paths:
             - packages/puppeteer/node_modules
       - save_cache:
-          key: v2-webdriverjs-npm-{{ checksum "packages/webdriverjs/package-lock.json" }}
+          key: v3-webdriverjs-npm-{{ checksum "packages/webdriverjs/package.json" }}
           paths:
             - packages/webdriverjs/node_modules
       - save_cache:
-          key: v2-webdriverjs-npm-example-{{ checksum "packages/webdriverjs/tests/example/package-lock.json" }}
+          key: v3-webdriverjs-npm-example-{{ checksum "packages/webdriverjs/tests/example/package.json" }}
           paths:
             - packages/webdriverjs/tests/example/node_modules
       - save_cache:
-          key: v2-webdriverio-npm-{{ checksum "packages/webdriverio/package-lock.json" }}
+          key: v3-webdriverio-npm-{{ checksum "packages/webdriverio/package.json" }}
           paths:
             - packages/webdriverio/node_modules
       - save_cache:
-          key: v2-reporter-earl-npm-{{ checksum "packages/reporter-earl/package-lock.json" }}
+          key: v3-reporter-earl-npm-{{ checksum "packages/reporter-earl/package.json" }}
           paths:
             - packages/reporter-earl/node_modules
       - save_cache:
-          key: v2-react-npm-{{ checksum "packages/react/package-lock.json" }}
+          key: v3-react-npm-{{ checksum "packages/react/package.json" }}
           paths:
             - packages/react/node_modules
       - save_cache:
-          key: v2-axe-core-test-npm-{{ checksum "axe_core_test/package-lock.json" }}
+          key: v3-axe-core-test-npm-{{ checksum "axe_core_test/package.json" }}
           paths:
             - axe_core_test/node_modules
       - save_cache:
