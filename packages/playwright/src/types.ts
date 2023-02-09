@@ -39,6 +39,5 @@ export interface RunPartialParams {
 }
 
 export interface FinishRunParams {
-  partialResults: PartialResults[];
   options: RunOptions;
 }

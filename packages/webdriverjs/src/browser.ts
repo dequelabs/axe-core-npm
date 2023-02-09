@@ -61,31 +61,54 @@ export function axeFinishRun(
   partialResults: Array<string>,
   options: RunOptions
 ): Promise<AxeResults> {
+  // executeScript has a size limit of ~32 million characters so we'll need
+  // to split partialResults into chunks if it exceeds that limit.
+  // since we need to stringify twice we need to leave room for the double escaped quotes
+  const sizeLimit = 15_000_000;
+  const partialString = JSON.stringify(partialResults);
+
+  function chunkResults(result: string): Promise<void> {
+    const chunk = JSON.stringify(result.substring(0, sizeLimit));
+    return promisify(
+      driver.executeScript<string>(
+        `
+        window.partialResults ??= '';
+        window.partialResults += ${chunk};
+          `
+      )
+    ).then(() => {
+      if (result.length > sizeLimit) {
+        return chunkResults(result.substr(sizeLimit));
+      }
+    });
+  }
+
   // Inject source and configuration a second time with a mock "this" context,
   // to make it impossible to sniff the global window.axe for results.
-  return promisify(
-    driver
-      .executeAsyncScript<string>(
+  return chunkResults(partialString)
+    .then(() => {
+      return promisify(
+        driver.executeAsyncScript<string>(
+          `
+          var callback = arguments[arguments.length - 1];
+
+          ${axeSource};
+          window.axe.configure({
+            branding: { application: 'webdriverjs' }
+          });
+          var config = ${JSON.stringify(config)};
+          if (config) {
+            window.axe.configure(config);
+          }
+
+          var partialResults = JSON.parse(window.partialResults).map(res => JSON.parse(res));
+          var options = ${JSON.stringify(options || {})};
+          window.axe.finishRun(partialResults, options).then(res => JSON.stringify(res)).then(callback);
         `
-      var callback = arguments[arguments.length - 1];
-
-      ${axeSource};
-      window.axe.configure({
-        branding: { application: 'webdriverjs' }
-      });
-      var config = ${JSON.stringify(config)};
-      if (config) {
-        window.axe.configure(config);
-      }
-
-      var partialResults = ${JSON.stringify(partialResults)};
-      partialResults = partialResults.map(res => JSON.parse(res));
-      var options = ${JSON.stringify(options || {})};
-      window.axe.finishRun(partialResults, options).then(res => JSON.stringify(res)).then(callback);
-    `
-      )
-      .then(res => JSON.parse(res))
-  );
+        )
+      );
+    })
+    .then(res => JSON.parse(res));
 }
 
 export function axeGetFrameContext(
