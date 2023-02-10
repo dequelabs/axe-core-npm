@@ -488,7 +488,7 @@ describe('@axe-core/webdriverio', () => {
 
           it('handles large results', async function () {
             /* this test handles a large amount of partial results a timeout may be required */
-            this.timeout(800_000);
+            this.timeout(100_000);
             await client.url(`${addr}/external/index.html`);
 
             const results = await new AxeBuilder({
