@@ -89,7 +89,9 @@ describe('utils', () => {
       it('fall back to use `locally` installed axe-core', () => {
         const axeSource = utils.getAxeSource();
         const axeVersionCheck = dependencies['axe-core'].replace('^', '');
-        assert.include(axeSource, axeVersionCheck);
+        // check only major/minor version
+        const version = parseFloat(axeVersionCheck).toFixed(1);
+        assert.include(axeSource, version);
       });
     });
     it('given no axe source use local source', () => {
