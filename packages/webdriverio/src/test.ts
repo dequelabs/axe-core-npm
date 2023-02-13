@@ -85,6 +85,10 @@ describe('@axe-core/webdriverio', () => {
         path.join(axeTestFixtures, 'axe-force-legacy.js'),
         'utf8'
       );
+      const axeLargePartial = fs.readFileSync(
+        path.join(axeTestFixtures, 'axe-large-partial.js'),
+        'utf8'
+      );
 
       beforeEach(async () => {
         const app = express();
@@ -480,6 +484,20 @@ describe('@axe-core/webdriverio', () => {
 
             assert.notEqual(title, 'Error');
             assert.isNull(error);
+          });
+
+          it('handles large results', async function () {
+            /* this test handles a large amount of partial results a timeout may be required */
+            this.timeout(100_000);
+            await client.url(`${addr}/external/index.html`);
+
+            const results = await new AxeBuilder({
+              client,
+              axeSource: axeSource + axeLargePartial
+            }).analyze();
+
+            assert.lengthOf(results.passes, 1);
+            assert.equal(results.passes[0].id, 'duplicate-id');
           });
 
           it('returns correct results metadata', async () => {

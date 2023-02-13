@@ -14,6 +14,7 @@ import axeCore from 'axe-core';
 declare global {
   interface Window {
     axe: typeof axeCore;
+    partialResults: string;
   }
 }
 export const axeGetFrameContexts = ({
@@ -36,8 +37,12 @@ export const axeRunPartial = ({
 };
 
 export const axeFinishRun = ({
-  partialResults,
   options
 }: FinishRunParams): Promise<AxeResults> => {
-  return window.axe.finishRun(partialResults, options);
+  return window.axe.finishRun(JSON.parse(window.partialResults), options);
 };
+
+export function chunkResultString(chunk: string) {
+  window.partialResults ??= '';
+  window.partialResults += chunk;
+}

@@ -9,6 +9,7 @@ declare global {
   // tslint:disable-next-line:interface-name
   interface Window {
     axe: typeof Axe;
+    partialResults: string;
   }
 }
 
@@ -48,11 +49,8 @@ export function axeRunPartial(
   return window.axe.runPartial(context, options);
 }
 
-export function axeFinishRun(
-  partials: PartialResults,
-  options: Axe.RunOptions
-): Promise<Axe.AxeResults> {
-  return window.axe.finishRun(partials, options);
+export function axeFinishRun(options: Axe.RunOptions): Promise<Axe.AxeResults> {
+  return window.axe.finishRun(JSON.parse(window.partialResults), options);
 }
 
 // Defined at top-level to clarify that it can't capture variables from outer scope.
@@ -61,4 +59,9 @@ export function axeRunLegacy(
   options?: Axe.RunOptions
 ): Promise<Axe.AxeResults> {
   return window.axe.run(context || document, options || {});
+}
+
+export function chunkResultString(chunk: string) {
+  window.partialResults ??= '';
+  window.partialResults += chunk;
 }

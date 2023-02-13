@@ -33,6 +33,7 @@ describe('AxePuppeteer', function () {
   let axeSource: string;
   let axeCrasherSource: string;
   let axeForceLegacy: string;
+  let axeLargePartial: string;
 
   before(async () => {
     const axePath = require.resolve('axe-core');
@@ -44,6 +45,10 @@ describe('AxePuppeteer', function () {
     );
     axeForceLegacy = fs.readFileSync(
       path.join(externalPath, 'axe-force-legacy.js'),
+      'utf8'
+    );
+    axeLargePartial = fs.readFileSync(
+      path.join(externalPath, 'axe-large-partial.js'),
       'utf8'
     );
   });
@@ -169,6 +174,22 @@ describe('AxePuppeteer', function () {
 
       assert.equal(res?.status(), 200);
       assert.isUndefined(err);
+    });
+
+    it('handles large results', async function () {
+      /* this test handles a large amount of partial results a timeout may be required */
+      this.timeout(50_000);
+      const res = await await page.goto(`${addr}/external/index.html`);
+
+      assert.equal(res?.status(), 200);
+
+      const results = await new AxePuppeteer(
+        page,
+        axeSource + axeLargePartial
+      ).analyze();
+
+      assert.lengthOf(results.passes, 1);
+      assert.equal(results.passes[0].id, 'duplicate-id');
     });
 
     it('returns the same results from runPartial as from legacy mode', async () => {

@@ -35,6 +35,10 @@ describe('@axe-core/playwright', () => {
     path.join(externalPath, 'axe-force-legacy.js'),
     'utf8'
   );
+  const axeLargePartial = fs.readFileSync(
+    path.join(externalPath, 'axe-large-partial.js'),
+    'utf8'
+  );
 
   before(async () => {
     const app = express();
@@ -116,6 +120,22 @@ describe('@axe-core/playwright', () => {
 
       assert.equal(res?.status(), 200);
       assert.isUndefined(err);
+    });
+
+    it('handles large results', async function () {
+      /* this test handles a large amount of partial results a timeout may be required */
+      this.timeout(100_000);
+      const res = await await page.goto(`${addr}/external/index.html`);
+
+      assert.equal(res?.status(), 200);
+
+      const results = await new AxeBuilder({
+        page,
+        axeSource: axeSource + axeLargePartial
+      }).analyze();
+
+      assert.lengthOf(results.passes, 1);
+      assert.equal(results.passes[0].id, 'duplicate-id');
     });
 
     it('reports frame-tested', async () => {
