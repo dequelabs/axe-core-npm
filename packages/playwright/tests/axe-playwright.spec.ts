@@ -13,6 +13,7 @@ import { assert } from 'chai';
 import path from 'path';
 import { Server, createServer } from 'http';
 import AxeBuilder from '../src';
+import { AxeBuilder as AxeBuilderFromNamed } from '../src';
 
 describe('@axe-core/playwright', () => {
   let server: Server;
@@ -62,6 +63,10 @@ describe('@axe-core/playwright', () => {
   afterEach(async () => {
     await browser.close();
   });
+
+  it('should have a named export that matches the default export', () => {
+    assert.equal(AxeBuilder, AxeBuilderFromNamed)
+  })
 
   describe('analyze', () => {
     it('returns results using a different version of axe-core', async () => {
