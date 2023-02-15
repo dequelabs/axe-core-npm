@@ -22,7 +22,7 @@ import {
 } from './browser';
 import AxePartialRunner from './AxePartialRunner';
 
-export default class AxeBuilder {
+export class AxeBuilder {
   private page: Page;
   private includes: SerialSelectorList;
   private excludes: SerialSelectorList;
@@ -326,3 +326,5 @@ export default class AxeBuilder {
     `;
   }
 }
+
+export default AxeBuilder;
