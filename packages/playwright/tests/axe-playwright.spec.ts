@@ -2,24 +2,29 @@ import 'mocha';
 import fs from 'fs';
 import playwright from 'playwright';
 import express from 'express';
+import { fileURLToPath } from 'url';
 import type {
   AxeResults,
   Result,
   SerialSelector,
   SerialSelectorList
 } from 'axe-core';
+import axe from 'axe-core';
 import testListen from 'test-listen';
 import { assert } from 'chai';
 import path from 'path';
 import { Server, createServer } from 'http';
 import AxeBuilder from '../src';
 
+// utilities for ESM to use __dirname
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
 describe('@axe-core/playwright', () => {
   let server: Server;
   let addr: string;
   let page: playwright.Page;
-  const axePath = require.resolve('axe-core');
-  const axeSource = fs.readFileSync(axePath, 'utf8');
+  const axeSource = axe.source;
   let browser: playwright.ChromiumBrowser;
   const axeTestFixtures = path.resolve(__dirname, 'fixtures');
   const externalPath = path.resolve(axeTestFixtures, 'external');

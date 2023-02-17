@@ -36,6 +36,16 @@ yarn add @axe-core/playwright
 
 ## Usage
 
+```js
+const AxeBuilder = require('@axe-core/playwright').default;
+```
+
+or
+
+```js
+import AxeBuilder from '@axe-core/playwright';
+```
+
 This module uses a chainable API to assist in injecting, configuring, and analyzing axe with [Playwright](https://playwright.dev/). As such, it is required to pass an instance of Playwright.
 
 Here is an example of a script that will drive Playwright to a page, perform an analysis, and then log results to the console.

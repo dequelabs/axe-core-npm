@@ -5,12 +5,10 @@ import type {
   AxeResults,
   SerialContextObject,
   PartialResults,
-  ContextObject,
   SerialSelectorList,
-  SerialSelector,
   SerialFrameSelector
 } from 'axe-core';
-import { source } from 'axe-core';
+import axe from 'axe-core';
 import { normalizeContext, analyzePage } from './utils';
 import type { AxePlaywrightParams } from './types';
 import {
@@ -36,7 +34,7 @@ export default class AxeBuilder {
     this.includes = [];
     this.excludes = [];
     this.option = {};
-    this.source = axeSource || source;
+    this.source = axeSource || axe.source;
     this.errorUrl =
       'https://github.com/dequelabs/axe-core-npm/blob/develop/packages/playwright/error-handling.md';
   }
