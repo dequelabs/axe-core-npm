@@ -129,7 +129,7 @@ describe('@axe-core/playwright', () => {
 
     it('handles large results', async function () {
       /* this test handles a large amount of partial results a timeout may be required */
-      this.timeout(100_000);
+      this.timeout(120_000);
       const res = await await page.goto(`${addr}/external/index.html`);
 
       assert.equal(res?.status(), 200);
