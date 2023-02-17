@@ -171,6 +171,21 @@ jobs:
       - run: npm --prefix=packages/webdriverjs run build
       - run: npm run test --prefix=packages/webdriverjs/tests/example
 
+  playwright:
+    docker:
+      - image: cimg/node:16.16.0-browsers
+      - image: mcr.microsoft.com/playwright:v1.29.0
+    environment:
+      NODE_ENV: development
+    working_directory: ~/axe-core-npm
+    steps:
+      - checkout
+      - restore_dependency_cache
+      - run: npm install
+      - run: npm run bootstrap -- --ci
+      - run: npm run build --prefix=packages/playwright
+      - run: npm run coverage --prefix=packages/playwright
+
   webdriverio:
     docker:
       # using a node14 image instead of a node16 image due to WDIO
@@ -198,20 +213,6 @@ jobs:
       - restore_dependency_cache
       - run: npm run build --prefix=packages/react
       - run: npm run test --prefix=packages/react
-
-  playwright:
-    docker:
-      - image: mcr.microsoft.com/playwright:v1.29.0
-    environment:
-      NODE_ENV: development
-    working_directory: ~/axe-core-npm
-    steps:
-      - checkout
-      - restore_dependency_cache
-      - run: npm install
-      - run: npm run bootstrap -- --ci
-      - run: npm run build --prefix=packages/playwright
-      - run: npm run coverage --prefix=packages/playwright
 
   axe-core-test:
     <<: *defaults
