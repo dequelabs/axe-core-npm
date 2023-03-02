@@ -2,6 +2,10 @@
 
 > Provides a chainable axe API for WebdriverIO and automatically injects into all frames.
 
+## Feature Deprecation Notice
+
+Support for `@wdio/sync` is deprecated and testing for it will be removed in a future release.
+
 ## Getting Started
 
 Install [Node.js](https://docs.npmjs.com/getting-started/installing-node) if you haven't already.
