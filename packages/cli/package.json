@@ -17,10 +17,19 @@
     "url": "https://github.com/dequelabs/axe-core-npm.git"
   },
   "license": "MPL-2.0",
-  "main": "dist/src/lib/index.js",
-  "typings": "dist/src/types.d.ts",
+  "type": "module",
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.js",
+  "types": "./dist/types.d.ts",
+  "exports": {
+    ".": {
+      "import": "./dist/index.js",
+      "require": "./dist/index.cjs",
+      "types": "./dist/types.d.ts"
+    }
+  },
   "bin": {
-    "axe": "./dist/src/bin/cli.js"
+    "axe": "./dist/cli.cjs"
   },
   "publishConfig": {
     "access": "public"
@@ -30,8 +39,11 @@
   },
   "scripts": {
     "prebuild": "rimraf dist",
-    "build": "tsc",
-    "test": "mocha --timeout 60000 -r ts-node/register 'src/**/**.test.ts'",
+    "build": "npm run build:lib && npm run build:bin && npm run build:types",
+    "build:bin": "tsup src/bin/cli.ts",
+    "build:lib": "tsup src/lib/index.ts --dts --format esm,cjs",
+    "build:types": "tsup src/types.ts --dts-only",
+    "test": "mocha --timeout 60000",
     "coverage": "nyc npm run test",
     "prepare": "npm run build"
   },
@@ -65,6 +77,7 @@
     "rimraf": "^3.0.2",
     "tempy": "1.0.0",
     "ts-node": "^10.9.1",
+    "tsup": "^6.6.3",
     "typescript": "^4.8.4"
   },
   "nyc": {

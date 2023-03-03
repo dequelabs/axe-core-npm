@@ -1,8 +1,12 @@
 import 'mocha';
 import { assert } from 'chai';
-import mock = require('mock-fs');
-import { dependencies } from '../../package.json';
+import mock from 'mock-fs';
+import pkgJson from '../../package.json' assert { type: 'json' };
+const { dependencies } = pkgJson;
 import * as utils from './utils';
+// utilities for ESM to use require
+import { createRequire } from 'module';
+const require = createRequire(import.meta.url);
 
 describe('utils', () => {
   describe('parseUrl', () => {

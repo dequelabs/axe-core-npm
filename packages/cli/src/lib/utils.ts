@@ -2,6 +2,15 @@ import fs from 'fs';
 import path from 'path';
 import colors from 'colors';
 import { AxeResults } from 'axe-core';
+import { fileURLToPath } from 'url';
+let dirname: string;
+if (typeof __dirname === 'undefined') {
+  // utilities for ESM to use __dirname
+  const filename = fileURLToPath(import.meta.url);
+  dirname = path.dirname(filename);
+} else {
+  dirname = __dirname;
+}
 
 export const saveOutcome = (
   outcome: AxeResults | AxeResults[],
@@ -91,7 +100,7 @@ export const getAxeSource = (axePath?: string): string | void => {
     // to access the locally installed axe-core package we need to go up 3 levels
     // if all else fails, use the locally installed axe
     axePath = path.join(
-      __dirname,
+      dirname,
       '..',
       '..',
       '..',

@@ -1,7 +1,8 @@
 #!/usr/bin/env node
 
 import { Command } from 'commander';
-import { version } from '../../package.json';
+import pkgJson from '../../package.json' assert { type: 'json' };
+const version = pkgJson.version;
 import { splitList } from '../lib/utils';
 import cli from '.';
 
