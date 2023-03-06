@@ -14,6 +14,7 @@ describe('startDriver', () => {
   beforeEach(() => {
     browser = 'chrome-headless';
     config = {
+      timeout: 90,
       get browser() {
         return browser;
       }
