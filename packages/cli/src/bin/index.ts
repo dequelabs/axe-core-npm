@@ -15,6 +15,7 @@ import {
 import axeTestUrls from '../lib/axe-test-urls';
 import event from '../lib/events';
 import { startDriver } from '../lib/webdriver';
+import { error as selenium_error } from 'selenium-webdriver';
 
 const cli = async (
   args: OptionValues,
@@ -106,8 +107,19 @@ const cli = async (
     rules,
     disable
   };
+  let outcome;
   try {
-    const outcome = await axeTestUrls(urls, testPageConfigParams, events);
+    try {
+      outcome = await axeTestUrls(urls, testPageConfigParams, events);
+    } catch (e) {
+      if (e instanceof selenium_error.ScriptTimeoutError) {
+        console.error(error('Error: %s'), e.message);
+        console.log(`The timeout is currently configured to be ${timeout} seconds (you can change it with --timeout).`)
+        process.exit(2);
+      } else {
+        throw e;
+      }
+    }
     if (silentMode) {
       process.stdout.write(JSON.stringify(outcome, null, 2));
       return;
