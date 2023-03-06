@@ -12,6 +12,20 @@ import { Server, createServer } from 'http';
 import { Webdriver, connectToChromeDriver } from './test-utils';
 import AxeBuilder from '../src';
 import { axeRunPartial } from '../src/browser';
+import { fileURLToPath } from 'url';
+let dirname: string;
+if (typeof __dirname === 'undefined') {
+  // utilities for ESM to use __dirname
+  const filename = fileURLToPath(import.meta.url);
+  dirname = path.dirname(filename);
+} else {
+  dirname = __dirname;
+}
+
+// utilities for ESM to use require
+import { createRequire } from 'module';
+const require = createRequire(import.meta.url);
+
 const dylangConfig = JSON.parse(
   fs.readFileSync(
     require.resolve('./fixtures/external/dylang-config.json'),
@@ -32,7 +46,7 @@ describe('@axe-core/webdriverjs', () => {
   before(async () => {
     const axePath = require.resolve('axe-core');
     axeSource = fs.readFileSync(axePath, 'utf8');
-    const externalPath = path.resolve(__dirname, 'fixtures', 'external');
+    const externalPath = path.resolve(dirname, 'fixtures', 'external');
     axeCrasherSource = fs.readFileSync(
       path.join(externalPath, 'axe-crasher.js'),
       'utf8'
@@ -57,7 +71,7 @@ describe('@axe-core/webdriverjs', () => {
 
   beforeEach(async () => {
     const app = express();
-    app.use(express.static(path.resolve(__dirname, 'fixtures')));
+    app.use(express.static(path.resolve(dirname, 'fixtures')));
     server = createServer(app);
     addr = await testListen(server);
     driver = Webdriver();
@@ -864,7 +878,7 @@ describe('@axe-core/webdriverjs', () => {
     let axe403Source: string;
     before(() => {
       const axe403Path = path.resolve(
-        __dirname,
+        dirname,
         'fixtures',
         'external',
         'axe-core@legacy.js'

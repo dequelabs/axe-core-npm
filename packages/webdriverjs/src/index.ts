@@ -5,9 +5,10 @@ import {
   AxeResults,
   SerialContextObject,
   SerialSelectorList,
-  source,
   SerialFrameSelector
 } from 'axe-core';
+import axe from 'axe-core';
+const { source } = axe;
 import { CallbackFunction, BuilderOptions, Selector } from './types';
 import { normalizeContext } from './utils/index';
 import AxeInjector from './axe-injector';
@@ -20,7 +21,7 @@ import {
 } from './browser';
 import assert from 'assert';
 
-class AxeBuilder {
+export class AxeBuilder {
   private driver: WebDriver;
   private axeSource: string;
   private includes: SerialSelectorList;
@@ -266,7 +267,5 @@ class AxeBuilder {
     return res;
   }
 }
-
-exports = module.exports = AxeBuilder;
 
 export default AxeBuilder;
