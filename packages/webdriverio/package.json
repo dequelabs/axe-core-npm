@@ -15,12 +15,21 @@
     "url": "https://github.com/dequelabs/axe-core-npm.git"
   },
   "license": "MPL-2.0",
-  "main": "dist/index.js",
-  "typings": "dist/index.d.ts",
+  "type": "module",
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "import": "./dist/index.js",
+      "require": "./dist/index.cjs",
+      "types": "./dist/index.d.ts"
+    }
+  },
   "scripts": {
     "prebuild": "rimraf dist",
-    "build": "tsc -p tsconfig.json",
-    "test": "mocha --timeout 60000 -r ts-node/register 'src/test.ts'",
+    "build": "tsup src/index.ts --dts --format esm,cjs",
+    "test": "mocha --timeout 60000",
     "coverage": "nyc npm run test",
     "prepare": "npm run build"
   },
@@ -50,7 +59,7 @@
     "@wdio/sync": "^7.25.1",
     "axe-test-fixtures": "github:dequelabs/axe-test-fixtures#v1",
     "chai": "^4.3.6",
-    "chromedriver": "^109.0.0",
+    "chromedriver": "^110.0.0",
     "delay": "^5.0.0",
     "express": "^4.18.2",
     "mocha": "^10.0.0",
@@ -59,6 +68,7 @@
     "source-map-support": "^0.5.21",
     "test-listen": "^1.1.0",
     "ts-node": "^10.9.1",
+    "tsup": "^6.6.3",
     "typescript": "^4.8.4",
     "webdriverio": "^7.25.1"
   },
