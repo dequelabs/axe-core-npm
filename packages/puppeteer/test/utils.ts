@@ -3,6 +3,15 @@ import express from 'express';
 import { createServer, Server } from 'http';
 import testListen from 'test-listen';
 import { expect } from 'chai';
+import { fileURLToPath } from 'url';
+let dirname: string;
+if (typeof __dirname === 'undefined') {
+  // utilities for ESM to use __dirname
+  const filename = fileURLToPath(import.meta.url);
+  dirname = path.dirname(filename);
+} else {
+  dirname = __dirname;
+}
 
 export async function expectAsync(
   fn: () => Promise<any>
@@ -26,7 +35,7 @@ export async function expectAsyncToNotThrow(
 
 export async function startServer(): Promise<{ server: Server; addr: string }> {
   const app: express.Application = express();
-  app.use(express.static(path.resolve(__dirname, 'fixtures')));
+  app.use(express.static(path.resolve(dirname, 'fixtures')));
   const server: Server = createServer(app);
   const addr = await testListen(server);
 

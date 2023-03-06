@@ -4,6 +4,15 @@ import { Frame } from 'puppeteer';
 import { axeConfigure, axeShadowSelect } from './browser';
 import { pageIsLoaded } from './browser';
 
+// utilities for ESM to use require
+import { createRequire } from 'module';
+let req: { resolve(v: string): string };
+if (typeof require === 'undefined') {
+  req = createRequire(import.meta.url);
+} else {
+  req = require;
+}
+
 export async function frameSourceInject(
   frame: Frame,
   source: string | undefined,
@@ -11,7 +20,7 @@ export async function frameSourceInject(
 ): Promise<void> {
   await assertFrameReady(frame);
   if (!source) {
-    const pathFile = require.resolve('axe-core');
+    const pathFile = req.resolve('axe-core');
     source = fs.readFileSync(pathFile, 'utf8');
   }
   await frame.evaluate(source);

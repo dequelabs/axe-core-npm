@@ -6,8 +6,17 @@
     "type": "git",
     "url": "https://github.com/dequelabs/axe-core-npm.git"
   },
-  "main": "dist/index.js",
-  "typings": "dist/index.d.ts",
+  "type": "module",
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "import": "./dist/index.js",
+      "require": "./dist/index.cjs",
+      "types": "./dist/index.d.ts"
+    }
+  },
   "files": [
     "/dist"
   ],
@@ -15,8 +24,8 @@
     "access": "public"
   },
   "scripts": {
-    "build": "tsc",
-    "test": "mocha 'test/**/*.test.ts'",
+    "build": "tsup src/index.ts --dts --format esm,cjs",
+    "test": "mocha",
     "coverage": "nyc npm run test",
     "prepublishOnly": "npm run build"
   },
@@ -39,6 +48,7 @@
     "source-map-support": "^0.5.21",
     "test-listen": "^1.1.0",
     "ts-node": "^10.9.1",
+    "tsup": "^6.6.3",
     "typescript": "^4.8.4"
   },
   "dependencies": {

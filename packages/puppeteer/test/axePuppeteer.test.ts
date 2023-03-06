@@ -14,6 +14,18 @@ import {
   expectAsync,
   expectAsyncToNotThrow
 } from './utils';
+import { fileURLToPath } from 'url';
+let dirname: string;
+if (typeof __dirname === 'undefined') {
+  // utilities for ESM to use __dirname
+  const filename = fileURLToPath(import.meta.url);
+  dirname = path.dirname(filename);
+} else {
+  dirname = __dirname;
+}
+// utilities for ESM to use require
+import { createRequire } from 'module';
+const require = createRequire(import.meta.url);
 
 type SinonSpy = sinon.SinonSpy;
 
@@ -38,7 +50,7 @@ describe('AxePuppeteer', function () {
   before(async () => {
     const axePath = require.resolve('axe-core');
     axeSource = fs.readFileSync(axePath, 'utf8');
-    const externalPath = path.resolve(__dirname, 'fixtures', 'external');
+    const externalPath = path.resolve(dirname, 'fixtures', 'external');
     axeCrasherSource = fs.readFileSync(
       path.join(externalPath, 'axe-crasher.js'),
       'utf8'

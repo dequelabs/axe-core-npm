@@ -7,6 +7,9 @@ import Puppeteer, { Browser, Page } from 'puppeteer';
 import AxePuppeteer from '../../src/index';
 import { puppeteerArgs, startServer } from '../utils';
 import { Server } from 'http';
+// utilities for ESM to use require
+import { createRequire } from 'module';
+const require = createRequire(import.meta.url);
 
 const dylangConfig = JSON.parse(
   fs.readFileSync(

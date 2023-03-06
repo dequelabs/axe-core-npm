@@ -1,6 +1,15 @@
 import * as fs from 'fs';
 import { Frame } from 'puppeteer';
 
+// utilities for ESM to use require
+import { createRequire } from 'module';
+let req: { resolve(v: string): string };
+if (typeof require === 'undefined') {
+  req = createRequire(import.meta.url);
+} else {
+  req = require;
+}
+
 interface IInjectAxeArgs {
   source?: string | Function;
   selector: string;
@@ -52,7 +61,7 @@ export async function injectJS(
 }
 
 async function injectJSModule(frame: Frame): Promise<void> {
-  const source = fs.readFileSync(require.resolve('axe-core'), 'utf8');
+  const source = fs.readFileSync(req.resolve('axe-core'), 'utf8');
   await injectJSSource(frame, source);
 }
 
