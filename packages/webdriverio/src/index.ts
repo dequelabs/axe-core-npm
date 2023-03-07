@@ -30,6 +30,15 @@ import type {
   Selector
 } from './types';
 
+// utilities for ESM to use require
+import { createRequire } from 'module';
+let req: { resolve(v: string): string };
+if (typeof require === 'undefined') {
+  req = createRequire(import.meta.url);
+} else {
+  req = require;
+}
+
 export default class AxeBuilder {
   private client: Browser<'async'>;
   private axeSource: string;
