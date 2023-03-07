@@ -14,6 +14,11 @@ import { logOrRethrowError } from './utils';
 import { WdioBrowser } from './types';
 import type { AxeResults, Result } from 'axe-core';
 
+// utilities for ESM to use __dirname
+import { fileURLToPath } from 'url';
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
 // utilities for ESM to use require
 import { createRequire } from 'module';
 const require = createRequire(import.meta.url);
