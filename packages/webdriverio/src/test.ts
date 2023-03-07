@@ -1,5 +1,6 @@
 import * as webdriverio from 'webdriverio';
-import sync from '@wdio/sync';
+import syncImport from '@wdio/sync';
+const sync = (syncImport as any).default;
 import express from 'express';
 import testListen from 'test-listen';
 import { assert } from 'chai';
