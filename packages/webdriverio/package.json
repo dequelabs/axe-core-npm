@@ -30,7 +30,7 @@
     "prebuild": "rimraf dist",
     "build": "tsup src/index.ts --dts --format esm,cjs",
     "test": "mocha --timeout 60000",
-    "coverage": "nyc npm run test",
+    "coverage": "c8 npm run test",
     "prepare": "npm run build"
   },
   "keywords": [
@@ -58,12 +58,12 @@
     "@types/test-listen": "^1.1.0",
     "@wdio/sync": "^7.25.1",
     "axe-test-fixtures": "github:dequelabs/axe-test-fixtures#v1",
+    "c8": "^7.13.0",
     "chai": "^4.3.6",
     "chromedriver": "^110.0.0",
     "delay": "^5.0.0",
     "express": "^4.18.2",
     "mocha": "^10.0.0",
-    "nyc": "^15.1.0",
     "rimraf": "^3.0.2",
     "source-map-support": "^0.5.21",
     "test-listen": "^1.1.0",
@@ -75,7 +75,7 @@
   "peerDependencies": {
     "webdriverio": "^5 || ^6 || ^7"
   },
-  "nyc": {
+  "c8": {
     "include": [
       "src/index.ts"
     ],

@@ -26,7 +26,7 @@
   "scripts": {
     "build": "tsup src/index.ts --dts --format esm,cjs",
     "test": "mocha",
-    "coverage": "nyc npm run test",
+    "coverage": "c8 npm run test",
     "prepublishOnly": "npm run build"
   },
   "author": "Adam Cutler",
@@ -39,10 +39,10 @@
     "@types/sinon": "^10.0.13",
     "@types/test-listen": "^1.1.0",
     "axe-test-fixtures": "github:dequelabs/axe-test-fixtures#v1",
+    "c8": "^7.13.0",
     "chai": "^4.3.6",
     "express": "^4.18.2",
     "mocha": "^10.0.0",
-    "nyc": "^15.1.0",
     "puppeteer": "^18.2.1",
     "sinon": "^14.0.1",
     "source-map-support": "^0.5.21",
@@ -60,7 +60,7 @@
   "engines": {
     "node": ">=6.4.0"
   },
-  "nyc": {
+  "c8": {
     "require": [
       "ts-node/register"
     ],
