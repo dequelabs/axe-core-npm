@@ -14,6 +14,10 @@ import { logOrRethrowError } from './utils';
 import { WdioBrowser } from './types';
 import type { AxeResults, Result } from 'axe-core';
 
+// utilities for ESM to use require
+import { createRequire } from 'module';
+const require = createRequire(import.meta.url);
+
 const connectToChromeDriver = (port: number): Promise<void> => {
   let socket: net.Socket;
   return new Promise((resolve, reject) => {
