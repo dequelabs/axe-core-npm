@@ -64,7 +64,7 @@ export default class AxeBuilder {
     if (axeSource) {
       this.axeSource = axeSource;
     } else {
-      const sourceDir = require.resolve('axe-core');
+      const sourceDir = req.resolve('axe-core');
       try {
         this.axeSource = fs.readFileSync(sourceDir, 'utf-8');
       } catch (e) {
