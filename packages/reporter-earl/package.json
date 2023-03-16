@@ -13,11 +13,11 @@
     }
   },
   "scripts": {
-    "start": "node --experimental-vm-modules node_modules/.bin/jest --watch --env=jsdom",
+    "start": "NODE_OPTIONS=--experimental-vm-modules jest --watch --env=jsdom",
     "test": "npm run build && npm run test:unit",
     "test:esm": "node esmTest.mjs",
-    "test:unit": "node --experimental-vm-modules node_modules/.bin/jest --collectCoverage",
-    "build": "tsup src/axeReporterEarl.ts --dts --format esm,cjs",
+    "test:unit": "NODE_OPTIONS=--experimental-vm-modules jest --collectCoverage",
+    "build": "tsc",
     "prepublishOnly": "npm run build"
   },
   "publishConfig": {
