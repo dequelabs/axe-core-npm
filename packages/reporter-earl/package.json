@@ -41,7 +41,6 @@
   "license": "MPL-2.0",
   "devDependencies": {
     "@types/clone": "^2.1.1",
-    "@types/jest": "^29.1.2",
     "@types/jsonld": "github:types/jsonld",
     "@types/node": "^18.8.3",
     "axe-core": "^4.7.0",

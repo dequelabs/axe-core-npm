@@ -4,6 +4,7 @@ import { getDummyData } from './utils';
 import axeReporterEarl, { createEarlReport } from '../src/axeReporterEarl';
 import * as context from '../src/context.json';
 import { RawResult, EarlType } from '../src/types';
+import { describe, beforeEach, test, expect } from '@jest/globals';
 
 describe(`createEarlReport`, () => {
   let dummyData: RawResult[];
