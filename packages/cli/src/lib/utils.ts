@@ -82,23 +82,7 @@ export const getAxeSource = (axePath?: string): string | void => {
   }
 
   if (!fs.existsSync(axePath)) {
-    // Look for axe in CWD ./node_modules
-    axePath = path.join(process.cwd(), 'node_modules', 'axe-core', 'axe.js');
-  }
-
-  if (!fs.existsSync(axePath)) {
-    // `__dirname` is /@axe-core/cli/dist/src/lib when installed globally
-    // to access the locally installed axe-core package we need to go up 3 levels
-    // if all else fails, use the locally installed axe
-    axePath = path.join(
-      __dirname,
-      '..',
-      '..',
-      '..',
-      'node_modules',
-      'axe-core',
-      'axe.js'
-    );
+    axePath = require.resolve('axe-core/axe.js');
   }
 
   return fs.readFileSync(axePath, 'utf-8');
