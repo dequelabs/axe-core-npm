@@ -1,3 +1,10 @@
+import { TextEncoder, TextDecoder } from 'util';
+global.TextEncoder = TextEncoder;
+global.TextDecoder = TextDecoder as any;
+// jsonld depends on @digitalbazaar/http-client, which depends on the undici HTTP client,
+// which depends on TextEncoder ... which however isn't provided by jsdom, see
+// https://github.com/jsdom/jsdom/issues/2524.
+
 import * as jsonld from 'jsonld';
 import * as axe from 'axe-core';
 import { getDummyData } from './utils';

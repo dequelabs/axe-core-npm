@@ -15,7 +15,14 @@ export async function getDummyData(version = '3.1'): Promise<RawResult[]> {
     const params: any = {
       reporter: function (raw: any, _: any, callback: Function) {
         callback(JSON.parse(JSON.stringify(raw)));
-      }
+      },
+      rules: [
+        {
+          // color contrast checking doesn't work in a jsdom environment (since it depends on canvas)
+          id: 'color-contrast',
+          enabled: false
+        }
+      ]
     };
     axe.configure(params);
     _dummyData = await axe.run();
