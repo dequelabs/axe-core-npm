@@ -14,6 +14,11 @@ export const Webdriver = (): WebDriver => {
       .setChromeOptions(new chrome.Options().headless())
       .forBrowser('chrome');
   }
+  if (process.env.CHROMEDRIVER_PATH) {
+    builder.setChromeService(
+      new chrome.ServiceBuilder(process.env.CHROMEDRIVER_PATH)
+    );
+  }
   return builder.build();
 };
 

@@ -155,11 +155,13 @@ jobs:
     steps:
       - checkout
       - restore_dependency_cache
-      # required for browser-driver-manager
-      - run: sudo apt-get update -y
-      - run: cd packages/webdriverjs && npx browser-driver-manager@1.0.4 install chrome chromedriver --verbose
+      - browser-tools/install-chrome
+      - browser-tools/install-chromedriver
       - run: npm --prefix=packages/webdriverjs run build
-      - run: npm run coverage --prefix=packages/webdriverjs
+      - run:
+          command: npm run coverage --prefix=packages/webdriverjs
+          environment:
+            CHROMEDRIVER_PATH: /usr/local/bin/chromedriver
 
   webdriverjs-example:
     <<: *defaults
@@ -169,7 +171,10 @@ jobs:
       - browser-tools/install-chrome
       - browser-tools/install-chromedriver
       - run: npm --prefix=packages/webdriverjs run build
-      - run: npm run test --prefix=packages/webdriverjs/tests/example
+      - run:
+          command: npm run test --prefix=packages/webdriverjs/tests/example
+          environment:
+            CHROMEDRIVER_PATH: /usr/local/bin/chromedriver
 
   webdriverio:
     docker:
@@ -182,7 +187,10 @@ jobs:
       - restore_dependency_cache
       - browser-tools/install-chrome
       - browser-tools/install-chromedriver
-      - run: npm run coverage --prefix=packages/webdriverio
+      - run:
+          command: npm run coverage --prefix=packages/webdriverio
+          environment:
+            CHROMEDRIVER_PATH: /usr/local/bin/chromedriver
 
   reporter-earl:
     <<: *defaults

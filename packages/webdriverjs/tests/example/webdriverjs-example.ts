@@ -20,10 +20,17 @@ describe('@axe-core/webdriverjs example', () => {
   });
 
   beforeEach(async () => {
-    driver = new Builder()
+    const builder = new Builder()
       .forBrowser('chrome')
-      .setChromeOptions(new chrome.Options().headless())
-      .build();
+      .setChromeOptions(new chrome.Options().headless());
+
+    if (process.env.CHROMEDRIVER_PATH) {
+      builder.setChromeService(
+        new chrome.ServiceBuilder(process.env.CHROMEDRIVER_PATH)
+      );
+    }
+
+    driver = builder.build();
   });
 
   afterEach(() => {
