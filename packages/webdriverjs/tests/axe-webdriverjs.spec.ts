@@ -12,6 +12,9 @@ import { Server, createServer } from 'http';
 import { Webdriver, connectToChromeDriver } from './test-utils';
 import AxeBuilder from '../src';
 import { axeRunPartial } from '../src/browser';
+import child_process from 'child_process';
+import { ChildProcessWithoutNullStreams } from 'child_process';
+
 const dylangConfig = JSON.parse(
   fs.readFileSync(
     require.resolve('./fixtures/external/dylang-config.json'),
@@ -28,6 +31,8 @@ describe('@axe-core/webdriverjs', () => {
   let axeCrasherSource: string;
   let axeForceLegacy: string;
   let axeLargePartial: string;
+
+  let chromedriverProcess: ChildProcessWithoutNullStreams;
 
   before(async () => {
     const axePath = require.resolve('axe-core');
@@ -46,13 +51,17 @@ describe('@axe-core/webdriverjs', () => {
       'utf8'
     );
 
-    chromedriver.start([`--port=${port}`]);
+    const binPath = process.env.CHROMEDRIVER_PATH ?? chromedriver.path;
+    chromedriverProcess = child_process.spawn(binPath, [`--port=${port}`]);
+    chromedriverProcess.stdout.pipe(process.stdout);
+    chromedriverProcess.stderr.pipe(process.stderr);
+
     await delay(500);
     await connectToChromeDriver(port);
   });
 
   after(() => {
-    chromedriver.stop();
+    chromedriverProcess.kill();
   });
 
   beforeEach(async () => {
