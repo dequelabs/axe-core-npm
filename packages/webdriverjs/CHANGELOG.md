@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [4.6.1](https://github.com/dequelabs/axe-core-npm/compare/v4.6.0...v4.6.1) (2023-03-21)
+
+
+### Bug Fixes
+
+* work with extremely large results ([#667](https://github.com/dequelabs/axe-core-npm/issues/667)) ([395d5fc](https://github.com/dequelabs/axe-core-npm/commit/395d5fc165c97f0c297176eb69eb58d2510c938f))
+
+
+
+
+
 # [4.6.0](https://github.com/dequelabs/axe-core-npm/compare/v4.5.2...v4.6.0) (2023-01-19)
 
 

@@ -3,6 +3,23 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [4.6.1](https://github.com/dequelabs/axe-core-npm/compare/v4.6.0...v4.6.1) (2023-03-21)
+
+
+### Bug Fixes
+
+* **cli:** increase --timeout default to 90 seconds (to match --help) ([#683](https://github.com/dequelabs/axe-core-npm/issues/683)) ([d11481b](https://github.com/dequelabs/axe-core-npm/commit/d11481b8c74598617260586fe14c8ceba32c6792))
+* work with extremely large results ([#667](https://github.com/dequelabs/axe-core-npm/issues/667)) ([395d5fc](https://github.com/dequelabs/axe-core-npm/commit/395d5fc165c97f0c297176eb69eb58d2510c938f))
+
+
+### Features
+
+* **webdriverio:** deprecate @wdio/sync support ([#677](https://github.com/dequelabs/axe-core-npm/issues/677)) ([6121e55](https://github.com/dequelabs/axe-core-npm/commit/6121e55e000b0b8b5b93c92b8530cfa1bd505da8))
+
+
+
+
+
 # [4.6.0](https://github.com/dequelabs/axe-core-npm/compare/v4.5.2...v4.6.0) (2023-01-19)
 
 
