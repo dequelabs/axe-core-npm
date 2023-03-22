@@ -3,36 +3,33 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
-# [4.6.0](https://github.com/dequelabs/axe-core-npm/compare/v4.5.2...v4.6.0) (2023-01-19)
-
+## [4.6.1](https://github.com/dequelabs/axe-core-npm/compare/v4.6.0...v4.6.1) (2023-03-22)
 
 ### Bug Fixes
 
-* **playwright:** update playwright to support updated types ([#635](https://github.com/dequelabs/axe-core-npm/issues/635)) ([1339ec7](https://github.com/dequelabs/axe-core-npm/commit/1339ec7199fd654f6116ecaf824274a163cf3a73))
-* use `SerialContextObject` type instead of `ContextObject` ([#632](https://github.com/dequelabs/axe-core-npm/issues/632)) ([630b545](https://github.com/dequelabs/axe-core-npm/commit/630b545469b8e973e2aa9c7d879f9c120ce8a4d9))
+- **cli:** increase --timeout default to 90 seconds (to match --help) ([#683](https://github.com/dequelabs/axe-core-npm/issues/683)) ([d11481b](https://github.com/dequelabs/axe-core-npm/commit/d11481b8c74598617260586fe14c8ceba32c6792))
+- work with extremely large results ([#667](https://github.com/dequelabs/axe-core-npm/issues/667)) ([395d5fc](https://github.com/dequelabs/axe-core-npm/commit/395d5fc165c97f0c297176eb69eb58d2510c938f))
+- **webdriverio:** deprecate @wdio/sync support ([#677](https://github.com/dequelabs/axe-core-npm/issues/677)) ([6121e55](https://github.com/dequelabs/axe-core-npm/commit/6121e55e000b0b8b5b93c92b8530cfa1bd505da8))
 
+# [4.6.0](https://github.com/dequelabs/axe-core-npm/compare/v4.5.2...v4.6.0) (2023-01-19)
+
+### Bug Fixes
+
+- **playwright:** update playwright to support updated types ([#635](https://github.com/dequelabs/axe-core-npm/issues/635)) ([1339ec7](https://github.com/dequelabs/axe-core-npm/commit/1339ec7199fd654f6116ecaf824274a163cf3a73))
+- use `SerialContextObject` type instead of `ContextObject` ([#632](https://github.com/dequelabs/axe-core-npm/issues/632)) ([630b545](https://github.com/dequelabs/axe-core-npm/commit/630b545469b8e973e2aa9c7d879f9c120ce8a4d9))
 
 ### Features
 
-* support shadow dom selectors ([#619](https://github.com/dequelabs/axe-core-npm/issues/619)) ([6065b56](https://github.com/dequelabs/axe-core-npm/commit/6065b562adf289341033a7233426ba3dcfb8a24b))
-* Update axe-core to v4.6.1 ([#633](https://github.com/dequelabs/axe-core-npm/issues/633)) ([8bab5b2](https://github.com/dequelabs/axe-core-npm/commit/8bab5b23b3653a6a0603f10d889e22418a4fff3e))
-
-
-
-
+- support shadow dom selectors ([#619](https://github.com/dequelabs/axe-core-npm/issues/619)) ([6065b56](https://github.com/dequelabs/axe-core-npm/commit/6065b562adf289341033a7233426ba3dcfb8a24b))
+- Update axe-core to v4.6.1 ([#633](https://github.com/dequelabs/axe-core-npm/issues/633)) ([8bab5b2](https://github.com/dequelabs/axe-core-npm/commit/8bab5b23b3653a6a0603f10d889e22418a4fff3e))
 
 ## [4.5.2](https://github.com/dequelabs/axe-core-npm/compare/v4.5.1...v4.5.2) (2022-11-15)
 
-
 ### Bug Fixes
 
-* **cli:** include all functions in types file ([#603](https://github.com/dequelabs/axe-core-npm/issues/603)) ([30042ef](https://github.com/dequelabs/axe-core-npm/commit/30042ef3acc0cab7f67ddcf284df089f243f53e6))
-* **cli:** use correct driver typings ([#604](https://github.com/dequelabs/axe-core-npm/issues/604)) ([d33bbdf](https://github.com/dequelabs/axe-core-npm/commit/d33bbdf2b3d05c3ba0106d717ba1c8d706c5e05c))
-* update to use axe-core 4.5.2 ([#607](https://github.com/dequelabs/axe-core-npm/issues/607)) ([61312ff](https://github.com/dequelabs/axe-core-npm/commit/61312fff2e9ee4e0f218a29a1608f69b45206fad))
-
-
-
-
+- **cli:** include all functions in types file ([#603](https://github.com/dequelabs/axe-core-npm/issues/603)) ([30042ef](https://github.com/dequelabs/axe-core-npm/commit/30042ef3acc0cab7f67ddcf284df089f243f53e6))
+- **cli:** use correct driver typings ([#604](https://github.com/dequelabs/axe-core-npm/issues/604)) ([d33bbdf](https://github.com/dequelabs/axe-core-npm/commit/d33bbdf2b3d05c3ba0106d717ba1c8d706c5e05c))
+- update to use axe-core 4.5.2 ([#607](https://github.com/dequelabs/axe-core-npm/issues/607)) ([61312ff](https://github.com/dequelabs/axe-core-npm/commit/61312fff2e9ee4e0f218a29a1608f69b45206fad))
 
 ## [4.5.1](https://github.com/dequelabs/axe-core-npm/compare/v4.5.0...v4.5.1) (2022-11-03)
 

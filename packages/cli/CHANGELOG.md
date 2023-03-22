@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [4.6.1](https://github.com/dequelabs/axe-core-npm/compare/v4.6.0...v4.6.1) (2023-03-22)
+
+
+### Bug Fixes
+
+* **cli:** increase --timeout default to 90 seconds (to match --help) ([#683](https://github.com/dequelabs/axe-core-npm/issues/683)) ([d11481b](https://github.com/dequelabs/axe-core-npm/commit/d11481b8c74598617260586fe14c8ceba32c6792))
+
+
+
+
+
 # [4.6.0](https://github.com/dequelabs/axe-core-npm/compare/v4.5.2...v4.6.0) (2023-01-19)
 
 
