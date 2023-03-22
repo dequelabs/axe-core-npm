@@ -10,7 +10,7 @@ import testListen from 'test-listen';
 import AxePuppeteer from '../src/index';
 import {
   startServer,
-  puppeteerArgs,
+  puppeteerOpts,
   expectAsync,
   expectAsyncToNotThrow
 } from './utils';
@@ -62,8 +62,8 @@ describe('AxePuppeteer', function () {
   });
 
   beforeEach(async () => {
-    const args = puppeteerArgs();
-    browser = await Puppeteer.launch({ args });
+    const opts = puppeteerOpts();
+    browser = await Puppeteer.launch(opts);
     page = await browser.newPage();
   });
 
