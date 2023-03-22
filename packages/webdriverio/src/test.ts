@@ -13,6 +13,8 @@ import AxeBuilder from '.';
 import { logOrRethrowError } from './utils';
 import { WdioBrowser } from './types';
 import type { AxeResults, Result } from 'axe-core';
+import child_process from 'child_process';
+import { ChildProcessWithoutNullStreams } from 'child_process';
 
 const connectToChromeDriver = (port: number): Promise<void> => {
   let socket: net.Socket;
@@ -50,14 +52,20 @@ describe('@axe-core/webdriverio', () => {
   for (const protocol of ['devtools', 'webdriver'] as const) {
     if (protocol === 'webdriver') {
       port = 9515;
+
+      let chromedriverProcess: ChildProcessWithoutNullStreams;
+
       before(async () => {
-        chromedriver.start([`--port=${port}`]);
+        const path = process.env.CHROMEDRIVER_PATH ?? chromedriver.path;
+        chromedriverProcess = child_process.spawn(path, [`--port=${port}`]);
+        chromedriverProcess.stdout.pipe(process.stdout);
+        chromedriverProcess.stderr.pipe(process.stderr);
         await delay(500);
         await connectToChromeDriver(port);
       });
 
       after(() => {
-        chromedriver.stop();
+        chromedriverProcess.kill();
       });
     }
 
