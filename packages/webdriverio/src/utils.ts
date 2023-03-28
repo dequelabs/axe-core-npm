@@ -165,23 +165,48 @@ export const axeFinishRun = (
   partialResults: PartialResults,
   options: RunOptions
 ): Promise<AxeResults> => {
-  return promisify(
-    client
-      .executeAsync<string, never>(
-        `var callback = arguments[arguments.length - 1];
+  // executeScript has a size limit of ~32 million characters so we'll need
+  // to split partialResults into chunks if it exceeds that limit.
+  // since we need to stringify twice we need to leave room for the double escaped quotes
+  const sizeLimit = 15_000_000;
+  const partialString = JSON.stringify(
+    partialResults.map(res => JSON.stringify(res))
+  );
+  function chunkResults(result: string): Promise<void> {
+    const chunk = JSON.stringify(result.substring(0, sizeLimit));
+    return promisify(
+      client.execute(
+        `
+        window.partialResults ??= '';
+        window.partialResults += ${chunk};
+        `
+      )
+    ).then(() => {
+      if (result.length > sizeLimit) {
+        return chunkResults(result.substr(sizeLimit));
+      }
+    });
+  }
+
+  return chunkResults(partialString)
+    .then(() => {
+      return promisify(
+        client.executeAsync<string, never>(
+          `var callback = arguments[arguments.length - 1];
       ${axeSource};
       window.axe.configure({
         branding: { application: 'webdriverio' }
       });
 
-      var partialResults = ${JSON.stringify(partialResults)};
+      var partialResults = JSON.parse(window.partialResults).map(res => JSON.parse(res));
       var options = ${JSON.stringify(options || {})};
       window.axe.finishRun(partialResults, options).then(function (axeResults) {
         callback(JSON.stringify(axeResults))
       });`
-      )
-      .then((r: string) => deserialize<AxeResults>(r))
-  );
+        )
+      );
+    })
+    .then((r: string) => deserialize<AxeResults>(r));
 };
 
 export const configureAllowedOrigins = (

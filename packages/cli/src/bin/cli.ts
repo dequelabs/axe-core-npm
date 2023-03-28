@@ -60,7 +60,9 @@ program
   )
   .option(
     '--timeout <n>',
-    'Set how much time (seconds) axe has to run (default: 90)'
+    'Set how much time (seconds) axe has to run',
+    // @ts-ignore
+    90
   )
   .option('--timer', 'Log the time it takes to run')
   .option('--show-errors [boolean]', 'Display the full error stack', true)

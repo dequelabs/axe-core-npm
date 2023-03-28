@@ -3,20 +3,23 @@ import net from 'net';
 import chrome from 'selenium-webdriver/chrome';
 
 export const Webdriver = (): WebDriver => {
-  let webdriver: WebDriver;
+  let builder: Builder;
   if (process.env.REMOTE_SELENIUM_URL) {
-    webdriver = new Builder()
+    builder = new Builder()
       .forBrowser('chrome')
       .usingServer(process.env.REMOTE_SELENIUM_URL)
-      .setChromeOptions(new chrome.Options().headless())
-      .build();
+      .setChromeOptions(new chrome.Options().headless());
   } else {
-    webdriver = new Builder()
+    builder = new Builder()
       .setChromeOptions(new chrome.Options().headless())
-      .forBrowser('chrome')
-      .build();
+      .forBrowser('chrome');
   }
-  return webdriver;
+  if (process.env.CHROMEDRIVER_PATH) {
+    builder.setChromeService(
+      new chrome.ServiceBuilder(process.env.CHROMEDRIVER_PATH)
+    );
+  }
+  return builder.build();
 };
 
 export const connectToChromeDriver = (port: number): Promise<void> => {

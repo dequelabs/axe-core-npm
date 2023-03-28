@@ -21,7 +21,7 @@ export interface EventResponse {
 
 export interface WebdriverConfigParams {
   browser: string;
-  timeout?: number;
+  timeout: number;
   chromedriverPath?: string;
   path?: string;
   chromeOptions?: string[];

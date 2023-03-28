@@ -12,6 +12,9 @@ import { Server, createServer } from 'http';
 import { Webdriver, connectToChromeDriver } from './test-utils';
 import AxeBuilder from '../src';
 import { axeRunPartial } from '../src/browser';
+import child_process from 'child_process';
+import { ChildProcessWithoutNullStreams } from 'child_process';
+
 const dylangConfig = JSON.parse(
   fs.readFileSync(
     require.resolve('./fixtures/external/dylang-config.json'),
@@ -27,6 +30,9 @@ describe('@axe-core/webdriverjs', () => {
   let axeSource: string;
   let axeCrasherSource: string;
   let axeForceLegacy: string;
+  let axeLargePartial: string;
+
+  let chromedriverProcess: ChildProcessWithoutNullStreams;
 
   before(async () => {
     const axePath = require.resolve('axe-core');
@@ -40,14 +46,22 @@ describe('@axe-core/webdriverjs', () => {
       path.join(externalPath, 'axe-force-legacy.js'),
       'utf8'
     );
+    axeLargePartial = fs.readFileSync(
+      path.join(externalPath, 'axe-large-partial.js'),
+      'utf8'
+    );
 
-    chromedriver.start([`--port=${port}`]);
+    const binPath = process.env.CHROMEDRIVER_PATH ?? chromedriver.path;
+    chromedriverProcess = child_process.spawn(binPath, [`--port=${port}`]);
+    chromedriverProcess.stdout.pipe(process.stdout);
+    chromedriverProcess.stderr.pipe(process.stderr);
+
     await delay(500);
     await connectToChromeDriver(port);
   });
 
   after(() => {
-    chromedriver.stop();
+    chromedriverProcess.kill();
   });
 
   beforeEach(async () => {
@@ -120,6 +134,20 @@ describe('@axe-core/webdriverjs', () => {
 
       assert.notEqual(title, 'Error');
       assert.isUndefined(err);
+    });
+
+    it('handles large results', async function () {
+      /* this test handles a large amount of partial results a timeout may be required */
+      this.timeout(60_000);
+      await driver.get(`${addr}/external/index.html`);
+
+      const results = await new AxeBuilder(
+        driver,
+        axeSource + axeLargePartial
+      ).analyze();
+
+      assert.lengthOf(results.passes, 1);
+      assert.equal(results.passes[0].id, 'duplicate-id');
     });
 
     it('throws if axe errors out on the top window', async () => {

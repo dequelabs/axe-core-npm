@@ -14,7 +14,8 @@ import {
   axeFinishRun,
   axeConfigure,
   axeRunLegacy,
-  axeRunPartialSupport
+  axeRunPartialSupport,
+  chunkResultString
 } from './browser';
 import { AnalyzeCB, PartialResults } from './types';
 import { iframeSelector, injectJS } from './legacy';
@@ -280,8 +281,24 @@ export class AxePuppeteer {
     );
 
     await frameSourceInject(blankPage.mainFrame(), axeSource, config);
+
+    // evaluate has a size limit on the number of characters so we'll need
+    // to split partialResults into chunks if it exceeds that limit.
+    const sizeLimit = 60_000_000;
+    const partialString = JSON.stringify(partialResults);
+
+    async function chunkResults(result: string): Promise<void> {
+      const chunk = result.substring(0, sizeLimit);
+      await blankPage.evaluate(chunkResultString, chunk);
+
+      if (result.length > sizeLimit) {
+        return await chunkResults(result.substr(sizeLimit));
+      }
+    }
+
+    await chunkResults(partialString);
     return await blankPage
-      .evaluate(axeFinishRun, partialResults, axeOptions)
+      .evaluate(axeFinishRun, axeOptions)
       .finally(async () => {
         await blankPage.close();
       });
