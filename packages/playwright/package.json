@@ -39,7 +39,7 @@
     "prepare": "npm run build"
   },
   "dependencies": {
-    "axe-core": "^4.6.3"
+    "axe-core": "^4.6.3-canary.13aa1f8"
   },
   "devDependencies": {
     "@types/chai": "^4.3.3",
