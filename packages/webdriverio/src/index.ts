@@ -38,10 +38,8 @@ export default class AxeBuilder {
       isWebdriverClient(client),
       'An instantiated WebdriverIO client greater than v5 is required'
     );
-    // Treat everything as Browser<'async'>:
-    // - Anything sync can also run async, since JS can await sync functions
-    // - Ignore MultiRemoteBrowser, which is just Browser with extra props
-    this.client = client as Browser;
+
+    this.client = client;
     this.errorUrl =
       'https://github.com/dequelabs/axe-core-npm/blob/develop/packages/webdriverio/error-handling.md';
 
