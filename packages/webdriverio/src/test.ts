@@ -10,7 +10,6 @@ import fs from 'fs';
 import delay from 'delay';
 import AxeBuilder from '.';
 import { logOrRethrowError } from './utils';
-import { WdioBrowser } from './types';
 import type { AxeResults, Result } from 'axe-core';
 import child_process from 'child_process';
 import { ChildProcessWithoutNullStreams } from 'child_process';

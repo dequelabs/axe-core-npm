@@ -1,8 +1,6 @@
-import type { Browser, MultiRemoteBrowser, Element } from 'webdriverio';
+import type { Browser } from 'webdriverio';
 import type { AxeResults, BaseSelector } from 'axe-core';
 import * as axe from 'axe-core';
-
-export type WdioBrowser = Browser | MultiRemoteBrowser;
 
 export type CallbackFunction = (
   error: string | null,
@@ -10,7 +8,7 @@ export type CallbackFunction = (
 ) => void;
 
 export interface Options {
-  client: WdioBrowser;
+  client: Browser;
   axeSource?: string;
 }
 

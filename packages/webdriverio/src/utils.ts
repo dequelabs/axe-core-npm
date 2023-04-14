@@ -9,12 +9,11 @@ import type {
   SerialSelectorList,
   SerialContextObject
 } from 'axe-core';
-import type { WdioBrowser } from './types';
 
 /**
  * Validates that the client provided is WebdriverIO v5 or v6.
  */
-export const isWebdriverClient = (client: WdioBrowser): boolean => {
+export const isWebdriverClient = (client: Browser): boolean => {
   if (!client || typeof client !== 'object') {
     return false;
   }

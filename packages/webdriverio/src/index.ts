@@ -21,12 +21,7 @@ import type {
   SerialSelectorList,
   SerialFrameSelector
 } from 'axe-core';
-import type {
-  Options,
-  CallbackFunction,
-  WdioBrowser,
-  PartialResults
-} from './types';
+import type { Options, CallbackFunction, PartialResults } from './types';
 
 export default class AxeBuilder {
   private client: Browser;
@@ -276,7 +271,7 @@ export default class AxeBuilder {
    * - https://webdriver.io/docs/api/webdriver.html#switchtoframe
    */
   private async setBrowsingContext(
-    id: null | Element | WdioBrowser = null
+    id: null | Element | Browser = null
   ): Promise<void> {
     if (id) {
       await this.client.switchToFrame(id);
