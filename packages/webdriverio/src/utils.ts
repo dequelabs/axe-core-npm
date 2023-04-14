@@ -9,7 +9,7 @@ import type {
   SerialSelectorList,
   SerialContextObject
 } from 'axe-core';
-import type { Selector, WdioBrowser } from './types';
+import type { WdioBrowser } from './types';
 
 /**
  * Validates that the client provided is WebdriverIO v5 or v6.
@@ -81,7 +81,7 @@ const promisify = <T>(thenable: Promise<T>): Promise<T> => {
 };
 
 export const axeSourceInject = async (
-  client: Browser<'async'>,
+  client: Browser,
   axeSource: string
 ): Promise<{ runPartialSupported: boolean }> => {
   return promisify(
@@ -100,7 +100,7 @@ export const axeSourceInject = async (
 };
 
 export const axeRunPartial = (
-  client: Browser<'async'>,
+  client: Browser,
   context?: SerialContextObject,
   options?: RunOptions
 ): Promise<PartialResult> => {
@@ -120,7 +120,7 @@ export const axeRunPartial = (
 };
 
 export const axeGetFrameContext = (
-  client: Browser<'async'>,
+  client: Browser,
   context: SerialContextObject
 ): Promise<any[]> => {
   return promisify(
@@ -136,7 +136,7 @@ export const axeGetFrameContext = (
 };
 
 export const axeRunLegacy = (
-  client: Browser<'async'>,
+  client: Browser,
   context: SerialContextObject,
   options: RunOptions,
   config?: Spec
@@ -160,7 +160,7 @@ export const axeRunLegacy = (
 };
 
 export const axeFinishRun = (
-  client: Browser<'async'>,
+  client: Browser,
   axeSource: string,
   partialResults: PartialResults,
   options: RunOptions
@@ -209,9 +209,7 @@ export const axeFinishRun = (
     .then((r: string) => deserialize<AxeResults>(r));
 };
 
-export const configureAllowedOrigins = (
-  client: Browser<'async'>
-): Promise<void> => {
+export const configureAllowedOrigins = (client: Browser): Promise<void> => {
   return promisify(
     client.execute(`
       window.axe.configure({ allowedOrigins: ['<unsafe_all_origins>'] })

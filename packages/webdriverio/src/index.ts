@@ -13,7 +13,7 @@ import {
   configureAllowedOrigins
 } from './utils';
 
-import type { Browser } from 'webdriverio';
+import type { Browser, Element } from 'webdriverio';
 import type {
   RunOptions,
   AxeResults,
@@ -25,13 +25,11 @@ import type {
   Options,
   CallbackFunction,
   WdioBrowser,
-  WdioElement,
-  PartialResults,
-  Selector
+  PartialResults
 } from './types';
 
 export default class AxeBuilder {
-  private client: Browser<'async'>;
+  private client: Browser;
   private axeSource: string;
   private includes: SerialSelectorList = [];
   private excludes: SerialSelectorList = [];
@@ -48,7 +46,7 @@ export default class AxeBuilder {
     // Treat everything as Browser<'async'>:
     // - Anything sync can also run async, since JS can await sync functions
     // - Ignore MultiRemoteBrowser, which is just Browser with extra props
-    this.client = client as Browser<'async'>;
+    this.client = client as Browser;
     this.errorUrl =
       'https://github.com/dequelabs/axe-core-npm/blob/develop/packages/webdriverio/error-handling.md';
 
@@ -190,9 +188,7 @@ export default class AxeBuilder {
   /**
    * Injects `axe-core` into all frames.
    */
-  private async inject(
-    browsingContext: WdioElement | null = null
-  ): Promise<void> {
+  private async inject(browsingContext: Element | null = null): Promise<void> {
     await this.setBrowsingContext(browsingContext);
     const runPartialSupported = await axeSourceInject(
       this.client,
@@ -280,7 +276,7 @@ export default class AxeBuilder {
    * - https://webdriver.io/docs/api/webdriver.html#switchtoframe
    */
   private async setBrowsingContext(
-    id: null | WdioElement | WdioBrowser = null
+    id: null | Element | WdioBrowser = null
   ): Promise<void> {
     if (id) {
       await this.client.switchToFrame(id);
