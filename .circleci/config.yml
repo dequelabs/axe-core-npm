@@ -158,10 +158,7 @@ jobs:
             CHROMEDRIVER_PATH: /usr/local/bin/chromedriver
 
   webdriverio:
-    docker:
-      # using a node14 image instead of a node16 image due to WDIO
-      # @see https://webdriver.io/blog/2021/07/28/sync-api-deprecation/
-      - image: cimg/node:14.19-browsers
+    <<: *defaults
     working_directory: ~/axe-core-npm
     steps:
       - checkout
