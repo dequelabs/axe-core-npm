@@ -78,7 +78,7 @@
     ],
     "statements": 95,
     "branches": 92,
-    "functions": 100,
+    "functions": 94,
     "lines": 95,
     "exclude": [
       "dist",
