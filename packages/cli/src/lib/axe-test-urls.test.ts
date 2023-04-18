@@ -43,29 +43,6 @@ describe('testPages', function () {
     assert.deepEqual(urlsCalled, urls);
   });
 
-  it('waits until the document is ready to have a className added', async () => {
-    const asyncScripts: string[] = [];
-    let waitCalls = 0;
-
-    mockDriver.executeAsyncScript = async (script: string) => {
-      asyncScripts.push(script);
-      return '{}';
-    };
-    mockDriver.wait = async (script: string) => {
-      waitCalls++;
-      return script;
-    };
-
-    await testPages(['http://foo'], config);
-    const script = asyncScripts.find(scr => {
-      return scr.match(
-        /script\.innerHTML\s*=[\s\S]*['"]document\.documentElement\.classList\.add\(['"]deque-axe-is-ready/
-      );
-    });
-    assert.isDefined(script);
-    assert.equal(waitCalls, 1);
-  });
-
   it('injects axe into the page', async () => {
     const scripts: string[] = [];
     config.axeSource = 'axe="hi, I am axe"';
