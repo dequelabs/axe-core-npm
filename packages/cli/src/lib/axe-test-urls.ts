@@ -29,23 +29,6 @@ const testPages = async (
     driver
       .get(currentUrl)
       .then(() => {
-        return driver.executeAsyncScript(`
-          const callback = arguments[arguments.length - 1];
-          const script = document.createElement('script');
-          script.innerHTML = 'document.documentElement.classList.add("deque-axe-is-ready");'
-          document.documentElement.appendChild(script);
-          callback();
-      `);
-      })
-      .then(() => {
-        return driver.wait(
-          WebDriver.until.elementsLocated(
-            WebDriver.By.css('.deque-axe-is-ready')
-          ),
-          10000
-        );
-      })
-      .then(() => {
         if (config.timer) {
           events?.endTimer('axe page load time');
         }
