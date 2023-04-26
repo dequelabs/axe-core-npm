@@ -3,11 +3,20 @@
   "version": "4.6.1",
   "description": "A EARL+JSON-LD reporter for axe-core",
   "main": "dist/axeReporterEarl.js",
+  "module": "./dist/axeReporterEarl.mjs",
+  "types": "./dist/axeReporterEarl.d.ts",
+  "exports": {
+    ".": {
+      "import": "./dist/axeReporterEarl.mjs",
+      "require": "./dist/axeReporterEarl.js",
+      "types": "./dist/axeReporterEarl.d.ts"
+    }
+  },
   "scripts": {
     "start": "node --experimental-vm-modules node_modules/.bin/jest --watch --env=jsdom",
     "test": "npm run build && npm run test:unit",
     "test:unit": "node --experimental-vm-modules node_modules/.bin/jest --collectCoverage",
-    "build": "tsc",
+    "build": "tsup src/axeReporterEarl.ts --dts --format esm,cjs",
     "prepublishOnly": "npm run build"
   },
   "publishConfig": {
@@ -42,6 +51,7 @@
     "jsonld": "^8.1.0",
     "ts-jest": "^29.0.3",
     "ts-node": "^10.9.1",
+    "tsup": "^6.7.0",
     "typescript": "^4.8.4"
   }
 }

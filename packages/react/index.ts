@@ -1,7 +1,7 @@
 /* global Promise */
-import axeCore = require('axe-core');
-import rIC = require('requestidlecallback');
-import after = require('./after');
+import axeCore from 'axe-core';
+import * as rIC from 'requestidlecallback';
+import after from './after';
 import cache from './cache';
 
 const requestIdleCallback = rIC.request;
@@ -366,7 +366,7 @@ interface ReactSpec extends axeCore.Spec {
  * @param {ElementContext} _context axe ElementContent object
  * @param {Function} _logger Logger implementation
  */
-function reactAxe(
+export default function reactAxe(
   _React: typeof React,
   _ReactDOM: typeof ReactDOM,
   _timeout: number,
@@ -412,4 +412,6 @@ function reactAxe(
   return checkAndReport(document.body, timeout);
 }
 
-export = reactAxe;
+if (!import.meta.url) {
+  exports = module.exports = reactAxe;
+}

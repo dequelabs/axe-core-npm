@@ -1,13 +1,13 @@
 import { WebDriver } from 'selenium-webdriver';
-import {
+import axe, {
   RunOptions,
   Spec,
   AxeResults,
   SerialContextObject,
   SerialSelectorList,
-  source,
   SerialFrameSelector
 } from 'axe-core';
+const { source } = axe;
 import { CallbackFunction, BuilderOptions, Selector } from './types';
 import { normalizeContext } from './utils/index';
 import AxeInjector from './axe-injector';
@@ -267,6 +267,8 @@ class AxeBuilder {
   }
 }
 
-exports = module.exports = AxeBuilder;
+if (!import.meta.url) {
+  exports = module.exports = AxeBuilder;
+}
 
 export default AxeBuilder;
