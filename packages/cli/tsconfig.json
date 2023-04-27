@@ -6,6 +6,7 @@
     "noImplicitAny": true,
     "strictNullChecks": true,
     "moduleResolution": "node",
+    "resolveJsonModule": true,
     "module": "esnext",
     "target": "esnext",
     "allowJs": true,
@@ -13,6 +14,12 @@
     "esModuleInterop": true,
     "skipLibCheck": true,
     "declaration": true
+  },
+  "ts-node": {
+    "compilerOptions": {
+      "module": "commonjs",
+      "target": "es5"
+    }
   },
   "include": ["./src/lib", "./src/bin"]
 }
