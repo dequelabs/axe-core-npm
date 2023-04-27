@@ -171,6 +171,7 @@ jobs:
       - restore_dependency_cache
       - browser-tools/install-chrome
       - browser-tools/install-chromedriver
+      - run: npm run build --prefix=packages/webdriverio
       - run:
           command: npm run coverage --prefix=packages/webdriverio
           environment:
