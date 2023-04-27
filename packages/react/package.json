@@ -27,6 +27,7 @@
     "build": "tsup index.ts --dts --format esm,cjs",
     "prepare": "npm run build",
     "test": "tsc && npm run test:types && jest",
+    "test:esm": "node esmTest.mjs",
     "test:types": "cd test && tsc"
   },
   "keywords": [

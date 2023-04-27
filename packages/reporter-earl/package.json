@@ -15,6 +15,7 @@
   "scripts": {
     "start": "node --experimental-vm-modules node_modules/.bin/jest --watch --env=jsdom",
     "test": "npm run build && npm run test:unit",
+    "test:esm": "node esmTest.mjs",
     "test:unit": "node --experimental-vm-modules node_modules/.bin/jest --collectCoverage",
     "build": "tsup src/axeReporterEarl.ts --dts --format esm,cjs",
     "prepublishOnly": "npm run build"

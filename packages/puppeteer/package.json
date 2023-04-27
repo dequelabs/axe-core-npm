@@ -25,6 +25,7 @@
   "scripts": {
     "build": "tsup src/index.ts --dts --format esm,cjs",
     "test": "mocha 'test/**/*.test.ts'",
+    "test:esm": "node esmTest.mjs",
     "coverage": "nyc npm run test",
     "prepublishOnly": "npm run build"
   },

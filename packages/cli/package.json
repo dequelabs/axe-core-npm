@@ -40,6 +40,7 @@
     "prebuild": "rimraf dist",
     "build": "tsup src/lib/index.ts --dts --format esm,cjs && tsup src/bin/cli.ts --format cjs",
     "test": "mocha --timeout 60000 -r ts-node/register 'src/**/**.test.ts'",
+    "test:esm": "node esmTest.mjs",
     "coverage": "nyc npm run test",
     "prepare": "npm run build"
   },
