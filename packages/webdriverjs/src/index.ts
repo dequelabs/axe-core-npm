@@ -267,7 +267,7 @@ class AxeBuilder {
   }
 }
 
-if (!import.meta.url) {
+if (typeof module === 'object') {
   exports = module.exports = AxeBuilder;
 }
 

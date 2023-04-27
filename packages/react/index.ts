@@ -412,6 +412,6 @@ export default function reactAxe(
   return checkAndReport(document.body, timeout);
 }
 
-if (!import.meta.url) {
+if (typeof module === 'object') {
   exports = module.exports = reactAxe;
 }

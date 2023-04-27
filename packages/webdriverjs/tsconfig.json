@@ -13,5 +13,11 @@
     "esModuleInterop": true,
     "skipLibCheck": true
   },
+  "ts-node": {
+    "compilerOptions": {
+      "module": "commonjs",
+      "target": "es5"
+    }
+  },
   "include": ["src"]
 }
