@@ -1,6 +1,6 @@
 {
   "name": "@axe-core/react-example",
-  "version": "4.6.1",
+  "version": "4.7.0",
   "description": "Example of react-axe with a React.js application",
   "main": "index.js",
   "private": true,
@@ -13,7 +13,7 @@
   "author": "Dylan Barrell (dylan@barrell.com)",
   "license": "MIT",
   "dependencies": {
-    "@axe-core/react": "^4.6.1",
+    "@axe-core/react": "^4.7.0",
     "create-react-class": "^15.6.3",
     "react": "^16.8.6",
     "react-dom": "^16.8.6",
