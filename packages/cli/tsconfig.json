@@ -5,14 +5,21 @@
     "sourceMap": true,
     "noImplicitAny": true,
     "strictNullChecks": true,
-    "module": "commonjs",
-    "target": "es2015",
+    "moduleResolution": "node",
     "resolveJsonModule": true,
+    "module": "esnext",
+    "target": "esnext",
     "allowJs": true,
-    "lib": ["dom", "es2015", "esnext.asynciterable"],
+    "lib": ["dom", "esnext", "esnext.asynciterable"],
     "esModuleInterop": true,
     "skipLibCheck": true,
     "declaration": true
+  },
+  "ts-node": {
+    "compilerOptions": {
+      "module": "commonjs",
+      "target": "es5"
+    }
   },
   "include": ["./src/lib", "./src/bin"]
 }

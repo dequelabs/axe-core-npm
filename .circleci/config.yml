@@ -130,6 +130,7 @@ jobs:
       # lerna link after installing the latest version of chromedriver, as we depend on webdriverJS
       - run: cd packages/cli && npx lerna link
       - run: npm run coverage --prefix=packages/cli
+      - run: npm run test:esm --prefix=packages/cli
 
   puppeteer:
     <<: *defaults
@@ -143,6 +144,7 @@ jobs:
       - run: sudo apt-get update -y
       - run: cd packages/puppeteer && npx browser-driver-manager@1.0.4 install chrome chromedriver --verbose
       - run: npm run coverage --prefix=packages/puppeteer
+      - run: npm run test:esm --prefix=packages/puppeteer
 
   webdriverjs:
     <<: *defaults
@@ -156,6 +158,10 @@ jobs:
           command: npm run coverage --prefix=packages/webdriverjs
           environment:
             CHROMEDRIVER_PATH: /usr/local/bin/chromedriver
+      - run:
+          command: npm run test:esm --prefix=packages/webdriverjs
+          environment:
+            CHROMEDRIVER_PATH: /usr/local/bin/chromedriver
 
   webdriverio:
     <<: *defaults
@@ -165,8 +171,13 @@ jobs:
       - restore_dependency_cache
       - browser-tools/install-chrome
       - browser-tools/install-chromedriver
+      - run: npm run build --prefix=packages/webdriverio
       - run:
           command: npm run coverage --prefix=packages/webdriverio
+          environment:
+            CHROMEDRIVER_PATH: /usr/local/bin/chromedriver
+      - run:
+          command: npm run test:esm --prefix=packages/webdriverio
           environment:
             CHROMEDRIVER_PATH: /usr/local/bin/chromedriver
 
@@ -176,6 +187,7 @@ jobs:
       - checkout
       - restore_dependency_cache
       - run: npm run test --prefix=packages/reporter-earl
+      - run: npm run test:esm --prefix=packages/reporter-earl
 
   react:
     <<: *defaults
@@ -184,6 +196,7 @@ jobs:
       - restore_dependency_cache
       - run: npm run build --prefix=packages/react
       - run: npm run test --prefix=packages/react
+      - run: npm run test:esm --prefix=packages/react
 
   playwright:
     docker:
@@ -200,6 +213,7 @@ jobs:
       - run: npm run bootstrap -- --ci
       - run: npm run build --prefix=packages/playwright
       - run: npm run coverage --prefix=packages/playwright
+      - run: npm run test:esm --prefix=packages/playwright
 
   axe-core-test:
     <<: *defaults

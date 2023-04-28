@@ -10,7 +10,8 @@ import type {
   SerialSelector,
   SerialFrameSelector
 } from 'axe-core';
-import { source } from 'axe-core';
+import axe from 'axe-core';
+const { source } = axe;
 import { normalizeContext, analyzePage } from './utils';
 import type { AxePlaywrightParams } from './types';
 import {

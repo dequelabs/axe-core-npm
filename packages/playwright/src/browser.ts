@@ -43,6 +43,8 @@ export const axeFinishRun = ({
 };
 
 export function chunkResultString(chunk: string) {
-  window.partialResults ??= '';
+  if (!window.partialResults) {
+    window.partialResults = '';
+  }
   window.partialResults += chunk;
 }
