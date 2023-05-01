@@ -3,6 +3,23 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [4.7.0](https://github.com/dequelabs/axe-core-npm/compare/v4.6.1...v4.7.0) (2023-04-28)
+
+
+### Bug Fixes
+
+* **cli:** do not inject script tags due to pages not allowing script tags ([#710](https://github.com/dequelabs/axe-core-npm/issues/710)) ([2e0fdb4](https://github.com/dequelabs/axe-core-npm/commit/2e0fdb4a4661040b9b8dbb91bed1a96142e4fe0c))
+
+
+### Features
+
+* enable esm import ([#713](https://github.com/dequelabs/axe-core-npm/issues/713)) ([076bfa9](https://github.com/dequelabs/axe-core-npm/commit/076bfa99f27f416b4eaff6d24cc23e8573fc72ee))
+* Update axe-core to v4.7.0 ([#709](https://github.com/dequelabs/axe-core-npm/issues/709)) ([d418d09](https://github.com/dequelabs/axe-core-npm/commit/d418d093b4c462d5d60e0f7ad3d5147bcaf52aa2))
+
+
+
+
+
 ## [4.6.1](https://github.com/dequelabs/axe-core-npm/compare/v4.6.0...v4.6.1) (2023-03-28)
 
 
