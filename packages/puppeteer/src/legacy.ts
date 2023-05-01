@@ -52,7 +52,17 @@ export async function injectJS(
 }
 
 async function injectJSModule(frame: Frame): Promise<void> {
-  const source = fs.readFileSync(require.resolve('axe-core'), 'utf8');
+  let axeCorePath = '';
+  if (typeof require === 'function' && typeof require.resolve === 'function') {
+    axeCorePath = require.resolve('axe-core');
+  } else {
+    const { createRequire } = await import('node:module');
+
+    const require = createRequire(import.meta.url);
+    axeCorePath = require.resolve('axe-core');
+  }
+
+  const source = fs.readFileSync(axeCorePath, 'utf8');
   await injectJSSource(frame, source);
 }
 

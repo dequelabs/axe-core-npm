@@ -11,8 +11,20 @@ export async function frameSourceInject(
 ): Promise<void> {
   await assertFrameReady(frame);
   if (!source) {
-    const pathFile = require.resolve('axe-core');
-    source = fs.readFileSync(pathFile, 'utf8');
+    let axeCorePath = '';
+    if (
+      typeof require === 'function' &&
+      typeof require.resolve === 'function'
+    ) {
+      axeCorePath = require.resolve('axe-core');
+    } else {
+      const { createRequire } = await import('node:module');
+
+      const require = createRequire(import.meta.url);
+      axeCorePath = require.resolve('axe-core');
+    }
+
+    source = fs.readFileSync(axeCorePath, 'utf8');
   }
   await frame.evaluate(source);
   await frame.evaluate(axeConfigure, config as Axe.Spec);

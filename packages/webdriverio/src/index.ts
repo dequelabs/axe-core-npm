@@ -23,6 +23,19 @@ import type {
 } from 'axe-core';
 import type { Options, CallbackFunction, PartialResults } from './types';
 
+let axeCorePath = '';
+async function loadAxePath() {
+  if (typeof require === 'function' && typeof require.resolve === 'function') {
+    axeCorePath = require.resolve('axe-core');
+  } else {
+    const { createRequire } = (await import('node:module')) as any;
+
+    const require = createRequire(import.meta.url);
+    axeCorePath = require.resolve('axe-core');
+  }
+}
+loadAxePath();
+
 export default class AxeBuilder {
   private client: Browser;
   private axeSource: string;
@@ -46,9 +59,8 @@ export default class AxeBuilder {
     if (axeSource) {
       this.axeSource = axeSource;
     } else {
-      const sourceDir = require.resolve('axe-core');
       try {
-        this.axeSource = fs.readFileSync(sourceDir, 'utf-8');
+        this.axeSource = fs.readFileSync(axeCorePath, 'utf-8');
       } catch (e) {
         throw new Error(
           'Unable to find axe-core source. Is axe-core installed?'
