@@ -1,5 +1,4 @@
 import * as webdriverio from 'webdriverio';
-import sync from '@wdio/sync';
 import express from 'express';
 import testListen from 'test-listen';
 import { assert } from 'chai';
@@ -11,7 +10,6 @@ import fs from 'fs';
 import delay from 'delay';
 import AxeBuilder from '.';
 import { logOrRethrowError } from './utils';
-import { WdioBrowser } from './types';
 import type { AxeResults, Result } from 'axe-core';
 import child_process from 'child_process';
 import { ChildProcessWithoutNullStreams } from 'child_process';
@@ -72,7 +70,7 @@ describe('@axe-core/webdriverio', () => {
     describe('WebdriverIO Async', () => {
       let server: Server;
       let addr: string;
-      let client: WdioBrowser;
+      let client: webdriverio.Browser;
       const axePath = require.resolve('axe-core');
       const axeSource = fs.readFileSync(axePath, 'utf8');
       const axeTestFixtures = path.resolve(
@@ -1462,65 +1460,4 @@ describe('@axe-core/webdriverio', () => {
       });
     });
   }
-
-  describe('WebdriverIO Sync', () => {
-    let server: Server;
-    let addr: string;
-    let remote: any;
-    const axeTestFixtures = path.resolve(
-      __dirname,
-      '..',
-      'fixtures',
-      'external'
-    );
-    beforeEach(async () => {
-      const app = express();
-      app.use(express.static(axeTestFixtures));
-      server = createServer(app);
-      addr = await testListen(server);
-
-      remote = webdriverio.remote({
-        automationProtocol: 'devtools',
-        path: '/',
-        capabilities: {
-          browserName: 'chrome',
-          'goog:chromeOptions': {
-            args: ['--headless']
-          }
-        },
-        logLevel: 'error'
-      });
-    });
-
-    afterEach(function (done) {
-      remote
-        .then((client: WdioBrowser) =>
-          sync(() => {
-            client.deleteSession();
-            server.close();
-          })
-        )
-        .then(() => done())
-        .catch((e: unknown) => done(e));
-    });
-
-    it('analyze', function (done) {
-      remote
-        .then((client: WdioBrowser) =>
-          sync(() => {
-            client.url(`${addr}/index.html`);
-            assert.isTrue(client.isDevTools);
-            new AxeBuilder({ client }).analyze((error, results) => {
-              assert.isNotNull(results);
-              assert.isArray(results?.violations);
-              assert.isArray(results?.incomplete);
-              assert.isArray(results?.passes);
-              assert.isArray(results?.inapplicable);
-            });
-          })
-        )
-        .then(() => done())
-        .catch((e: unknown) => done(e));
-    });
-  });
 });

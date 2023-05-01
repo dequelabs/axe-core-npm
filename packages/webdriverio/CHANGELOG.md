@@ -3,6 +3,19 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [4.7.0](https://github.com/dequelabs/axe-core-npm/compare/v4.6.1...v4.7.0) (2023-04-28)
+
+
+### Features
+
+* enable esm import ([#713](https://github.com/dequelabs/axe-core-npm/issues/713)) ([076bfa9](https://github.com/dequelabs/axe-core-npm/commit/076bfa99f27f416b4eaff6d24cc23e8573fc72ee))
+* support WDIO v8 ([#708](https://github.com/dequelabs/axe-core-npm/issues/708)) ([1e40ec0](https://github.com/dequelabs/axe-core-npm/commit/1e40ec006844a9b5f0e368b5ca8014e215c75372))
+* Update axe-core to v4.7.0 ([#709](https://github.com/dequelabs/axe-core-npm/issues/709)) ([d418d09](https://github.com/dequelabs/axe-core-npm/commit/d418d093b4c462d5d60e0f7ad3d5147bcaf52aa2))
+
+
+
+
+
 ## [4.6.1](https://github.com/dequelabs/axe-core-npm/compare/v4.6.0...v4.6.1) (2023-03-28)
 
 

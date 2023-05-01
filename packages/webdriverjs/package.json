@@ -1,6 +1,6 @@
 {
   "name": "@axe-core/webdriverjs",
-  "version": "4.6.1",
+  "version": "4.7.0",
   "description": "Provides a method to inject and analyze web pages using axe",
   "contributors": [
     {
@@ -35,12 +35,21 @@
     "url": "https://github.com/dequelabs/axe-core-npm.git"
   },
   "license": "MPL-2.0",
-  "main": "dist/index.js",
-  "typings": "dist/index.d.ts",
+  "main": "./dist/index.js",
+  "module": "./dist/index.mjs",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "import": "./dist/index.mjs",
+      "require": "./dist/index.js",
+      "types": "./dist/index.d.ts"
+    }
+  },
   "scripts": {
     "prebuild": "rimraf dist",
-    "build": "tsc",
+    "build": "tsup src/index.ts --dts --format esm,cjs",
     "test": "mocha --timeout 10000 -r ts-node/register './tests/**/*.spec.ts'",
+    "test:esm": "node esmTest.mjs",
     "coverage": "nyc npm run test",
     "prepare": "npm run build"
   },
@@ -69,7 +78,7 @@
     "axe-test-fixtures": "github:dequelabs/axe-test-fixtures#v1",
     "chai": "^4.3.6",
     "chaimocha": "^1.10.0",
-    "chromedriver": "^111.0.0",
+    "chromedriver": "^112.0.0",
     "delay": "^5.0.0",
     "express": "^4.18.2",
     "expresss": "^0.0.0",
@@ -82,10 +91,11 @@
     "sinon": "^14.0.1",
     "test-listen": "^1.1.0",
     "ts-node": "^10.9.1",
+    "tsup": "^6.7.0",
     "typescript": "^4.8.4"
   },
   "dependencies": {
-    "axe-core": "^4.6.3"
+    "axe-core": "^4.7.0"
   },
   "peerDependencies": {
     "selenium-webdriver": ">3.0.0-beta  || >=2.53.1 || >4.0.0-alpha"
