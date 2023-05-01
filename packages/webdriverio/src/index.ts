@@ -13,6 +13,7 @@ import {
   configureAllowedOrigins
 } from './utils';
 import { getFilename } from 'cross-dirname';
+import { pathToFileURL } from 'url';
 
 import type { Browser, Element } from 'webdriverio';
 import type {
@@ -30,9 +31,7 @@ async function loadAxePath() {
     axeCorePath = require.resolve('axe-core');
   } else {
     const { createRequire } = (await import('node:module')) as any;
-    const filename = (await import('url'))
-      .pathToFileURL(getFilename())
-      .toString();
+    const filename = pathToFileURL(getFilename()).toString();
 
     const require = createRequire(filename);
     axeCorePath = require.resolve('axe-core');

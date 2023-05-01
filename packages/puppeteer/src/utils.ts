@@ -2,6 +2,8 @@ import * as fs from 'fs';
 import * as Axe from 'axe-core';
 import { Frame } from 'puppeteer';
 import { axeConfigure, axeShadowSelect } from './browser';
+import { getFilename } from 'cross-dirname';
+import { pathToFileURL } from 'url';
 import { pageIsLoaded } from './browser';
 
 export async function frameSourceInject(
@@ -18,9 +20,10 @@ export async function frameSourceInject(
     ) {
       axeCorePath = require.resolve('axe-core');
     } else {
-      const { createRequire } = await import('node:module');
+      const { createRequire } = (await import('node:module')) as any;
+      const filename = pathToFileURL(getFilename()).toString();
 
-      const require = createRequire(import.meta.url);
+      const require = createRequire(filename);
       axeCorePath = require.resolve('axe-core');
     }
 

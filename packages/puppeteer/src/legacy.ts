@@ -1,5 +1,7 @@
 import * as fs from 'fs';
 import { Frame } from 'puppeteer';
+import { getFilename } from 'cross-dirname';
+import { pathToFileURL } from 'url';
 
 interface IInjectAxeArgs {
   source?: string | Function;
@@ -56,9 +58,10 @@ async function injectJSModule(frame: Frame): Promise<void> {
   if (typeof require === 'function' && typeof require.resolve === 'function') {
     axeCorePath = require.resolve('axe-core');
   } else {
-    const { createRequire } = await import('node:module');
+    const { createRequire } = (await import('node:module')) as any;
+    const filename = pathToFileURL(getFilename()).toString();
 
-    const require = createRequire(import.meta.url);
+    const require = createRequire(filename);
     axeCorePath = require.resolve('axe-core');
   }
 
