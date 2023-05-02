@@ -20,6 +20,7 @@
     "dist/cache.d.ts",
     "dist/cache.js.map",
     "dist/index.js",
+    "dist/index.mjs",
     "dist/index.d.ts",
     "dist/index.js.map"
   ],
