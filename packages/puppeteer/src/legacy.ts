@@ -59,6 +59,7 @@ async function injectJSModule(frame: Frame): Promise<void> {
     axeCorePath = require.resolve('axe-core');
   } else {
     const { createRequire } = (await import('node:module')) as any;
+    // `getFilename` is needed because esm's `import.meta.url` is illegal syntax in cjs
     const filename = pathToFileURL(getFilename()).toString();
 
     const require = createRequire(filename);
