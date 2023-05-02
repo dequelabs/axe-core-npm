@@ -1,5 +1,7 @@
 import * as fs from 'fs';
 import { Frame } from 'puppeteer';
+import { getFilename } from 'cross-dirname';
+import { pathToFileURL } from 'url';
 
 interface IInjectAxeArgs {
   source?: string | Function;
@@ -52,7 +54,19 @@ export async function injectJS(
 }
 
 async function injectJSModule(frame: Frame): Promise<void> {
-  const source = fs.readFileSync(require.resolve('axe-core'), 'utf8');
+  let axeCorePath = '';
+  if (typeof require === 'function' && typeof require.resolve === 'function') {
+    axeCorePath = require.resolve('axe-core');
+  } else {
+    const { createRequire } = (await import('node:module')) as any;
+    // `getFilename` is needed because esm's `import.meta.url` is illegal syntax in cjs
+    const filename = pathToFileURL(getFilename()).toString();
+
+    const require = createRequire(filename);
+    axeCorePath = require.resolve('axe-core');
+  }
+
+  const source = fs.readFileSync(axeCorePath, 'utf8');
   await injectJSSource(frame, source);
 }
 

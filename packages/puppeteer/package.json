@@ -40,6 +40,7 @@
     "@types/test-listen": "^1.1.0",
     "axe-test-fixtures": "github:dequelabs/axe-test-fixtures#v1",
     "chai": "^4.3.6",
+    "cross-dirname": "^0.1.0",
     "express": "^4.18.2",
     "mocha": "^10.0.0",
     "nyc": "^15.1.0",
