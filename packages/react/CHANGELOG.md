@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [4.7.1](https://github.com/dequelabs/axe-core-npm/compare/v4.7.0...v4.7.1) (2023-05-02)
+
+
+### Bug Fixes
+
+* **react:** include .mjs file in publish ([#722](https://github.com/dequelabs/axe-core-npm/issues/722)) ([a7bf92f](https://github.com/dequelabs/axe-core-npm/commit/a7bf92fd9856b7be0fea4f3c8bd38a79a3c9fde3))
+
+
+
+
+
 # [4.7.0](https://github.com/dequelabs/axe-core-npm/compare/v4.6.1...v4.7.0) (2023-04-28)
 
 
