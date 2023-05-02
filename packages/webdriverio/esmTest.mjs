@@ -24,9 +24,10 @@ async function integrationTest() {
     logLevel: 'error'
   };
   const client = await webdriverio.remote( options );
-  await client.url(pathToFileURL(path));
+  await client.url(pathToFileURL(path).toString());
 
-  const results = await new AxeBuilder({ client }).analyze();
+  const results = await new defaultExport({ client }).analyze();
   assert(results.violations.length > 0, 'could not find violations');
+  process.exit(0);
 }
 integrationTest()
