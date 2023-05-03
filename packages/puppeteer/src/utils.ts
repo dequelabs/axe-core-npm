@@ -2,6 +2,8 @@ import * as fs from 'fs';
 import * as Axe from 'axe-core';
 import { Frame } from 'puppeteer';
 import { axeConfigure, axeShadowSelect } from './browser';
+import { getFilename } from 'cross-dirname';
+import { pathToFileURL } from 'url';
 import { pageIsLoaded } from './browser';
 
 export async function frameSourceInject(
@@ -11,8 +13,22 @@ export async function frameSourceInject(
 ): Promise<void> {
   await assertFrameReady(frame);
   if (!source) {
-    const pathFile = require.resolve('axe-core');
-    source = fs.readFileSync(pathFile, 'utf8');
+    let axeCorePath = '';
+    if (
+      typeof require === 'function' &&
+      typeof require.resolve === 'function'
+    ) {
+      axeCorePath = require.resolve('axe-core');
+    } else {
+      const { createRequire } = (await import('node:module')) as any;
+      // `getFilename` is needed because esm's `import.meta.url` is illegal syntax in cjs
+      const filename = pathToFileURL(getFilename()).toString();
+
+      const require = createRequire(filename);
+      axeCorePath = require.resolve('axe-core');
+    }
+
+    source = fs.readFileSync(axeCorePath, 'utf8');
   }
   await frame.evaluate(source);
   await frame.evaluate(axeConfigure, config as Axe.Spec);

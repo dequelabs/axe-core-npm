@@ -3,7 +3,7 @@
     "moduleResolution": "node",
     "target": "esnext",
     "module": "esnext",
-    "lib": ["es2015", "es2016", "esnext", "dom"],
+    "lib": ["esnext", "dom"],
     "strict": true,
     "pretty": true,
     "sourceMap": true,

@@ -12,6 +12,8 @@ import {
   axeRunLegacy,
   configureAllowedOrigins
 } from './utils';
+import { getFilename } from 'cross-dirname';
+import { pathToFileURL } from 'url';
 
 import type { Browser, Element } from 'webdriverio';
 import type {
@@ -22,6 +24,21 @@ import type {
   SerialFrameSelector
 } from 'axe-core';
 import type { Options, CallbackFunction, PartialResults } from './types';
+
+let axeCorePath = '';
+async function loadAxePath() {
+  if (typeof require === 'function' && typeof require.resolve === 'function') {
+    axeCorePath = require.resolve('axe-core');
+  } else {
+    const { createRequire } = (await import('node:module')) as any;
+    // `getFilename` is needed because esm's `import.meta.url` is illegal syntax in cjs
+    const filename = pathToFileURL(getFilename()).toString();
+
+    const require = createRequire(filename);
+    axeCorePath = require.resolve('axe-core');
+  }
+}
+loadAxePath();
 
 export default class AxeBuilder {
   private client: Browser;
@@ -46,9 +63,8 @@ export default class AxeBuilder {
     if (axeSource) {
       this.axeSource = axeSource;
     } else {
-      const sourceDir = require.resolve('axe-core');
       try {
-        this.axeSource = fs.readFileSync(sourceDir, 'utf-8');
+        this.axeSource = fs.readFileSync(axeCorePath, 'utf-8');
       } catch (e) {
         throw new Error(
           'Unable to find axe-core source. Is axe-core installed?'
