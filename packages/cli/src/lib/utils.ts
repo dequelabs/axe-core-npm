@@ -76,18 +76,8 @@ export const getAxeSource = (axePath?: string): string | void => {
     return;
   }
 
-  /* Attempt to look for the axe-core source in the CWD */
-  axePath = path.join(process.cwd(), 'axe.js');
-
-  if (!fs.existsSync(axePath)) {
-    /* Attempt to look for the axe-core source in the CWD node_modules */
-    axePath = path.join(process.cwd(), 'node_modules', 'axe-core', 'axe.js');
-  }
-
-  if (!fs.existsSync(axePath)) {
-    /* Obtain the axe-core source from the globally installed CLI package instead */
-    axePath = path.join(__dirname, '..', 'node_modules', 'axe-core', 'axe.js');
-  }
+  /* Allow `require.resolve` to find the source */
+  axePath = require.resolve('axe-core');
 
   return fs.readFileSync(axePath, 'utf-8');
 };
