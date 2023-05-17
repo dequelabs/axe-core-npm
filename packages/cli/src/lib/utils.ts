@@ -71,25 +71,21 @@ export const parseBrowser = (browser?: string): string | Error => {
 };
 
 export const getAxeSource = (axePath?: string): string | void => {
-  // Abort if axePath should exist, and it isn't
+  /* User has specified a path to axe-core, check if it exists */
   if (axePath && !fs.existsSync(axePath)) {
     return;
   }
 
-  // Look for axe in current working directory
-  if (!axePath) {
-    axePath = path.join(process.cwd(), 'axe.js');
-  }
+  /* Attempt to look for the axe-core source in the CWD */
+  axePath = path.join(process.cwd(), 'axe.js');
 
   if (!fs.existsSync(axePath)) {
-    // Look for axe in CWD ./node_modules
+    /* Attempt to look for the axe-core source in the CWD node_modules */
     axePath = path.join(process.cwd(), 'node_modules', 'axe-core', 'axe.js');
   }
 
   if (!fs.existsSync(axePath)) {
-    // `__dirname` is /@axe-core/cli/dist/src/lib when installed globally
-    // to access the locally installed axe-core package we need to go up 1 level
-    // if all else fails, use the locally installed axe
+    /* Obtain the axe-core source from the globally installed CLI package instead */
     axePath = path.join(__dirname, '..', 'node_modules', 'axe-core', 'axe.js');
   }
 
