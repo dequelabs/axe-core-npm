@@ -5,7 +5,6 @@ import {
   parseUrl,
   reporter,
   getAxeVersion,
-  getAxeSource,
   saveOutcome,
   bold,
   error,
@@ -15,6 +14,7 @@ import {
 import axeTestUrls from '../lib/axe-test-urls';
 import event from '../lib/events';
 import { startDriver } from '../lib/webdriver';
+import fs from 'fs';
 
 const cli = async (
   args: OptionValues,
@@ -40,11 +40,13 @@ const cli = async (
   } = args;
 
   const showErrors = args.showErrors === true;
-
   const silentMode = !!stdout;
-  args.axeSource = getAxeSource(args.axeSource);
+  const axeSourcePath = args.axeSource || require.resolve('axe-core');
+  let axeSource;
 
-  if (!args.axeSource) {
+  try {
+    axeSource = fs.readFileSync(axeSourcePath, 'utf-8');
+  } catch (err) {
     console.error(error('Unable to find the axe-core source file'));
     process.exit(2);
   }
@@ -73,7 +75,7 @@ const cli = async (
   args.driver = startDriver(driverConfigs);
 
   const cliReporter = reporter(noReporter, silentMode);
-  const axeVersion = getAxeVersion(args.axeSource);
+  const axeVersion = getAxeVersion(axeSource);
   if (!silentMode) {
     console.log(
       colors.bold('Running axe-core ' + axeVersion + ' in ' + args.browser)
@@ -99,7 +101,7 @@ const cli = async (
     driver: args.driver,
     timer,
     loadDelay,
-    axeSource: args.axeSource,
+    axeSource,
     include,
     exclude,
     tags,

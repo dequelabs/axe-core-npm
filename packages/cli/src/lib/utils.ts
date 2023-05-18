@@ -70,18 +70,6 @@ export const parseBrowser = (browser?: string): string | Error => {
   }
 };
 
-export const getAxeSource = (axePath?: string): string | void => {
-  /* User has specified a path to axe-core, check if it exists */
-  if (axePath && !fs.existsSync(axePath)) {
-    return;
-  }
-
-  /* Allow `require.resolve` to find the source */
-  axePath = require.resolve('axe-core');
-
-  return fs.readFileSync(axePath, 'utf-8');
-};
-
 export const getAxeVersion = (source: string): string => {
   const match = source.match(/\.version\s*=\s'([^']+)'/);
   return match ? match[1] : 'unknown version';
