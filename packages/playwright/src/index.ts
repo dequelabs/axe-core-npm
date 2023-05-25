@@ -5,9 +5,7 @@ import type {
   AxeResults,
   SerialContextObject,
   PartialResults,
-  ContextObject,
   SerialSelectorList,
-  SerialSelector,
   SerialFrameSelector
 } from 'axe-core';
 import axe from 'axe-core';
@@ -151,7 +149,7 @@ export default class AxeBuilder {
 
   public async analyze(): Promise<AxeResults> {
     const context = normalizeContext(this.includes, this.excludes);
-    const { page, option: options } = this;
+    const { page } = this;
 
     page.evaluate(this.script());
     const runPartialDefined = await page.evaluate<boolean>(
