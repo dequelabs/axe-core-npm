@@ -7,10 +7,10 @@
     "strictNullChecks": true,
     "moduleResolution": "node",
     "resolveJsonModule": true,
-    "module": "esnext",
-    "target": "esnext",
+    "module": "commonjs",
+    "target": "ES2015",
     "allowJs": true,
-    "lib": ["dom", "esnext", "esnext.asynciterable"],
+    "lib": ["dom", "ES2015", "esnext.asynciterable"],
     "esModuleInterop": true,
     "skipLibCheck": true,
     "declaration": true

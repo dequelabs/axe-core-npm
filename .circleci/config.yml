@@ -130,7 +130,6 @@ jobs:
       # lerna link after installing the latest version of chromedriver, as we depend on webdriverJS
       - run: cd packages/cli && npx lerna link
       - run: npm run coverage --prefix=packages/cli
-      - run: npm run test:esm --prefix=packages/cli
 
   puppeteer:
     <<: *defaults
