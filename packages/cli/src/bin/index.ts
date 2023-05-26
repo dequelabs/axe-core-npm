@@ -15,7 +15,6 @@ import {
 import axeTestUrls from '../lib/axe-test-urls';
 import event from '../lib/events';
 import { startDriver } from '../lib/webdriver';
-import fs from 'fs';
 
 const cli = async (
   args: OptionValues,

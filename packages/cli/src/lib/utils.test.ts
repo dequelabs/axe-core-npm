@@ -86,14 +86,12 @@ describe('utils', () => {
       afterEach(() => {
         mock.restore();
       });
-
       it('fall back to use `locally` installed axe-core', () => {
         const axeSource = utils.getAxeSource();
         const axeVersionCheck = dependencies['axe-core'].replace('^', '');
         assert.include(axeSource, axeVersionCheck);
       });
     });
-
     it('given no axe source use local source', () => {
       const axeSource = utils.getAxeSource();
       assert.isNotNull(axeSource);
