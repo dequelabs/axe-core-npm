@@ -2,7 +2,6 @@ import 'mocha';
 import { assert } from 'chai';
 import tempy from 'tempy';
 import http from 'http';
-import https from 'https';
 import net from 'net';
 import path from 'path';
 import fs from 'fs';
@@ -76,6 +75,7 @@ describe('cli', () => {
         '--axe-source',
         PATH_TO_AXE_250
       );
+
       assert.equal(result.exitCode, 0);
       assert.include(
         result.stdout,
@@ -83,12 +83,14 @@ describe('cli', () => {
       );
       assert.include(result.stdout, 'Running axe-core 2.5.0');
     });
+
     it('error when given invalid axe source path', async () => {
       const result = await runCLI(
         `file://${SIMPLE_HTML_FILE}`,
         '--axe-source',
         'foobar'
       );
+
       assert.equal(result.exitCode, 2);
       assert.include(result.stderr, 'Unable to find the axe-core source file');
     });

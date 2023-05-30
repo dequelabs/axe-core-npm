@@ -17,18 +17,10 @@
     "url": "https://github.com/dequelabs/axe-core-npm.git"
   },
   "license": "MPL-2.0",
-  "main": "./dist/index.js",
-  "module": "./dist/index.mjs",
-  "types": "./dist/index.d.ts",
-  "exports": {
-    ".": {
-      "import": "./dist/index.mjs",
-      "require": "./dist/index.js",
-      "types": "./dist/index.d.ts"
-    }
-  },
+  "main": "dist/src/lib/index.js",
+  "typings": "dist/src/types.d.ts",
   "bin": {
-    "axe": "./dist/cli.js"
+    "axe": "./dist/src/bin/cli.js"
   },
   "publishConfig": {
     "access": "public"
@@ -38,9 +30,8 @@
   },
   "scripts": {
     "prebuild": "rimraf dist",
-    "build": "tsup src/lib/index.ts --dts --format esm,cjs && tsup src/bin/cli.ts --format cjs",
+    "build": "tsc",
     "test": "mocha --timeout 60000 -r ts-node/register 'src/**/**.test.ts'",
-    "test:esm": "node esmTest.mjs",
     "coverage": "nyc npm run test",
     "prepare": "npm run build"
   },
@@ -74,7 +65,6 @@
     "rimraf": "^3.0.2",
     "tempy": "1.0.0",
     "ts-node": "^10.9.1",
-    "tsup": "^6.7.0",
     "typescript": "^4.8.4"
   },
   "nyc": {
