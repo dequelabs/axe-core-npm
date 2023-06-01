@@ -6,33 +6,9 @@
 
 Install [Node.js](https://docs.npmjs.com/getting-started/installing-node) if you haven't already.
 
-Install Playwright:
+Install Playwright: `npm install playwright`
 
-NPM:
-
-```console
-npm install playwright
-```
-
-Yarn:
-
-```console
-yarn add playwright
-```
-
-Install `@axe-core/playwright` and its dependencies:
-
-NPM:
-
-```console
-npm install @axe-core/playwright
-```
-
-Yarn:
-
-```console
-yarn add @axe-core/playwright
-```
+Install @axe-core/playwright: `npm install @axe-core/playwright`
 
 ## Usage
 
@@ -45,7 +21,7 @@ const { AxeBuilder } = require('@axe-core/playwright');
 const playwright = require('playwright');
 
 (async () => {
-  const browser = await playwright.chromium.launch();
+  const browser = await playwright.chromium.launch({ headless: true });
   const context = await browser.newContext();
   const page = await context.newPage();
   await page.goto('https://dequeuniversity.com/demo/mars/');
@@ -56,6 +32,7 @@ const playwright = require('playwright');
   } catch (e) {
     // do something with the error
   }
+
   await browser.close();
 })();
 ```

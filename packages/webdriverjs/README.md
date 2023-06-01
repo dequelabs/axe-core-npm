@@ -10,21 +10,9 @@ Install [Node.js](https://docs.npmjs.com/getting-started/installing-node) if you
 
 > Download and install any necessary browser drivers on your machine's PATH. [More on Webdriver setup](https://www.selenium.dev/documentation/en/webdriver/).
 
-Install Selenium Webdriver: `npm install selenium-webdriver --no-save`
+Install Selenium Webdriver: `npm install selenium-webdriver`
 
-Install @axe-core/webdriverjs and its dependencies:
-
-NPM:
-
-```console
-npm install @axe-core/webdriverjs
-```
-
-Yarn:
-
-```console
-yarn add @axe-core/webdriverjs
-```
+Install @axe-core/webdriverjs: `npm install @axe-core/webdriverjs`
 
 ## Usage
 

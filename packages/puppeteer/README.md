@@ -8,9 +8,9 @@ Previous versions of this program were maintained at [dequelabs/axe-puppeteer](h
 
 Install [Node.js](https://docs.npmjs.com/getting-started/installing-node) if you haven't already.
 
-Install Puppeteer: `npm install puppeteer --no-save`
+Install Puppeteer: `npm install puppeteer`
 
-Install axe-puppeteer and its dependencies: `npm install @axe-core/puppeteer`
+Install @axe-core/puppeteer: `npm install @axe-core/puppeteer`
 
 ## Usage
 
@@ -34,7 +34,6 @@ const puppeteer = require('puppeteer');
     // do something with the error
   }
 
-  await page.close();
   await browser.close();
 })();
 ```
