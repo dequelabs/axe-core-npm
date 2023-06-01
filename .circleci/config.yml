@@ -308,14 +308,6 @@ workflows:
           context: html-tools
           requires:
             - dependencies
-            - lint
-            - cli
-            - puppeteer
-            - webdriverjs
-            - webdriverio
-            - reporter-earl
-            - react
-            - playwright
           filters:
             branches:
               only:
@@ -324,14 +316,6 @@ workflows:
           context: html-tools
           requires:
             - dependencies
-            - lint
-            - cli
-            - puppeteer
-            - webdriverjs
-            - webdriverio
-            - reporter-earl
-            - react
-            - playwright
           filters:
             branches:
               only: master
