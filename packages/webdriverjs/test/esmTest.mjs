@@ -1,4 +1,4 @@
-import defaultExport from './dist/index.mjs';
+import defaultExport from '../dist/index.mjs';
 import assert from 'assert';
 
 const exportIsFunction = typeof(defaultExport) === 'function';

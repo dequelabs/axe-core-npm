@@ -1,4 +1,4 @@
-import defaultExport from './dist/index.mjs';
+import defaultExport from '../dist/index.mjs';
 import assert from 'assert';
 import * as webdriverio from 'webdriverio';
 import { fileURLToPath, pathToFileURL } from 'url';
@@ -10,7 +10,7 @@ assert(exportIsFunction, 'export is not a function');
 
 async function integrationTest() {
   let path = fileURLToPath(new URL('.', import.meta.url));
-  path = join(path, './node_modules/axe-test-fixtures/fixtures/index.html');
+  path = join(path, '../node_modules/axe-test-fixtures/fixtures/index.html');
 
   const options = {
     automationProtocol: 'devtools',
