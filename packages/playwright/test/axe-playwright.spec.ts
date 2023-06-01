@@ -1,13 +1,8 @@
 import 'mocha';
 import fs from 'fs';
-import playwright from 'playwright';
+import { chromium, ChromiumBrowser, Page } from '@playwright/test';
 import express from 'express';
-import type {
-  AxeResults,
-  Result,
-  SerialSelector,
-  SerialSelectorList
-} from 'axe-core';
+import type { AxeResults, Result } from 'axe-core';
 import testListen from 'test-listen';
 import { assert } from 'chai';
 import path from 'path';
@@ -17,10 +12,10 @@ import AxeBuilder from '../src';
 describe('@axe-core/playwright', () => {
   let server: Server;
   let addr: string;
-  let page: playwright.Page;
+  let page: Page;
   const axePath = require.resolve('axe-core');
   const axeSource = fs.readFileSync(axePath, 'utf8');
-  let browser: playwright.ChromiumBrowser;
+  let browser: ChromiumBrowser;
   const axeTestFixtures = path.resolve(__dirname, 'fixtures');
   const externalPath = path.resolve(axeTestFixtures, 'external');
   const axeLegacySource = fs.readFileSync(
@@ -52,7 +47,7 @@ describe('@axe-core/playwright', () => {
   });
 
   beforeEach(async () => {
-    browser = await playwright.chromium.launch({
+    browser = await chromium.launch({
       args: ['--disable-dev-shm-usage']
     });
     const context = await browser.newContext();
