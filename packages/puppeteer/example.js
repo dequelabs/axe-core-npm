@@ -4,7 +4,6 @@ const puppeteer = require('puppeteer');
 (async () => {
   const browser = await puppeteer.launch();
   const page = await browser.newPage();
-  await page.setBypassCSP(true);
   await page.goto('https://dequeuniversity.com/demo/mars/');
 
   try {
