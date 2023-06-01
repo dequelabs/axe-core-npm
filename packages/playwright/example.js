@@ -1,5 +1,5 @@
 const { AxeBuilder } = require('@axe-core/playwright');
-const playwright = require('playwright');
+const playwright = require('playwright-core');
 
 (async () => {
   const browser = await playwright.chromium.launch({ headless: true });
