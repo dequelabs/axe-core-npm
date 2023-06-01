@@ -1,6 +1,6 @@
 {
   "name": "@axe-core/webdriverio",
-  "version": "4.7.1",
+  "version": "4.7.2",
   "description": "Provides a method to inject and analyze web pages using axe",
   "contributors": [
     {
@@ -58,7 +58,7 @@
     "@types/test-listen": "^1.1.0",
     "axe-test-fixtures": "github:dequelabs/axe-test-fixtures#v1",
     "chai": "^4.3.6",
-    "chromedriver": "^112.0.0",
+    "chromedriver": "^113.0.0",
     "cross-dirname": "^0.1.0",
     "delay": "^5.0.0",
     "express": "^4.18.2",
