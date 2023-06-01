@@ -33,19 +33,26 @@ This module uses a chainable API to assist in injecting, configuring, and analyz
 Here is an example of a script that will drive WebdriverJS to a page, perform an analysis, and then log results to the console.
 
 ```js
-const AxeBuilder = require('@axe-core/webdriverjs');
-const WebDriver = require('selenium-webdriver');
+const { AxeBuilder } = require('@axe-core/webdriverjs');
+const { Builder } = require('selenium-webdriver');
+const chrome = require('selenium-webdriver/chrome');
 
-const driver = new WebDriver.Builder().forBrowser('firefox').build();
+(async () => {
+  const driver = Builder()
+    .forBrowser('chrome')
+    .setChromeOptions(new chrome.Options().headless())
+    .build();
+  await driver.get('https://dequeuniversity.com/demo/mars/');
 
-driver.get('https://dequeuniversity.com/demo/mars/').then(() => {
-  new AxeBuilder(driver).analyze((err, results) => {
-    if (err) {
-      // Handle error somehow
-    }
+  try {
+    const results = await new AxeBuilder(driver).analyze();
     console.log(results);
-  });
-});
+  } catch(e) {
+    // do something with the error
+  }
+
+  await driver.quit();
+})();
 ```
 
 ## AxeBuilder(driver: Webdriver.WebDriver[, axeSource: string])

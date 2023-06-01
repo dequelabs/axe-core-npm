@@ -10,7 +10,7 @@ import path from 'path';
 import fs from 'fs';
 import { Server, createServer } from 'http';
 import { Webdriver, connectToChromeDriver } from './test-utils';
-import AxeBuilder from '../src';
+import { AxeBuilder } from '../src';
 import { axeRunPartial } from '../src/browser';
 import child_process from 'child_process';
 import { ChildProcessWithoutNullStreams } from 'child_process';

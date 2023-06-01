@@ -20,7 +20,7 @@ import {
 } from './browser';
 import assert from 'assert';
 
-class AxeBuilder {
+export default class AxeBuilder {
   private driver: WebDriver;
   private axeSource: string;
   private includes: SerialSelectorList;
@@ -267,8 +267,4 @@ class AxeBuilder {
   }
 }
 
-if (typeof module === 'object') {
-  exports = module.exports = AxeBuilder;
-}
-
-export default AxeBuilder;
+export { AxeBuilder }

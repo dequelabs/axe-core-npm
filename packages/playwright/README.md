@@ -41,7 +41,7 @@ This module uses a chainable API to assist in injecting, configuring, and analyz
 Here is an example of a script that will drive Playwright to a page, perform an analysis, and then log results to the console.
 
 ```js
-const AxeBuilder = require('@axe-core/playwright').default;
+const { AxeBuilder } = require('@axe-core/playwright');
 const playwright = require('playwright');
 
 (async () => {

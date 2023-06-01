@@ -8,7 +8,7 @@ import { Server, createServer } from 'http';
 import net from 'net';
 import fs from 'fs';
 import delay from 'delay';
-import AxeBuilder from '../src';
+import { AxeBuilder } from '../src';
 import { logOrRethrowError } from '../src/utils';
 import type { AxeResults, Result } from 'axe-core';
 import child_process from 'child_process';
