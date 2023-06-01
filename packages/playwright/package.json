@@ -45,7 +45,7 @@
     "test": "mocha --timeout 60000 -r ts-node/register 'test/**.spec.ts'",
     "test:esm": "node test/esmTest.mjs",
     "coverage": "nyc npm run test",
-    "prepare": "npm run build"
+    "prepare": "npx playwright install && npm run build"
   },
   "dependencies": {
     "axe-core": "^4.7.0"

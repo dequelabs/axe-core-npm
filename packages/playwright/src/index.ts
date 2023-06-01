@@ -325,3 +325,5 @@ export default class AxeBuilder {
     `;
   }
 }
+
+export { AxeBuilder }
