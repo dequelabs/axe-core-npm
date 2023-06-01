@@ -315,6 +315,7 @@ workflows:
             - webdriverio
             - reporter-earl
             - react
+            - playwright
           filters:
             branches:
               only:
@@ -330,6 +331,7 @@ workflows:
             - webdriverio
             - reporter-earl
             - react
+            - playwright
           filters:
             branches:
               only: master
