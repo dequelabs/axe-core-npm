@@ -67,7 +67,7 @@ describe('@axe-core/webdriverio', () => {
       });
     }
 
-    describe(`WebdriverIO Async using ${protocol} protocol`, () => {
+    describe(`WebdriverIO Async (${protocol} protocol)`, () => {
       let server: Server;
       let addr: string;
       let client: webdriverio.Browser;
