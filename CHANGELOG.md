@@ -3,6 +3,18 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [4.7.2](https://github.com/dequelabs/axe-core-npm/compare/v4.7.1...v4.7.2) (2023-06-01)
+
+
+### Bug Fixes
+
+* **packages/cli:** revert ESM ([#730](https://github.com/dequelabs/axe-core-npm/issues/730)) ([4e1fb95](https://github.com/dequelabs/axe-core-npm/commit/4e1fb958fa251db7eea3433f91f2a2f3adbda1e8))
+* **playwright:** Enable usage with `@playwright/test` ([#731](https://github.com/dequelabs/axe-core-npm/issues/731)) ([0d0c9d1](https://github.com/dequelabs/axe-core-npm/commit/0d0c9d1b75051b26f0bb745abc5c8974a9fa4d54))
+
+
+
+
+
 ## [4.7.1](https://github.com/dequelabs/axe-core-npm/compare/v4.7.0...v4.7.1) (2023-05-02)
 
 
