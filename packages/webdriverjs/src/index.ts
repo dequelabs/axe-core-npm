@@ -1,4 +1,4 @@
-import { WebDriver, WebElement } from 'selenium-webdriver';
+import type { WebDriver, WebElement } from 'selenium-webdriver';
 import axe, {
   RunOptions,
   Spec,
