@@ -1,4 +1,4 @@
-import { WebDriver, WebElement } from 'selenium-webdriver';
+import { WebDriver, WebElement, By } from 'selenium-webdriver';
 import axe, {
   RunOptions,
   Spec,
@@ -30,7 +30,6 @@ export default class AxeBuilder {
   private builderOptions: BuilderOptions;
   private legacyMode = false;
   private errorUrl: string;
-  private frameStack: WebElement[]
 
   constructor(
     driver: WebDriver,
@@ -46,7 +45,6 @@ export default class AxeBuilder {
     this.builderOptions = builderOptions || {};
     this.errorUrl =
       'https://github.com/dequelabs/axe-core-npm/blob/develop/packages/webdriverjs/error-handling.md';
-    this.frameStack = [];
   }
 
   /**
@@ -180,11 +178,13 @@ export default class AxeBuilder {
     // the default length of 30 seconds)
     const { pageLoad } = await this.driver.manage().getTimeouts();
     this.driver.manage().setTimeouts({ pageLoad: 1000 });
-    this.frameStack = [];
 
-    const partials = await this.runPartialRecursive(context, null, true);
-
-    this.driver.manage().setTimeouts({ pageLoad });
+    let partials: string[]
+    try {
+      partials = await this.runPartialRecursive(context);
+    } finally {
+      this.driver.manage().setTimeouts({ pageLoad });
+    }
 
     try {
       return await this.finishRun(partials);
@@ -222,10 +222,9 @@ export default class AxeBuilder {
    */
   private async runPartialRecursive(
     context: SerialContextObject,
-    frame: null | WebElement,
-    initiator = false
+    frameStack: WebElement[] = []
   ): Promise<string[]> {
-    if (!initiator) {
+    if (frameStack.length) {
       await axeSourceInject(this.driver, this.axeSource, this.config);
     }
     // IMPORTANT: axeGetFrameContext MUST be called before axeRunPartial
@@ -234,20 +233,15 @@ export default class AxeBuilder {
       await axeRunPartial(this.driver, context, this.option)
     ];
 
-    if (frame) {
-      this.frameStack.push(frame);
-    }
-
     for (const { frameContext, frameSelector, frame } of frameContexts) {
       try {
         assert(frame, `Expect frame of "${frameSelector}" to be defined`);
         await this.driver.switchTo().frame(frame);
-        partials.push(...(await this.runPartialRecursive(frameContext, frame)));
-        this.frameStack.pop();
+        partials.push(...(await this.runPartialRecursive(frameContext, [...frameStack, frame])));
         await this.driver.switchTo().parentFrame();
       } catch {
         /*
-          When switchTo().frame() fails using chromedriver (but not gekodriver)
+          When switchTo().frame() fails using chromedriver (but not geckodriver)
           it puts the driver into a really bad state that is impossible to
           recover from. So we need to switch back to the main window and then
           go back to the desired iframe context
@@ -255,7 +249,7 @@ export default class AxeBuilder {
         const win = await this.driver.getWindowHandle();
         await this.driver.switchTo().window(win);
 
-        for (const frameElm of this.frameStack) {
+        for (const frameElm of frameStack) {
           await this.driver.switchTo().frame(frameElm);
         }
 
