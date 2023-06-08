@@ -396,6 +396,40 @@ describe('@axe-core/webdriverjs', () => {
       normalResults.testEngine.name = legacyResults.testEngine.name;
       assert.deepEqual(normalResults, legacyResults);
     });
+
+    it('skips unloaded iframes (e.g. loading=lazy)', async () => {
+      await driver.get(`${addr}/lazy-loaded-iframe.html`);
+      const title = await driver.getTitle();
+
+      const results = await new AxeBuilder(driver)
+        .options({ runOnly: ['label', 'frame-tested'] })
+        .analyze();
+
+      assert.notEqual(title, 'Error');
+      assert.equal(results.incomplete[0].id, 'frame-tested');
+      assert.lengthOf(results.incomplete[0].nodes, 1);
+      assert.deepEqual(results.incomplete[0].nodes[0].target, ['#parent', '#lazy-iframe']);
+      assert.equal(results.violations[0].id, 'label');
+      assert.lengthOf(results.violations[0].nodes, 1);
+      assert.deepEqual(results.violations[0].nodes[0].target, [
+        '#parent',
+        '#child',
+        'input'
+      ]);
+    })
+
+    it('resets pageLoad timeout to user setting', async () => {
+      await driver.get(`${addr}/lazy-loaded-iframe.html`);
+      driver.manage().setTimeouts({ pageLoad: 500 })
+      const title = await driver.getTitle();
+
+      const results = await new AxeBuilder(driver)
+        .options({ runOnly: ['label', 'frame-tested'] })
+        .analyze();
+
+      const timeout = await driver.manage().getTimeouts();
+      assert.equal(timeout.pageLoad, 500);
+    })
   });
 
   describe('withRules', () => {
