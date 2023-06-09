@@ -23,7 +23,8 @@ module.exports = {
   env: {
     node: true,
     browser: true,
-    es6: true
+    es6: true,
+    mocha: true
   },
   overrides: [
     {
@@ -31,6 +32,12 @@ module.exports = {
       rules: {
         '@typescript-eslint/explicit-function-return-type': 'off',
         '@typescript-eslint/no-var-requires': 'off'
+      }
+    },
+    {
+      files: 'packages/webdriverjs/tests/axe-webdriverjs.spec.ts',
+      rules: {
+        '@typescript-eslint/no-explicit-any': 'off'
       }
     }
   ]

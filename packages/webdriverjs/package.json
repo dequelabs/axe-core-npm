@@ -40,7 +40,7 @@
   "scripts": {
     "prebuild": "rimraf dist",
     "build": "tsc",
-    "test": "mocha --timeout 10000 -r ts-node/register './tests/**/*.spec.ts'",
+    "test": "mocha --timeout 10000 -r ts-node/register './tests/**/*.spec.{js,ts}'",
     "coverage": "nyc npm run test",
     "prepare": "npm run build"
   },

@@ -91,7 +91,7 @@ describe('@axe-core/webdriverjs', () => {
       assert.isArray(results.inapplicable);
     });
 
-    it('handles undefineds', async () => {
+    it('handles undefined', async () => {
       await driver.get(`${addr}/external/index.html`);
       const title = await driver.getTitle();
       const results = await new AxeBuilder(driver).analyze();

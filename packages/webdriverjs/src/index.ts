@@ -8,7 +8,7 @@ import {
   source,
   SerialFrameSelector
 } from 'axe-core';
-import { CallbackFunction, BuilderOptions, Selector } from './types';
+import { CallbackFunction, BuilderOptions } from './types';
 import { normalizeContext } from './utils/index';
 import AxeInjector from './axe-injector';
 import {
@@ -20,7 +20,7 @@ import {
 } from './browser';
 import assert from 'assert';
 
-class AxeBuilder {
+export class AxeBuilder {
   private driver: WebDriver;
   private axeSource: string;
   private includes: SerialSelectorList;
