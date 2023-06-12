@@ -7,7 +7,7 @@ import Puppeteer, { Browser, Page } from 'puppeteer';
 import { createServer, Server } from 'http';
 import * as sinon from 'sinon';
 import testListen from 'test-listen';
-import AxePuppeteer from '../src/index';
+import { AxePuppeteer } from '../src/index';
 import {
   startServer,
   puppeteerOpts,

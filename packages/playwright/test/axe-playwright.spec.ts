@@ -7,7 +7,7 @@ import testListen from 'test-listen';
 import { assert } from 'chai';
 import path from 'path';
 import { Server, createServer } from 'http';
-import AxeBuilder from '../src';
+import { AxeBuilder } from '../src';
 
 describe('@axe-core/playwright', () => {
   let server: Server;

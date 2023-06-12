@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [4.7.3](https://github.com/dequelabs/axe-core-npm/compare/v4.7.2...v4.7.3) (2023-06-09)
+
+
+### Bug Fixes
+
+* **webdriverjs:** skip unloaded iframes ([#743](https://github.com/dequelabs/axe-core-npm/issues/743)) ([9cb50eb](https://github.com/dequelabs/axe-core-npm/commit/9cb50ebb6b138cb0aa6b785bc7c826c4b9a21086))
+
+
+
+
+
 ## [4.7.2](https://github.com/dequelabs/axe-core-npm/compare/v4.7.1...v4.7.2) (2023-06-01)
 
 

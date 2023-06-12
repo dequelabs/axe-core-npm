@@ -1,4 +1,4 @@
-import { WebDriver } from 'selenium-webdriver';
+import type { WebDriver, WebElement } from 'selenium-webdriver';
 import axe, {
   RunOptions,
   Spec,
@@ -20,7 +20,7 @@ import {
 } from './browser';
 import assert from 'assert';
 
-class AxeBuilder {
+export default class AxeBuilder {
   private driver: WebDriver;
   private axeSource: string;
   private includes: SerialSelectorList;
@@ -174,7 +174,17 @@ class AxeBuilder {
       return this.runLegacy(context);
     }
 
-    const partials = await this.runPartialRecursive(context, true);
+    // ensure we fail quickly if an iframe cannot be loaded (instead of waiting
+    // the default length of 30 seconds)
+    const { pageLoad } = await this.driver.manage().getTimeouts();
+    this.driver.manage().setTimeouts({ pageLoad: 1000 });
+
+    let partials: string[]
+    try {
+      partials = await this.runPartialRecursive(context);
+    } finally {
+      this.driver.manage().setTimeouts({ pageLoad });
+    }
 
     try {
       return await this.finishRun(partials);
@@ -212,9 +222,9 @@ class AxeBuilder {
    */
   private async runPartialRecursive(
     context: SerialContextObject,
-    initiator = false
+    frameStack: WebElement[] = []
   ): Promise<string[]> {
-    if (!initiator) {
+    if (frameStack.length) {
       await axeSourceInject(this.driver, this.axeSource, this.config);
     }
     // IMPORTANT: axeGetFrameContext MUST be called before axeRunPartial
@@ -224,17 +234,25 @@ class AxeBuilder {
     ];
 
     for (const { frameContext, frameSelector, frame } of frameContexts) {
-      let switchedFrame = false;
       try {
         assert(frame, `Expect frame of "${frameSelector}" to be defined`);
         await this.driver.switchTo().frame(frame);
-        switchedFrame = true;
-        partials.push(...(await this.runPartialRecursive(frameContext)));
+        partials.push(...(await this.runPartialRecursive(frameContext, [...frameStack, frame])));
         await this.driver.switchTo().parentFrame();
       } catch {
-        if (switchedFrame) {
-          await this.driver.switchTo().parentFrame();
+        /*
+          When switchTo().frame() fails using chromedriver (but not geckodriver)
+          it puts the driver into a really bad state that is impossible to
+          recover from. So we need to switch back to the main window and then
+          go back to the desired iframe context
+        */
+        const win = await this.driver.getWindowHandle();
+        await this.driver.switchTo().window(win);
+
+        for (const frameElm of frameStack) {
+          await this.driver.switchTo().frame(frameElm);
         }
+
         partials.push('null');
       }
     }
@@ -248,6 +266,7 @@ class AxeBuilder {
     const { driver, axeSource, config, option } = this;
 
     const win = await driver.getWindowHandle();
+    await driver.switchTo().window(win);
 
     try {
       await driver.executeScript(`window.open('about:blank')`);
@@ -267,8 +286,4 @@ class AxeBuilder {
   }
 }
 
-if (typeof module === 'object') {
-  exports = module.exports = AxeBuilder;
-}
-
-export default AxeBuilder;
+export { AxeBuilder }

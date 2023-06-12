@@ -351,3 +351,5 @@ export default class AxeBuilder {
     return res;
   }
 }
+
+export { AxeBuilder }
