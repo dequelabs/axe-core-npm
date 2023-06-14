@@ -873,7 +873,7 @@ describe('AxePuppeteer', function () {
       assert.deepEqual(pageResults, frameResults);
     });
 
-    it.only('skips unloaded iframes (e.g. loading=lazy)', async () => {
+    it('skips unloaded iframes (e.g. loading=lazy)', async () => {
       const res = await page.goto(`${addr}/external/lazy-loaded-iframe.html`);
       const results = await new AxePuppeteer(page)
         .options({ runOnly: ['label', 'frame-tested'] })
