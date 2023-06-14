@@ -135,6 +135,7 @@ const cli = async (
 
     if (exit) {
       let exitErr = false;
+      /* istanbul ignore if */
       if (Array.isArray(outcome)) {
         for (const res of outcome) {
           if (res.violations.length > 0) {
