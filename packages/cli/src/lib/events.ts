@@ -69,10 +69,6 @@ export default ({
         };
         cliReporter(`\n${JSON.stringify(metadata, null, 2)}`);
       }
-
-      if (exit) {
-        process.exit(1);
-      }
     }
   };
 };
