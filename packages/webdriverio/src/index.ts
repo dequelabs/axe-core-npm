@@ -10,7 +10,8 @@ import {
   axeRunPartial,
   axeFinishRun,
   axeRunLegacy,
-  configureAllowedOrigins
+  configureAllowedOrigins,
+  FRAME_LOAD_TIMEOUT
 } from './utils';
 import { getFilename } from 'cross-dirname';
 import { pathToFileURL } from 'url';
@@ -241,7 +242,21 @@ export default class AxeBuilder {
       return await this.runLegacy(context);
     }
 
-    const partials = await this.runPartialRecursive(context);
+    // ensure we fail quickly if an iframe cannot be loaded (instead of waiting
+    // the default length of 30 seconds)
+    const { pageLoad } = await this.client.getTimeouts();
+    this.client.setTimeout({
+      pageLoad: FRAME_LOAD_TIMEOUT,
+    });
+
+    let partials: PartialResults | null
+    try {
+      partials = await this.runPartialRecursive(context);
+    } finally {
+      this.client.setTimeout({
+        pageLoad,
+      });
+    }
 
     try {
       return await this.finishRun(partials);
@@ -300,7 +315,8 @@ export default class AxeBuilder {
    */
 
   private async runPartialRecursive(
-    context: SerialContextObject
+    context: SerialContextObject,
+    frameStack: Element[] = []
   ): Promise<PartialResults> {
     const frameContexts = await axeGetFrameContext(this.client, context);
     const partials: PartialResults = [
@@ -313,10 +329,16 @@ export default class AxeBuilder {
         assert(frame, `Expect frame of "${frameSelector}" to be defined`);
         await this.client.switchToFrame(frame);
         await axeSourceInject(this.client, this.script);
-        partials.push(...(await this.runPartialRecursive(frameContext)));
+        partials.push(...(await this.runPartialRecursive(frameContext, [...frameStack, frame])));
       } catch (error) {
+        const [topWindow] = await this.client.getWindowHandles()
+        await this.client.switchToWindow(topWindow)
+
+        for (const frameElm of frameStack) {
+          await this.client.switchToFrame(frameElm);
+        }
+
         partials.push(null);
-        await this.client.switchToParentFrame();
       }
     }
     await this.client.switchToParentFrame();

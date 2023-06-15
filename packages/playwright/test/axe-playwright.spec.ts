@@ -437,6 +437,24 @@ describe('@axe-core/playwright', () => {
       assert.equal(res?.status(), 200);
       assert.strictEqual(count, 9);
     });
+
+    it('handles unloaded iframes (e.g. loading=lazy)', async () => {
+      const res = await page.goto(`${addr}/external/lazy-loaded-iframe.html`);
+
+      const results = await new AxeBuilder({ page })
+        .options({ runOnly: ['label', 'frame-tested'] })
+        .analyze();
+
+      assert.equal(res?.status(), 200);
+      assert.lengthOf(results.incomplete, 0);
+      assert.equal(results.violations[0].id, 'label');
+      assert.lengthOf(results.violations[0].nodes, 1);
+      assert.deepEqual(results.violations[0].nodes[0].target, [
+        '#ifr-lazy',
+        '#lazy-baz',
+        'input'
+      ]);
+    })
   });
 
   describe('include/exclude', () => {
