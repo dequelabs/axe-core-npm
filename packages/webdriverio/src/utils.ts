@@ -104,8 +104,6 @@ export const axeSourceInject = async (
 async function assertFrameReady(client: Browser): Promise<void> {
   // Wait so that we know there is an execution context.
   // Assume that if we have an html node we have an execution context.
-  // Check if the page is loaded.
-  let pageReady = false;
   try {
     /*
       When using the devtools protocol trying to call
@@ -116,20 +114,16 @@ async function assertFrameReady(client: Browser): Promise<void> {
       from our @axe-core/puppeteer utils function.
       @see https://github.com/dequelabs/axe-core-npm/issues/727
     */
-    const timeoutPromise = new Promise(resolve => {
+    const timeoutPromise = new Promise((resolve, reject) => {
       setTimeout(() => {
-        resolve('timeout');
+        reject();
       }, FRAME_LOAD_TIMEOUT)
     });
     const executePromise = client.execute(() => {
       return document.readyState === 'complete'
     });
-    const raceResults = await Promise.race([timeoutPromise, executePromise]);
-    pageReady = raceResults !== 'timeout';
+    await Promise.race([timeoutPromise, executePromise]);
   } catch {
-    /* ignore */
-  }
-  if (!pageReady) {
     throw new Error('Page/Frame is not ready');
   }
 }
