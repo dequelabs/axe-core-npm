@@ -122,7 +122,8 @@ async function assertFrameReady(client: Browser): Promise<void> {
     const executePromise = client.execute(() => {
       return document.readyState === 'complete'
     });
-    await Promise.race([timeoutPromise, executePromise]);
+    const readyState = await Promise.race([timeoutPromise, executePromise]);
+    assert(readyState);
   } catch {
     throw new Error('Page/Frame is not ready');
   }

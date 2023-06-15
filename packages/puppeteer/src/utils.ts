@@ -1,3 +1,4 @@
+import assert from 'assert';
 import * as fs from 'fs';
 import * as Axe from 'axe-core';
 import { Frame } from 'puppeteer';
@@ -82,7 +83,8 @@ export async function assertFrameReady(frame: Frame): Promise<void> {
       }, 1000)
     });
     const evaluatePromise = frame.evaluate(pageIsLoaded);
-    await Promise.race([timeoutPromise, evaluatePromise]);
+    const readyState = await Promise.race([timeoutPromise, evaluatePromise]);
+    assert(readyState);
   } catch {
     throw new Error('Page/Frame is not ready');
   }
