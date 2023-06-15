@@ -318,7 +318,6 @@ export default class AxeBuilder {
     context: SerialContextObject,
     frameStack: Element[] = []
   ): Promise<PartialResults> {
-    const title = await this.client.getTitle();
     const frameContexts = await axeGetFrameContext(this.client, context);
     const partials: PartialResults = [
       await axeRunPartial(this.client, context, this.option)
