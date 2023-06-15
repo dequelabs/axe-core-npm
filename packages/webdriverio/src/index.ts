@@ -331,8 +331,8 @@ export default class AxeBuilder {
         await axeSourceInject(this.client, this.script);
         partials.push(...(await this.runPartialRecursive(frameContext, [...frameStack, frame])));
       } catch (error) {
-        const windows = await this.client.getWindowHandles()
-        await this.client.switchToWindow(windows[0])
+        const [topWindow] = await this.client.getWindowHandles()
+        await this.client.switchToWindow(topWindow)
 
         for (const frameElm of frameStack) {
           await this.client.switchToFrame(frameElm);
