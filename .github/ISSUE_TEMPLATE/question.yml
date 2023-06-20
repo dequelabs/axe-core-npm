@@ -1,0 +1,29 @@
+name: Ask a question
+description: General questions for us, the product, or why things are the way they are.
+labels: ['question', 'ungroomed']
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Questions can be made for axe-core npm integrations (e.g. `@axe-core/webdriverjs`).
+  - type: dropdown
+    id: product
+    attributes:
+      label: Product
+      description: Which product is the question for?
+      options:
+        - cli
+        - playwright
+        - puppeteer
+        - react
+        - reporter-earl
+        - webdriverio
+        - webdriverjs
+    validations:
+      required: true
+  - type: textarea
+    id: question
+    attributes:
+      label: Question
+    validations:
+      required: true
