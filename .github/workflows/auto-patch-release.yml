@@ -5,7 +5,7 @@ on:
     - cron: '59 23 * * 5'
 jobs:
   create_patch_release:
-    uses: dequelabs/axe-api-team/.github/workflows/auto-patch-release.yml
+    uses: dequelabs/axe-api-team/.github/workflows/auto-patch-release.yml@main
     secrets: inherit
     with:
       release-command: bash .github/scripts/prepare_release.sh
