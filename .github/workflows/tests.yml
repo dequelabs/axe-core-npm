@@ -169,8 +169,8 @@ jobs:
       - run: npm run coverage --prefix=packages/playwright
       - run: npm run test:esm --prefix=packages/playwright
 
-  # TODO: only run on master and release* branches.
   axe_core_test:
+    if: github.ref == 'refs/heads/main' || startsWith(github.ref, 'refs/heads/release')
     runs-on: ubuntu-latest
     needs: lint
     steps:
