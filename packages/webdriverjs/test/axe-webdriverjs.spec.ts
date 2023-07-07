@@ -393,7 +393,10 @@ describe('@axe-core/webdriverjs', () => {
       assert.notEqual(title, 'Error');
       assert.equal(results.incomplete[0].id, 'frame-tested');
       assert.lengthOf(results.incomplete[0].nodes, 1);
-      assert.deepEqual(results.incomplete[0].nodes[0].target, ['#ifr-lazy', '#lazy-iframe']);
+      assert.deepEqual(results.incomplete[0].nodes[0].target, [
+        '#ifr-lazy',
+        '#lazy-iframe'
+      ]);
       assert.equal(results.violations[0].id, 'label');
       assert.lengthOf(results.violations[0].nodes, 1);
       assert.deepEqual(results.violations[0].nodes[0].target, [
@@ -401,11 +404,11 @@ describe('@axe-core/webdriverjs', () => {
         '#lazy-baz',
         'input'
       ]);
-    })
+    });
 
     it('resets pageLoad timeout to user setting', async () => {
       await driver.get(`${addr}/external/lazy-loaded-iframe.html`);
-      driver.manage().setTimeouts({ pageLoad: 500 })
+      driver.manage().setTimeouts({ pageLoad: 500 });
       const title = await driver.getTitle();
 
       const results = await new AxeBuilder(driver)
@@ -414,7 +417,7 @@ describe('@axe-core/webdriverjs', () => {
 
       const timeout = await driver.manage().getTimeouts();
       assert.equal(timeout.pageLoad, 500);
-    })
+    });
   });
 
   describe('withRules', () => {

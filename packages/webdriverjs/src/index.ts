@@ -179,7 +179,7 @@ export default class AxeBuilder {
     const { pageLoad } = await this.driver.manage().getTimeouts();
     this.driver.manage().setTimeouts({ pageLoad: 1000 });
 
-    let partials: string[]
+    let partials: string[];
     try {
       partials = await this.runPartialRecursive(context);
     } finally {
@@ -237,7 +237,12 @@ export default class AxeBuilder {
       try {
         assert(frame, `Expect frame of "${frameSelector}" to be defined`);
         await this.driver.switchTo().frame(frame);
-        partials.push(...(await this.runPartialRecursive(frameContext, [...frameStack, frame])));
+        partials.push(
+          ...(await this.runPartialRecursive(frameContext, [
+            ...frameStack,
+            frame
+          ]))
+        );
         await this.driver.switchTo().parentFrame();
       } catch {
         /*
@@ -286,4 +291,4 @@ export default class AxeBuilder {
   }
 }
 
-export { AxeBuilder }
+export { AxeBuilder };

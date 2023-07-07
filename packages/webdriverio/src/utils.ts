@@ -10,7 +10,7 @@ import type {
   SerialContextObject
 } from 'axe-core';
 
-export const FRAME_LOAD_TIMEOUT = 1000
+export const FRAME_LOAD_TIMEOUT = 1000;
 
 /**
  * Validates that the client provided is WebdriverIO v5 or v6.
@@ -117,10 +117,10 @@ async function assertFrameReady(client: Browser): Promise<void> {
     const timeoutPromise = new Promise((resolve, reject) => {
       setTimeout(() => {
         reject();
-      }, FRAME_LOAD_TIMEOUT)
+      }, FRAME_LOAD_TIMEOUT);
     });
     const executePromise = client.execute(() => {
-      return document.readyState === 'complete'
+      return document.readyState === 'complete';
     });
     const readyState = await Promise.race([timeoutPromise, executePromise]);
     assert(readyState);
