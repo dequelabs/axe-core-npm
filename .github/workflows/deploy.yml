@@ -50,3 +50,4 @@ jobs:
           npx lerna publish from-package \
             --force-publish='*' \
             --yes
+      - uses: softprops/action-gh-release@v1
