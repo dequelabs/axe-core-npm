@@ -13,10 +13,7 @@ jobs:
           key: ${{ runner.os }}-npm-${{ hashFiles('**/package-lock.json') }}
       - uses: actions/setup-node@v3
         with:
-          node-version: 18
-
-      - run: node -pe "typeof process.stdout.clearLine"
-
+          node-version: 16
       - run: npm ci
       - run: npm run bootstrap -- --ci
       - run: npm run lint
@@ -34,7 +31,9 @@ jobs:
           path: '**/node_modules'
           key: ${{ runner.os }}-npm-${{ hashFiles('**/package-lock.json') }}
       - run: npm run build --prefix=packages/puppeteer
-      - run: npx browser-driver-manager install chrome chromedriver --verbose
+      # HACK: Force a TTY to enable browser-driver-manager to manipulate stdout.
+      - shell: 'script -q -e -c "bash {0}"'
+        run: npx browser-driver-manager install chrome chromedriver --verbose
       - run: npm run coverage --prefix=packages/puppeteer
       - run: npm run test:esm --prefix=packages/puppeteer
 
@@ -50,9 +49,11 @@ jobs:
         with:
           path: '**/node_modules'
           key: ${{ runner.os }}-npm-${{ hashFiles('**/package-lock.json') }}
+      # HACK: Force a TTY to enable browser-driver-manager to manipulate stdout.
+      - shell: 'script -q -e -c "bash {0}"'
+        run: npx browser-driver-manager install chrome chromedriver --verbose
       # Re-build packages, ensuring packages/webdriverjs/dist exists.
       - run: npx lerna run prepare
-      - run: npx browser-driver-manager install chrome chromedriver --verbose
       # lerna link after installing the latest version of chromedriver, as we depend on webdriverJS
       - run: npx lerna link
         working-directory: packages/cli
@@ -70,8 +71,10 @@ jobs:
         with:
           path: '**/node_modules'
           key: ${{ runner.os }}-npm-${{ hashFiles('**/package-lock.json') }}
+      # HACK: Force a TTY to enable browser-driver-manager to manipulate stdout.
+      - shell: 'script -q -e -c "bash {0}"'
+        run: npx browser-driver-manager install chrome chromedriver --verbose
       - run: npm run build --prefix=packages/webdriverjs
-      - run: npx browser-driver-manager install chrome chromedriver --verbose
       - run: npm run coverage --prefix=packages/webdriverjs
         env:
           CHROMEDRIVER_PATH: /usr/local/bin/chromedriver
@@ -91,8 +94,10 @@ jobs:
         with:
           path: '**/node_modules'
           key: ${{ runner.os }}-npm-${{ hashFiles('**/package-lock.json') }}
+      # HACK: Force a TTY to enable browser-driver-manager to manipulate stdout.
+      - shell: 'script -q -e -c "bash {0}"'
+        run: npx browser-driver-manager install chrome chromedriver --verbose
       - run: npm run build --prefix=packages/webdriverio
-      - run: npx browser-driver-manager install chrome chromedriver --verbose
       - run: npm run coverage --prefix=packages/webdriverio
         env:
           CHROMEDRIVER_PATH: /usr/local/bin/chromedriver
