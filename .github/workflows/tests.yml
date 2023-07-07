@@ -14,6 +14,9 @@ jobs:
       - uses: actions/setup-node@v3
         with:
           node-version: 16
+
+      - run: node -pe "typeof process.stdout.clearLine"
+
       - run: npm ci
       - run: npm run bootstrap -- --ci
       - run: npm run lint
