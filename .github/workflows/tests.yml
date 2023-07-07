@@ -19,10 +19,8 @@ jobs:
       - run: npm run lint
 
   puppeteer:
-    runs-on: ${{ matrix.os }}
-    strategy:
-      matrix:
-        os: [ubuntu-latest, windows-latest]
+    runs-on: ubuntu-latest
+    needs: lint
     steps:
       - uses: actions/checkout@v3
       - uses: actions/setup-node@v3
@@ -32,19 +30,76 @@ jobs:
         with:
           path: '**/node_modules'
           key: ${{ runner.os }}-npm-${{ hashFiles('**/package-lock.json') }}
-      - run: npm ci
-      - run: npm run bootstrap -- --ci
       - run: npm run build --prefix=packages/puppeteer
-      - run: npx browser-driver-manager@1.0.4 install chrome chromedriver --verbose
-        working-directory: packages/puppeteer
+      - run: npx browser-driver-manager install chrome chromedriver --verbose
       - run: npm run coverage --prefix=packages/puppeteer
       - run: npm run test:esm --prefix=packages/puppeteer
 
   cli:
-    runs-on: ${{ matrix.os }}
-    strategy:
-      matrix:
-        os: [ubuntu-latest, windows-latest]
+    runs-on: ubuntu-latest
+    needs: lint
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-node@v3
+        with:
+          node-version: 16
+      - uses: actions/cache@v3
+        with:
+          path: '**/node_modules'
+          key: ${{ runner.os }}-npm-${{ hashFiles('**/package-lock.json') }}
+      # Re-build packages, ensuring packages/webdriverjs/dist exists.
+      - run: npx lerna run prepare
+      - run: npx browser-driver-manager install chrome chromedriver --verbose
+      # lerna link after installing the latest version of chromedriver, as we depend on webdriverJS
+      - run: npx lerna link
+        working-directory: packages/cli
+      - run: npm run coverage --prefix=packages/cli
+
+  webdriverjs:
+    runs-on: ubuntu-latest
+    needs: lint
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-node@v3
+        with:
+          node-version: 16
+      - uses: actions/cache@v3
+        with:
+          path: '**/node_modules'
+          key: ${{ runner.os }}-npm-${{ hashFiles('**/package-lock.json') }}
+      - run: npm run build --prefix=packages/webdriverjs
+      - run: npx browser-driver-manager install chrome chromedriver --verbose
+      - run: npm run coverage --prefix=packages/webdriverjs
+        env:
+          CHROMEDRIVER_PATH: /usr/local/bin/chromedriver
+      - run: npm run test:esm --prefix=packages/webdriverjs
+        env:
+          CHROMEDRIVER_PATH: /usr/local/bin/chromedriver
+
+  webdriverio:
+    runs-on: ubuntu-latest
+    needs: lint
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-node@v3
+        with:
+          node-version: 16
+      - uses: actions/cache@v3
+        with:
+          path: '**/node_modules'
+          key: ${{ runner.os }}-npm-${{ hashFiles('**/package-lock.json') }}
+      - run: npm run build --prefix=packages/webdriverio
+      - run: npx browser-driver-manager install chrome chromedriver --verbose
+      - run: npm run coverage --prefix=packages/webdriverio
+        env:
+          CHROMEDRIVER_PATH: /usr/local/bin/chromedriver
+      - run: npm run test:esm --prefix=packages/webdriverio
+        env:
+          CHROMEDRIVER_PATH: /usr/local/bin/chromedriver
+
+  reporter_earl:
+    runs-on: ubuntu-latest
+    needs: lint
     steps:
       - uses: actions/checkout@v3
       - uses: actions/setup-node@v3
@@ -56,11 +111,6 @@ jobs:
           key: ${{ runner.os }}-npm-${{ hashFiles('**/package-lock.json') }}
       - run: npm ci
       - run: npm run bootstrap -- --ci
-      # Re-build packages, ensuring packages/webdriverjs/dist exists.
-      - run: npx lerna run prepare
-      - run: npx browser-driver-manager@1.0.4 install chrome chromedriver --verbose
-        working-directory: packages/cli
-      # lerna link after installing the latest version of chromedriver, as we depend on webdriverJS
-      - run: npx lerna link
-        working-directory: packages/cli
-      - run: npm run coverage --prefix=packages/cli
+      - run: npm run build --prefix=packages/reporter-earl
+      - run: npm run test --prefix=packages/reporter-earl
+      - run: npm run test:esm --prefix=packages/reporter-earl
