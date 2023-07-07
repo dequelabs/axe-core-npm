@@ -2,13 +2,7 @@ import type { AxeResults } from 'axe-core';
 import type { EventParams } from '../types';
 import { selectorToString, error, link, bold, green } from './utils';
 
-export default ({
-  silentMode,
-  timer,
-  cliReporter,
-  verbose,
-  exit
-}: EventParams) => {
+export default ({ silentMode, timer, cliReporter, verbose }: EventParams) => {
   return {
     startTimer: (message: string) => {
       console.time(message);
