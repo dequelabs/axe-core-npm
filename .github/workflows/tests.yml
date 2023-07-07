@@ -142,6 +142,8 @@ jobs:
           path: '**/node_modules'
           key: ${{ runner.os }}-npm-${{ hashFiles('**/package-lock.json') }}
       - run: npx playwright install --with-deps
+      - run: npm ci
+      - run: npm run bootstrap -- --ci
       - run: npm run build --prefix=packages/playwright
       - run: npm run coverage --prefix=packages/playwright
       - run: npm run test:esm --prefix=packages/playwright
