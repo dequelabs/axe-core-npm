@@ -76,11 +76,7 @@ jobs:
         run: npx browser-driver-manager install chrome chromedriver --verbose
       - run: npm run build --prefix=packages/webdriverjs
       - run: npm run coverage --prefix=packages/webdriverjs
-        env:
-          CHROMEDRIVER_PATH: /usr/local/bin/chromedriver
       - run: npm run test:esm --prefix=packages/webdriverjs
-        env:
-          CHROMEDRIVER_PATH: /usr/local/bin/chromedriver
 
   webdriverio:
     runs-on: ubuntu-latest
@@ -99,11 +95,7 @@ jobs:
         run: npx browser-driver-manager install chrome chromedriver --verbose
       - run: npm run build --prefix=packages/webdriverio
       - run: npm run coverage --prefix=packages/webdriverio
-        env:
-          CHROMEDRIVER_PATH: /usr/local/bin/chromedriver
       - run: npm run test:esm --prefix=packages/webdriverio
-        env:
-          CHROMEDRIVER_PATH: /usr/local/bin/chromedriver
 
   reporter_earl:
     runs-on: ubuntu-latest
