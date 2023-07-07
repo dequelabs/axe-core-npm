@@ -141,12 +141,7 @@ jobs:
         with:
           path: '**/node_modules'
           key: ${{ runner.os }}-npm-${{ hashFiles('**/package-lock.json') }}
-
-      # HACK: Force a TTY to enable browser-driver-manager to manipulate stdout.
-      - shell: 'script -q -e -c "bash {0}"'
-        run: npx browser-driver-manager install chrome chromedriver --verbose
       - run: npx playwright install --with-deps
-
       - run: npm run build --prefix=packages/playwright
       - run: npm run coverage --prefix=packages/playwright
       - run: npm run test:esm --prefix=packages/playwright
