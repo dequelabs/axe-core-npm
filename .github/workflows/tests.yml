@@ -170,7 +170,7 @@ jobs:
       - run: npm run test:esm --prefix=packages/playwright
 
   axe_core_test:
-    if: github.ref == 'refs/heads/main' || startsWith(github.ref, 'refs/heads/release')
+    if: github.ref_name == 'master' || startsWith(github.ref_name, 'release')
     runs-on: ubuntu-latest
     needs: lint
     steps:
