@@ -9,6 +9,7 @@ jobs:
     name: Create release
     runs-on: ubuntu-latest
     steps:
+      - run: test -z ${{ secrets.GH_PROJECT_TOKEN }} && echo "token is empty" || echo "token exists"
       - name: Create release
         uses: dequelabs/axe-api-team-public/.github/actions/auto-patch-release-v1@ci-fix-patch-3
         with:
