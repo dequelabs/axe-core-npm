@@ -136,7 +136,7 @@ export const axeRunPartial = (
 ): Promise<PartialResult> => {
   return promisify(
     client
-      .executeAsync<string, never>(
+      .executeAsync<string, []>(
         `
       var callback = arguments[arguments.length - 1];
       var context = ${JSON.stringify(context)} || document;
@@ -152,6 +152,8 @@ export const axeRunPartial = (
 export const axeGetFrameContext = (
   client: Browser,
   context: SerialContextObject
+  // TODO: add proper types
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
 ): Promise<any[]> => {
   return promisify(
     // Had to use executeAsync() because we could not use multiline statements in client.execute()
@@ -173,7 +175,7 @@ export const axeRunLegacy = (
 ): Promise<AxeResults> => {
   return promisify(
     client
-      .executeAsync<string, never>(
+      .executeAsync<string, []>(
         `var callback = arguments[arguments.length - 1];
       var context = ${JSON.stringify(context)} || document;
       var options = ${JSON.stringify(options)} || {};
@@ -221,7 +223,7 @@ export const axeFinishRun = (
   return chunkResults(partialString)
     .then(() => {
       return promisify(
-        client.executeAsync<string, never>(
+        client.executeAsync<string, []>(
           `var callback = arguments[arguments.length - 1];
       ${axeSource};
       window.axe.configure({

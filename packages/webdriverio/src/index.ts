@@ -31,6 +31,7 @@ async function loadAxePath() {
   if (typeof require === 'function' && typeof require.resolve === 'function') {
     axeCorePath = require.resolve('axe-core');
   } else {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const { createRequire } = (await import('node:module')) as any;
     // `getFilename` is needed because esm's `import.meta.url` is illegal syntax in cjs
     const filename = pathToFileURL(getFilename()).toString();

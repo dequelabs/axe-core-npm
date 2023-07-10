@@ -1,5 +1,5 @@
 import chromedriver from 'chromedriver';
-import { Builder, Capabilities, WebDriver } from 'selenium-webdriver';
+import { Builder, type WebDriver } from 'selenium-webdriver';
 import chrome from 'selenium-webdriver/chrome';
 import { WebdriverConfigParams } from '../types';
 

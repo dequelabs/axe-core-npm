@@ -6,7 +6,7 @@ export * from './lib';
 export interface EventParams {
   silentMode: boolean;
   timer: boolean;
-  cliReporter: (...args: any[]) => void;
+  cliReporter: (...args: unknown[]) => void;
   verbose: boolean;
   exit: boolean;
 }

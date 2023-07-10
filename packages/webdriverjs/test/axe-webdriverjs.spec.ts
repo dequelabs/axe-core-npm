@@ -409,9 +409,9 @@ describe('@axe-core/webdriverjs', () => {
     it('resets pageLoad timeout to user setting', async () => {
       await driver.get(`${addr}/external/lazy-loaded-iframe.html`);
       driver.manage().setTimeouts({ pageLoad: 500 });
-      const title = await driver.getTitle();
+      await driver.getTitle();
 
-      const results = await new AxeBuilder(driver)
+      await new AxeBuilder(driver)
         .options({ runOnly: ['label', 'frame-tested'] })
         .analyze();
 

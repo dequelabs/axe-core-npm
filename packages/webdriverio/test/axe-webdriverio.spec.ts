@@ -878,9 +878,9 @@ describe('@axe-core/webdriverio', () => {
           it('resets pageLoad timeout to user setting', async () => {
             await client.url(`${addr}/lazy-loaded-iframe.html`);
             client.setTimeout({ pageLoad: 500 });
-            const title = await client.getTitle();
+            await client.getTitle();
 
-            const results = await new AxeBuilder({ client })
+            await new AxeBuilder({ client })
               .options({ runOnly: ['label', 'frame-tested'] })
               .analyze();
 
@@ -1464,7 +1464,7 @@ describe('@axe-core/webdriverio', () => {
 
         it('should not set when running runPartial and not legacy mode', async () => {
           await client.url(`${addr}/index.html`);
-          const res = await new AxeBuilder({ client }).analyze();
+          await new AxeBuilder({ client }).analyze();
           const allowedOrigins = await getAllowedOrigins();
           assert.deepEqual(allowedOrigins, [addr]);
         });
@@ -1487,7 +1487,7 @@ describe('@axe-core/webdriverio', () => {
 
         it('should set when running legacy source and not legacy mode', async () => {
           await client.url(`${addr}/index.html`);
-          const res = await new AxeBuilder({
+          await new AxeBuilder({
             client,
             axeSource: axeLegacySource
           }).analyze();

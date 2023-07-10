@@ -8,7 +8,7 @@ import axe, {
   SerialFrameSelector
 } from 'axe-core';
 const { source } = axe;
-import { CallbackFunction, BuilderOptions, Selector } from './types';
+import { CallbackFunction, BuilderOptions } from './types';
 import { normalizeContext } from './utils/index';
 import AxeInjector from './axe-injector';
 import {
