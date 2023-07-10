@@ -10,7 +10,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Create release
-        uses: dequelabs/axe-api-team-public/.github/actions/auto-patch-release-v1@main
+        uses: dequelabs/axe-api-team-public/.github/actions/auto-patch-release-v1@ci-fix-patch-3
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
           project_token: ${{ secrets.GH_PROJECT_TOKEN }}
