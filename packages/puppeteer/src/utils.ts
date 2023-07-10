@@ -80,7 +80,7 @@ export async function assertFrameReady(frame: Frame): Promise<void> {
     const timeoutPromise = new Promise((resolve, reject) => {
       setTimeout(() => {
         reject();
-      }, 1000)
+      }, 1000);
     });
     const evaluatePromise = frame.evaluate(pageIsLoaded);
     const readyState = await Promise.race([timeoutPromise, evaluatePromise]);

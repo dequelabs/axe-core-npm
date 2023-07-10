@@ -4,11 +4,10 @@ import puppeteer from 'puppeteer';
 import { fileURLToPath, pathToFileURL } from 'url';
 import { join } from 'path';
 
-const exportIsFunction = typeof(defaultExport) === 'function';
+const exportIsFunction = typeof defaultExport === 'function';
 const exportIsSame = defaultExport === AxePuppeteer;
 assert(exportIsFunction, 'export is not a function');
 assert(exportIsSame, 'default and named export is not the same');
-
 
 const options = {};
 
