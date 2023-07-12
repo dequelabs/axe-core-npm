@@ -7,13 +7,10 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
-      - uses: actions/cache@v3
-        with:
-          path: '**/node_modules'
-          key: ${{ runner.os }}-npm-${{ hashFiles('**/package-lock.json') }}
       - uses: actions/setup-node@v3
         with:
           node-version: 18
+          cache: 'npm'
       - run: npm ci
       - run: npm run bootstrap -- --ci
       - run: npm run lint
@@ -29,10 +26,7 @@ jobs:
       - uses: actions/setup-node@v3
         with:
           node-version: ${{ matrix.node}}
-      - uses: actions/cache@v3
-        with:
-          path: '**/node_modules'
-          key: ${{ runner.os }}-npm-${{ hashFiles('**/package-lock.json') }}
+          cache: 'npm'
       - run: npm run build --prefix=packages/puppeteer
       # HACK: Force a TTY to enable browser-driver-manager to manipulate stdout.
       - shell: 'script -q -e -c "bash {0}"'
@@ -51,10 +45,7 @@ jobs:
       - uses: actions/setup-node@v3
         with:
           node-version: ${{ matrix.node }}
-      - uses: actions/cache@v3
-        with:
-          path: '**/node_modules'
-          key: ${{ runner.os }}-npm-${{ hashFiles('**/package-lock.json') }}
+          cache: 'npm'
       # HACK: Force a TTY to enable browser-driver-manager to manipulate stdout.
       - shell: 'script -q -e -c "bash {0}"'
         run: npx browser-driver-manager install chrome chromedriver --verbose
@@ -76,10 +67,7 @@ jobs:
       - uses: actions/setup-node@v3
         with:
           node-version: ${{ matrix.node }}
-      - uses: actions/cache@v3
-        with:
-          path: '**/node_modules'
-          key: ${{ runner.os }}-npm-${{ hashFiles('**/package-lock.json') }}
+          cache: 'npm'
       # HACK: Force a TTY to enable browser-driver-manager to manipulate stdout.
       - shell: 'script -q -e -c "bash {0}"'
         run: npx browser-driver-manager install chrome chromedriver --verbose
@@ -98,10 +86,7 @@ jobs:
       - uses: actions/setup-node@v3
         with:
           node-version: ${{ matrix.node }}
-      - uses: actions/cache@v3
-        with:
-          path: '**/node_modules'
-          key: ${{ runner.os }}-npm-${{ hashFiles('**/package-lock.json') }}
+          cache: 'npm'
       # HACK: Force a TTY to enable browser-driver-manager to manipulate stdout.
       - shell: 'script -q -e -c "bash {0}"'
         run: npx browser-driver-manager install chrome chromedriver --verbose
@@ -120,10 +105,7 @@ jobs:
       - uses: actions/setup-node@v3
         with:
           node-version: ${{ matrix.node }}
-      - uses: actions/cache@v3
-        with:
-          path: '**/node_modules'
-          key: ${{ runner.os }}-npm-${{ hashFiles('**/package-lock.json') }}
+          cache: 'npm'
       - run: npm run build --prefix=packages/reporter-earl
       - run: npm run test --prefix=packages/reporter-earl
       - run: npm run test:esm --prefix=packages/reporter-earl
@@ -139,10 +121,7 @@ jobs:
       - uses: actions/setup-node@v3
         with:
           node-version: ${{ matrix.node }}
-      - uses: actions/cache@v3
-        with:
-          path: '**/node_modules'
-          key: ${{ runner.os }}-npm-${{ hashFiles('**/package-lock.json') }}
+          cache: 'npm'
       - run: npm run build --prefix=packages/react
       - run: npm run test --prefix=packages/react
       - run: npm run test:esm --prefix=packages/react
@@ -158,13 +137,8 @@ jobs:
       - uses: actions/setup-node@v3
         with:
           node-version: ${{ matrix.node }}
-      - uses: actions/cache@v3
-        with:
-          path: '**/node_modules'
-          key: ${{ runner.os }}-npm-${{ hashFiles('**/package-lock.json') }}
+          cache: 'npm'
       - run: npx playwright install --with-deps
-      - run: npm ci
-      - run: npm run bootstrap -- --ci
       - run: npm run build --prefix=packages/playwright
       - run: npm run coverage --prefix=packages/playwright
       - run: npm run test:esm --prefix=packages/playwright
@@ -178,8 +152,5 @@ jobs:
       - uses: actions/setup-node@v3
         with:
           node-version: 18
-      - uses: actions/cache@v3
-        with:
-          path: '**/node_modules'
-          key: ${{ runner.os }}-npm-${{ hashFiles('**/package-lock.json') }}
+          cache: 'npm'
       - run: npm test --prefix=axe_core_test
