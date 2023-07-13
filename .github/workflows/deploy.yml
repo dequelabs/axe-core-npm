@@ -20,6 +20,7 @@ jobs:
       - run: npm run bootstrap
       # Make sure the working tree is clean
       - run: git reset --hard HEAD
+      - run: npm config set "//registry.npmjs.org/:_authToken" ${{ secrets.NPM_TOKEN }}
       - run: |
           npx lerna publish prepatch \
             --no-verify-access \
@@ -44,6 +45,7 @@ jobs:
       - run: npm run bootstrap
       # Make sure the working tree is clean
       - run: git reset --hard HEAD
+      - run: npm config set "//registry.npmjs.org/:_authToken" ${{ secrets.NPM_TOKEN }}
       - run: |
           npx lerna publish from-package \
             --force-publish='*' \
