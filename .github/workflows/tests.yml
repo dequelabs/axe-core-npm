@@ -27,6 +27,8 @@ jobs:
         with:
           node-version: ${{ matrix.node}}
           cache: 'npm'
+      - run: npm ci
+      - run: npm run bootstrap -- --ci
       - run: npm run build --prefix=packages/puppeteer
       # HACK: Force a TTY to enable browser-driver-manager to manipulate stdout.
       - shell: 'script -q -e -c "bash {0}"'
@@ -46,6 +48,8 @@ jobs:
         with:
           node-version: ${{ matrix.node }}
           cache: 'npm'
+      - run: npm ci
+      - run: npm run bootstrap -- --ci
       # HACK: Force a TTY to enable browser-driver-manager to manipulate stdout.
       - shell: 'script -q -e -c "bash {0}"'
         run: npx browser-driver-manager install chrome chromedriver --verbose
@@ -68,6 +72,8 @@ jobs:
         with:
           node-version: ${{ matrix.node }}
           cache: 'npm'
+      - run: npm ci
+      - run: npm run bootstrap -- --ci
       # HACK: Force a TTY to enable browser-driver-manager to manipulate stdout.
       - shell: 'script -q -e -c "bash {0}"'
         run: npx browser-driver-manager install chrome chromedriver --verbose
@@ -87,6 +93,8 @@ jobs:
         with:
           node-version: ${{ matrix.node }}
           cache: 'npm'
+      - run: npm ci
+      - run: npm run bootstrap -- --ci
       # HACK: Force a TTY to enable browser-driver-manager to manipulate stdout.
       - shell: 'script -q -e -c "bash {0}"'
         run: npx browser-driver-manager install chrome chromedriver --verbose
@@ -106,6 +114,8 @@ jobs:
         with:
           node-version: ${{ matrix.node }}
           cache: 'npm'
+      - run: npm ci
+      - run: npm run bootstrap -- --ci
       - run: npm run build --prefix=packages/reporter-earl
       - run: npm run test --prefix=packages/reporter-earl
       - run: npm run test:esm --prefix=packages/reporter-earl
@@ -122,6 +132,8 @@ jobs:
         with:
           node-version: ${{ matrix.node }}
           cache: 'npm'
+      - run: npm ci
+      - run: npm run bootstrap -- --ci
       - run: npm run build --prefix=packages/react
       - run: npm run test --prefix=packages/react
       - run: npm run test:esm --prefix=packages/react
@@ -138,6 +150,8 @@ jobs:
         with:
           node-version: ${{ matrix.node }}
           cache: 'npm'
+      - run: npm ci
+      - run: npm run bootstrap -- --ci
       - run: npx playwright install --with-deps
       - run: npm run build --prefix=packages/playwright
       - run: npm run coverage --prefix=packages/playwright
@@ -153,4 +167,6 @@ jobs:
         with:
           node-version: 18
           cache: 'npm'
+      - run: npm ci
+      - run: npm run bootstrap -- --ci
       - run: npm test --prefix=axe_core_test
