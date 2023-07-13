@@ -9,7 +9,7 @@ on:
 jobs:
   canary:
     runs-on: ubuntu-latest
-    if: github.ref_name == 'develop'
+    if: github.ref_name == 'develop' && github.repository_owner == 'dequelabs'
     steps:
       - uses: actions/checkout@v3
       - uses: actions/setup-node@v3
@@ -33,7 +33,7 @@ jobs:
 
   production:
     runs-on: ubuntu-latest
-    if: github.ref_name == 'master'
+    if: github.ref_name == 'master' && github.repository_owner == 'dequelabs'
     steps:
       - uses: actions/checkout@v3
       - uses: actions/setup-node@v3
