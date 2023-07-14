@@ -47,6 +47,7 @@
     ]
   },
   "dependencies": {
-    "axe-test-fixtures": "github:dequelabs/axe-test-fixtures"
+    "axe-test-fixtures": "github:dequelabs/axe-test-fixtures",
+    "browser-driver-manager": "^1.0.4"
   }
 }
