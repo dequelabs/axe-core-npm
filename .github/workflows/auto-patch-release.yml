@@ -1,8 +1,8 @@
 name: Automatically create patch release every 2 weeks
 on:
   schedule:
-    # Run every Friday right before midnight
-    - cron: '59 23 * * 5'
+    # Run every Thurdsay right before midnight
+    - cron: '59 23 * * 4'
 jobs:
   create_patch_release:
     name: Create release
