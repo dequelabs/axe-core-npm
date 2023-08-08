@@ -1,6 +1,7 @@
 name: Tests
 
-on: push:
+on:
+  push:
     branches:
       - "**" # all branches
       - "!master" # except master
