@@ -7,6 +7,10 @@ on:
       - "!master" # except master
       - "!develop" # except develop
 
+env:
+  # Point tests to run from newest stable chromedriver
+  CHROMEDRIVER_PATH: /usr/local/bin/chromedriver
+
 jobs:
   lint:
     runs-on: ubuntu-latest
