@@ -75,7 +75,7 @@
     "@types/test-listen": "^1.1.0",
     "axe-test-fixtures": "github:dequelabs/axe-test-fixtures#v1",
     "chai": "^4.3.6",
-    "chromedriver": "latest",
+    "chromedriver": "^115.0.1",
     "express": "^4.18.2",
     "mocha": "^10.0.0",
     "nyc": "^15.1.0",
