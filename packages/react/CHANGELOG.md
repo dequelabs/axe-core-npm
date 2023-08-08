@@ -3,27 +3,44 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
-# [4.6.0](https://github.com/dequelabs/axe-core-npm/compare/v4.5.2...v4.6.0) (2023-01-19)
+## [4.7.3](https://github.com/dequelabs/axe-core-npm/compare/v4.7.2...v4.7.3) (2023-06-09)
 
+**Note:** Version bump only for package @axe-core/react
 
-### Features
+## [4.7.2](https://github.com/dequelabs/axe-core-npm/compare/v4.7.1...v4.7.2) (2023-06-01)
 
-* Update axe-core to v4.6.1 ([#633](https://github.com/dequelabs/axe-core-npm/issues/633)) ([8bab5b2](https://github.com/dequelabs/axe-core-npm/commit/8bab5b23b3653a6a0603f10d889e22418a4fff3e))
+**Note:** Version bump only for package @axe-core/react
 
-
-
-
-
-## [4.5.2](https://github.com/dequelabs/axe-core-npm/compare/v4.5.1...v4.5.2) (2022-11-15)
-
+## [4.7.1](https://github.com/dequelabs/axe-core-npm/compare/v4.7.0...v4.7.1) (2023-05-02)
 
 ### Bug Fixes
 
-* update to use axe-core 4.5.2 ([#607](https://github.com/dequelabs/axe-core-npm/issues/607)) ([61312ff](https://github.com/dequelabs/axe-core-npm/commit/61312fff2e9ee4e0f218a29a1608f69b45206fad))
+- **react:** include .mjs file in publish ([#722](https://github.com/dequelabs/axe-core-npm/issues/722)) ([a7bf92f](https://github.com/dequelabs/axe-core-npm/commit/a7bf92fd9856b7be0fea4f3c8bd38a79a3c9fde3))
 
+# [4.7.0](https://github.com/dequelabs/axe-core-npm/compare/v4.6.1...v4.7.0) (2023-04-28)
 
+### Features
 
+- enable esm import ([#713](https://github.com/dequelabs/axe-core-npm/issues/713)) ([076bfa9](https://github.com/dequelabs/axe-core-npm/commit/076bfa99f27f416b4eaff6d24cc23e8573fc72ee))
+- Update axe-core to v4.7.0 ([#709](https://github.com/dequelabs/axe-core-npm/issues/709)) ([d418d09](https://github.com/dequelabs/axe-core-npm/commit/d418d093b4c462d5d60e0f7ad3d5147bcaf52aa2))
 
+## [4.6.1](https://github.com/dequelabs/axe-core-npm/compare/v4.6.0...v4.6.1) (2023-03-28)
+
+### Bug Fixes
+
+- Update axe-core to v4.6.3 ([#698](https://github.com/dequelabs/axe-core-npm/issues/698)) ([a7d53a4](https://github.com/dequelabs/axe-core-npm/commit/a7d53a4876237c74bb8dc2836b703cdaf2f7ace5))
+
+# [4.6.0](https://github.com/dequelabs/axe-core-npm/compare/v4.5.2...v4.6.0) (2023-01-19)
+
+### Features
+
+- Update axe-core to v4.6.1 ([#633](https://github.com/dequelabs/axe-core-npm/issues/633)) ([8bab5b2](https://github.com/dequelabs/axe-core-npm/commit/8bab5b23b3653a6a0603f10d889e22418a4fff3e))
+
+## [4.5.2](https://github.com/dequelabs/axe-core-npm/compare/v4.5.1...v4.5.2) (2022-11-15)
+
+### Bug Fixes
+
+- update to use axe-core 4.5.2 ([#607](https://github.com/dequelabs/axe-core-npm/issues/607)) ([61312ff](https://github.com/dequelabs/axe-core-npm/commit/61312fff2e9ee4e0f218a29a1608f69b45206fad))
 
 ## [4.5.1](https://github.com/dequelabs/axe-core-npm/compare/v4.5.0...v4.5.1) (2022-11-03)
 

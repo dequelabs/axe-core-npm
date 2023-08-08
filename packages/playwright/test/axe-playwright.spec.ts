@@ -1,26 +1,21 @@
 import 'mocha';
 import fs from 'fs';
-import playwright from 'playwright';
+import { chromium, ChromiumBrowser, Page } from '@playwright/test';
 import express from 'express';
-import type {
-  AxeResults,
-  Result,
-  SerialSelector,
-  SerialSelectorList
-} from 'axe-core';
+import type { AxeResults, Result } from 'axe-core';
 import testListen from 'test-listen';
 import { assert } from 'chai';
 import path from 'path';
 import { Server, createServer } from 'http';
-import AxeBuilder from '../src';
+import { AxeBuilder } from '../src';
 
 describe('@axe-core/playwright', () => {
   let server: Server;
   let addr: string;
-  let page: playwright.Page;
+  let page: Page;
   const axePath = require.resolve('axe-core');
   const axeSource = fs.readFileSync(axePath, 'utf8');
-  let browser: playwright.ChromiumBrowser;
+  let browser: ChromiumBrowser;
   const axeTestFixtures = path.resolve(__dirname, 'fixtures');
   const externalPath = path.resolve(axeTestFixtures, 'external');
   const axeLegacySource = fs.readFileSync(
@@ -52,7 +47,7 @@ describe('@axe-core/playwright', () => {
   });
 
   beforeEach(async () => {
-    browser = await playwright.chromium.launch({
+    browser = await chromium.launch({
       args: ['--disable-dev-shm-usage']
     });
     const context = await browser.newContext();
@@ -124,7 +119,7 @@ describe('@axe-core/playwright', () => {
 
     it('handles large results', async function () {
       /* this test handles a large amount of partial results a timeout may be required */
-      this.timeout(100_000);
+      this.timeout(1_000_000);
       const res = await await page.goto(`${addr}/external/index.html`);
 
       assert.equal(res?.status(), 200);
@@ -441,6 +436,24 @@ describe('@axe-core/playwright', () => {
 
       assert.equal(res?.status(), 200);
       assert.strictEqual(count, 9);
+    });
+
+    it('handles unloaded iframes (e.g. loading=lazy)', async () => {
+      const res = await page.goto(`${addr}/external/lazy-loaded-iframe.html`);
+
+      const results = await new AxeBuilder({ page })
+        .options({ runOnly: ['label', 'frame-tested'] })
+        .analyze();
+
+      assert.equal(res?.status(), 200);
+      assert.lengthOf(results.incomplete, 0);
+      assert.equal(results.violations[0].id, 'label');
+      assert.lengthOf(results.violations[0].nodes, 1);
+      assert.deepEqual(results.violations[0].nodes[0].target, [
+        '#ifr-lazy',
+        '#lazy-baz',
+        'input'
+      ]);
     });
   });
 

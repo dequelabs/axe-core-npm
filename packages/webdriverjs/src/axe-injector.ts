@@ -1,6 +1,7 @@
 import type { WebDriver, WebElement } from 'selenium-webdriver';
 import { error } from 'selenium-webdriver';
-import { source } from 'axe-core';
+import axe from 'axe-core';
+const { source } = axe;
 import type { AxeInjectorParams, BuilderOptions } from './types';
 const { StaleElementReferenceError } = error;
 

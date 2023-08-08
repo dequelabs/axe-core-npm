@@ -7,10 +7,10 @@ import Puppeteer, { Browser, Page } from 'puppeteer';
 import { createServer, Server } from 'http';
 import * as sinon from 'sinon';
 import testListen from 'test-listen';
-import AxePuppeteer from '../src/index';
+import { AxePuppeteer } from '../src/index';
 import {
   startServer,
-  puppeteerArgs,
+  puppeteerOpts,
   expectAsync,
   expectAsyncToNotThrow
 } from './utils';
@@ -62,8 +62,8 @@ describe('AxePuppeteer', function () {
   });
 
   beforeEach(async () => {
-    const args = puppeteerArgs();
-    browser = await Puppeteer.launch({ args });
+    const opts = puppeteerOpts();
+    browser = await Puppeteer.launch(opts);
     page = await browser.newPage();
   });
 
@@ -871,6 +871,28 @@ describe('AxePuppeteer', function () {
 
       assert.equal(res?.status(), 200);
       assert.deepEqual(pageResults, frameResults);
+    });
+
+    it('skips unloaded iframes (e.g. loading=lazy)', async () => {
+      const res = await page.goto(`${addr}/external/lazy-loaded-iframe.html`);
+      const results = await new AxePuppeteer(page)
+        .options({ runOnly: ['label', 'frame-tested'] })
+        .analyze();
+
+      assert.equal(res?.status(), 200);
+      assert.equal(results.incomplete[0].id, 'frame-tested');
+      assert.lengthOf(results.incomplete[0].nodes, 1);
+      assert.deepEqual(results.incomplete[0].nodes[0].target, [
+        '#ifr-lazy',
+        '#lazy-iframe'
+      ]);
+      assert.equal(results.violations[0].id, 'label');
+      assert.lengthOf(results.violations[0].nodes, 1);
+      assert.deepEqual(results.violations[0].nodes[0].target, [
+        '#ifr-lazy',
+        '#lazy-baz',
+        'input'
+      ]);
     });
   });
 

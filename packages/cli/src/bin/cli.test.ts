@@ -2,7 +2,6 @@ import 'mocha';
 import { assert } from 'chai';
 import tempy from 'tempy';
 import http from 'http';
-import https from 'https';
 import net from 'net';
 import path from 'path';
 import fs from 'fs';
@@ -10,6 +9,12 @@ import { version } from '../../package.json';
 import runCLI from '../testutils/';
 
 const SIMPLE_HTML_FILE = path.join(__dirname, '..', 'testutils', 'simple.html');
+const SIMPLE_CLEAN_HTML_FILE = path.join(
+  __dirname,
+  '..',
+  'testutils',
+  'simple-clean.html'
+);
 const SIMPLE_HTML_SOURCE = fs.readFileSync(SIMPLE_HTML_FILE, 'utf8');
 const PATH_TO_AXE_250 = path.resolve(
   __dirname,
@@ -76,6 +81,7 @@ describe('cli', () => {
         '--axe-source',
         PATH_TO_AXE_250
       );
+
       assert.equal(result.exitCode, 0);
       assert.include(
         result.stdout,
@@ -83,12 +89,14 @@ describe('cli', () => {
       );
       assert.include(result.stdout, 'Running axe-core 2.5.0');
     });
+
     it('error when given invalid axe source path', async () => {
       const result = await runCLI(
         `file://${SIMPLE_HTML_FILE}`,
         '--axe-source',
         'foobar'
       );
+
       assert.equal(result.exitCode, 2);
       assert.include(result.stderr, 'Unable to find the axe-core source file');
     });
@@ -139,6 +147,18 @@ describe('cli', () => {
         await runCLI(`file://${SIMPLE_HTML_FILE}`, '--exit');
       } catch (error) {
         assert.equal(error.exitCode, 1);
+        assert.include(
+          error.stdout,
+          'Violation of "marquee" with 1 occurrences!'
+        );
+      }
+    });
+
+    it('should exit zero if violations are found', async () => {
+      try {
+        await runCLI(`file://${SIMPLE_CLEAN_HTML_FILE}`, '--exit');
+      } catch (error) {
+        assert.equal(error.exitCode, 0);
         assert.include(
           error.stdout,
           'Violation of "marquee" with 1 occurrences!'

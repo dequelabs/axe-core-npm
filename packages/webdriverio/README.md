@@ -2,25 +2,19 @@
 
 > Provides a chainable axe API for WebdriverIO and automatically injects into all frames.
 
+## Feature Deprecation Notice
+
+Support for `@wdio/sync` is deprecated and testing for it will be removed in a future release.
+
 ## Getting Started
 
 Install [Node.js](https://docs.npmjs.com/getting-started/installing-node) if you haven't already.
 
 > Download and install any necessary browser drivers on your machine's PATH. [More on WebdriverIO setup](https://v6.webdriver.io/docs/gettingstarted.html#taking-the-first-step).
 
-Install `@axe-core/webdriverio` and its dependencies:
+Install WebdriverIO: `npm install webdriverio`
 
-NPM:
-
-```console
-npm install @axe-core/webdriverio
-```
-
-Yarn:
-
-```console
-yarn add @axe-core/webdriverio
-```
+Install @axe-core/webdriverio: `npm install @axe-core/webdriverio`
 
 ## Usage
 
@@ -29,26 +23,29 @@ This module uses a chainable API to assist in injecting, configuring, and analyz
 Here is an example of a script that will drive WebdriverIO to a page, perform an analysis, and then log results to the console.
 
 ```js
-const AxeBuilder = require('@axe-core/webdriverio').default;
+const { AxeBuilder } = require('@axe-core/webdriverio');
 const { remote } = require('webdriverio');
 
 (async () => {
   const client = await remote({
     logLevel: 'error',
     capabilities: {
-      browserName: 'firefox'
+      browserName: 'chrome',
+      'goog:chromeOptions': {
+        args: ['headless', 'disable-gpu']
+      }
     }
   });
-
   await client.url('https://dequeuniversity.com/demo/mars/');
 
-  const builder = new AxeBuilder({ client });
   try {
-    const results = await builder.analyze();
+    const results = await new AxeBuilder({ client }).analyze();
     console.log(results);
   } catch (e) {
-    console.error(e);
+    // do something with the error
   }
+
+  client.deleteSession();
 })();
 ```
 

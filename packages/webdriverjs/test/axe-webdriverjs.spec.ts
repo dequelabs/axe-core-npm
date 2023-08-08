@@ -1,17 +1,16 @@
 import 'mocha';
-import { AxeResults, Result } from 'axe-core';
-import { WebDriver } from 'selenium-webdriver';
+import type { AxeResults, Result } from 'axe-core';
+import type { WebDriver } from 'selenium-webdriver';
 import express from 'express';
-import chromedriver from 'chromedriver';
 import testListen from 'test-listen';
-import delay from 'delay';
 import { assert } from 'chai';
 import path from 'path';
 import fs from 'fs';
 import { Server, createServer } from 'http';
-import { Webdriver, connectToChromeDriver } from './test-utils';
-import AxeBuilder from '../src';
+import { Webdriver } from './test-utils';
+import { AxeBuilder } from '../src';
 import { axeRunPartial } from '../src/browser';
+
 const dylangConfig = JSON.parse(
   fs.readFileSync(
     require.resolve('./fixtures/external/dylang-config.json'),
@@ -20,7 +19,6 @@ const dylangConfig = JSON.parse(
 );
 
 describe('@axe-core/webdriverjs', () => {
-  const port = 9515;
   let driver: WebDriver;
   let server: Server;
   let addr: string;
@@ -46,25 +44,21 @@ describe('@axe-core/webdriverjs', () => {
       'utf8'
     );
 
-    chromedriver.start([`--port=${port}`]);
-    await delay(500);
-    await connectToChromeDriver(port);
-  });
-
-  after(() => {
-    chromedriver.stop();
-  });
-
-  beforeEach(async () => {
     const app = express();
     app.use(express.static(path.resolve(__dirname, 'fixtures')));
     server = createServer(app);
     addr = await testListen(server);
+  });
+
+  beforeEach(async () => {
     driver = Webdriver();
   });
 
   afterEach(async () => {
-    await driver.close();
+    await driver.quit();
+  });
+
+  after(() => {
     server.close();
   });
 
@@ -386,6 +380,43 @@ describe('@axe-core/webdriverjs', () => {
       normalResults.timestamp = legacyResults.timestamp;
       normalResults.testEngine.name = legacyResults.testEngine.name;
       assert.deepEqual(normalResults, legacyResults);
+    });
+
+    it('skips unloaded iframes (e.g. loading=lazy)', async () => {
+      await driver.get(`${addr}/external/lazy-loaded-iframe.html`);
+      const title = await driver.getTitle();
+
+      const results = await new AxeBuilder(driver)
+        .options({ runOnly: ['label', 'frame-tested'] })
+        .analyze();
+
+      assert.notEqual(title, 'Error');
+      assert.equal(results.incomplete[0].id, 'frame-tested');
+      assert.lengthOf(results.incomplete[0].nodes, 1);
+      assert.deepEqual(results.incomplete[0].nodes[0].target, [
+        '#ifr-lazy',
+        '#lazy-iframe'
+      ]);
+      assert.equal(results.violations[0].id, 'label');
+      assert.lengthOf(results.violations[0].nodes, 1);
+      assert.deepEqual(results.violations[0].nodes[0].target, [
+        '#ifr-lazy',
+        '#lazy-baz',
+        'input'
+      ]);
+    });
+
+    it('resets pageLoad timeout to user setting', async () => {
+      await driver.get(`${addr}/external/lazy-loaded-iframe.html`);
+      driver.manage().setTimeouts({ pageLoad: 500 });
+      await driver.getTitle();
+
+      await new AxeBuilder(driver)
+        .options({ runOnly: ['label', 'frame-tested'] })
+        .analyze();
+
+      const timeout = await driver.manage().getTimeouts();
+      assert.equal(timeout.pageLoad, 500);
     });
   });
 
@@ -852,10 +883,10 @@ describe('@axe-core/webdriverjs', () => {
       assert.notEqual(title, 'Error');
 
       await driver.executeScript(`
-                                 window.axe = {
-                                   runPartial: (c, o) => Promise.resolve({ violations: [], passes: [] })
-                                 };
-                                 `);
+        window.axe = {
+        runPartial: (c, o) => Promise.resolve({ violations: [], passes: [] })
+        };
+      `);
       const res = await axeRunPartial(driver, null as any, null as any);
       assert.equal(typeof res, 'string');
     });

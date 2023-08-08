@@ -1,12 +1,12 @@
 import chromedriver from 'chromedriver';
-import { Builder, Capabilities, WebDriver } from 'selenium-webdriver';
+import { Builder, type WebDriver } from 'selenium-webdriver';
 import chrome from 'selenium-webdriver/chrome';
 import { WebdriverConfigParams } from '../types';
 
 const startDriver = async (
   config: WebdriverConfigParams
 ): Promise<WebDriver> => {
-  const scriptTimeout = (config.timeout || 20) * 1000.0;
+  const scriptTimeout = config.timeout * 1000.0;
   let builder: Builder;
   /* istanbul ignore else */
   if (config.browser === 'chrome-headless') {

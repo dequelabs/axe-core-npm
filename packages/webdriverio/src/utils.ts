@@ -9,12 +9,13 @@ import type {
   SerialSelectorList,
   SerialContextObject
 } from 'axe-core';
-import type { Selector, WdioBrowser } from './types';
+
+export const FRAME_LOAD_TIMEOUT = 1000;
 
 /**
  * Validates that the client provided is WebdriverIO v5 or v6.
  */
-export const isWebdriverClient = (client: WdioBrowser): boolean => {
+export const isWebdriverClient = (client: Browser): boolean => {
   if (!client || typeof client !== 'object') {
     return false;
   }
@@ -81,9 +82,10 @@ const promisify = <T>(thenable: Promise<T>): Promise<T> => {
 };
 
 export const axeSourceInject = async (
-  client: Browser<'async'>,
+  client: Browser,
   axeSource: string
 ): Promise<{ runPartialSupported: boolean }> => {
+  await assertFrameReady(client);
   return promisify(
     // Had to use executeAsync() because we could not use multiline statements in client.execute()
     // we were able to return a single boolean in a line but not when assigned to a variable.
@@ -99,14 +101,42 @@ export const axeSourceInject = async (
   );
 };
 
+async function assertFrameReady(client: Browser): Promise<void> {
+  // Wait so that we know there is an execution context.
+  // Assume that if we have an html node we have an execution context.
+  try {
+    /*
+      When using the devtools protocol trying to call
+      client.execute() on an unloaded iframe would cause
+      the code to hang indefinitely since it is using
+      Puppeteer which freezes on unloaded iframes. Set a
+      race timeout in order to handle that. Code taken
+      from our @axe-core/puppeteer utils function.
+      @see https://github.com/dequelabs/axe-core-npm/issues/727
+    */
+    const timeoutPromise = new Promise((resolve, reject) => {
+      setTimeout(() => {
+        reject();
+      }, FRAME_LOAD_TIMEOUT);
+    });
+    const executePromise = client.execute(() => {
+      return document.readyState === 'complete';
+    });
+    const readyState = await Promise.race([timeoutPromise, executePromise]);
+    assert(readyState);
+  } catch {
+    throw new Error('Page/Frame is not ready');
+  }
+}
+
 export const axeRunPartial = (
-  client: Browser<'async'>,
+  client: Browser,
   context?: SerialContextObject,
   options?: RunOptions
 ): Promise<PartialResult> => {
   return promisify(
     client
-      .executeAsync<string, never>(
+      .executeAsync<string, []>(
         `
       var callback = arguments[arguments.length - 1];
       var context = ${JSON.stringify(context)} || document;
@@ -120,8 +150,10 @@ export const axeRunPartial = (
 };
 
 export const axeGetFrameContext = (
-  client: Browser<'async'>,
+  client: Browser,
   context: SerialContextObject
+  // TODO: add proper types
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
 ): Promise<any[]> => {
   return promisify(
     // Had to use executeAsync() because we could not use multiline statements in client.execute()
@@ -136,14 +168,14 @@ export const axeGetFrameContext = (
 };
 
 export const axeRunLegacy = (
-  client: Browser<'async'>,
+  client: Browser,
   context: SerialContextObject,
   options: RunOptions,
   config?: Spec
 ): Promise<AxeResults> => {
   return promisify(
     client
-      .executeAsync<string, never>(
+      .executeAsync<string, []>(
         `var callback = arguments[arguments.length - 1];
       var context = ${JSON.stringify(context)} || document;
       var options = ${JSON.stringify(options)} || {};
@@ -160,7 +192,7 @@ export const axeRunLegacy = (
 };
 
 export const axeFinishRun = (
-  client: Browser<'async'>,
+  client: Browser,
   axeSource: string,
   partialResults: PartialResults,
   options: RunOptions
@@ -191,7 +223,7 @@ export const axeFinishRun = (
   return chunkResults(partialString)
     .then(() => {
       return promisify(
-        client.executeAsync<string, never>(
+        client.executeAsync<string, []>(
           `var callback = arguments[arguments.length - 1];
       ${axeSource};
       window.axe.configure({
@@ -209,9 +241,7 @@ export const axeFinishRun = (
     .then((r: string) => deserialize<AxeResults>(r));
 };
 
-export const configureAllowedOrigins = (
-  client: Browser<'async'>
-): Promise<void> => {
+export const configureAllowedOrigins = (client: Browser): Promise<void> => {
   return promisify(
     client.execute(`
       window.axe.configure({ allowedOrigins: ['<unsafe_all_origins>'] })

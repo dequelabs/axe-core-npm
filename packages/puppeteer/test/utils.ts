@@ -3,6 +3,7 @@ import express from 'express';
 import { createServer, Server } from 'http';
 import testListen from 'test-listen';
 import { expect } from 'chai';
+import type { PuppeteerLaunchOptions } from 'puppeteer';
 
 export async function expectAsync(
   fn: () => Promise<any>
@@ -33,10 +34,14 @@ export async function startServer(): Promise<{ server: Server; addr: string }> {
   return { server, addr };
 }
 
-export function puppeteerArgs(): string[] {
-  const args: string[] = [];
+export function puppeteerOpts(): PuppeteerLaunchOptions {
+  const options: PuppeteerLaunchOptions = {};
+
   if (process.env.CI) {
-    args.push('--no-sandbox', '--disable-setuid-sandbox');
+    options.args = [];
+    options.args.push('--no-sandbox', '--disable-setuid-sandbox');
+    options.executablePath = '/usr/bin/google-chrome-stable';
   }
-  return args;
+
+  return options;
 }

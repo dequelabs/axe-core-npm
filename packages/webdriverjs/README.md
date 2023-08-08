@@ -10,21 +10,9 @@ Install [Node.js](https://docs.npmjs.com/getting-started/installing-node) if you
 
 > Download and install any necessary browser drivers on your machine's PATH. [More on Webdriver setup](https://www.selenium.dev/documentation/en/webdriver/).
 
-Install Selenium Webdriver: `npm install selenium-webdriver --no-save`
+Install Selenium Webdriver: `npm install selenium-webdriver`
 
-Install @axe-core/webdriverjs and its dependencies:
-
-NPM:
-
-```console
-npm install @axe-core/webdriverjs
-```
-
-Yarn:
-
-```console
-yarn add @axe-core/webdriverjs
-```
+Install @axe-core/webdriverjs: `npm install @axe-core/webdriverjs`
 
 ## Usage
 
@@ -33,19 +21,26 @@ This module uses a chainable API to assist in injecting, configuring, and analyz
 Here is an example of a script that will drive WebdriverJS to a page, perform an analysis, and then log results to the console.
 
 ```js
-const AxeBuilder = require('@axe-core/webdriverjs');
-const WebDriver = require('selenium-webdriver');
+const { AxeBuilder } = require('@axe-core/webdriverjs');
+const { Builder } = require('selenium-webdriver');
+const chrome = require('selenium-webdriver/chrome');
 
-const driver = new WebDriver.Builder().forBrowser('firefox').build();
+(async () => {
+  const driver = Builder()
+    .forBrowser('chrome')
+    .setChromeOptions(new chrome.Options().headless())
+    .build();
+  await driver.get('https://dequeuniversity.com/demo/mars/');
 
-driver.get('https://dequeuniversity.com/demo/mars/').then(() => {
-  new AxeBuilder(driver).analyze((err, results) => {
-    if (err) {
-      // Handle error somehow
-    }
+  try {
+    const results = await new AxeBuilder(driver).analyze();
     console.log(results);
-  });
-});
+  } catch (e) {
+    // do something with the error
+  }
+
+  await driver.quit();
+})();
 ```
 
 ## AxeBuilder(driver: Webdriver.WebDriver[, axeSource: string])

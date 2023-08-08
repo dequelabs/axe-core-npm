@@ -1,9 +1,9 @@
 {
   "compilerOptions": {
     "moduleResolution": "node",
-    "target": "es5",
-    "module": "commonjs",
-    "lib": ["dom", "es2019"],
+    "target": "esnext",
+    "module": "esnext",
+    "lib": ["dom", "esnext"],
     "strict": true,
     "pretty": true,
     "sourceMap": true,
@@ -11,6 +11,12 @@
     "outDir": "dist",
     "esModuleInterop": true,
     "typeRoots": ["node_modules/@types"]
+  },
+  "ts-node": {
+    "compilerOptions": {
+      "module": "commonjs",
+      "target": "es5"
+    }
   },
   "include": ["src"]
 }

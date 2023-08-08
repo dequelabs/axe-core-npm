@@ -1,5 +1,4 @@
 import * as webdriverio from 'webdriverio';
-import sync from '@wdio/sync';
 import express from 'express';
 import testListen from 'test-listen';
 import { assert } from 'chai';
@@ -9,10 +8,11 @@ import { Server, createServer } from 'http';
 import net from 'net';
 import fs from 'fs';
 import delay from 'delay';
-import AxeBuilder from '.';
-import { logOrRethrowError } from './utils';
-import { WdioBrowser } from './types';
+import { AxeBuilder } from '../src';
+import { logOrRethrowError } from '../src/utils';
 import type { AxeResults, Result } from 'axe-core';
+import child_process from 'child_process';
+import { ChildProcessWithoutNullStreams } from 'child_process';
 
 const connectToChromeDriver = (port: number): Promise<void> => {
   let socket: net.Socket;
@@ -50,21 +50,27 @@ describe('@axe-core/webdriverio', () => {
   for (const protocol of ['devtools', 'webdriver'] as const) {
     if (protocol === 'webdriver') {
       port = 9515;
+
+      let chromedriverProcess: ChildProcessWithoutNullStreams;
+
       before(async () => {
-        chromedriver.start([`--port=${port}`]);
+        const path = process.env.CHROMEDRIVER_PATH ?? chromedriver.path;
+        chromedriverProcess = child_process.spawn(path, [`--port=${port}`]);
+        chromedriverProcess.stdout.pipe(process.stdout);
+        chromedriverProcess.stderr.pipe(process.stderr);
         await delay(500);
         await connectToChromeDriver(port);
       });
 
       after(() => {
-        chromedriver.stop();
+        chromedriverProcess.kill();
       });
     }
 
-    describe('WebdriverIO Async', () => {
+    describe(`WebdriverIO Async (${protocol} protocol)`, () => {
       let server: Server;
       let addr: string;
-      let client: WdioBrowser;
+      let client: webdriverio.Browser;
       const axePath = require.resolve('axe-core');
       const axeSource = fs.readFileSync(axePath, 'utf8');
       const axeTestFixtures = path.resolve(
@@ -844,6 +850,43 @@ describe('@axe-core/webdriverio', () => {
             normalResults.testEngine.name = legacyResults.testEngine.name;
             assert.deepEqual(normalResults, legacyResults);
           });
+
+          it('handles unloaded iframes (e.g. loading=lazy)', async () => {
+            await client.url(`${addr}/lazy-loaded-iframe.html`);
+            const title = await client.getTitle();
+
+            const results = await new AxeBuilder({ client })
+              .options({ runOnly: ['label', 'frame-tested'] })
+              .analyze();
+
+            assert.notEqual(title, 'Error');
+            assert.equal(results.incomplete[0].id, 'frame-tested');
+            assert.lengthOf(results.incomplete[0].nodes, 1);
+            assert.deepEqual(results.incomplete[0].nodes[0].target, [
+              '#ifr-lazy',
+              '#lazy-iframe'
+            ]);
+            assert.equal(results.violations[0].id, 'label');
+            assert.lengthOf(results.violations[0].nodes, 1);
+            assert.deepEqual(results.violations[0].nodes[0].target, [
+              '#ifr-lazy',
+              '#lazy-baz',
+              'input'
+            ]);
+          });
+
+          it('resets pageLoad timeout to user setting', async () => {
+            await client.url(`${addr}/lazy-loaded-iframe.html`);
+            client.setTimeout({ pageLoad: 500 });
+            await client.getTitle();
+
+            await new AxeBuilder({ client })
+              .options({ runOnly: ['label', 'frame-tested'] })
+              .analyze();
+
+            const timeout = await client.getTimeouts();
+            assert.equal(timeout.pageLoad, 500);
+          });
         });
 
         describe('logOrRethrowError', () => {
@@ -1421,7 +1464,7 @@ describe('@axe-core/webdriverio', () => {
 
         it('should not set when running runPartial and not legacy mode', async () => {
           await client.url(`${addr}/index.html`);
-          const res = await new AxeBuilder({ client }).analyze();
+          await new AxeBuilder({ client }).analyze();
           const allowedOrigins = await getAllowedOrigins();
           assert.deepEqual(allowedOrigins, [addr]);
         });
@@ -1444,7 +1487,7 @@ describe('@axe-core/webdriverio', () => {
 
         it('should set when running legacy source and not legacy mode', async () => {
           await client.url(`${addr}/index.html`);
-          const res = await new AxeBuilder({
+          await new AxeBuilder({
             client,
             axeSource: axeLegacySource
           }).analyze();
@@ -1454,65 +1497,4 @@ describe('@axe-core/webdriverio', () => {
       });
     });
   }
-
-  describe('WebdriverIO Sync', () => {
-    let server: Server;
-    let addr: string;
-    let remote: any;
-    const axeTestFixtures = path.resolve(
-      __dirname,
-      '..',
-      'fixtures',
-      'external'
-    );
-    beforeEach(async () => {
-      const app = express();
-      app.use(express.static(axeTestFixtures));
-      server = createServer(app);
-      addr = await testListen(server);
-
-      remote = webdriverio.remote({
-        automationProtocol: 'devtools',
-        path: '/',
-        capabilities: {
-          browserName: 'chrome',
-          'goog:chromeOptions': {
-            args: ['--headless']
-          }
-        },
-        logLevel: 'error'
-      });
-    });
-
-    afterEach(function (done) {
-      remote
-        .then((client: WdioBrowser) =>
-          sync(() => {
-            client.deleteSession();
-            server.close();
-          })
-        )
-        .then(() => done())
-        .catch((e: unknown) => done(e));
-    });
-
-    it('analyze', function (done) {
-      remote
-        .then((client: WdioBrowser) =>
-          sync(() => {
-            client.url(`${addr}/index.html`);
-            assert.isTrue(client.isDevTools);
-            new AxeBuilder({ client }).analyze((error, results) => {
-              assert.isNotNull(results);
-              assert.isArray(results?.violations);
-              assert.isArray(results?.incomplete);
-              assert.isArray(results?.passes);
-              assert.isArray(results?.inapplicable);
-            });
-          })
-        )
-        .then(() => done())
-        .catch((e: unknown) => done(e));
-    });
-  });
 });

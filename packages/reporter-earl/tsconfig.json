@@ -1,9 +1,9 @@
 {
   "compilerOptions": {
     "moduleResolution": "node",
-    "target": "es5",
-    "module": "commonjs",
-    "lib": ["es2015", "dom"],
+    "target": "esnext",
+    "module": "esnext",
+    "lib": ["esnext", "dom"],
     "strict": true,
     "pretty": true,
     "sourceMap": true,

@@ -1,6 +1,6 @@
 {
   "name": "@axe-core/webdriverio",
-  "version": "4.6.0",
+  "version": "4.7.3",
   "description": "Provides a method to inject and analyze web pages using axe",
   "contributors": [
     {
@@ -15,12 +15,21 @@
     "url": "https://github.com/dequelabs/axe-core-npm.git"
   },
   "license": "MPL-2.0",
-  "main": "dist/index.js",
-  "typings": "dist/index.d.ts",
+  "main": "./dist/index.js",
+  "module": "./dist/index.mjs",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "import": "./dist/index.mjs",
+      "require": "./dist/index.js",
+      "types": "./dist/index.d.ts"
+    }
+  },
   "scripts": {
     "prebuild": "rimraf dist",
-    "build": "tsc -p tsconfig.json",
-    "test": "mocha --timeout 60000 -r ts-node/register 'src/test.ts'",
+    "build": "tsup src/index.ts --dts --format esm,cjs",
+    "test": "mocha --timeout 60000 -r ts-node/register 'test/**.spec.ts'",
+    "test:esm": "node test/esmTest.mjs",
     "coverage": "nyc npm run test",
     "prepare": "npm run build"
   },
@@ -36,7 +45,7 @@
     "webdriverio"
   ],
   "dependencies": {
-    "axe-core": "^4.6.1",
+    "axe-core": "^4.7.0",
     "cssesc": "^3.0.0"
   },
   "devDependencies": {
@@ -47,10 +56,10 @@
     "@types/mocha": "^10.0.0",
     "@types/node": "^18.8.3",
     "@types/test-listen": "^1.1.0",
-    "@wdio/sync": "^7.25.1",
     "axe-test-fixtures": "github:dequelabs/axe-test-fixtures#v1",
     "chai": "^4.3.6",
-    "chromedriver": "^109.0.0",
+    "chromedriver": "^113.0.0",
+    "cross-dirname": "^0.1.0",
     "delay": "^5.0.0",
     "express": "^4.18.2",
     "mocha": "^10.0.0",
@@ -59,11 +68,12 @@
     "source-map-support": "^0.5.21",
     "test-listen": "^1.1.0",
     "ts-node": "^10.9.1",
+    "tsup": "^6.7.0",
     "typescript": "^4.8.4",
-    "webdriverio": "^7.25.1"
+    "webdriverio": "^8.8.2"
   },
   "peerDependencies": {
-    "webdriverio": "^5 || ^6 || ^7"
+    "webdriverio": "^5 || ^6 || ^7 || ^8"
   },
   "nyc": {
     "include": [

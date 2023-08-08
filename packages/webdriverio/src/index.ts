@@ -10,10 +10,13 @@ import {
   axeRunPartial,
   axeFinishRun,
   axeRunLegacy,
-  configureAllowedOrigins
+  configureAllowedOrigins,
+  FRAME_LOAD_TIMEOUT
 } from './utils';
+import { getFilename } from 'cross-dirname';
+import { pathToFileURL } from 'url';
 
-import type { Browser } from 'webdriverio';
+import type { Browser, Element } from 'webdriverio';
 import type {
   RunOptions,
   AxeResults,
@@ -21,17 +24,26 @@ import type {
   SerialSelectorList,
   SerialFrameSelector
 } from 'axe-core';
-import type {
-  Options,
-  CallbackFunction,
-  WdioBrowser,
-  WdioElement,
-  PartialResults,
-  Selector
-} from './types';
+import type { Options, CallbackFunction, PartialResults } from './types';
+
+let axeCorePath = '';
+async function loadAxePath() {
+  if (typeof require === 'function' && typeof require.resolve === 'function') {
+    axeCorePath = require.resolve('axe-core');
+  } else {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const { createRequire } = (await import('node:module')) as any;
+    // `getFilename` is needed because esm's `import.meta.url` is illegal syntax in cjs
+    const filename = pathToFileURL(getFilename()).toString();
+
+    const require = createRequire(filename);
+    axeCorePath = require.resolve('axe-core');
+  }
+}
+loadAxePath();
 
 export default class AxeBuilder {
-  private client: Browser<'async'>;
+  private client: Browser;
   private axeSource: string;
   private includes: SerialSelectorList = [];
   private excludes: SerialSelectorList = [];
@@ -45,19 +57,16 @@ export default class AxeBuilder {
       isWebdriverClient(client),
       'An instantiated WebdriverIO client greater than v5 is required'
     );
-    // Treat everything as Browser<'async'>:
-    // - Anything sync can also run async, since JS can await sync functions
-    // - Ignore MultiRemoteBrowser, which is just Browser with extra props
-    this.client = client as Browser<'async'>;
+
+    this.client = client;
     this.errorUrl =
       'https://github.com/dequelabs/axe-core-npm/blob/develop/packages/webdriverio/error-handling.md';
 
     if (axeSource) {
       this.axeSource = axeSource;
     } else {
-      const sourceDir = require.resolve('axe-core');
       try {
-        this.axeSource = fs.readFileSync(sourceDir, 'utf-8');
+        this.axeSource = fs.readFileSync(axeCorePath, 'utf-8');
       } catch (e) {
         throw new Error(
           'Unable to find axe-core source. Is axe-core installed?'
@@ -190,9 +199,7 @@ export default class AxeBuilder {
   /**
    * Injects `axe-core` into all frames.
    */
-  private async inject(
-    browsingContext: WdioElement | null = null
-  ): Promise<void> {
+  private async inject(browsingContext: Element | null = null): Promise<void> {
     await this.setBrowsingContext(browsingContext);
     const runPartialSupported = await axeSourceInject(
       this.client,
@@ -236,7 +243,21 @@ export default class AxeBuilder {
       return await this.runLegacy(context);
     }
 
-    const partials = await this.runPartialRecursive(context);
+    // ensure we fail quickly if an iframe cannot be loaded (instead of waiting
+    // the default length of 30 seconds)
+    const { pageLoad } = await this.client.getTimeouts();
+    this.client.setTimeout({
+      pageLoad: FRAME_LOAD_TIMEOUT
+    });
+
+    let partials: PartialResults | null;
+    try {
+      partials = await this.runPartialRecursive(context);
+    } finally {
+      this.client.setTimeout({
+        pageLoad
+      });
+    }
 
     try {
       return await this.finishRun(partials);
@@ -280,7 +301,7 @@ export default class AxeBuilder {
    * - https://webdriver.io/docs/api/webdriver.html#switchtoframe
    */
   private async setBrowsingContext(
-    id: null | WdioElement | WdioBrowser = null
+    id: null | Element | Browser = null
   ): Promise<void> {
     if (id) {
       await this.client.switchToFrame(id);
@@ -295,7 +316,8 @@ export default class AxeBuilder {
    */
 
   private async runPartialRecursive(
-    context: SerialContextObject
+    context: SerialContextObject,
+    frameStack: Element[] = []
   ): Promise<PartialResults> {
     const frameContexts = await axeGetFrameContext(this.client, context);
     const partials: PartialResults = [
@@ -308,10 +330,21 @@ export default class AxeBuilder {
         assert(frame, `Expect frame of "${frameSelector}" to be defined`);
         await this.client.switchToFrame(frame);
         await axeSourceInject(this.client, this.script);
-        partials.push(...(await this.runPartialRecursive(frameContext)));
+        partials.push(
+          ...(await this.runPartialRecursive(frameContext, [
+            ...frameStack,
+            frame
+          ]))
+        );
       } catch (error) {
+        const [topWindow] = await this.client.getWindowHandles();
+        await this.client.switchToWindow(topWindow);
+
+        for (const frameElm of frameStack) {
+          await this.client.switchToFrame(frameElm);
+        }
+
         partials.push(null);
-        await this.client.switchToParentFrame();
       }
     }
     await this.client.switchToParentFrame();
@@ -346,3 +379,5 @@ export default class AxeBuilder {
     return res;
   }
 }
+
+export { AxeBuilder };

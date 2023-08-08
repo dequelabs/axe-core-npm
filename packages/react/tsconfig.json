@@ -6,9 +6,9 @@
     "sourceMap": true,
     "inlineSources": true,
     "allowJs": false,
-    "module": "commonjs",
-    "target": "es5",
-    "lib": ["dom", "es5"],
+    "module": "esnext",
+    "target": "esnext",
+    "lib": ["dom", "esnext"],
     "resolveJsonModule": true,
     "esModuleInterop": true
   },

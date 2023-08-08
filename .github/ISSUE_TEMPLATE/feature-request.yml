@@ -1,0 +1,30 @@
+name: Request a feature
+description: Request an enhancement, improvement, or new rule.
+labels: ['feat', 'ungroomed']
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Feature requests can be made for axe-core npm integrations (e.g. `@axe-core/webdriverjs`).
+  - type: dropdown
+    id: product
+    attributes:
+      label: Product
+      description: Which product is the feature for?
+      options:
+        - cli
+        - playwright
+        - puppeteer
+        - react
+        - reporter-earl
+        - webdriverio
+        - webdriverjs
+    validations:
+      required: true
+  - type: textarea
+    id: description
+    attributes:
+      label: Feature Description
+      description: What do you wish the product did?
+    validations:
+      required: true

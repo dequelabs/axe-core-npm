@@ -1,13 +1,20 @@
-const AxeBuilder = require('@axe-core/webdriverjs');
-const WebDriver = require('selenium-webdriver');
+const { AxeBuilder } = require('@axe-core/webdriverjs');
+const { Builder } = require('selenium-webdriver');
+const chrome = require('selenium-webdriver/chrome');
 
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 (async () => {
-  const driver = new WebDriver.Builder().forBrowser('chrome').build();
-  await driver.get('https://html5-sandbox.glitch.me/');
-  const results = await new AxeBuilder(driver, null, {
-    noSandbox: true
-  }).analyze();
-  console.log(results);
+  const driver = new Builder()
+    .forBrowser('chrome')
+    .setChromeOptions(new chrome.Options().headless())
+    .build();
+  await driver.get('https://dequeuniversity.com/demo/mars/');
+
+  try {
+    const results = await new AxeBuilder(driver).analyze();
+    console.log(results);
+  } catch (e) {
+    console.error(e);
+  }
+
   await driver.quit();
 })();
