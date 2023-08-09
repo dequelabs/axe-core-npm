@@ -79,7 +79,7 @@ program
   )
   .option(
     '--chrome-path <path>',
-    'Absolute path to the desired chrome executable'
+    'Path to the desired chrome executable'
   )
   .action(cli);
 
