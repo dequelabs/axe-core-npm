@@ -2,7 +2,7 @@ import 'mocha';
 import { assert } from 'chai';
 import tempy from 'tempy';
 import { join } from 'path';
-import { mkdirSync, writeFileSync } from 'fs';
+import { mkdirSync, writeFileSync, rmSync } from 'fs';
 import { dependencies } from '../../package.json';
 import * as utils from './utils';
 
@@ -76,34 +76,55 @@ describe('utils', () => {
 
   describe('getAxeSource', () => {
     describe('mock file', () => {
-      let dirname = '<NOT A FILE>';
-      let axeCoreDirname = '<NOT A DIRECTORY>';
-      before(() => {
-        const axeVersionCheck = dependencies['axe-core'].replace('^', '');
+      function setupTree() {
         const tempDir = tempy.directory();
         mkdirSync(join(tempDir, 'node_modules'));
-        axeCoreDirname = join(tempDir, 'node_modules', 'axe-core');
-        mkdirSync(axeCoreDirname);
-        writeFileSync(join(axeCoreDirname, 'axe.js'), `"${axeVersionCheck}"`);
+        const parentDirname = join(tempDir, 'node_modules', 'axe-core');
+        mkdirSync(parentDirname);
+        writeFileSync(join(parentDirname, 'axe.js'), 'parent');
 
         mkdirSync(join(tempDir, 'packages'));
+        const cliDirname = join(tempDir, 'packages', 'cli');
         mkdirSync(join(tempDir, 'packages', 'cli'));
         mkdirSync(join(tempDir, 'packages', 'cli', 'node_modules'));
-        mkdirSync(join(tempDir, 'packages', 'cli', 'node_modules', 'axe-core'));
-        dirname = join(tempDir, 'packages', 'cli', 'lib');
-        mkdirSync(dirname);
-      });
+        const nodeModDirname = join(
+          tempDir,
+          'packages',
+          'cli',
+          'node_modules',
+          'axe-core'
+        );
+        mkdirSync(nodeModDirname);
+        writeFileSync(join(nodeModDirname, 'axe.js'), 'node modules');
 
-      it('fall back to use `locally` installed axe-core', () => {
-        const axeSource = utils.getAxeSource(undefined, dirname);
-        const axeVersionCheck = dependencies['axe-core'].replace('^', '');
-        assert.include(axeSource, axeVersionCheck);
-      });
+        const cwdDirname = join(tempDir, 'packages', 'cli', 'lib');
+        mkdirSync(cwdDirname);
+        writeFileSync(join(cwdDirname, 'axe.js'), 'cwd');
+        return {
+          cliDirname,
+          parentDirname,
+          nodeModDirname,
+          cwdDirname
+        };
+      }
 
-      it('fall back to use axe-core in current directory', () => {
-        const axeSource = utils.getAxeSource(undefined, axeCoreDirname);
-        const axeVersionCheck = dependencies['axe-core'].replace('^', '');
-        assert.include(axeSource, axeVersionCheck);
+      it('uses axe.js from the working directory if it exists', () => {
+        const { cwdDirname } = setupTree();
+        const axeSource = utils.getAxeSource(undefined, cwdDirname);
+        assert.include(axeSource, 'cwd');
+      });
+      it("falls back to axe-core from the working directory's node_modules if axe.js doesn't exist in the working directory", () => {
+        const { cliDirname, cwdDirname } = setupTree();
+        rmSync(join(cwdDirname, 'axe.js'));
+        const axeSource = utils.getAxeSource(undefined, cliDirname);
+        assert.include(axeSource, 'node modules');
+      });
+      it("falls back to axe-core from our own package's node_modules if no working-directory based implementation exists", () => {
+        const { cwdDirname, nodeModDirname } = setupTree();
+        rmSync(join(cwdDirname, 'axe.js'));
+        rmSync(join(nodeModDirname, 'axe.js'));
+        const axeSource = utils.getAxeSource(undefined, cwdDirname);
+        assert.include(axeSource, 'parent');
       });
     });
 
