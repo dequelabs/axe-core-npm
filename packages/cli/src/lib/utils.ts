@@ -72,6 +72,7 @@ export const parseBrowser = (browser?: string): string | Error => {
 
 export const getAxeSource = (
   axePath?: string,
+  cwd?: string,
   dirname?: string
 ): string | void => {
   // Abort if axePath should exist, and it isn't
@@ -83,14 +84,18 @@ export const getAxeSource = (
     dirname = __dirname;
   }
 
+  if (!cwd) {
+    cwd = process.cwd();
+  }
+
   // Look for axe in current working directory
   if (!axePath) {
-    axePath = path.join(process.cwd(), 'axe.js');
+    axePath = path.join(cwd, 'axe.js');
   }
 
   if (!fs.existsSync(axePath)) {
     // Look for axe in CWD ./node_modules
-    axePath = path.join(process.cwd(), 'node_modules', 'axe-core', 'axe.js');
+    axePath = path.join(cwd, 'node_modules', 'axe-core', 'axe.js');
   }
 
   if (!fs.existsSync(axePath)) {
