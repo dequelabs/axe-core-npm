@@ -70,10 +70,17 @@ export const parseBrowser = (browser?: string): string | Error => {
   }
 };
 
-export const getAxeSource = (axePath?: string): string | void => {
+export const getAxeSource = (
+  axePath?: string,
+  dirname?: string
+): string | void => {
   // Abort if axePath should exist, and it isn't
   if (axePath && !fs.existsSync(axePath)) {
     return;
+  }
+
+  if (!dirname) {
+    dirname = __dirname;
   }
 
   // Look for axe in current working directory
@@ -91,7 +98,7 @@ export const getAxeSource = (axePath?: string): string | void => {
     // to access the locally installed axe-core package we need to go up 3 levels
     // if all else fails, use the locally installed axe
     axePath = path.join(
-      __dirname,
+      dirname,
       '..',
       '..',
       '..',

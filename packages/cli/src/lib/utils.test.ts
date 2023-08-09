@@ -1,6 +1,8 @@
 import 'mocha';
 import { assert } from 'chai';
-import mock = require('mock-fs');
+import tempy from 'tempy';
+import { join } from 'path';
+import { mkdirSync, writeFileSync } from 'fs';
 import { dependencies } from '../../package.json';
 import * as utils from './utils';
 
@@ -74,24 +76,30 @@ describe('utils', () => {
 
   describe('getAxeSource', () => {
     describe('mock file', () => {
-      beforeEach(() => {
-        mock({
-          '/node_modules/axe-core': {},
-          '../node_modules/axe-core': {
-            'axe.js': mock.load(require.resolve('axe-core'))
-          }
-        });
+      let dirname = __dirname;
+      before(() => {
+        const tempDir = tempy.directory();
+        mkdirSync(join(tempDir, 'node_modules'));
+        mkdirSync(join(tempDir, 'node_modules', 'axe-core'));
+        writeFileSync(
+          join(tempDir, 'node_modules', 'axe-core', 'axe.js'),
+          '"upper"'
+        );
+
+        mkdirSync(join(tempDir, 'cli'));
+        mkdirSync(join(tempDir, 'cli', 'node_modules'));
+        mkdirSync(join(tempDir, 'cli', 'node_modules', 'axe-core'));
+        let dirname = join(tempDir, 'cli', 'lib');
+        mkdirSync(dirname);
       });
 
-      afterEach(() => {
-        mock.restore();
-      });
       it('fall back to use `locally` installed axe-core', () => {
-        const axeSource = utils.getAxeSource();
+        const axeSource = utils.getAxeSource(undefined, dirname);
         const axeVersionCheck = dependencies['axe-core'].replace('^', '');
         assert.include(axeSource, axeVersionCheck);
       });
     });
+
     it('given no axe source use local source', () => {
       const axeSource = utils.getAxeSource();
       assert.isNotNull(axeSource);
