@@ -77,15 +77,14 @@ describe('utils', () => {
   describe('getAxeSource', () => {
     describe('mock file', () => {
       let dirname = '<NOT A FILE>';
+      let axeCoreDirname = '<NOT A DIRECTORY>';
       before(() => {
         const axeVersionCheck = dependencies['axe-core'].replace('^', '');
         const tempDir = tempy.directory();
         mkdirSync(join(tempDir, 'node_modules'));
-        mkdirSync(join(tempDir, 'node_modules', 'axe-core'));
-        writeFileSync(
-          join(tempDir, 'node_modules', 'axe-core', 'axe.js'),
-          `"${axeVersionCheck}"`
-        );
+        axeCoreDirname = join(tempDir, 'node_modules', 'axe-core');
+        mkdirSync(axeCoreDirname);
+        writeFileSync(join(axeCoreDirname, 'axe.js'), `"${axeVersionCheck}"`);
 
         mkdirSync(join(tempDir, 'packages'));
         mkdirSync(join(tempDir, 'packages', 'cli'));
@@ -97,6 +96,12 @@ describe('utils', () => {
 
       it('fall back to use `locally` installed axe-core', () => {
         const axeSource = utils.getAxeSource(undefined, dirname);
+        const axeVersionCheck = dependencies['axe-core'].replace('^', '');
+        assert.include(axeSource, axeVersionCheck);
+      });
+
+      it('fall back to use axe-core in current directory', () => {
+        const axeSource = utils.getAxeSource(undefined, axeCoreDirname);
         const axeVersionCheck = dependencies['axe-core'].replace('^', '');
         assert.include(axeSource, axeVersionCheck);
       });
