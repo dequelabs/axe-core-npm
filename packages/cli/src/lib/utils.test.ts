@@ -75,7 +75,7 @@ describe('utils', () => {
   });
 
   describe('getAxeSource', () => {
-    describe.only('mock file', () => {
+    describe('mock file', () => {
       let dirname = '<NOT A FILE>';
       before(() => {
         const axeVersionCheck = dependencies['axe-core'].replace('^', '');
@@ -96,7 +96,7 @@ describe('utils', () => {
       });
 
       it('fall back to use `locally` installed axe-core', () => {
-        const axeSource = utils.getAxeSource(undefined, dirname, dirname);
+        const axeSource = utils.getAxeSource(undefined, dirname);
         const axeVersionCheck = dependencies['axe-core'].replace('^', '');
         assert.include(axeSource, axeVersionCheck);
       });

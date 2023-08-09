@@ -72,7 +72,6 @@ export const parseBrowser = (browser?: string): string | Error => {
 
 export const getAxeSource = (
   axePath?: string,
-  cwd?: string,
   dirname?: string
 ): string | void => {
   // Abort if axePath should exist, and it isn't
@@ -80,12 +79,13 @@ export const getAxeSource = (
     return;
   }
 
-  if (!dirname) {
-    dirname = __dirname;
-  }
-
+  let cwd = dirname;
   if (!cwd) {
     cwd = process.cwd();
+  }
+
+  if (!dirname) {
+    dirname = __dirname;
   }
 
   // Look for axe in current working directory
