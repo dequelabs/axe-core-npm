@@ -37,7 +37,8 @@ const cli = async (
     rules,
     disable,
     loadDelay,
-    chromedriverPath
+    chromedriverPath,
+    chromePath
   } = args;
 
   const showErrors = args.showErrors === true;
@@ -68,7 +69,8 @@ const cli = async (
     browser: args.browser,
     timeout,
     chromeOptions,
-    chromedriverPath
+    chromedriverPath,
+    chromePath
   };
 
   args.driver = startDriver(driverConfigs);
@@ -107,13 +109,18 @@ const cli = async (
     rules,
     disable
   };
+  let outcome;
   try {
-    let outcome;
     try {
       outcome = await axeTestUrls(urls, testPageConfigParams, events);
     } catch (e) {
+      if (e instanceof selenium_error.ScriptTimeoutError) {
+        console.error(error('Error: %s'), e.message);
+        console.log(`The timeout is currently configured to be ${timeout} seconds (you can change it with --timeout).`)
+        process.exit(2);
+      }
       // Provide a more user-friendly error message when there's a ChromeDriver/Chrome version mismatch.
-      if (
+      else if (
         e instanceof selenium_error.SessionNotCreatedError &&
         e.message.includes(
           'This version of ChromeDriver only supports'

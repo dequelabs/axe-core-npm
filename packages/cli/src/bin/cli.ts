@@ -77,6 +77,10 @@ program
     '--chromedriver-path <path>',
     'Absolute path to the desired chromedriver executable'
   )
+  .option(
+    '--chrome-path <path>',
+    'Path to the desired chrome executable'
+  )
   .action(cli);
 
 program.parse(process.argv);

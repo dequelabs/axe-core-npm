@@ -23,6 +23,7 @@ export interface WebdriverConfigParams {
   browser: string;
   timeout: number;
   chromedriverPath?: string;
+  chromePath?: string;
   path?: string;
   chromeOptions?: string[];
   builder?: Builder;
