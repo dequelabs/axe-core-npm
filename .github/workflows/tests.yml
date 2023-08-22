@@ -89,15 +89,16 @@ jobs:
     needs: lint
     steps:
       - uses: actions/checkout@v3
+      - uses: nanasess/setup-chromedriver@385569491959c73b57962734dc5c3c4998e96353
       - uses: actions/setup-node@v3
         with:
           node-version: ${{ matrix.node }}
           cache: 'npm'
       - run: npm ci
       - run: npm run bootstrap -- --ci
-      # HACK: Force a TTY to enable browser-driver-manager to manipulate stdout.
-      - shell: 'script -q -e -c "bash {0}"'
-        run: cd packages/webdriverio && npx browser-driver-manager install chrome chromedriver --verbose
+      # # HACK: Force a TTY to enable browser-driver-manager to manipulate stdout.
+      # - shell: 'script -q -e -c "bash {0}"'
+      #   run: npx browser-driver-manager install chrome chromedriver --verbose
       - run: npm run build --prefix=packages/webdriverio
       - run: npm run coverage --prefix=packages/webdriverio
       - run: npm run test:esm --prefix=packages/webdriverio
