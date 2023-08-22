@@ -12,12 +12,6 @@ export interface EarlResult {
   assertions: Assertion[];
 }
 
-type outcome =
-  | 'earl:inapplicable'
-  | 'earl:passed'
-  | 'earl:incomplete'
-  | 'earl:failed';
-
 export interface Assertion {
   '@type': EarlType.Assertion;
   mode: 'earl:automatic';

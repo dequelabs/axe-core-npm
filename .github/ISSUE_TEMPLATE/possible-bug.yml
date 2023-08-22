@@ -27,7 +27,7 @@ body:
     id: version
     attributes:
       label: Product Version
-      description: For the integration please check the `package.json` file 
+      description: For the integration please check the `package.json` file
   - type: checkboxes
     id: latest-axe
     attributes:

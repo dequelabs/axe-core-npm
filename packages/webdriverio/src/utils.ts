@@ -10,7 +10,7 @@ import type {
   SerialContextObject
 } from 'axe-core';
 
-export const FRAME_LOAD_TIMEOUT = 1000
+export const FRAME_LOAD_TIMEOUT = 1000;
 
 /**
  * Validates that the client provided is WebdriverIO v5 or v6.
@@ -117,10 +117,10 @@ async function assertFrameReady(client: Browser): Promise<void> {
     const timeoutPromise = new Promise((resolve, reject) => {
       setTimeout(() => {
         reject();
-      }, FRAME_LOAD_TIMEOUT)
+      }, FRAME_LOAD_TIMEOUT);
     });
     const executePromise = client.execute(() => {
-      return document.readyState === 'complete'
+      return document.readyState === 'complete';
     });
     const readyState = await Promise.race([timeoutPromise, executePromise]);
     assert(readyState);
@@ -136,7 +136,7 @@ export const axeRunPartial = (
 ): Promise<PartialResult> => {
   return promisify(
     client
-      .executeAsync<string, never>(
+      .executeAsync<string, []>(
         `
       var callback = arguments[arguments.length - 1];
       var context = ${JSON.stringify(context)} || document;
@@ -152,6 +152,8 @@ export const axeRunPartial = (
 export const axeGetFrameContext = (
   client: Browser,
   context: SerialContextObject
+  // TODO: add proper types
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
 ): Promise<any[]> => {
   return promisify(
     // Had to use executeAsync() because we could not use multiline statements in client.execute()
@@ -173,7 +175,7 @@ export const axeRunLegacy = (
 ): Promise<AxeResults> => {
   return promisify(
     client
-      .executeAsync<string, never>(
+      .executeAsync<string, []>(
         `var callback = arguments[arguments.length - 1];
       var context = ${JSON.stringify(context)} || document;
       var options = ${JSON.stringify(options)} || {};
@@ -221,7 +223,7 @@ export const axeFinishRun = (
   return chunkResults(partialString)
     .then(() => {
       return promisify(
-        client.executeAsync<string, never>(
+        client.executeAsync<string, []>(
           `var callback = arguments[arguments.length - 1];
       ${axeSource};
       window.axe.configure({

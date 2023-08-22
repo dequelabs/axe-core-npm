@@ -7,11 +7,13 @@ export const Webdriver = (): WebDriver => {
     .forBrowser('chrome')
     .setChromeOptions(new chrome.Options().headless())
     .setChromeService(
-      new chrome.ServiceBuilder(process.env.CHROMEDRIVER_PATH || chromedriver.path)
+      new chrome.ServiceBuilder(
+        process.env.CHROMEDRIVER_PATH || chromedriver.path
+      )
     );
 
   if (process.env.REMOTE_SELENIUM_URL) {
-    builder.usingServer(process.env.REMOTE_SELENIUM_URL)
+    builder.usingServer(process.env.REMOTE_SELENIUM_URL);
   }
 
   return builder.build();

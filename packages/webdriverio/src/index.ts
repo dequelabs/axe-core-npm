@@ -31,6 +31,7 @@ async function loadAxePath() {
   if (typeof require === 'function' && typeof require.resolve === 'function') {
     axeCorePath = require.resolve('axe-core');
   } else {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const { createRequire } = (await import('node:module')) as any;
     // `getFilename` is needed because esm's `import.meta.url` is illegal syntax in cjs
     const filename = pathToFileURL(getFilename()).toString();
@@ -246,15 +247,15 @@ export default class AxeBuilder {
     // the default length of 30 seconds)
     const { pageLoad } = await this.client.getTimeouts();
     this.client.setTimeout({
-      pageLoad: FRAME_LOAD_TIMEOUT,
+      pageLoad: FRAME_LOAD_TIMEOUT
     });
 
-    let partials: PartialResults | null
+    let partials: PartialResults | null;
     try {
       partials = await this.runPartialRecursive(context);
     } finally {
       this.client.setTimeout({
-        pageLoad,
+        pageLoad
       });
     }
 
@@ -329,10 +330,15 @@ export default class AxeBuilder {
         assert(frame, `Expect frame of "${frameSelector}" to be defined`);
         await this.client.switchToFrame(frame);
         await axeSourceInject(this.client, this.script);
-        partials.push(...(await this.runPartialRecursive(frameContext, [...frameStack, frame])));
+        partials.push(
+          ...(await this.runPartialRecursive(frameContext, [
+            ...frameStack,
+            frame
+          ]))
+        );
       } catch (error) {
-        const [topWindow] = await this.client.getWindowHandles()
-        await this.client.switchToWindow(topWindow)
+        const [topWindow] = await this.client.getWindowHandles();
+        await this.client.switchToWindow(topWindow);
 
         for (const frameElm of frameStack) {
           await this.client.switchToFrame(frameElm);
@@ -374,4 +380,4 @@ export default class AxeBuilder {
   }
 }
 
-export { AxeBuilder }
+export { AxeBuilder };

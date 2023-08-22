@@ -454,7 +454,7 @@ describe('@axe-core/playwright', () => {
         '#lazy-baz',
         'input'
       ]);
-    })
+    });
   });
 
   describe('include/exclude', () => {
