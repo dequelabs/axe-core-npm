@@ -82,18 +82,13 @@ describe('utils', () => {
         mkdirSync(parentDirname, { recursive: true });
         writeFileSync(join(parentDirname, 'axe.js'), 'parent');
 
-        mkdirSync(join(tempDir, 'packages'));
         const cliDirname = join(tempDir, 'packages', 'cli');
-        mkdirSync(join(tempDir, 'packages', 'cli'));
-        mkdirSync(join(tempDir, 'packages', 'cli', 'node_modules'));
         const nodeModDirname = join(
-          tempDir,
-          'packages',
-          'cli',
+          cliDirname,
           'node_modules',
           'axe-core'
         );
-        mkdirSync(nodeModDirname);
+        mkdirSync(nodeModDirname, { recursive: true });
         writeFileSync(join(nodeModDirname, 'axe.js'), 'node modules');
 
         const cwdDirname = join(tempDir, 'packages', 'cli', 'lib');
