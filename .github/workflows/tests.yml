@@ -29,10 +29,11 @@ jobs:
           cache: 'npm'
       - run: npm ci
       - run: npm run bootstrap -- --ci
-      - run: npm run build --prefix=packages/puppeteer
       # HACK: Force a TTY to enable browser-driver-manager to manipulate stdout.
       - shell: 'script -q -e -c "bash {0}"'
-        run: npx browser-driver-manager install chrome chromedriver --verbose
+        run: npx browser-driver-manager install chromedriver --verbose
+        working-directory: packages/puppeteer
+      - run: npm run build --prefix=packages/puppeteer
       - run: npm run coverage --prefix=packages/puppeteer
       - run: npm run test:esm --prefix=packages/puppeteer
 
@@ -50,9 +51,10 @@ jobs:
           cache: 'npm'
       - run: npm ci
       - run: npm run bootstrap -- --ci
-      # HACK: Force a TTY to enable browser-driver-manager to manipulate stdout.
+        # HACK: Force a TTY to enable browser-driver-manager to manipulate stdout.
       - shell: 'script -q -e -c "bash {0}"'
-        run: npx browser-driver-manager install chrome chromedriver --verbose
+        run: npx browser-driver-manager install chromedriver --verbose
+        working-directory: packages/cli
       # Re-build packages, ensuring packages/webdriverjs/dist exists.
       - run: npx lerna run prepare
       # lerna link after installing the latest version of chromedriver, as we depend on webdriverJS
@@ -76,7 +78,8 @@ jobs:
       - run: npm run bootstrap -- --ci
       # HACK: Force a TTY to enable browser-driver-manager to manipulate stdout.
       - shell: 'script -q -e -c "bash {0}"'
-        run: npx browser-driver-manager install chrome chromedriver --verbose
+        run: npx browser-driver-manager install chromedriver --verbose
+        working-directory: packages/webdriverjs
       - run: npm run build --prefix=packages/webdriverjs
       - run: npm run coverage --prefix=packages/webdriverjs
       - run: npm run test:esm --prefix=packages/webdriverjs
@@ -97,7 +100,8 @@ jobs:
       - run: npm run bootstrap -- --ci
       # HACK: Force a TTY to enable browser-driver-manager to manipulate stdout.
       - shell: 'script -q -e -c "bash {0}"'
-        run: npx browser-driver-manager install chrome chromedriver --verbose
+        run: npx browser-driver-manager install chromedriver --verbose
+        working-directory: packages/webdriverio
       - run: npm run build --prefix=packages/webdriverio
       - run: npm run coverage --prefix=packages/webdriverio
       - run: npm run test:esm --prefix=packages/webdriverio
