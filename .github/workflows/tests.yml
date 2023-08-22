@@ -5,6 +5,7 @@ on: [push]
 jobs:
   lint:
     runs-on: ubuntu-latest
+    timeout-minutes: 5
     steps:
       - uses: actions/checkout@v3
       - uses: actions/setup-node@v3
@@ -20,6 +21,7 @@ jobs:
       matrix:
         node: [16, 18, 20]
     runs-on: ubuntu-latest
+    timeout-minutes: 15
     needs: lint
     steps:
       - uses: actions/checkout@v3
@@ -42,6 +44,7 @@ jobs:
       matrix:
         node: [16, 18, 20]
     runs-on: ubuntu-latest
+    timeout-minutes: 15
     needs: lint
     steps:
       - uses: actions/checkout@v3
@@ -67,6 +70,7 @@ jobs:
       matrix:
         node: [16, 18, 20]
     runs-on: ubuntu-latest
+    timeout-minutes: 15
     needs: lint
     steps:
       - uses: actions/checkout@v3
@@ -89,6 +93,7 @@ jobs:
       matrix:
         node: [16, 18, 20]
     runs-on: ubuntu-latest
+    timeout-minutes: 15
     needs: lint
     steps:
       - uses: actions/checkout@v3
@@ -111,6 +116,7 @@ jobs:
       matrix:
         node: [16, 18, 20]
     runs-on: ubuntu-latest
+    timeout-minutes: 15
     needs: lint
     steps:
       - uses: actions/checkout@v3
@@ -129,6 +135,7 @@ jobs:
       matrix:
         node: [16, 18, 20]
     runs-on: ubuntu-latest
+    timeout-minutes: 15
     needs: lint
     steps:
       - uses: actions/checkout@v3
@@ -147,6 +154,7 @@ jobs:
       matrix:
         node: [16, 18, 20]
     runs-on: ubuntu-latest
+    timeout-minutes: 15
     needs: lint
     steps:
       - uses: actions/checkout@v3
@@ -164,6 +172,7 @@ jobs:
   axe_core_test:
     if: github.ref_name == 'master' || startsWith(github.ref_name, 'release')
     runs-on: ubuntu-latest
+    timeout-minutes: 5
     needs: lint
     steps:
       - uses: actions/checkout@v3
