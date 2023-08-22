@@ -29,7 +29,7 @@ jobs:
             --canary \
             --dist-tag=next \
             --exact \
-            --preid=$(git rev-parse --short "$GITHUB_SHA") \
+            --preid=$(git rev-parse --short HEAD) \
             --force-publish \
             --yes
 
