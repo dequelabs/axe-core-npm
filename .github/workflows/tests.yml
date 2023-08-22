@@ -55,6 +55,10 @@ jobs:
           cache: 'npm'
       - run: npm ci
       - run: npm run bootstrap -- --ci
+        # HACK: Force a TTY to enable browser-driver-manager to manipulate stdout.
+      - shell: 'script -q -e -c "bash {0}"'
+        run: npx browser-driver-manager install chromedriver --verbose
+        working-directory: packages/cli
       # Re-build packages, ensuring packages/webdriverjs/dist exists.
       - run: npx lerna run prepare
       # lerna link after installing the latest version of chromedriver, as we depend on webdriverJS

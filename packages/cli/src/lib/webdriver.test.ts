@@ -16,8 +16,7 @@ describe('startDriver', () => {
       timeout: 90,
       get browser() {
         return browser;
-      },
-      chromedriverPath: process.env.CHROMEDRIVER_PATH || chromedriver.path
+      }
     };
   });
 

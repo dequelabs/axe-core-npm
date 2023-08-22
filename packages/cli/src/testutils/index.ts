@@ -36,10 +36,6 @@ export const runCLIWithOptions = async (
     console.log('cli', args.join(' '));
   }
 
-  if (!args.includes('--chromedriver-path') && process.env.CI === 'true') {
-    args.push(`--chromedriver-path=${process.env.CHROMEDRIVER_PATH}`);
-  }
-
   const result = await execa(TS_NODE, [CLI, ...args], options);
 
   if ('DEBUG_CLI_TESTS' in process.env) {
