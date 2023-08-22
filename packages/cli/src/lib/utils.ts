@@ -70,20 +70,32 @@ export const parseBrowser = (browser?: string): string | Error => {
   }
 };
 
-export const getAxeSource = (axePath?: string): string | void => {
+export const getAxeSource = (
+  axePath?: string,
+  dirname?: string
+): string | void => {
   // Abort if axePath should exist, and it isn't
   if (axePath && !fs.existsSync(axePath)) {
     return;
   }
 
+  let cwd = dirname;
+  if (!cwd) {
+    cwd = process.cwd();
+  }
+
+  if (!dirname) {
+    dirname = __dirname;
+  }
+
   // Look for axe in current working directory
   if (!axePath) {
-    axePath = path.join(process.cwd(), 'axe.js');
+    axePath = path.join(cwd, 'axe.js');
   }
 
   if (!fs.existsSync(axePath)) {
     // Look for axe in CWD ./node_modules
-    axePath = path.join(process.cwd(), 'node_modules', 'axe-core', 'axe.js');
+    axePath = path.join(cwd, 'node_modules', 'axe-core', 'axe.js');
   }
 
   if (!fs.existsSync(axePath)) {
@@ -91,7 +103,7 @@ export const getAxeSource = (axePath?: string): string | void => {
     // to access the locally installed axe-core package we need to go up 3 levels
     // if all else fails, use the locally installed axe
     axePath = path.join(
-      __dirname,
+      dirname,
       '..',
       '..',
       '..',
