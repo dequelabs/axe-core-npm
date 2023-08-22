@@ -3,9 +3,10 @@ import { assert } from 'chai';
 import { startDriver } from './webdriver';
 import { WebDriver } from 'selenium-webdriver';
 import chromedriver from 'chromedriver';
+import chrome from 'selenium-webdriver/chrome';
+import type { Options } from 'selenium-webdriver/chrome';
 import path from 'path';
 import { WebdriverConfigParams } from '../types';
-
 describe('startDriver', () => {
   let config: WebdriverConfigParams;
   let browser: string;
