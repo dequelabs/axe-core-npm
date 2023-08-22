@@ -78,9 +78,8 @@ describe('utils', () => {
     describe('mock file', () => {
       function setupTree() {
         const tempDir = tempy.directory();
-        mkdirSync(join(tempDir, 'node_modules'));
         const parentDirname = join(tempDir, 'node_modules', 'axe-core');
-        mkdirSync(parentDirname);
+        mkdirSync(parentDirname, { recursive: true });
         writeFileSync(join(parentDirname, 'axe.js'), 'parent');
 
         mkdirSync(join(tempDir, 'packages'));
