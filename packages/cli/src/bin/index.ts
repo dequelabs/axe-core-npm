@@ -36,7 +36,8 @@ const cli = async (
     rules,
     disable,
     loadDelay,
-    chromedriverPath
+    chromedriverPath,
+    chromePath
   } = args;
 
   const showErrors = args.showErrors === true;
@@ -67,7 +68,8 @@ const cli = async (
     browser: args.browser,
     timeout,
     chromeOptions,
-    chromedriverPath
+    chromedriverPath,
+    chromePath
   };
 
   args.driver = startDriver(driverConfigs);
