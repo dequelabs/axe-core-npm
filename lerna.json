@@ -3,7 +3,7 @@
     "packages/*",
     "packages/react/examples/*",
     "packages/webdriverjs/tests/example",
-    "axe_core_test"
+    "test/axe-core"
   ],
   "version": "4.7.3"
 }
