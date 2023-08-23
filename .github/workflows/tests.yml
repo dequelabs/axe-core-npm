@@ -188,4 +188,4 @@ jobs:
           cache: 'npm'
       - run: npm ci
       - run: npm run bootstrap -- --ci
-      - run: npm test --prefix=axe_core_test
+      - run: npm test --prefix=test/axe-core
