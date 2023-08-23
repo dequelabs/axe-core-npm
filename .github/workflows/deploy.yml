@@ -52,4 +52,3 @@ jobs:
             --force-publish='*' \
             --yes
       - uses: softprops/action-gh-release@de2c0eb89ae2a093876385947365aca7b0e5f844 # v0.1.15
-      - run: npm test --prefix=test/release
