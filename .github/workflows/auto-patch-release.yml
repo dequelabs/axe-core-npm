@@ -4,6 +4,7 @@ on:
     # Run every Thursday right before midnight
     - cron: '59 23 * * 4'
   workflow_dispatch:
+  pull_request:
 jobs:
   create_patch_release:
     name: Create release
@@ -25,4 +26,4 @@ jobs:
           odd_release: 'true'
           release-command: bash .github/scripts/prepare_release.sh
           release-branch: master
-          default-branch: develop
+          default-branch: ci-patch-thrusday
