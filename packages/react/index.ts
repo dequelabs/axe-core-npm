@@ -311,7 +311,7 @@ function addComponent(component: any): void {
  * Log axe violations to console.
  * @param {AxeResults} results
  */
-function logToConsole(results: axeCore.AxeResults): void {
+export function logToConsole(results: axeCore.AxeResults): void {
   console.group('%cNew axe issues', serious);
   results.violations.forEach(result => {
     let fmt: string;
