@@ -541,4 +541,8 @@ describe(`@axe-core/react using react@${React.version}`, () => {
       }
     });
   });
+
+  it('check to make sure logToConsole is exported', () => {
+    assert.isFunction(reactAxe.logToConsole());
+  });
 });
