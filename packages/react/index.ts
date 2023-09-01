@@ -311,7 +311,7 @@ function addComponent(component: any): void {
  * Log axe violations to console.
  * @param {AxeResults} results
  */
-export function logToConsole(results: axeCore.AxeResults): void {
+function logToConsole(results: axeCore.AxeResults): void {
   console.group('%cNew axe issues', serious);
   results.violations.forEach(result => {
     let fmt: string;
@@ -411,6 +411,8 @@ export default function reactAxe(
 
   return checkAndReport(document.body, timeout);
 }
+
+reactAxe.logToConsole = logToConsole;
 
 if (typeof module === 'object') {
   exports = module.exports = reactAxe;
