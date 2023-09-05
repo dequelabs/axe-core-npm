@@ -4,6 +4,7 @@ on:
     # Run every Thursday right before midnight
     - cron: '59 23 * * 4'
   workflow_dispatch:
+  pull_request:
 jobs:
   create_patch_release:
     name: Create release
@@ -16,7 +17,7 @@ jobs:
         run: echo value=$(test ${{ github.event_name }} != schedule && echo true || echo false) >> "$GITHUB_OUTPUT"
 
       - name: Create release
-        uses: dequelabs/axe-api-team-public/.github/actions/auto-patch-release-v1@main
+        uses: dequelabs/axe-api-team-public/.github/actions/auto-patch-release-v1@other-version-source
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
           project_token: ${{ secrets.GH_PROJECT_TOKEN }}
