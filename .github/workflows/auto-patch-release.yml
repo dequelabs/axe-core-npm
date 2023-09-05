@@ -24,5 +24,6 @@ jobs:
           slack_webhook: ${{ secrets.SLACK_WEBHOOK }}
           odd_release: 'true'
           release-command: bash .github/scripts/prepare_release.sh
+          version-json: lerna.json
           release-branch: master
           default-branch: develop
