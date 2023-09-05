@@ -5,5 +5,5 @@
     "packages/webdriverjs/tests/example",
     "test/axe-core"
   ],
-  "version": "4.7.3"
+  "version": "4.7.4"
 }
