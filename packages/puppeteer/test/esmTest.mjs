@@ -9,7 +9,9 @@ const exportIsSame = defaultExport === AxePuppeteer;
 assert(exportIsFunction, 'export is not a function');
 assert(exportIsSame, 'default and named export is not the same');
 
-const options = {};
+const options = {
+  headless: 'new'
+};
 
 if (process.env.CI) {
   options.args = [];
@@ -19,7 +21,7 @@ if (process.env.CI) {
 
 async function integrationTest() {
   let path = fileURLToPath(new URL('.', import.meta.url));
-  path = join(path, '../node_modules/axe-test-fixtures/fixtures/index.html');
+  path = join(path, './fixtures/external/index.html');
 
   const browser = await puppeteer.launch(options);
   const page = await browser.newPage();

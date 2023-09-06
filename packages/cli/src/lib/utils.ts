@@ -99,18 +99,10 @@ export const getAxeSource = (
   }
 
   if (!fs.existsSync(axePath)) {
-    // `__dirname` is /@axe-core/cli/dist/src/lib when installed globally
-    // to access the locally installed axe-core package we need to go up 3 levels
-    // if all else fails, use the locally installed axe
-    axePath = path.join(
-      dirname,
-      '..',
-      '..',
-      '..',
-      'node_modules',
-      'axe-core',
-      'axe.js'
-    );
+    // in local develop using npm workspaces axe-core is
+    // hoisted to the root, but when published axe-core
+    // will be in the node_modules for the cli
+    axePath = require.resolve('axe-core/axe.js');
   }
 
   return fs.readFileSync(axePath, 'utf-8');

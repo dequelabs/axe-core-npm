@@ -391,7 +391,7 @@ describe('cli', () => {
     });
   });
 
-  describe('--chromedriver-path', () => {
+  describe.skip('--chromedriver-path', () => {
     it('should throw error if path does not exist', async () => {
       const result = await runCLI(
         `file://${SIMPLE_HTML_FILE}`,

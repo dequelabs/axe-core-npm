@@ -1,9 +1,4 @@
 {
-  "packages": [
-    "packages/*",
-    "packages/react/examples/*",
-    "packages/webdriverjs/tests/example",
-    "test/axe-core"
-  ],
+  "useWorkspaces": true,
   "version": "4.7.3"
 }

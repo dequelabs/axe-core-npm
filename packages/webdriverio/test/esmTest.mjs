@@ -9,7 +9,7 @@ assert(exportIsFunction, 'export is not a function');
 
 async function integrationTest() {
   let path = fileURLToPath(new URL('.', import.meta.url));
-  path = join(path, '../node_modules/axe-test-fixtures/fixtures/index.html');
+  path = join(path, '../fixtures/external/index.html');
 
   const options = {
     automationProtocol: 'devtools',

@@ -19,7 +19,6 @@ jobs:
           node-version: 18
           cache: 'npm'
       - run: npm ci
-      - run: npm run bootstrap -- --ci
       - run: npm run lint
 
   puppeteer:
@@ -36,14 +35,13 @@ jobs:
           node-version: ${{ matrix.node}}
           cache: 'npm'
       - run: npm ci
-      - run: npm run bootstrap -- --ci
       # HACK: Force a TTY to enable browser-driver-manager to manipulate stdout.
       - shell: 'script -q -e -c "bash {0}"'
         run: npx browser-driver-manager install chromedriver --verbose
         working-directory: packages/puppeteer
-      - run: npm run build --prefix=packages/puppeteer
-      - run: npm run coverage --prefix=packages/puppeteer
-      - run: npm run test:esm --prefix=packages/puppeteer
+      - run: npm run build --workspace=packages/puppeteer
+      - run: npm run coverage --workspace=packages/puppeteer
+      - run: npm run test:esm --workspace=packages/puppeteer
 
   cli:
     strategy:
@@ -59,7 +57,6 @@ jobs:
           node-version: ${{ matrix.node }}
           cache: 'npm'
       - run: npm ci
-      - run: npm run bootstrap -- --ci
         # HACK: Force a TTY to enable browser-driver-manager to manipulate stdout.
       - shell: 'script -q -e -c "bash {0}"'
         run: npx browser-driver-manager install chromedriver --verbose
@@ -69,7 +66,7 @@ jobs:
       # lerna link after installing the latest version of chromedriver, as we depend on webdriverJS
       - run: npx lerna link
         working-directory: packages/cli
-      - run: npm run coverage --prefix=packages/cli
+      - run: npm run coverage --workspace=packages/cli
 
   webdriverjs:
     strategy:
@@ -85,14 +82,13 @@ jobs:
           node-version: ${{ matrix.node }}
           cache: 'npm'
       - run: npm ci
-      - run: npm run bootstrap -- --ci
       # HACK: Force a TTY to enable browser-driver-manager to manipulate stdout.
       - shell: 'script -q -e -c "bash {0}"'
         run: npx browser-driver-manager install chromedriver --verbose
         working-directory: packages/webdriverjs
-      - run: npm run build --prefix=packages/webdriverjs
-      - run: npm run coverage --prefix=packages/webdriverjs
-      - run: npm run test:esm --prefix=packages/webdriverjs
+      - run: npm run build --workspace=packages/webdriverjs
+      - run: npm run coverage --workspace=packages/webdriverjs
+      - run: npm run test:esm --workspace=packages/webdriverjs
 
   webdriverio:
     strategy:
@@ -108,14 +104,13 @@ jobs:
           node-version: ${{ matrix.node }}
           cache: 'npm'
       - run: npm ci
-      - run: npm run bootstrap -- --ci
       # HACK: Force a TTY to enable browser-driver-manager to manipulate stdout.
       - shell: 'script -q -e -c "bash {0}"'
         run: npx browser-driver-manager install chromedriver --verbose
         working-directory: packages/webdriverio
-      - run: npm run build --prefix=packages/webdriverio
-      - run: npm run coverage --prefix=packages/webdriverio
-      - run: npm run test:esm --prefix=packages/webdriverio
+      - run: npm run build --workspace=packages/webdriverio
+      - run: npm run coverage --workspace=packages/webdriverio
+      - run: npm run test:esm --workspace=packages/webdriverio
 
   reporter_earl:
     strategy:
@@ -131,10 +126,9 @@ jobs:
           node-version: ${{ matrix.node }}
           cache: 'npm'
       - run: npm ci
-      - run: npm run bootstrap -- --ci
-      - run: npm run build --prefix=packages/reporter-earl
-      - run: npm run test --prefix=packages/reporter-earl
-      - run: npm run test:esm --prefix=packages/reporter-earl
+      - run: npm run build --workspace=packages/reporter-earl
+      - run: npm run test --workspace=packages/reporter-earl
+      - run: npm run test:esm --workspace=packages/reporter-earl
 
   react:
     strategy:
@@ -150,10 +144,9 @@ jobs:
           node-version: ${{ matrix.node }}
           cache: 'npm'
       - run: npm ci
-      - run: npm run bootstrap -- --ci
-      - run: npm run build --prefix=packages/react
-      - run: npm run test --prefix=packages/react
-      - run: npm run test:esm --prefix=packages/react
+      - run: npm run build --workspace=packages/react
+      - run: npm run test --workspace=packages/react
+      - run: npm run test:esm --workspace=packages/react
 
   playwright:
     strategy:
@@ -169,11 +162,10 @@ jobs:
           node-version: ${{ matrix.node }}
           cache: 'npm'
       - run: npm ci
-      - run: npm run bootstrap -- --ci
       - run: npx playwright install --with-deps
-      - run: npm run build --prefix=packages/playwright
-      - run: npm run coverage --prefix=packages/playwright
-      - run: npm run test:esm --prefix=packages/playwright
+      - run: npm run build --workspace=packages/playwright
+      - run: npm run coverage --workspace=packages/playwright
+      - run: npm run test:esm --workspace=packages/playwright
 
   axe_core_test:
     if: github.ref_name == 'master' || startsWith(github.ref_name, 'release')
@@ -187,5 +179,4 @@ jobs:
           node-version: 18
           cache: 'npm'
       - run: npm ci
-      - run: npm run bootstrap -- --ci
-      - run: npm test --prefix=test/axe-core
+      - run: npm test --workspace=test/axe-core
