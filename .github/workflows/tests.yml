@@ -26,7 +26,7 @@ jobs:
       matrix:
         node: [16, 18, 20]
     runs-on: ubuntu-latest
-    # timeout-minutes: 15
+    timeout-minutes: 15
     needs: lint
     steps:
       - uses: actions/checkout@v3
@@ -40,10 +40,6 @@ jobs:
         run: npx browser-driver-manager install chromedriver --verbose
         working-directory: packages/puppeteer
       - run: npm run build --workspace=packages/puppeteer
-      - name: Setup upterm session
-        uses: lhotari/action-upterm@d23c2722bdab893785c9fbeae314cbf080645bd7
-        with:
-          limit-access-to-actor: true
       - run: npm run coverage --workspace=packages/puppeteer
       - run: npm run test:esm --workspace=packages/puppeteer
 
