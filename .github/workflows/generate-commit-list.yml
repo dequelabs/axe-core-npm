@@ -16,7 +16,7 @@ jobs:
           head: develop
       - name: Save commit-list as JSON
         run: |
-          echo "${{ steps.generate-commit-list.outputs.commit-list }}" > commit-list.json
+          echo '${{ steps.generate-commit-list.outputs.commit-list }}' > commit-list.json
           cat commit-list.json
       - name: Save as artifact
         uses: actions/upload-artifact@v3
