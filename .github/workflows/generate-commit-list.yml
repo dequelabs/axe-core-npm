@@ -10,7 +10,7 @@ jobs:
       - name: Debug Git
         run: |
           echo "Current Commit: $(git rev-parse HEAD)"
-          echo "Origin Master: $(git rev-parse origin/master)"
+          echo "Origin Master: $(git rev-parse refs/head/master)"
   generate-commit-list:
     runs-on: ubuntu-latest
     steps:
