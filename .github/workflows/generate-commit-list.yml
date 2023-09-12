@@ -1,0 +1,15 @@
+name: Generate Commit List
+
+on: [push]
+
+jobs:
+  generate-commit-list:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: dequelabs/axe-api-team-public/.github/actions/generate-commit-list-v1@53e1d38a780c8b4bde37e2d4493b9f37f1917340
+        id: generate-commit-list
+        with:
+          base: master
+          head: develop
+      - name: Print commit list
+        run: echo "${{ steps.generate-commit-list.outputs.commit-list }}"
