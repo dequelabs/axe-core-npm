@@ -6,15 +6,19 @@ jobs:
   another-thing:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
       - name: Debug Git
         run: |
           echo "Current Commit: $(git rev-parse HEAD)"
-          echo "Origin Master: $(git rev-parse refs/head/master)"
+          echo "Origin Master: $(git origins/master)"
   generate-commit-list:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
       - uses: dequelabs/axe-api-team-public/.github/actions/generate-commit-list-v1@ec22a97ba476bff5b6aab6a240944b1749545dd3
         id: generate-commit-list
         with:
