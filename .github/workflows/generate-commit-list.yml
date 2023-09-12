@@ -14,12 +14,12 @@ jobs:
         with:
           base: master
           head: develop
-      - name: Save commit-list as JSON
-        run: |
-          echo "${{ steps.generate-commit-list.outputs.commit-list }}" > commit-list.json
-          cat commit-list.json
-      - name: Save as artifact
-        uses: actions/upload-artifact@v3
-        with:
-          name: commit-list
-          path: commit-list.json
+      # - name: Save commit-list as JSON
+      #   run: |
+      #     echo "${{ steps.generate-commit-list.outputs.commit-list }}" > commit-list.json
+      #     cat commit-list.json
+      # - name: Save as artifact
+      #   uses: actions/upload-artifact@v3
+      #   with:
+      #     name: commit-list
+      #     path: commit-list.json
