@@ -3,6 +3,14 @@ name: Generate Commit List
 on: [push]
 
 jobs:
+  another-thing:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Debug Git
+        run: |
+          echo "Current Commit: $(git rev-parse HEAD)"
+          echo "Origin Master: $(git rev-parse origin/master)"
   generate-commit-list:
     runs-on: ubuntu-latest
     steps:
