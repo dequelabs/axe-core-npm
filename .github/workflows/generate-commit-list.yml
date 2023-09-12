@@ -10,16 +10,15 @@ jobs:
         with:
           fetch-depth: 0
       - uses: dequelabs/axe-api-team-public/.github/actions/generate-commit-list-v1@ec22a97ba476bff5b6aab6a240944b1749545dd3
-        id: generate-commit-list
         with:
           base: master
           head: develop
-      # - name: Save commit-list as JSON
-      #   run: |
-      #     echo "${{ steps.generate-commit-list.outputs.commit-list }}" > commit-list.json
-      #     cat commit-list.json
-      # - name: Save as artifact
-      #   uses: actions/upload-artifact@v3
-      #   with:
-      #     name: commit-list
-      #     path: commit-list.json
+      - name: Save commit-list as JSON
+        run: |
+          echo "${{ steps.outputs.commit-list }}" > commit-list.json
+          cat commit-list.json
+      - name: Save as artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: commit-list
+          path: commit-list.json
