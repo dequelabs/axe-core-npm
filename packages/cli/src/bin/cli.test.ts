@@ -391,6 +391,8 @@ describe('cli', () => {
     });
   });
 
+  // disabled during conversion to npm workspaces as the node_module install directory changed
+  // @see https://github.com/dequelabs/axe-core-npm/issues/822
   describe.skip('--chromedriver-path', () => {
     it('should throw error if path does not exist', async () => {
       const result = await runCLI(
