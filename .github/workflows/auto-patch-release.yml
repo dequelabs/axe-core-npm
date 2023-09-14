@@ -1,8 +1,5 @@
 name: Automatically create patch release every 2 weeks
 on:
-  schedule:
-    # Run every Thursday right before midnight
-    - cron: '59 23 * * 4'
   workflow_dispatch:
 jobs:
   create_patch_release:
