@@ -2,6 +2,10 @@
   "name": "axe-core-npm",
   "private": true,
   "license": "MPL-2.0",
+  "workspaces": [
+    "packages/*",
+    "test/axe-core"
+  ],
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "fmt": "prettier --write .",

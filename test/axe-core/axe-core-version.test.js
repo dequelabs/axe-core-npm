@@ -2,7 +2,7 @@ const assert = require('assert');
 const glob = require('glob');
 const semver = require('semver');
 
-for (const pkgFile of glob.sync('../packages/*/package.json')) {
+for (const pkgFile of glob.sync('../../packages/*/package.json')) {
   const pkg = require(pkgFile);
   const axeDependency =
     pkg.dependencies?.['axe-core'] || pkg.devDependencies?.['axe-core'];
