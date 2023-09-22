@@ -327,3 +327,4 @@ export default class AxeBuilder {
 }
 
 export { AxeBuilder };
+export type { AxeResults }
