@@ -10,7 +10,6 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "fmt": "prettier --write .",
     "lint": "eslint .",
-    "bootstrap": "lerna bootstrap",
     "prepare": "husky install",
     "precommit": "lint-staged"
   },
