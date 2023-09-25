@@ -17,7 +17,6 @@ jobs:
           node-version: 18
           cache: 'npm'
       - run: npm ci
-      - run: npm run bootstrap
       # Make sure the working tree is clean
       - run: git reset --hard HEAD
       - run: npm config set "//registry.npmjs.org/:_authToken" ${{ secrets.NPM_TOKEN }}
@@ -42,8 +41,7 @@ jobs:
         with:
           node-version: 18
           cache: 'npm'
-      - run: npm ci
-      - run: npm run bootstrap
+      - run: npm ciz
       # Make sure the working tree is clean
       - run: git reset --hard HEAD
       - run: npm config set "//registry.npmjs.org/:_authToken" ${{ secrets.NPM_TOKEN }}
