@@ -41,7 +41,7 @@ jobs:
         with:
           node-version: 18
           cache: 'npm'
-      - run: npm ciz
+      - run: npm ci
       # Make sure the working tree is clean
       - run: git reset --hard HEAD
       - run: npm config set "//registry.npmjs.org/:_authToken" ${{ secrets.NPM_TOKEN }}
