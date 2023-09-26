@@ -1,7 +1,7 @@
 import fs from 'fs';
 import path from 'path';
 import colors from 'colors';
-import { AxeResults } from 'axe-core';
+import type { AxeResults, UnlabelledFrameSelector } from 'axe-core';
 
 export const saveOutcome = (
   outcome: AxeResults | AxeResults[],
@@ -118,7 +118,7 @@ export const splitList = (val: string): string[] => {
 };
 
 export const selectorToString = (
-  selectors: string[],
+  selectors: UnlabelledFrameSelector,
   separator?: string
 ): string => {
   separator = separator || ' ';
