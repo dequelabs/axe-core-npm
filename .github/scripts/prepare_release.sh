@@ -5,4 +5,4 @@ set -e
 
 releaseLevel="$1"
 
-npx lerna version "$releaseLevel" --conventional-commits --no-push --no-git-tag-version --yes
+npx standard-version "$releaseLevel" --conventional-commits --no-push --no-git-tag-version --yes
