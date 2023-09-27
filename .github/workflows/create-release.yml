@@ -13,6 +13,7 @@ jobs:
           token: ${{ secrets.GITHUB_TOKEN }}
           command: manifest
           monorepo-tags: true
+          release-type: node
       - uses: actions/checkout@v2
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
