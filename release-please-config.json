@@ -1,0 +1,11 @@
+{
+  "packages": {
+    "packages/cli": {},
+    "packages/playwright": {},
+    "packages/puppeteer": {},
+    "packages/react": {},
+    "packages/reporter-earl": {},
+    "packages/webdriverio": {},
+    "packages/webdriverjs": {}
+  }
+}
