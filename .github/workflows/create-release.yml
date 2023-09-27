@@ -12,6 +12,10 @@ jobs:
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
           fetch-depth: 0
+      - uses: actions/setup-node@v3
+        with:
+          node-version: 18
+      - run: npm install
       - name: Create release commit
         run: |
           Branch="release-$(date +%Y-%m-%d)"
