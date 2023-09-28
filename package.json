@@ -1,6 +1,6 @@
 {
   "name": "axe-core-npm",
-  "version": "4.7.4",
+  "version": "4.7.5",
   "private": true,
   "license": "MPL-2.0",
   "workspaces": [
