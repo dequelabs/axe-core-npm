@@ -1,7 +1,12 @@
 name: Create release candidate
 
-on: pull_request
-
+on:
+  workflow_dispatch:
+    inputs:
+      releaseLevel:
+        description: 'Release level: major, minor, or patch.'
+        required: true
+        default: 'patch'
 jobs:
   create_release:
     name: Create release
@@ -24,7 +29,7 @@ jobs:
 
           git checkout -b "$Branch"
 
-          npm run release -- --release-as patch
+          npm run release -- --release-as ${{ github.event.inputs.releaseLevel }}
 
           git push --follow-tags origin "$Branch" --force
 
