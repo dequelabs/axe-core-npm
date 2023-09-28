@@ -1,0 +1,13 @@
+{
+  "commitAll": true,
+  "bumpFiles": [
+    "package.json",
+    "packages/cli/package.json",
+    "packages/playwright/package.json",
+    "packages/puppeteer/package.json",
+    "packages/react/package.json",
+    "packages/reporter-earl/package.json",
+    "packages/webdriverio/package.json",
+    "packages/webdriverjs/package.json"
+  ]
+}

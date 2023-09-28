@@ -1,7 +1,7 @@
 import fs from 'fs';
 import path from 'path';
 import colors from 'colors';
-import { AxeResults } from 'axe-core';
+import type { AxeResults, UnlabelledFrameSelector } from 'axe-core';
 
 export const saveOutcome = (
   outcome: AxeResults | AxeResults[],
@@ -70,35 +70,39 @@ export const parseBrowser = (browser?: string): string | Error => {
   }
 };
 
-export const getAxeSource = (axePath?: string): string | void => {
+export const getAxeSource = (
+  axePath?: string,
+  dirname?: string
+): string | void => {
   // Abort if axePath should exist, and it isn't
   if (axePath && !fs.existsSync(axePath)) {
     return;
   }
 
+  let cwd = dirname;
+  if (!cwd) {
+    cwd = process.cwd();
+  }
+
+  if (!dirname) {
+    dirname = __dirname;
+  }
+
   // Look for axe in current working directory
   if (!axePath) {
-    axePath = path.join(process.cwd(), 'axe.js');
+    axePath = path.join(cwd, 'axe.js');
   }
 
   if (!fs.existsSync(axePath)) {
     // Look for axe in CWD ./node_modules
-    axePath = path.join(process.cwd(), 'node_modules', 'axe-core', 'axe.js');
+    axePath = path.join(cwd, 'node_modules', 'axe-core', 'axe.js');
   }
 
   if (!fs.existsSync(axePath)) {
-    // `__dirname` is /@axe-core/cli/dist/src/lib when installed globally
-    // to access the locally installed axe-core package we need to go up 3 levels
-    // if all else fails, use the locally installed axe
-    axePath = path.join(
-      __dirname,
-      '..',
-      '..',
-      '..',
-      'node_modules',
-      'axe-core',
-      'axe.js'
-    );
+    // in local develop using npm workspaces axe-core is
+    // hoisted to the root, but when published axe-core
+    // will be in the node_modules for the cli
+    axePath = require.resolve('axe-core/axe.js');
   }
 
   return fs.readFileSync(axePath, 'utf-8');
@@ -114,7 +118,7 @@ export const splitList = (val: string): string[] => {
 };
 
 export const selectorToString = (
-  selectors: string[],
+  selectors: UnlabelledFrameSelector,
   separator?: string
 ): string => {
   separator = separator || ' ';

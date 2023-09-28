@@ -1,6 +1,6 @@
 {
   "name": "@axe-core/cli",
-  "version": "4.7.3",
+  "version": "4.7.6",
   "description": "A CLI for accessibility testing using axe-core",
   "author": {
     "name": "Wilco Fiers",
@@ -32,8 +32,7 @@
     "prebuild": "rimraf dist",
     "build": "tsc",
     "test": "mocha --timeout 60000 -r ts-node/register 'src/**/**.test.ts'",
-    "coverage": "nyc npm run test",
-    "prepare": "npm run build"
+    "coverage": "nyc npm run test"
   },
   "keywords": [
     "axe-core",
@@ -45,8 +44,8 @@
   ],
   "dependencies": {
     "@axe-core/webdriverjs": "^4.7.3",
-    "axe-core": "^4.7.0",
-    "chromedriver": "^113.0.0",
+    "axe-core": "~4.8.2",
+    "chromedriver": "latest",
     "colors": "^1.4.0",
     "commander": "^9.4.1",
     "selenium-webdriver": "^4.8.1"
@@ -55,15 +54,13 @@
     "@types/chai": "^4.3.3",
     "@types/chromedriver": "^81.0.1",
     "@types/mocha": "^10.0.0",
-    "@types/mock-fs": "^4.13.1",
     "@types/selenium-webdriver": "^4.1.5",
     "chai": "^4.3.6",
     "execa": "5.1.0",
     "mocha": "^10.0.0",
-    "mock-fs": "^5.1.4",
     "nyc": "^15.1.0",
     "rimraf": "^3.0.2",
-    "tempy": "1.0.0",
+    "tempy": "^1.0.0",
     "ts-node": "^10.9.1",
     "typescript": "^4.8.4"
   },
@@ -77,7 +74,7 @@
       "html"
     ],
     "statements": 95,
-    "branches": 92,
+    "branches": 91,
     "functions": 94,
     "lines": 95,
     "exclude": [

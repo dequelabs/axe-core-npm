@@ -326,4 +326,4 @@ export default class AxeBuilder {
   }
 }
 
-export { AxeBuilder }
+export { AxeBuilder };

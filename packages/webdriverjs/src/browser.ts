@@ -3,8 +3,7 @@ import {
   SerialContextObject,
   FrameContext,
   RunOptions,
-  Spec,
-  PartialResult
+  Spec
 } from 'axe-core';
 import { WebDriver, WebElement } from 'selenium-webdriver';
 

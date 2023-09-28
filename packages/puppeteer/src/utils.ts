@@ -1,3 +1,4 @@
+import assert from 'assert';
 import * as fs from 'fs';
 import * as Axe from 'axe-core';
 import { Frame } from 'puppeteer';
@@ -73,14 +74,18 @@ export async function getChildFrame(
 export async function assertFrameReady(frame: Frame): Promise<void> {
   // Wait so that we know there is an execution context.
   // Assume that if we have an html node we have an execution context.
-  // Check if the page is loaded.
-  let pageReady = false;
   try {
-    pageReady = await frame.evaluate(pageIsLoaded);
+    // Puppeteer freezes on unloaded iframes. Set a race timeout in order to handle that.
+    // @see https://github.com/dequelabs/axe-core-npm/issues/727
+    const timeoutPromise = new Promise((resolve, reject) => {
+      setTimeout(() => {
+        reject();
+      }, 1000);
+    });
+    const evaluatePromise = frame.evaluate(pageIsLoaded);
+    const readyState = await Promise.race([timeoutPromise, evaluatePromise]);
+    assert(readyState);
   } catch {
-    /* ignore */
-  }
-  if (!pageReady) {
     throw new Error('Page/Frame is not ready');
   }
 }

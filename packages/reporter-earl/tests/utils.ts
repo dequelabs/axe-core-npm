@@ -1,6 +1,6 @@
 import { RawResult } from '../src/types';
-import * as clone from 'clone';
-import * as axe from 'axe-core';
+import clone from 'clone';
+import axe from 'axe-core';
 
 let _dummyData: RawResult[] | axe.AxeResults;
 export async function getDummyData(version = '3.1'): Promise<RawResult[]> {
@@ -15,7 +15,14 @@ export async function getDummyData(version = '3.1'): Promise<RawResult[]> {
     const params: any = {
       reporter: function (raw: any, _: any, callback: Function) {
         callback(JSON.parse(JSON.stringify(raw)));
-      }
+      },
+      rules: [
+        {
+          // color contrast checking doesn't work in a jsdom environment (since it depends on canvas)
+          id: 'color-contrast',
+          enabled: false
+        }
+      ]
     };
     axe.configure(params);
     _dummyData = await axe.run();

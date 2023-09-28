@@ -1,6 +1,6 @@
 rules:
   # Disables a11y issues for testing
-  html-has-lang: false 
+  html-has-lang: false
 exclude:
   - packages/react/CHANGELOG.md
   - packages/react/examples/**/*
