@@ -1,19 +1,15 @@
 import 'mocha';
-import { AxeResults, Result } from 'axe-core';
-import { WebDriver } from 'selenium-webdriver';
+import type { AxeResults, Result } from 'axe-core';
+import type { WebDriver } from 'selenium-webdriver';
 import express from 'express';
-import chromedriver from 'chromedriver';
 import testListen from 'test-listen';
-import delay from 'delay';
 import { assert } from 'chai';
 import path from 'path';
 import fs from 'fs';
 import { Server, createServer } from 'http';
-import { Webdriver, connectToChromeDriver } from './test-utils';
+import { Webdriver } from './test-utils';
 import { AxeBuilder } from '../src';
 import { axeRunPartial } from '../src/browser';
-import child_process from 'child_process';
-import { ChildProcessWithoutNullStreams } from 'child_process';
 
 const dylangConfig = JSON.parse(
   fs.readFileSync(
@@ -23,7 +19,6 @@ const dylangConfig = JSON.parse(
 );
 
 describe('@axe-core/webdriverjs', () => {
-  const port = 9515;
   let driver: WebDriver;
   let server: Server;
   let addr: string;
@@ -31,8 +26,6 @@ describe('@axe-core/webdriverjs', () => {
   let axeCrasherSource: string;
   let axeForceLegacy: string;
   let axeLargePartial: string;
-
-  let chromedriverProcess: ChildProcessWithoutNullStreams;
 
   before(async () => {
     const axePath = require.resolve('axe-core');
@@ -51,29 +44,21 @@ describe('@axe-core/webdriverjs', () => {
       'utf8'
     );
 
-    const binPath = process.env.CHROMEDRIVER_PATH ?? chromedriver.path;
-    chromedriverProcess = child_process.spawn(binPath, [`--port=${port}`]);
-    chromedriverProcess.stdout.pipe(process.stdout);
-    chromedriverProcess.stderr.pipe(process.stderr);
-
-    await delay(500);
-    await connectToChromeDriver(port);
-  });
-
-  after(() => {
-    chromedriverProcess.kill();
-  });
-
-  beforeEach(async () => {
     const app = express();
     app.use(express.static(path.resolve(__dirname, 'fixtures')));
     server = createServer(app);
     addr = await testListen(server);
+  });
+
+  beforeEach(async () => {
     driver = Webdriver();
   });
 
   afterEach(async () => {
-    await driver.close();
+    await driver.quit();
+  });
+
+  after(() => {
     server.close();
   });
 
@@ -398,7 +383,7 @@ describe('@axe-core/webdriverjs', () => {
     });
 
     it('skips unloaded iframes (e.g. loading=lazy)', async () => {
-      await driver.get(`${addr}/lazy-loaded-iframe.html`);
+      await driver.get(`${addr}/external/lazy-loaded-iframe.html`);
       const title = await driver.getTitle();
 
       const results = await new AxeBuilder(driver)
@@ -408,28 +393,31 @@ describe('@axe-core/webdriverjs', () => {
       assert.notEqual(title, 'Error');
       assert.equal(results.incomplete[0].id, 'frame-tested');
       assert.lengthOf(results.incomplete[0].nodes, 1);
-      assert.deepEqual(results.incomplete[0].nodes[0].target, ['#parent', '#lazy-iframe']);
+      assert.deepEqual(results.incomplete[0].nodes[0].target, [
+        '#ifr-lazy',
+        '#lazy-iframe'
+      ]);
       assert.equal(results.violations[0].id, 'label');
       assert.lengthOf(results.violations[0].nodes, 1);
       assert.deepEqual(results.violations[0].nodes[0].target, [
-        '#parent',
-        '#child',
+        '#ifr-lazy',
+        '#lazy-baz',
         'input'
       ]);
-    })
+    });
 
     it('resets pageLoad timeout to user setting', async () => {
-      await driver.get(`${addr}/lazy-loaded-iframe.html`);
-      driver.manage().setTimeouts({ pageLoad: 500 })
-      const title = await driver.getTitle();
+      await driver.get(`${addr}/external/lazy-loaded-iframe.html`);
+      driver.manage().setTimeouts({ pageLoad: 500 });
+      await driver.getTitle();
 
-      const results = await new AxeBuilder(driver)
+      await new AxeBuilder(driver)
         .options({ runOnly: ['label', 'frame-tested'] })
         .analyze();
 
       const timeout = await driver.manage().getTimeouts();
       assert.equal(timeout.pageLoad, 500);
-    })
+    });
   });
 
   describe('withRules', () => {
@@ -895,10 +883,10 @@ describe('@axe-core/webdriverjs', () => {
       assert.notEqual(title, 'Error');
 
       await driver.executeScript(`
-                                 window.axe = {
-                                   runPartial: (c, o) => Promise.resolve({ violations: [], passes: [] })
-                                 };
-                                 `);
+        window.axe = {
+        runPartial: (c, o) => Promise.resolve({ violations: [], passes: [] })
+        };
+      `);
       const res = await axeRunPartial(driver, null as any, null as any);
       assert.equal(typeof res, 'string');
     });

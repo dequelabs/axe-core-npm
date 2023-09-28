@@ -15,6 +15,7 @@ import {
 import axeTestUrls from '../lib/axe-test-urls';
 import event from '../lib/events';
 import { startDriver } from '../lib/webdriver';
+import { error as selenium_error } from 'selenium-webdriver';
 
 const cli = async (
   args: OptionValues,
@@ -36,7 +37,8 @@ const cli = async (
     rules,
     disable,
     loadDelay,
-    chromedriverPath
+    chromedriverPath,
+    chromePath
   } = args;
 
   const showErrors = args.showErrors === true;
@@ -67,7 +69,8 @@ const cli = async (
     browser: args.browser,
     timeout,
     chromeOptions,
-    chromedriverPath
+    chromedriverPath,
+    chromePath
   };
 
   args.driver = startDriver(driverConfigs);
@@ -106,8 +109,37 @@ const cli = async (
     rules,
     disable
   };
+  let outcome;
   try {
-    const outcome = await axeTestUrls(urls, testPageConfigParams, events);
+    try {
+      outcome = await axeTestUrls(urls, testPageConfigParams, events);
+    } catch (e) {
+      if (e instanceof selenium_error.ScriptTimeoutError) {
+        console.error(error('Error: %s'), e.message);
+        console.log(`The timeout is currently configured to be ${timeout} seconds (you can change it with --timeout).`)
+        process.exit(2);
+      }
+      // Provide a more user-friendly error message when there's a ChromeDriver/Chrome version mismatch.
+      else if (
+        e instanceof selenium_error.SessionNotCreatedError &&
+        e.message.includes(
+          'This version of ChromeDriver only supports'
+          // This string has to match the error message printed by chromedriver, see
+          // https://chromium.googlesource.com/chromium/src/+/refs/tags/110.0.5481.194/chrome/test/chromedriver/chrome_launcher.cc#300.
+        )
+      ) {
+        console.error(error('Error: %s'), e.message);
+        console.log(`\nPlease install a matching version of ChromeDriver and run axe with the --chromedriver-path option:
+
+    $ npm install -g chromedriver@<version>
+    $ axe --chromedriver-path $(npm root -g)/chromedriver/bin/chromedriver <url...>
+
+(where <version> is the first number of the "current browser version" reported above.)`);
+        process.exit(2);
+      } else {
+        throw e;
+      }
+    }
     if (silentMode) {
       process.stdout.write(JSON.stringify(outcome, null, 2));
       return;
@@ -129,6 +161,24 @@ const cli = async (
       } catch (e) {
         /* istanbul ignore next */
         console.error(error('Unable to save file!\n') + e);
+        process.exit(1);
+      }
+    }
+
+    if (exit) {
+      let exitErr = false;
+      /* istanbul ignore if */
+      if (Array.isArray(outcome)) {
+        for (const res of outcome) {
+          if (res.violations.length > 0) {
+            exitErr = true;
+            break;
+          }
+        }
+      } else {
+        exitErr = outcome.violations.length > 0;
+      }
+      if (exitErr) {
         process.exit(1);
       }
     }

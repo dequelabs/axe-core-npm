@@ -21,7 +21,6 @@ Fetch dependencies and link packages together:
 
 ```console
 npm install
-npm run bootstrap
 ```
 
 Run the linter:

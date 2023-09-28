@@ -1,5 +1,4 @@
 import type { SerialContextObject, SerialSelectorList } from 'axe-core';
-import { Selector } from '../types';
 
 /**
  * Get running context

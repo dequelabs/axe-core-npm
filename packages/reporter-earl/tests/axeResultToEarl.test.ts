@@ -2,6 +2,7 @@ import axeResultToEarl from '../src/axeResultToEarl';
 import { getDummyData } from './utils';
 import testResult from '../src/testResult';
 import { RawResult, RawNodeResult } from '../src/types';
+import { describe, beforeEach, test, expect } from '@jest/globals';
 
 let dummyData: RawResult[];
 beforeEach(async () => {

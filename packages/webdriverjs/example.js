@@ -12,7 +12,7 @@ const chrome = require('selenium-webdriver/chrome');
   try {
     const results = await new AxeBuilder(driver).analyze();
     console.log(results);
-  } catch(e) {
+  } catch (e) {
     console.error(e);
   }
 
