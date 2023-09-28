@@ -2,6 +2,8 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [4.7.7](https://github.com/dequelabs/axe-core-npm/compare/v4.7.6...v4.7.7) (2023-09-28)
+
 ### [4.7.6](https://github.com/dequelabs/axe-core-npm/compare/v4.7.5...v4.7.6) (2023-09-28)
 
 ### [4.7.5](https://github.com/dequelabs/axe-core-npm/compare/v4.7.4...v4.7.5) (2023-09-28)
