@@ -13,7 +13,7 @@
     "lint": "eslint .",
     "prepare": "husky install",
     "precommit": "lint-staged",
-    "release": "standard-version --conventional-commits --no-push --no-git-tag-version --yes"
+    "release": "standard-version"
   },
   "devDependencies": {
     "@typescript-eslint/eslint-plugin": "^5.40.0",
