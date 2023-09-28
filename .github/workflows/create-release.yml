@@ -22,7 +22,7 @@ jobs:
           git config user.name "${{ secrets.ADT_API_RELEASE_NAME }}"
           git config user.email "${{ secrets.ADT_API_RELEASE_EMAIL }}"
 
-          npm run release -- --release-as ${{ github.event.inputs.releaseLevel }}
+          npm run release -- --release-as patch
           Version=$(jq -r .version ./package.json)
           git commit -am "chore: release v$Version"
       - name: Get version for later steps
