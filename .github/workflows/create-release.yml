@@ -1,12 +1,6 @@
 name: Create release candidate
 
-on:
-  workflow_dispatch:
-    inputs:
-      releaseLevel:
-        description: 'Release level: major, minor, or patch.'
-        required: true
-        default: 'patch'
+on: pull_request
 
 jobs:
   create_release:
@@ -20,7 +14,7 @@ jobs:
           fetch-depth: 0
 
       - name: Run preparation script
-        run: bash .github/scripts/prepare_release.sh ${{ github.event.inputs.releaseLevel }}
+        run: bash .github/scripts/prepare_release.sh patch
         env:
           CHANGELOG_VERSION: ${{ secrets.CHANGELOG_VERSION }}
           STD_VERSION_VERSION: ${{ secrets.STD_VERSION_VERSION }}
