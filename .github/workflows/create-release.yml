@@ -22,30 +22,24 @@ jobs:
           git config user.name "${{ secrets.ADT_API_RELEASE_NAME }}"
           git config user.email "${{ secrets.ADT_API_RELEASE_EMAIL }}"
 
+          git checkout -b "$Branch"
+
           npm run release -- --release-as patch
           Version=$(jq -r .version ./package.json)
-          git commit -am "chore: release v$Version"
-      - name: Get version for later steps
-        id: get-new-version
-        run: echo ::set-output name=version::$(node -pe 'require("./package.json").version')
-      # create-pull-request has no way of setting the target branch that won't also
-      # get rid of all commits (aside from the release commit).
-      # So, we have to be on master and manually grab all the changes.
-      # We do that by just telling git "master is now develop (+ the release commit)".
-      - name: Update local master from develop
-        run: |
-          commitHash="$(git log -1 --format='%H')"
-          git checkout master
-          git reset --hard "$commitHash"
-      - name: Create pull request
-        uses: peter-evans/create-pull-request@v3
-        with:
-          token: ${{ secrets.GITHUB_TOKEN }}
-          branch: release
-          branch-suffix: timestamp
-          base: master
-          title: 'chore: release v${{ steps.get-new-version.outputs.version }}'
-          # If there are any changes not already committed, they will be added to
-          # a commit with this as the message.
-          # If there are no changes no commit will be created.
-          commit-message: 'chore: applying release changes'
+
+          ReleaseNotes=$(
+            git show \
+              --no-color \
+              --no-prefix \
+              --output-indicator-new=! CHANGELOG.md | egrep '^!' | awk -F'^[!]' '{print $2}' | sed -e 's/\n/$0A/g'
+          )
+
+          echo "chore(release): v$Version" > /tmp/pr.txt
+          echo "" >> /tmp/pr.txt
+          echo "$ReleaseNotes" >> /tmp/pr.txt
+          echo "" >> /tmp/pr.txt
+          echo "This PR was opened by a robot :robot: :tada:" >> /tmp/pr.txt
+
+          hub pull-request --file /tmp/pr.txt --base master
+        env:
+          GITHUB_TOKEN: ${{ secrets.PAT }}
