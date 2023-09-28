@@ -1,0 +1,26 @@
+name: Automatically create patch release every 2 weeks
+on:
+  workflow_dispatch:
+jobs:
+  create_patch_release:
+    name: Create release
+    runs-on: ubuntu-latest
+    steps:
+      - name: Determine if we skip cancel checks
+        id: skip-checks
+        shell: bash
+        # Skip checks if we are not a scheduled run
+        run: echo value=$(test ${{ github.event_name }} != schedule && echo true || echo false) >> "$GITHUB_OUTPUT"
+
+      - name: Create release
+        uses: dequelabs/axe-api-team-public/.github/actions/auto-patch-release-v1@main
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          project_token: ${{ secrets.GH_PROJECT_TOKEN }}
+          skip_checks: ${{ steps.skip-checks.outputs.value }}
+          slack_webhook: ${{ secrets.SLACK_WEBHOOK }}
+          odd_release: 'true'
+          release-command: bash .github/scripts/prepare_release.sh
+          version-json: lerna.json
+          release-branch: master
+          default-branch: develop

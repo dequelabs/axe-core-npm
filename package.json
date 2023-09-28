@@ -1,14 +1,19 @@
 {
   "name": "axe-core-npm",
+  "version": "4.7.4",
   "private": true,
   "license": "MPL-2.0",
+  "workspaces": [
+    "packages/*",
+    "test/axe-core"
+  ],
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "fmt": "prettier --write *.{md,js,json} \"packages/**/*.{js,ts,tsx,html,json,md,css}\"",
-    "lint": "eslint *.js \"packages/**/*.{js,ts,tsx}\"",
-    "bootstrap": "lerna bootstrap",
+    "fmt": "prettier --write .",
+    "lint": "eslint .",
     "prepare": "husky install",
-    "precommit": "lint-staged"
+    "precommit": "lint-staged",
+    "release": "standard-version --conventional-commits --no-push --no-git-tag-version --yes"
   },
   "devDependencies": {
     "@typescript-eslint/eslint-plugin": "^5.40.0",
@@ -21,6 +26,7 @@
     "lint-staged": "^13.0.3",
     "prettier": "^2.7.1",
     "react": "^17.0.0",
+    "standard-version": "^9.5.0",
     "typescript": "^4.8.4"
   },
   "prettier": {
@@ -47,6 +53,7 @@
     ]
   },
   "dependencies": {
-    "axe-test-fixtures": "github:dequelabs/axe-test-fixtures"
+    "axe-test-fixtures": "github:dequelabs/axe-test-fixtures",
+    "browser-driver-manager": "^1.0.4"
   }
 }

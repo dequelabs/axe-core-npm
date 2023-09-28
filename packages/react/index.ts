@@ -412,6 +412,8 @@ export default function reactAxe(
   return checkAndReport(document.body, timeout);
 }
 
+reactAxe.logToConsole = logToConsole;
+
 if (typeof module === 'object') {
   exports = module.exports = reactAxe;
 }

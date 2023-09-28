@@ -850,6 +850,43 @@ describe('@axe-core/webdriverio', () => {
             normalResults.testEngine.name = legacyResults.testEngine.name;
             assert.deepEqual(normalResults, legacyResults);
           });
+
+          it('handles unloaded iframes (e.g. loading=lazy)', async () => {
+            await client.url(`${addr}/lazy-loaded-iframe.html`);
+            const title = await client.getTitle();
+
+            const results = await new AxeBuilder({ client })
+              .options({ runOnly: ['label', 'frame-tested'] })
+              .analyze();
+
+            assert.notEqual(title, 'Error');
+            assert.equal(results.incomplete[0].id, 'frame-tested');
+            assert.lengthOf(results.incomplete[0].nodes, 1);
+            assert.deepEqual(results.incomplete[0].nodes[0].target, [
+              '#ifr-lazy',
+              '#lazy-iframe'
+            ]);
+            assert.equal(results.violations[0].id, 'label');
+            assert.lengthOf(results.violations[0].nodes, 1);
+            assert.deepEqual(results.violations[0].nodes[0].target, [
+              '#ifr-lazy',
+              '#lazy-baz',
+              'input'
+            ]);
+          });
+
+          it('resets pageLoad timeout to user setting', async () => {
+            await client.url(`${addr}/lazy-loaded-iframe.html`);
+            client.setTimeout({ pageLoad: 500 });
+            await client.getTitle();
+
+            await new AxeBuilder({ client })
+              .options({ runOnly: ['label', 'frame-tested'] })
+              .analyze();
+
+            const timeout = await client.getTimeouts();
+            assert.equal(timeout.pageLoad, 500);
+          });
         });
 
         describe('logOrRethrowError', () => {
@@ -1427,7 +1464,7 @@ describe('@axe-core/webdriverio', () => {
 
         it('should not set when running runPartial and not legacy mode', async () => {
           await client.url(`${addr}/index.html`);
-          const res = await new AxeBuilder({ client }).analyze();
+          await new AxeBuilder({ client }).analyze();
           const allowedOrigins = await getAllowedOrigins();
           assert.deepEqual(allowedOrigins, [addr]);
         });
@@ -1450,7 +1487,7 @@ describe('@axe-core/webdriverio', () => {
 
         it('should set when running legacy source and not legacy mode', async () => {
           await client.url(`${addr}/index.html`);
-          const res = await new AxeBuilder({
+          await new AxeBuilder({
             client,
             axeSource: axeLegacySource
           }).analyze();

@@ -1,9 +1,0 @@
-.circleci
-.github
-cypress
-node_modules
-.editorconfig
-.eslintrc.js
-cypress.json
-tsconfig.json
-!dist

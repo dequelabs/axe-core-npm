@@ -1,5 +1,5 @@
 import { RawResult, EarlResult, EarlType } from './types';
-import * as context from './context.json';
+import context from './context.json';
 import axeResultToAssertion from './axeResultToEarl';
 
 export function createEarlReport(

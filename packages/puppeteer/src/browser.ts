@@ -1,6 +1,5 @@
 // This module encapsulates the browser environment
 import * as Axe from 'axe-core';
-import { PartialResults } from './types';
 
 // Expect axe to be set up.
 // Tell Typescript that there should be a global variable called `axe` that follows

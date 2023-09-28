@@ -1,16 +1,4 @@
 {
-  "compilerOptions": {
-    "moduleResolution": "node",
-    "target": "esnext",
-    "module": "esnext",
-    "lib": ["esnext", "dom"],
-    "strict": true,
-    "pretty": true,
-    "sourceMap": true,
-    "declaration": true,
-    "resolveJsonModule": true,
-    "outDir": "dist",
-    "typeRoots": ["node_modules/@types"]
-  },
+  "extends": "../../tsconfig.json",
   "include": ["src"]
 }
