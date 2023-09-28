@@ -20,7 +20,7 @@ jobs:
           fetch-depth: 0
 
       - name: Run preparation script
-        run: bash .github/scripts/prepare_release.sh patch
+        run: bash .github/scripts/prepare_release.sh ${{ github.event.inputs.releaseLevel }}
         env:
           CHANGELOG_VERSION: ${{ secrets.CHANGELOG_VERSION }}
           STD_VERSION_VERSION: ${{ secrets.STD_VERSION_VERSION }}
