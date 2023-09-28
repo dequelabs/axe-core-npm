@@ -25,6 +25,9 @@ jobs:
           git checkout -b "$Branch"
 
           npm run release -- --release-as patch
+
+          git push --follow-tags origin "$Branch" --force
+
           Version=$(jq -r .version ./package.json)
 
           ReleaseNotes=$(
