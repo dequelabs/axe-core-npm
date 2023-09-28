@@ -3,6 +3,23 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [4.7.4](https://github.com/dequelabs/axe-core-npm/compare/v4.7.3...v4.7.4) (2023-09-28)
+
+
+### Bug Fixes
+
+* pin axe-core version to accept patch updates only ([#838](https://github.com/dequelabs/axe-core-npm/issues/838)) ([2456ed6](https://github.com/dequelabs/axe-core-npm/commit/2456ed641781c2262bf71db24f7f97755422d5f6))
+* skip unloaded iframes for all apis ([#752](https://github.com/dequelabs/axe-core-npm/issues/752)) ([0b15629](https://github.com/dequelabs/axe-core-npm/commit/0b15629ac12613d9cdfec9f102ff1e3922d28ac2))
+
+
+### Features
+
+* Update axe-core to v4.8.2 ([#835](https://github.com/dequelabs/axe-core-npm/issues/835)) ([2ac1eaf](https://github.com/dequelabs/axe-core-npm/commit/2ac1eafa6318453003ccfd7c33625e63725a7c00))
+
+
+
+
+
 ## [4.7.3](https://github.com/dequelabs/axe-core-npm/compare/v4.7.2...v4.7.3) (2023-06-09)
 
 **Note:** Version bump only for package @axe-core/playwright
