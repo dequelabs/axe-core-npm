@@ -1,6 +1,12 @@
 name: Create release candidate
 
-on: pull_request
+on:
+  workflow_dispatch:
+    inputs:
+      releaseLevel:
+        description: 'Release level: major, minor, or patch.'
+        required: true
+        default: 'patch'
 
 jobs:
   create_release:
@@ -10,7 +16,6 @@ jobs:
       - name: Checkout repo
         uses: actions/checkout@v3
         with:
-          ref: ${{ github.event.pull_request.head.ref }}
           token: ${{ secrets.GITHUB_TOKEN }}
           fetch-depth: 0
 
