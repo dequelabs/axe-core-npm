@@ -17,6 +17,10 @@
     "url": "https://github.com/dequelabs/axe-core-npm.git"
   },
   "license": "MPL-2.0",
+  "files": [
+    "dist",
+    "postinstall.js"
+  ],
   "main": "dist/src/lib/index.js",
   "typings": "dist/src/types.d.ts",
   "bin": {
