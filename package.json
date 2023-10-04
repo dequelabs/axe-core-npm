@@ -11,7 +11,8 @@
     "fmt": "prettier --write .",
     "lint": "eslint .",
     "prepare": "husky install",
-    "precommit": "lint-staged"
+    "precommit": "lint-staged",
+    "build": "lerna run build"
   },
   "devDependencies": {
     "@typescript-eslint/eslint-plugin": "^5.40.0",
