@@ -17,6 +17,7 @@ jobs:
       - name: Checkout repo
         uses: actions/checkout@v2
         with:
+          ref: ${{ github.event.pull_request.head.ref }}
           token: ${{ secrets.GITHUB_TOKEN }}
           fetch-depth: 0
 
