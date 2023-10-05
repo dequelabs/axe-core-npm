@@ -1,12 +1,13 @@
 name: Create release candidate
 
 on:
-  workflow_dispatch:
-    inputs:
-      releaseLevel:
-        description: 'Release level: major, minor, or patch.'
-        required: true
-        default: 'patch'
+  [pull_request]
+  # workflow_dispatch:
+  #   inputs:
+  #     releaseLevel:
+  #       description: 'Release level: major, minor, or patch.'
+  #       required: true
+  #       default: 'patch'
 
 jobs:
   create_release:
@@ -38,11 +39,11 @@ jobs:
       # get rid of all commits (aside from the release commit).
       # So, we have to be on master and manually grab all the changes.
       # We do that by just telling git "master is now develop (+ the release commit)".
-      - name: Update local master from develop
-        run: |
-          commitHash="$(git log -1 --format='%H')"
-          git checkout master
-          git reset --hard "$commitHash"
+      # - name: Update local master from develop
+      #   run: |
+      #     commitHash="$(git log -1 --format='%H')"
+      #     git checkout master
+      #     git reset --hard "$commitHash"
       - name: Create pull request
         uses: peter-evans/create-pull-request@v3
         with:
