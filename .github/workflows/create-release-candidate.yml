@@ -1,12 +1,16 @@
 name: Create release candidate 
 
 on:
-  workflow_dispatch
+  workflow_dispatch:
     inputs:
       version-locked:
-        type: boolean
-        description: Follow semver versioning if not version locked
+        description: Is the release version-locked to axe-core, use `false` if you want SemVer versioning
+        type: choice
+        required: true
         default: 'true'
+        options: 
+          - 'true'
+          - 'false'
 jobs:
   create-release-candidate:
     runs-on: ubuntu-latest
