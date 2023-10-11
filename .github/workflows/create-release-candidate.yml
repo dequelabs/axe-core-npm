@@ -4,13 +4,10 @@ on:
   workflow_dispatch:
     inputs:
       version-locked:
-        description: Is the release version-locked to axe-core, use `false` if you want SemVer versioning
-        type: choice
-        required: true
-        default: 'true'
-        options: 
-          - 'true'
-          - 'false'
+        type: boolean
+        description: Uncheck if you want to follow SemVer versioning rather than version-lock to axe-core.
+        default: true
+
 jobs:
   create-release-candidate:
     runs-on: ubuntu-latest
