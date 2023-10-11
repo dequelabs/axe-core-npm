@@ -1,0 +1,23 @@
+name: Create release candidate 
+
+on:
+  workflow_dispatch
+    inputs:
+      version-locked:
+        type: boolean
+        description: Follow semver versioning if not version locked
+        default: 'true'
+jobs:
+  create-release-candidate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: dequelabs/axe-api-team-public/.github/actions/create-release-candidate-v1@main
+        with:
+          token: ${{ secrets.GH_PROJECT_TOKEN }}
+          slack-webhook: ${{ secrets.SLACK_WEBHOOK }}
+          base: 'master'
+          head: 'develop'
+          release-script-path: './.github/scripts/prepare_release.sh'
+          version-locked: ${{ inputs.version-locked }}
+        env:
+          GH_TOKEN: ${{ secrets.GH_PROJECT_TOKEN }}
