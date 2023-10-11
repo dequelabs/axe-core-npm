@@ -5,7 +5,7 @@ import { mount } from 'enzyme';
 import sinon from 'sinon';
 import { assert } from 'chai';
 import axe from 'axe-core';
-import reactAxe from '../dist/index.js';
+import reactAxe, { logToConsole } from '../dist/index.js';
 import cache from '../dist/cache.js';
 
 class App extends React.Component {
@@ -540,5 +540,9 @@ describe(`@axe-core/react using react@${React.version}`, () => {
         done(err);
       }
     });
+  });
+
+  it('check to make sure logToConsole is exported', () => {
+    assert.isFunction(logToConsole);
   });
 });

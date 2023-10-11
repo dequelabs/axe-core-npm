@@ -6,7 +6,7 @@ export * from './lib';
 export interface EventParams {
   silentMode: boolean;
   timer: boolean;
-  cliReporter: (...args: any[]) => void;
+  cliReporter: (...args: unknown[]) => void;
   verbose: boolean;
   exit: boolean;
 }
@@ -23,6 +23,7 @@ export interface WebdriverConfigParams {
   browser: string;
   timeout: number;
   chromedriverPath?: string;
+  chromePath?: string;
   path?: string;
   chromeOptions?: string[];
   builder?: Builder;

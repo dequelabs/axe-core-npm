@@ -10,6 +10,8 @@ import type {
   SerialContextObject
 } from 'axe-core';
 
+export const FRAME_LOAD_TIMEOUT = 1000;
+
 /**
  * Validates that the client provided is WebdriverIO v5 or v6.
  */
@@ -83,6 +85,7 @@ export const axeSourceInject = async (
   client: Browser,
   axeSource: string
 ): Promise<{ runPartialSupported: boolean }> => {
+  await assertFrameReady(client);
   return promisify(
     // Had to use executeAsync() because we could not use multiline statements in client.execute()
     // we were able to return a single boolean in a line but not when assigned to a variable.
@@ -98,6 +101,34 @@ export const axeSourceInject = async (
   );
 };
 
+async function assertFrameReady(client: Browser): Promise<void> {
+  // Wait so that we know there is an execution context.
+  // Assume that if we have an html node we have an execution context.
+  try {
+    /*
+      When using the devtools protocol trying to call
+      client.execute() on an unloaded iframe would cause
+      the code to hang indefinitely since it is using
+      Puppeteer which freezes on unloaded iframes. Set a
+      race timeout in order to handle that. Code taken
+      from our @axe-core/puppeteer utils function.
+      @see https://github.com/dequelabs/axe-core-npm/issues/727
+    */
+    const timeoutPromise = new Promise((resolve, reject) => {
+      setTimeout(() => {
+        reject();
+      }, FRAME_LOAD_TIMEOUT);
+    });
+    const executePromise = client.execute(() => {
+      return document.readyState === 'complete';
+    });
+    const readyState = await Promise.race([timeoutPromise, executePromise]);
+    assert(readyState);
+  } catch {
+    throw new Error('Page/Frame is not ready');
+  }
+}
+
 export const axeRunPartial = (
   client: Browser,
   context?: SerialContextObject,
@@ -105,7 +136,7 @@ export const axeRunPartial = (
 ): Promise<PartialResult> => {
   return promisify(
     client
-      .executeAsync<string, never>(
+      .executeAsync<string, []>(
         `
       var callback = arguments[arguments.length - 1];
       var context = ${JSON.stringify(context)} || document;
@@ -121,6 +152,8 @@ export const axeRunPartial = (
 export const axeGetFrameContext = (
   client: Browser,
   context: SerialContextObject
+  // TODO: add proper types
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
 ): Promise<any[]> => {
   return promisify(
     // Had to use executeAsync() because we could not use multiline statements in client.execute()
@@ -142,7 +175,7 @@ export const axeRunLegacy = (
 ): Promise<AxeResults> => {
   return promisify(
     client
-      .executeAsync<string, never>(
+      .executeAsync<string, []>(
         `var callback = arguments[arguments.length - 1];
       var context = ${JSON.stringify(context)} || document;
       var options = ${JSON.stringify(options)} || {};
@@ -190,7 +223,7 @@ export const axeFinishRun = (
   return chunkResults(partialString)
     .then(() => {
       return promisify(
-        client.executeAsync<string, never>(
+        client.executeAsync<string, []>(
           `var callback = arguments[arguments.length - 1];
       ${axeSource};
       window.axe.configure({

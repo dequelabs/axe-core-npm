@@ -9,6 +9,12 @@ import { version } from '../../package.json';
 import runCLI from '../testutils/';
 
 const SIMPLE_HTML_FILE = path.join(__dirname, '..', 'testutils', 'simple.html');
+const SIMPLE_CLEAN_HTML_FILE = path.join(
+  __dirname,
+  '..',
+  'testutils',
+  'simple-clean.html'
+);
 const SIMPLE_HTML_SOURCE = fs.readFileSync(SIMPLE_HTML_FILE, 'utf8');
 const PATH_TO_AXE_250 = path.resolve(
   __dirname,
@@ -141,6 +147,18 @@ describe('cli', () => {
         await runCLI(`file://${SIMPLE_HTML_FILE}`, '--exit');
       } catch (error) {
         assert.equal(error.exitCode, 1);
+        assert.include(
+          error.stdout,
+          'Violation of "marquee" with 1 occurrences!'
+        );
+      }
+    });
+
+    it('should exit zero if violations are found', async () => {
+      try {
+        await runCLI(`file://${SIMPLE_CLEAN_HTML_FILE}`, '--exit');
+      } catch (error) {
+        assert.equal(error.exitCode, 0);
         assert.include(
           error.stdout,
           'Violation of "marquee" with 1 occurrences!'
@@ -373,7 +391,9 @@ describe('cli', () => {
     });
   });
 
-  describe('--chromedriver-path', () => {
+  // disabled during conversion to npm workspaces as the node_module install directory changed
+  // @see https://github.com/dequelabs/axe-core-npm/issues/822
+  describe.skip('--chromedriver-path', () => {
     it('should throw error if path does not exist', async () => {
       const result = await runCLI(
         `file://${SIMPLE_HTML_FILE}`,
@@ -384,6 +404,17 @@ describe('cli', () => {
         result.stderr,
         'The specified executable path does not exist'
       );
+    });
+  });
+
+  describe('--chrome-path', () => {
+    it('should throw error if path does not exist', async () => {
+      const result = await runCLI(
+        `file://${SIMPLE_HTML_FILE}`,
+        '--chrome-path="someinvalidpath"',
+        '--show-errors'
+      );
+      assert.include(result.stderr, 'no chrome binary at');
     });
   });
 });

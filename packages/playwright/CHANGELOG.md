@@ -3,84 +3,67 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
-## [4.7.3](https://github.com/dequelabs/axe-core-npm/compare/v4.7.2...v4.7.3) (2023-06-09)
-
-**Note:** Version bump only for package @axe-core/playwright
-
-
-
-
-
-## [4.7.2](https://github.com/dequelabs/axe-core-npm/compare/v4.7.1...v4.7.2) (2023-06-01)
+# [4.8.0](https://github.com/dequelabs/axe-core-npm/compare/v4.7.3...v4.8.0) (2023-09-28)
 
 
 ### Bug Fixes
 
-* **playwright:** Enable usage with `@playwright/test` ([#731](https://github.com/dequelabs/axe-core-npm/issues/731)) ([0d0c9d1](https://github.com/dequelabs/axe-core-npm/commit/0d0c9d1b75051b26f0bb745abc5c8974a9fa4d54))
+* pin axe-core version to accept patch updates only ([#838](https://github.com/dequelabs/axe-core-npm/issues/838)) ([2456ed6](https://github.com/dequelabs/axe-core-npm/commit/2456ed641781c2262bf71db24f7f97755422d5f6))
+* skip unloaded iframes for all apis ([#752](https://github.com/dequelabs/axe-core-npm/issues/752)) ([0b15629](https://github.com/dequelabs/axe-core-npm/commit/0b15629ac12613d9cdfec9f102ff1e3922d28ac2))
+
+
+### Features
+
+* Update axe-core to v4.8.2 ([#835](https://github.com/dequelabs/axe-core-npm/issues/835)) ([2ac1eaf](https://github.com/dequelabs/axe-core-npm/commit/2ac1eafa6318453003ccfd7c33625e63725a7c00))
 
 
 
 
+
+## [4.7.3](https://github.com/dequelabs/axe-core-npm/compare/v4.7.2...v4.7.3) (2023-06-09)
+
+**Note:** Version bump only for package @axe-core/playwright
+
+## [4.7.2](https://github.com/dequelabs/axe-core-npm/compare/v4.7.1...v4.7.2) (2023-06-01)
+
+### Bug Fixes
+
+- **playwright:** Enable usage with `@playwright/test` ([#731](https://github.com/dequelabs/axe-core-npm/issues/731)) ([0d0c9d1](https://github.com/dequelabs/axe-core-npm/commit/0d0c9d1b75051b26f0bb745abc5c8974a9fa4d54))
 
 ## [4.7.1](https://github.com/dequelabs/axe-core-npm/compare/v4.7.0...v4.7.1) (2023-05-02)
 
 **Note:** Version bump only for package @axe-core/playwright
 
-
-
-
-
 # [4.7.0](https://github.com/dequelabs/axe-core-npm/compare/v4.6.1...v4.7.0) (2023-04-28)
-
 
 ### Features
 
-* enable esm import ([#713](https://github.com/dequelabs/axe-core-npm/issues/713)) ([076bfa9](https://github.com/dequelabs/axe-core-npm/commit/076bfa99f27f416b4eaff6d24cc23e8573fc72ee))
-* Update axe-core to v4.7.0 ([#709](https://github.com/dequelabs/axe-core-npm/issues/709)) ([d418d09](https://github.com/dequelabs/axe-core-npm/commit/d418d093b4c462d5d60e0f7ad3d5147bcaf52aa2))
-
-
-
-
+- enable esm import ([#713](https://github.com/dequelabs/axe-core-npm/issues/713)) ([076bfa9](https://github.com/dequelabs/axe-core-npm/commit/076bfa99f27f416b4eaff6d24cc23e8573fc72ee))
+- Update axe-core to v4.7.0 ([#709](https://github.com/dequelabs/axe-core-npm/issues/709)) ([d418d09](https://github.com/dequelabs/axe-core-npm/commit/d418d093b4c462d5d60e0f7ad3d5147bcaf52aa2))
 
 ## [4.6.1](https://github.com/dequelabs/axe-core-npm/compare/v4.6.0...v4.6.1) (2023-03-28)
 
-
 ### Bug Fixes
 
-* Update axe-core to v4.6.3 ([#698](https://github.com/dequelabs/axe-core-npm/issues/698)) ([a7d53a4](https://github.com/dequelabs/axe-core-npm/commit/a7d53a4876237c74bb8dc2836b703cdaf2f7ace5))
-* work with extremely large results ([#667](https://github.com/dequelabs/axe-core-npm/issues/667)) ([395d5fc](https://github.com/dequelabs/axe-core-npm/commit/395d5fc165c97f0c297176eb69eb58d2510c938f))
-
-
-
-
+- Update axe-core to v4.6.3 ([#698](https://github.com/dequelabs/axe-core-npm/issues/698)) ([a7d53a4](https://github.com/dequelabs/axe-core-npm/commit/a7d53a4876237c74bb8dc2836b703cdaf2f7ace5))
+- work with extremely large results ([#667](https://github.com/dequelabs/axe-core-npm/issues/667)) ([395d5fc](https://github.com/dequelabs/axe-core-npm/commit/395d5fc165c97f0c297176eb69eb58d2510c938f))
 
 # [4.6.0](https://github.com/dequelabs/axe-core-npm/compare/v4.5.2...v4.6.0) (2023-01-19)
 
-
 ### Bug Fixes
 
-* **playwright:** update playwright to support updated types ([#635](https://github.com/dequelabs/axe-core-npm/issues/635)) ([1339ec7](https://github.com/dequelabs/axe-core-npm/commit/1339ec7199fd654f6116ecaf824274a163cf3a73))
-
+- **playwright:** update playwright to support updated types ([#635](https://github.com/dequelabs/axe-core-npm/issues/635)) ([1339ec7](https://github.com/dequelabs/axe-core-npm/commit/1339ec7199fd654f6116ecaf824274a163cf3a73))
 
 ### Features
 
-* support shadow dom selectors ([#619](https://github.com/dequelabs/axe-core-npm/issues/619)) ([6065b56](https://github.com/dequelabs/axe-core-npm/commit/6065b562adf289341033a7233426ba3dcfb8a24b))
-* Update axe-core to v4.6.1 ([#633](https://github.com/dequelabs/axe-core-npm/issues/633)) ([8bab5b2](https://github.com/dequelabs/axe-core-npm/commit/8bab5b23b3653a6a0603f10d889e22418a4fff3e))
-
-
-
-
+- support shadow dom selectors ([#619](https://github.com/dequelabs/axe-core-npm/issues/619)) ([6065b56](https://github.com/dequelabs/axe-core-npm/commit/6065b562adf289341033a7233426ba3dcfb8a24b))
+- Update axe-core to v4.6.1 ([#633](https://github.com/dequelabs/axe-core-npm/issues/633)) ([8bab5b2](https://github.com/dequelabs/axe-core-npm/commit/8bab5b23b3653a6a0603f10d889e22418a4fff3e))
 
 ## [4.5.2](https://github.com/dequelabs/axe-core-npm/compare/v4.5.1...v4.5.2) (2022-11-15)
 
-
 ### Bug Fixes
 
-* update to use axe-core 4.5.2 ([#607](https://github.com/dequelabs/axe-core-npm/issues/607)) ([61312ff](https://github.com/dequelabs/axe-core-npm/commit/61312fff2e9ee4e0f218a29a1608f69b45206fad))
-
-
-
-
+- update to use axe-core 4.5.2 ([#607](https://github.com/dequelabs/axe-core-npm/issues/607)) ([61312ff](https://github.com/dequelabs/axe-core-npm/commit/61312fff2e9ee4e0f218a29a1608f69b45206fad))
 
 ## [4.5.1](https://github.com/dequelabs/axe-core-npm/compare/v4.5.0...v4.5.1) (2022-11-03)
 

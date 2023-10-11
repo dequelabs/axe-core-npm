@@ -1,9 +1,17 @@
-import * as jsonld from 'jsonld';
-import * as axe from 'axe-core';
+// jsonld depends on @digitalbazaar/http-client, which depends on the undici HTTP client,
+// which depends on TextEncoder ... which however isn't provided by jsdom, see
+// https://github.com/jsdom/jsdom/issues/2524.
+import { TextEncoder, TextDecoder } from 'util';
+global.TextEncoder = TextEncoder;
+global.TextDecoder = TextDecoder as any;
+
+import jsonld from 'jsonld';
+import axe from 'axe-core';
 import { getDummyData } from './utils';
 import axeReporterEarl, { createEarlReport } from '../src/axeReporterEarl';
-import * as context from '../src/context.json';
+import context from '../src/context.json';
 import { RawResult, EarlType } from '../src/types';
+import { describe, beforeEach, test, expect } from '@jest/globals';
 
 describe(`createEarlReport`, () => {
   let dummyData: RawResult[];

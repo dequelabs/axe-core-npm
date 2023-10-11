@@ -1,6 +1,7 @@
 import testResult, { cssToPointer } from '../src/testResult';
 import { getDummyData } from './utils';
 import { RawResult, RawNodeResult, EarlType } from '../src/types';
+import { describe, beforeEach, test, expect } from '@jest/globals';
 
 let dummyData: RawResult[];
 beforeEach(async () => {
