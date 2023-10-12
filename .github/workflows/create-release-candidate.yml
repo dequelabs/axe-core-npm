@@ -5,7 +5,7 @@ on:
     inputs:
       version-locked:
         type: boolean
-        description: Uncheck if you want to follow SemVer versioning rather than version-lock to axe-core.
+        description: Prevent this action from creating a minor or major release
         default: true
 
 jobs:
