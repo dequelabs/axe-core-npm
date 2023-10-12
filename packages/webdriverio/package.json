@@ -1,6 +1,6 @@
 {
   "name": "@axe-core/webdriverio",
-  "version": "4.8.0",
+  "version": "4.8.1",
   "description": "Provides a method to inject and analyze web pages using axe",
   "contributors": [
     {
