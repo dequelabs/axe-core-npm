@@ -3,6 +3,22 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [4.8.1](https://github.com/dequelabs/axe-core-npm/compare/v4.7.3...v4.8.1) (2023-10-12)
+
+
+### Bug Fixes
+
+* pin axe-core version to accept patch updates only ([#838](https://github.com/dequelabs/axe-core-npm/issues/838)) ([2456ed6](https://github.com/dequelabs/axe-core-npm/commit/2456ed641781c2262bf71db24f7f97755422d5f6))
+
+
+### Features
+
+* Update axe-core to v4.8.2 ([#835](https://github.com/dequelabs/axe-core-npm/issues/835)) ([2ac1eaf](https://github.com/dequelabs/axe-core-npm/commit/2ac1eafa6318453003ccfd7c33625e63725a7c00))
+
+
+
+
+
 # [4.8.0](https://github.com/dequelabs/axe-core-npm/compare/v4.7.3...v4.8.0) (2023-09-28)
 
 
