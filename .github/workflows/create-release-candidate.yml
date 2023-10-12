@@ -15,7 +15,6 @@ jobs:
       - uses: dequelabs/axe-api-team-public/.github/actions/create-release-candidate-v1@main
         with:
           token: ${{ secrets.GH_PROJECT_TOKEN }}
-          slack-webhook: ${{ secrets.SLACK_WEBHOOK }}
           base: 'master'
           head: 'develop'
           release-script-path: './.github/scripts/prepare_release.sh'
