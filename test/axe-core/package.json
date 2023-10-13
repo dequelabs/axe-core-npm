@@ -3,7 +3,8 @@
   "private": true,
   "description": "Validate axe-core version with package version",
   "scripts": {
-    "test": "mocha *.test.js"
+    "test": "mocha *.test.js",
+    "build": "echo \"No build required, skipping...\""
   },
   "devDependencies": {
     "glob": "^10.3.3",

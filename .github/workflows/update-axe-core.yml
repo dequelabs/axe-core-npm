@@ -1,6 +1,10 @@
 name: Update axe-core
 
-on: [workflow_dispatch]
+on:
+  schedule:
+    # Run every night at midnight
+    - cron: '0 0 * * *'
+  workflow_dispatch:
 
 jobs:
   build:
@@ -21,6 +25,10 @@ jobs:
             CommitType="feat"
           elif [ "${{ steps.update.outputs.major_version_updated }}" == "true" ]; then
             CommitType="feat"
+          else
+            echo "No axe-core update available. Cancelling."
+            gh run cancel ${{ github.run_id }};
+            gh run watch ${{ github.run_id }};
           fi
           echo "type=$CommitType" >>"$GITHUB_OUTPUT"
       - name: Open PR
