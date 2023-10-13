@@ -4,12 +4,13 @@ on:
   push:
     branches:
       - develop
+      - release
       - master
 
 jobs:
   canary:
     runs-on: ubuntu-latest
-    if: github.ref_name == 'develop' && github.repository_owner == 'dequelabs'
+    if: (github.ref_name == 'develop' || github.ref_name == 'release') && github.repository_owner == 'dequelabs'
     steps:
       - uses: actions/checkout@v3
       - uses: actions/setup-node@v3
