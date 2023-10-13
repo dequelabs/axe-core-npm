@@ -10,7 +10,7 @@ on:
 jobs:
   canary:
     runs-on: ubuntu-latest
-    if: (github.ref_name == 'develop' || github.ref_name == 'release') && github.repository_owner == 'dequelabs'
+    if: github.ref_name == 'develop' && github.repository_owner == 'dequelabs'
     steps:
       - uses: actions/checkout@v3
       - uses: actions/setup-node@v3
@@ -30,6 +30,33 @@ jobs:
             --no-push \
             --canary \
             --dist-tag=next \
+            --exact \
+            --preid=$(git rev-parse --short HEAD) \
+            --force-publish \
+            --yes
+
+  relase-candidate:
+    runs-on: ubuntu-latest
+    if: github.ref_name == 'release' && github.repository_owner == 'dequelabs'
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-node@v3
+        with:
+          node-version: 18
+          cache: 'npm'
+      - run: npm ci
+      # Ensure packages are built
+      - run: npm run build
+      # Make sure the working tree is clean
+      - run: git reset --hard HEAD
+      - run: npm config set "//registry.npmjs.org/:_authToken" ${{ secrets.NPM_TOKEN }}
+      - run: |
+          npx lerna publish prepatch \
+            --no-verify-access \
+            --no-git-tag-version \
+            --no-push \
+            --canary \
+            --dist-tag=rc \
             --exact \
             --preid=$(git rev-parse --short HEAD) \
             --force-publish \
