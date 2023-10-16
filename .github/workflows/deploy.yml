@@ -59,3 +59,4 @@ jobs:
             --title "Release $PKG_VERSION" \
             --generate-notes \
             --repo ${{ github.repository }}
+            --target master
