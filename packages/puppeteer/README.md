@@ -158,7 +158,7 @@ new AxePuppeteer(page).withRules(['html-lang', 'image-alt']);
 
 ### AxePuppeteer#withTags(tags: string | string[])
 
-Limits analysis to only those with the specified tag. Accepts a String of a single tag or an Array of multiple tags. **Subsequent calls to `AxePuppeteer#options`, `AxePuppeteer#withRules` or `AxePuppeteer#withRules` will override specified options.**
+Limits analysis to only those with the specified tag or tags. Accepts a String of a single tag or an Array of multiple tags. **Subsequent calls to `AxePuppeteer#options`, `AxePuppeteer#withRules` or `AxePuppeteer#withRules` will override specified options.**
 
 ```js
 new AxePuppeteer(page).withTags('wcag2a');
