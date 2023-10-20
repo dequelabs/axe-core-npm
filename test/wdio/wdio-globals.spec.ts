@@ -18,7 +18,8 @@ describe('@wdio/globals', () => {
   });
 
   beforeEach(() => {
-    builder = new AxeBuilder({ client: browser });
+    // node v20 causes a typescript error due to our current type of WebdriverIO.Browser not being compatible with Browser from webriverio
+    builder = new AxeBuilder({ client: browser as any });
   });
 
   after(async () => {
