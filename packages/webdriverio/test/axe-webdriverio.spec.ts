@@ -13,6 +13,7 @@ import { logOrRethrowError } from '../src/utils';
 import type { AxeResults, Result } from 'axe-core';
 import child_process from 'child_process';
 import { ChildProcessWithoutNullStreams } from 'child_process';
+import { fixturesPath } from 'axe-test-fixtures';
 
 const connectToChromeDriver = (port: number): Promise<void> => {
   let socket: net.Socket;
@@ -73,33 +74,27 @@ describe('@axe-core/webdriverio', () => {
       let client: webdriverio.Browser;
       const axePath = require.resolve('axe-core');
       const axeSource = fs.readFileSync(axePath, 'utf8');
-      const axeTestFixtures = path.resolve(
-        __dirname,
-        '..',
-        'fixtures',
-        'external'
-      );
       const axeLegacySource = fs.readFileSync(
-        path.resolve(axeTestFixtures, 'axe-core@legacy.js'),
+        path.resolve(fixturesPath, 'axe-core@legacy.js'),
         'utf-8'
       );
       const axeCrasherSource = fs.readFileSync(
-        path.join(axeTestFixtures, 'axe-crasher.js'),
+        path.join(fixturesPath, 'axe-crasher.js'),
         'utf8'
       );
       const axeForceLegacy = fs.readFileSync(
-        path.join(axeTestFixtures, 'axe-force-legacy.js'),
+        path.join(fixturesPath, 'axe-force-legacy.js'),
         'utf8'
       );
       const axeLargePartial = fs.readFileSync(
-        path.join(axeTestFixtures, 'axe-large-partial.js'),
+        path.join(fixturesPath, 'axe-large-partial.js'),
         'utf8'
       );
 
       beforeEach(async () => {
         const app = express();
         let binaryPath;
-        app.use(express.static(axeTestFixtures));
+        app.use(express.static(fixturesPath));
         server = createServer(app);
         addr = await testListen(server);
         if (

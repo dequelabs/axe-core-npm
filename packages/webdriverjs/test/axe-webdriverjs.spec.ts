@@ -10,12 +10,10 @@ import { Server, createServer } from 'http';
 import { Webdriver } from './test-utils';
 import { AxeBuilder } from '../src';
 import { axeRunPartial } from '../src/browser';
+import { fixturesPath } from 'axe-test-fixtures';
 
 const dylangConfig = JSON.parse(
-  fs.readFileSync(
-    require.resolve('./fixtures/external/dylang-config.json'),
-    'utf8'
-  )
+  fs.readFileSync(path.join(fixturesPath, 'dylang-config.json'), 'utf8')
 );
 
 describe('@axe-core/webdriverjs', () => {
@@ -30,22 +28,21 @@ describe('@axe-core/webdriverjs', () => {
   before(async () => {
     const axePath = require.resolve('axe-core');
     axeSource = fs.readFileSync(axePath, 'utf8');
-    const externalPath = path.resolve(__dirname, 'fixtures', 'external');
     axeCrasherSource = fs.readFileSync(
-      path.join(externalPath, 'axe-crasher.js'),
+      path.join(fixturesPath, 'axe-crasher.js'),
       'utf8'
     );
     axeForceLegacy = fs.readFileSync(
-      path.join(externalPath, 'axe-force-legacy.js'),
+      path.join(fixturesPath, 'axe-force-legacy.js'),
       'utf8'
     );
     axeLargePartial = fs.readFileSync(
-      path.join(externalPath, 'axe-large-partial.js'),
+      path.join(fixturesPath, 'axe-large-partial.js'),
       'utf8'
     );
 
     const app = express();
-    app.use(express.static(path.resolve(__dirname, 'fixtures')));
+    app.use(express.static(fixturesPath));
     server = createServer(app);
     addr = await testListen(server);
   });
@@ -64,7 +61,7 @@ describe('@axe-core/webdriverjs', () => {
 
   describe('analyze', () => {
     it('returns results', async () => {
-      await driver.get(`${addr}/external/index.html`);
+      await driver.get(`${addr}/index.html`);
       const title = await driver.getTitle();
       const results = await new AxeBuilder(driver).analyze();
 
@@ -77,7 +74,7 @@ describe('@axe-core/webdriverjs', () => {
     });
 
     it('handles undefineds', async () => {
-      await driver.get(`${addr}/external/index.html`);
+      await driver.get(`${addr}/index.html`);
       const title = await driver.getTitle();
       const results = await new AxeBuilder(driver).analyze();
 
@@ -90,7 +87,7 @@ describe('@axe-core/webdriverjs', () => {
     });
 
     it('returns correct results metadata', async () => {
-      await driver.get(`${addr}/external/index.html`);
+      await driver.get(`${addr}/index.html`);
       const title = await driver.getTitle();
       const results = await new AxeBuilder(driver).analyze();
 
@@ -104,12 +101,12 @@ describe('@axe-core/webdriverjs', () => {
       assert.isDefined(results.testEnvironment.windowWidth);
       assert.isDefined(results.testRunner.name);
       assert.isDefined(results.toolOptions.reporter);
-      assert.equal(results.url, `${addr}/external/index.html`);
+      assert.equal(results.url, `${addr}/index.html`);
     });
 
     it('properly isolates the call to axe.finishRun', async () => {
       let err;
-      await driver.get(`${addr}/external/isolated-finish.html`);
+      await driver.get(`${addr}/isolated-finish.html`);
       const title = await driver.getTitle();
       try {
         await new AxeBuilder(driver).analyze();
@@ -124,7 +121,7 @@ describe('@axe-core/webdriverjs', () => {
     it('handles large results', async function () {
       /* this test handles a large amount of partial results a timeout may be required */
       this.timeout(60_000);
-      await driver.get(`${addr}/external/index.html`);
+      await driver.get(`${addr}/index.html`);
 
       const results = await new AxeBuilder(
         driver,
@@ -136,7 +133,7 @@ describe('@axe-core/webdriverjs', () => {
     });
 
     it('throws if axe errors out on the top window', async () => {
-      await driver.get(`${addr}/external/crash.html`);
+      await driver.get(`${addr}/crash.html`);
       const title = await driver.getTitle();
       let err;
 
@@ -151,7 +148,7 @@ describe('@axe-core/webdriverjs', () => {
     });
 
     it('throws when injecting a problematic source', async () => {
-      await driver.get(`${addr}/external/crash.html`);
+      await driver.get(`${addr}/crash.html`);
       const title = await driver.getTitle();
       let err;
 
@@ -167,7 +164,7 @@ describe('@axe-core/webdriverjs', () => {
 
     it('throws when a setup fails', async () => {
       const brokenSource = axeSource + `;window.axe.utils = {}`;
-      await driver.get(`${addr}/external/index.html`);
+      await driver.get(`${addr}/index.html`);
       const title = await driver.getTitle();
       let err;
 
@@ -194,7 +191,7 @@ describe('@axe-core/webdriverjs', () => {
 
   describe('configure', () => {
     it('should find configured violations in all iframes', async () => {
-      await driver.get(`${addr}/external/nested-iframes.html`);
+      await driver.get(`${addr}/nested-iframes.html`);
       const title = await driver.getTitle();
 
       const results = await new AxeBuilder(driver)
@@ -208,7 +205,7 @@ describe('@axe-core/webdriverjs', () => {
     });
 
     it('should find configured violations in all framesets', async () => {
-      await driver.get(`${addr}/external/nested-frameset.html`);
+      await driver.get(`${addr}/nested-frameset.html`);
       const title = await driver.getTitle();
 
       const results = await new AxeBuilder(driver)
@@ -232,7 +229,7 @@ describe('@axe-core/webdriverjs', () => {
 
   describe('disableRules', () => {
     it('disables the given rules(s) as array', async () => {
-      await driver.get(`${addr}/external/index.html`);
+      await driver.get(`${addr}/index.html`);
       const title = await driver.getTitle();
 
       const results = await new AxeBuilder(driver)
@@ -250,7 +247,7 @@ describe('@axe-core/webdriverjs', () => {
     });
 
     it('disables the given rules(s) as string', async () => {
-      await driver.get(`${addr}/external/index.html`);
+      await driver.get(`${addr}/index.html`);
       const title = await driver.getTitle();
 
       const results = await new AxeBuilder(driver)
@@ -270,7 +267,7 @@ describe('@axe-core/webdriverjs', () => {
 
   describe('frame tests', () => {
     it('injects into nested iframes', async () => {
-      await driver.get(`${addr}/external/nested-iframes.html`);
+      await driver.get(`${addr}/nested-iframes.html`);
       const title = await driver.getTitle();
 
       const { violations } = await new AxeBuilder(driver)
@@ -294,7 +291,7 @@ describe('@axe-core/webdriverjs', () => {
     });
 
     it('injects into nested frameset', async () => {
-      await driver.get(`${addr}/external/nested-frameset.html`);
+      await driver.get(`${addr}/nested-frameset.html`);
       const title = await driver.getTitle();
 
       const { violations } = await new AxeBuilder(driver)
@@ -319,7 +316,7 @@ describe('@axe-core/webdriverjs', () => {
     });
 
     it('should work on shadow DOM iframes', async () => {
-      await driver.get(`${addr}/external/shadow-frames.html`);
+      await driver.get(`${addr}/shadow-frames.html`);
       const title = await driver.getTitle();
 
       const { violations } = await new AxeBuilder(driver)
@@ -340,7 +337,7 @@ describe('@axe-core/webdriverjs', () => {
     });
 
     it('reports erroring frames in frame-tested', async () => {
-      await driver.get(`${addr}/external/crash-parent.html`);
+      await driver.get(`${addr}/crash-parent.html`);
       const title = await driver.getTitle();
 
       const results = await new AxeBuilder(driver, axeSource + axeCrasherSource)
@@ -365,7 +362,7 @@ describe('@axe-core/webdriverjs', () => {
     });
 
     it('returns the same results from runPartial as from legacy mode', async () => {
-      await driver.get(`${addr}/external/nested-iframes.html`);
+      await driver.get(`${addr}/nested-iframes.html`);
       const title = await driver.getTitle();
 
       const legacyResults = await new AxeBuilder(
@@ -383,7 +380,7 @@ describe('@axe-core/webdriverjs', () => {
     });
 
     it('skips unloaded iframes (e.g. loading=lazy)', async () => {
-      await driver.get(`${addr}/external/lazy-loaded-iframe.html`);
+      await driver.get(`${addr}/lazy-loaded-iframe.html`);
       const title = await driver.getTitle();
 
       const results = await new AxeBuilder(driver)
@@ -407,7 +404,7 @@ describe('@axe-core/webdriverjs', () => {
     });
 
     it('resets pageLoad timeout to user setting', async () => {
-      await driver.get(`${addr}/external/lazy-loaded-iframe.html`);
+      await driver.get(`${addr}/lazy-loaded-iframe.html`);
       driver.manage().setTimeouts({ pageLoad: 500 });
       await driver.getTitle();
 
@@ -422,7 +419,7 @@ describe('@axe-core/webdriverjs', () => {
 
   describe('withRules', () => {
     it('only runs the provided rules as an array', async () => {
-      await driver.get(`${addr}/external/index.html`);
+      await driver.get(`${addr}/index.html`);
       const title = await driver.getTitle();
 
       const results = await new AxeBuilder(driver)
@@ -441,7 +438,7 @@ describe('@axe-core/webdriverjs', () => {
     });
 
     it('only runs the provided rules as a string', async () => {
-      await driver.get(`${addr}/external/index.html`);
+      await driver.get(`${addr}/index.html`);
       const title = await driver.getTitle();
 
       const results = await new AxeBuilder(driver)
@@ -462,7 +459,7 @@ describe('@axe-core/webdriverjs', () => {
 
   describe('options', () => {
     it('passes options to axe-core', async () => {
-      await driver.get(`${addr}/external/index.html`);
+      await driver.get(`${addr}/index.html`);
       const title = await driver.getTitle();
 
       const results = await new AxeBuilder(driver)
@@ -482,7 +479,7 @@ describe('@axe-core/webdriverjs', () => {
 
   describe('withTags', () => {
     it('only rules rules with the given tag(s) as an array', async () => {
-      await driver.get(`${addr}/external/index.html`);
+      await driver.get(`${addr}/index.html`);
       const title = await driver.getTitle();
 
       const results = await new AxeBuilder(driver)
@@ -503,7 +500,7 @@ describe('@axe-core/webdriverjs', () => {
     });
 
     it('only rules rules with the given tag(s) as a string', async () => {
-      await driver.get(`${addr}/external/index.html`);
+      await driver.get(`${addr}/index.html`);
       const title = await driver.getTitle();
 
       const results = await new AxeBuilder(driver)
@@ -524,7 +521,7 @@ describe('@axe-core/webdriverjs', () => {
     });
 
     it('No results provided when the given tag(s) is invalid', async () => {
-      await driver.get(`${addr}/external/index.html`);
+      await driver.get(`${addr}/index.html`);
       const title = await driver.getTitle();
 
       const results = await new AxeBuilder(driver)
@@ -555,7 +552,7 @@ describe('@axe-core/webdriverjs', () => {
         }, []);
     };
     it('with include and exclude', async () => {
-      await driver.get(`${addr}/context.html`);
+      await driver.get(`${addr}/context-include-exclude.html`);
       const title = await driver.getTitle();
 
       const builder = new AxeBuilder(driver)
@@ -569,7 +566,7 @@ describe('@axe-core/webdriverjs', () => {
     });
 
     it('with only include', async () => {
-      await driver.get(`${addr}/context.html`);
+      await driver.get(`${addr}/context-include-exclude.html`);
       const title = await driver.getTitle();
 
       const builder = new AxeBuilder(driver).include('.include');
@@ -580,7 +577,7 @@ describe('@axe-core/webdriverjs', () => {
     });
 
     it('with only exclude', async () => {
-      await driver.get(`${addr}/context.html`);
+      await driver.get(`${addr}/context-include-exclude.html`);
       const title = await driver.getTitle();
 
       const builder = new AxeBuilder(driver).exclude('.exclude');
@@ -591,7 +588,7 @@ describe('@axe-core/webdriverjs', () => {
     });
 
     it('with chaining only include', async () => {
-      await driver.get(`${addr}/context.html`);
+      await driver.get(`${addr}/context-include-exclude.html`);
       const title = await driver.getTitle();
 
       const builder = new AxeBuilder(driver)
@@ -605,7 +602,7 @@ describe('@axe-core/webdriverjs', () => {
     });
 
     it('with chaining only exclude', async () => {
-      await driver.get(`${addr}/context.html`);
+      await driver.get(`${addr}/context-include-exclude.html`);
       const title = await driver.getTitle();
 
       const builder = new AxeBuilder(driver)
@@ -619,7 +616,7 @@ describe('@axe-core/webdriverjs', () => {
     });
 
     it('with chaining include and exclude', async () => {
-      await driver.get(`${addr}/context.html`);
+      await driver.get(`${addr}/context-include-exclude.html`);
       const title = await driver.getTitle();
 
       const builder = new AxeBuilder(driver)
@@ -636,38 +633,53 @@ describe('@axe-core/webdriverjs', () => {
       assert.isFalse(flatPassesTargets(results).includes('.exclude2'));
     });
 
-    it('with include and exclude iframe selectors with no violations', async () => {
-      await driver.get(`${addr}/context.html`);
+    it('with include and exclude iframes', async () => {
+      await driver.get(`${addr}/context-include-exclude.html`);
       const title = await driver.getTitle();
 
-      const builder = new AxeBuilder(driver)
-        .include(['#ifr-one', 'html'])
-        .exclude(['#ifr-one', 'main'])
-        .exclude(['#ifr-one', 'img']);
+      const results = await new AxeBuilder(driver)
+        .include(['#ifr-inc-excl', 'html'])
+        .exclude(['#ifr-inc-excl', '#foo-bar'])
+        .include(['#ifr-inc-excl', '#foo-baz', 'html'])
+        .exclude(['#ifr-inc-excl', '#foo-baz', 'input'])
+        .analyze();
 
-      const results = await builder.analyze();
-
+      const labelResult = results.violations.find(
+        (r: Result) => r.id === 'label'
+      );
       assert.notEqual(title, 'Error');
-      assert.lengthOf(results.violations, 0);
+      assert.isFalse(flatPassesTargets(results).includes('#foo-bar'));
+      assert.isFalse(flatPassesTargets(results).includes('input'));
+      assert.isUndefined(labelResult);
     });
 
-    it('with include and exclude iframe selectors with violations', async () => {
-      await driver.get(`${addr}/context.html`);
+    it('with include iframes', async () => {
+      await driver.get(`${addr}/context-include-exclude.html`);
       const title = await driver.getTitle();
 
-      const builder = new AxeBuilder(driver)
-        .include(['#ifr-one', 'html'])
-        .exclude(['#ifr-one', 'main']);
-      const results = await builder.analyze();
+      const results = await new AxeBuilder(driver)
+        .include(['#ifr-inc-excl', '#foo-baz', 'html'])
+        .include(['#ifr-inc-excl', '#foo-baz', 'input'])
+        // does not exist
+        .include(['#hazaar', 'html'])
+        .analyze();
+
+      const labelResult = results.violations.find(
+        (r: Result) => r.id === 'label'
+      );
 
       assert.notEqual(title, 'Error');
-      assert.lengthOf(results.violations, 2);
-      assert.strictEqual(results.violations[0].id, 'image-alt');
-      assert.strictEqual(results.violations[1].id, 'region');
+      assert.isTrue(flatPassesTargets(results).includes('#ifr-inc-excl'));
+      assert.isTrue(flatPassesTargets(results).includes('#foo-baz'));
+      assert.isTrue(flatPassesTargets(results).includes('input'));
+      assert.isFalse(flatPassesTargets(results).includes('#foo-bar'));
+      // does not exist
+      assert.isFalse(flatPassesTargets(results).includes('#hazaar'));
+      assert.isDefined(labelResult);
     });
 
     it('with labelled frame', async () => {
-      await driver.get(`${addr}/external/context-include-exclude.html`);
+      await driver.get(`${addr}/context-include-exclude.html`);
       const results = await new AxeBuilder(driver)
         .include({ fromFrames: ['#ifr-inc-excl', 'html'] })
         .exclude({ fromFrames: ['#ifr-inc-excl', '#foo-bar'] })
@@ -683,7 +695,7 @@ describe('@axe-core/webdriverjs', () => {
     });
 
     it('with include shadow DOM', async () => {
-      await driver.get(`${addr}/external/shadow-dom.html`);
+      await driver.get(`${addr}/shadow-dom.html`);
       const results = await new AxeBuilder(driver)
         .include([['#shadow-root-1', '#shadow-button-1']])
         .include([['#shadow-root-2', '#shadow-button-2']])
@@ -694,7 +706,7 @@ describe('@axe-core/webdriverjs', () => {
     });
 
     it('with exclude shadow DOM', async () => {
-      await driver.get(`${addr}/external/shadow-dom.html`);
+      await driver.get(`${addr}/shadow-dom.html`);
       const results = await new AxeBuilder(driver)
         .exclude([['#shadow-root-1', '#shadow-button-1']])
         .exclude([['#shadow-root-2', '#shadow-button-2']])
@@ -705,7 +717,7 @@ describe('@axe-core/webdriverjs', () => {
     });
 
     it('with labelled shadow DOM', async () => {
-      await driver.get(`${addr}/external/shadow-dom.html`);
+      await driver.get(`${addr}/shadow-dom.html`);
       const results = await new AxeBuilder(driver)
         .include({ fromShadowDom: ['#shadow-root-1', '#shadow-button-1'] })
         .exclude({ fromShadowDom: ['#shadow-root-2', '#shadow-button-2'] })
@@ -715,7 +727,7 @@ describe('@axe-core/webdriverjs', () => {
     });
 
     it('with labelled iframe and shadow DOM', async () => {
-      await driver.get(`${addr}/external/shadow-frames.html`);
+      await driver.get(`${addr}/shadow-frames.html`);
       const { violations } = await new AxeBuilder(driver)
         .exclude({
           fromFrames: [
@@ -737,7 +749,7 @@ describe('@axe-core/webdriverjs', () => {
 
   describe('callback()', () => {
     it('returns an error as the first argument', async () => {
-      await driver.get(`${addr}/external/index.html`);
+      await driver.get(`${addr}/index.html`);
       const title = await driver.getTitle();
 
       assert.notEqual(title, 'Error');
@@ -749,7 +761,7 @@ describe('@axe-core/webdriverjs', () => {
     });
 
     it('returns as the second argument', async () => {
-      await driver.get(`${addr}/external/index.html`);
+      await driver.get(`${addr}/index.html`);
       const title = await driver.getTitle();
 
       assert.notEqual(title, 'Error');
@@ -771,7 +783,7 @@ describe('@axe-core/webdriverjs', () => {
 
     it('throws an error if window.open throws', async () => {
       const source = axeSource + windowOpenThrows;
-      await driver.get(`${addr}/external/index.html`);
+      await driver.get(`${addr}/index.html`);
       const title = await driver.getTitle();
 
       assert.notEqual(title, 'Error');
@@ -786,7 +798,7 @@ describe('@axe-core/webdriverjs', () => {
 
     it('throws an error if axe.finishRun throws', async () => {
       const source = axeSource + finishRunThrows;
-      await driver.get(`${addr}/external/index.html`);
+      await driver.get(`${addr}/index.html`);
       const title = await driver.getTitle();
 
       assert.notEqual(title, 'Error');
@@ -805,7 +817,7 @@ describe('@axe-core/webdriverjs', () => {
 
     it('throw an error with modified url', async () => {
       const source = axeSource + finishRunThrows;
-      await driver.get(`${addr}/external/index.html`);
+      await driver.get(`${addr}/index.html`);
       const title = await driver.getTitle();
 
       assert.notEqual(title, 'Error');
@@ -828,7 +840,7 @@ describe('@axe-core/webdriverjs', () => {
   describe('setLegacyMode', () => {
     const runPartialThrows = `;axe.runPartial = () => { throw new Error("No runPartial")}`;
     it('runs legacy mode when used', async () => {
-      await driver.get(`${addr}/external/index.html`);
+      await driver.get(`${addr}/index.html`);
       const title = await driver.getTitle();
 
       const results = await new AxeBuilder(driver, axeSource + runPartialThrows)
@@ -840,7 +852,7 @@ describe('@axe-core/webdriverjs', () => {
     });
 
     it('prevents cross-origin frame testing', async () => {
-      await driver.get(`${addr}/external/cross-origin.html`);
+      await driver.get(`${addr}/cross-origin.html`);
       const title = await driver.getTitle();
 
       const results = await new AxeBuilder(driver, axeSource + runPartialThrows)
@@ -857,7 +869,7 @@ describe('@axe-core/webdriverjs', () => {
     });
 
     it('can be disabled again', async () => {
-      await driver.get(`${addr}/external/cross-origin.html`);
+      await driver.get(`${addr}/cross-origin.html`);
       const title = await driver.getTitle();
 
       const results = await new AxeBuilder(driver)
@@ -877,7 +889,7 @@ describe('@axe-core/webdriverjs', () => {
 
   describe('browser functions', () => {
     it('serializes results', async () => {
-      await driver.get(`${addr}/external/nested-iframes.html`);
+      await driver.get(`${addr}/nested-iframes.html`);
       const title = await driver.getTitle();
 
       assert.notEqual(title, 'Error');
@@ -894,17 +906,12 @@ describe('@axe-core/webdriverjs', () => {
   describe('for versions without axe.runPartial', () => {
     let axe403Source: string;
     before(() => {
-      const axe403Path = path.resolve(
-        __dirname,
-        'fixtures',
-        'external',
-        'axe-core@legacy.js'
-      );
+      const axe403Path = path.join(fixturesPath, 'axe-core@legacy.js');
       axe403Source = fs.readFileSync(axe403Path, 'utf8');
     });
 
     it('can run', async () => {
-      await driver.get(`${addr}/external/nested-iframes.html`);
+      await driver.get(`${addr}/nested-iframes.html`);
       const title = await driver.getTitle();
 
       const results = await new AxeBuilder(driver, axe403Source)
@@ -919,7 +926,7 @@ describe('@axe-core/webdriverjs', () => {
 
     it('throws if the top level errors', done => {
       driver
-        .get(`${addr}/external/crash.html`)
+        .get(`${addr}/crash.html`)
         .then(() => {
           return new AxeBuilder(
             driver,
@@ -933,7 +940,7 @@ describe('@axe-core/webdriverjs', () => {
     });
 
     it('can be configured', async () => {
-      await driver.get(`${addr}/external/nested-iframes.html`);
+      await driver.get(`${addr}/nested-iframes.html`);
       const title = await driver.getTitle();
 
       const results = await new AxeBuilder(driver, axe403Source)
@@ -946,7 +953,7 @@ describe('@axe-core/webdriverjs', () => {
     });
 
     it('reports frame-tested', async () => {
-      await driver.get(`${addr}/external/crash-parent.html`);
+      await driver.get(`${addr}/crash-parent.html`);
       const title = await driver.getTitle();
 
       const results = await new AxeBuilder(
@@ -964,7 +971,7 @@ describe('@axe-core/webdriverjs', () => {
     });
 
     it('tests cross-origin pages', async () => {
-      await driver.get(`${addr}/external/cross-origin.html`);
+      await driver.get(`${addr}/cross-origin.html`);
       const title = await driver.getTitle();
 
       const results = await new AxeBuilder(driver, axe403Source)

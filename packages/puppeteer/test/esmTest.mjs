@@ -3,6 +3,7 @@ import assert from 'assert';
 import puppeteer from 'puppeteer';
 import { fileURLToPath, pathToFileURL } from 'url';
 import { join } from 'path';
+import { fixturesPath } from 'axe-test-fixtures';
 
 const exportIsFunction = typeof defaultExport === 'function';
 const exportIsSame = defaultExport === AxePuppeteer;
@@ -18,8 +19,7 @@ if (process.env.CI) {
 }
 
 async function integrationTest() {
-  let path = fileURLToPath(new URL('.', import.meta.url));
-  path = join(path, './fixtures/external/index.html');
+  const path = join(fixturesPath, 'index.html');
 
   const browser = await puppeteer.launch(options);
   const page = await browser.newPage();
