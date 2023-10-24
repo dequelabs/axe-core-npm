@@ -19,6 +19,7 @@ describe('@wdio/globals', () => {
 
   beforeEach(() => {
     // node v20 causes a typescript error due to our current type of WebdriverIO.Browser not being compatible with Browser from webriverio
+    // @see https://github.com/dequelabs/axe-core-npm/issues/883
     builder = new AxeBuilder({ client: browser as any });
   });
 
