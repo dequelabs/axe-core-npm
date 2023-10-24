@@ -81,4 +81,10 @@ jobs:
           npx lerna publish from-package \
             --force-publish='*' \
             --yes
-      - uses: softprops/action-gh-release@de2c0eb89ae2a093876385947365aca7b0e5f844 # v0.1.15
+      - run: |
+          PKG_VERSION=$(jq -r .version < lerna.json)
+          gh release create $PKG_VERSION \
+            --title "Release $PKG_VERSION" \
+            --generate-notes \
+            --repo ${{ github.repository }}
+            --target master
