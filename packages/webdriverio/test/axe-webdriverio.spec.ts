@@ -141,9 +141,43 @@ describe('@axe-core/webdriverio', () => {
 
         it('throws a useful error when not given a valid client', () => {
           assert.throws(
-            () => new AxeBuilder({ client: () => 'foobar' } as any),
+            () => new AxeBuilder({ client: 'invalid' } as any),
             /An instantiated WebdriverIO client greater than v5 is required/
           );
+        });
+
+        it('throws a useful error when client does not have execute function', () => {
+          assert.throws(
+            () => new AxeBuilder({ client: { switchToFrame() {} } } as any),
+            /An instantiated WebdriverIO client greater than v5 is required/
+          );
+        });
+
+        it('throws a useful error when client does not have switchToFrame function', () => {
+          assert.throws(
+            () => new AxeBuilder({ client: { execute() {} } } as any),
+            /An instantiated WebdriverIO client greater than v5 is required/
+          );
+        });
+
+        it('does not throw when client is valid', () => {
+          assert.doesNotThrow(
+            () =>
+              new AxeBuilder({
+                client: {
+                  execute() {},
+                  switchToFrame() {}
+                }
+              } as any)
+          );
+        });
+
+        it('allows client to be a function (@wdio/globals)', () => {
+          const client = () => {};
+          client.execute = () => {};
+          client.switchToFrame = () => {};
+
+          assert.doesNotThrow(() => new AxeBuilder({ client } as any));
         });
 
         describe('errorUrl', () => {
