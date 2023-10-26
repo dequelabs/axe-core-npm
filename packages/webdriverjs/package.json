@@ -83,7 +83,7 @@
     "selenium-webdriver": "^4.8.1",
     "test-listen": "^1.1.0",
     "ts-node": "^10.9.1",
-    "tsup": "^6.7.0",
+    "tsup": "^7.2.0",
     "typescript": "^4.8.4"
   },
   "dependencies": {
