@@ -32,7 +32,7 @@ jobs:
           fi
           echo "type=$CommitType" >>"$GITHUB_OUTPUT"
       - name: Open PR
-        uses: peter-evans/create-pull-request@v4
+        uses: peter-evans/create-pull-request@v5
         with:
           token: ${{ secrets.PAT }}
           commit-message: '${{ steps.type.outputs.type }}: Update axe-core to v${{ steps.update.outputs.version }}'
