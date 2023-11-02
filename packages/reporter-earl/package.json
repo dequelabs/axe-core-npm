@@ -42,7 +42,7 @@
   "devDependencies": {
     "@types/clone": "^2.1.1",
     "@types/jsonld": "github:types/jsonld",
-    "@types/node": "^18.8.3",
+    "@types/node": "^20.8.10",
     "axe-core": "~4.8.2",
     "clone": "^2.1.2",
     "cross-env": "^7.0.3",
