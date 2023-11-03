@@ -76,7 +76,7 @@
     "jest-environment-jsdom": "^29.1.2",
     "react": "17.0.0",
     "react-dom": "17.0.0",
-    "react-shadow": "^19.0.3",
+    "react-shadow": "^20.4.0",
     "sinon": "^14.0.1",
     "ts-node": "^10.9.1",
     "tsup": "^7.2.0",
