@@ -6,7 +6,8 @@ import type {
   SerialContextObject,
   PartialResults,
   SerialSelectorList,
-  SerialFrameSelector
+  SerialFrameSelector,
+  Spec
 } from 'axe-core';
 import axe from 'axe-core';
 const { source } = axe;
@@ -26,6 +27,7 @@ export default class AxeBuilder {
   private includes: SerialSelectorList;
   private excludes: SerialSelectorList;
   private option: RunOptions;
+  private config: Spec | null;
   private source: string;
   private legacyMode = false;
   private errorUrl: string;
@@ -35,6 +37,7 @@ export default class AxeBuilder {
     this.includes = [];
     this.excludes = [];
     this.option = {};
+    this.config = null;
     this.source = axeSource || source;
     this.errorUrl =
       'https://github.com/dequelabs/axe-core-npm/blob/develop/packages/playwright/error-handling.md';
@@ -72,6 +75,22 @@ export default class AxeBuilder {
 
   public options(options: RunOptions): this {
     this.option = options;
+    return this;
+  }
+
+  /**
+   * Set configuration for `axe-core`.
+   * This value is passed directly to `axe.configure()`
+   * @param Axe.Spec config
+   * @return AxeBuilder
+   */
+
+  public configure(config: Spec): this {
+    assert(
+      typeof config === 'object',
+      'AxePuppeteer needs an object to configure. See axe-core configure API.'
+    );
+    this.config = config;
     return this;
   }
 
@@ -309,19 +328,24 @@ export default class AxeBuilder {
   }
 
   private async axeConfigure(): Promise<string> {
+    let { config } = this;
+
     const hasRunPartial = await this.page.evaluate<boolean>(
       'typeof window.axe?.runPartial === "function"'
     );
 
+    if (!config) {
+      config = {
+        allowedOrigins:
+          !this.legacyMode && !hasRunPartial
+            ? ['<unsafe_all_origins>']
+            : ['<same_origin>'],
+        branding: { application: 'playwright' }
+      };
+    }
+
     return `
-    ;axe.configure({
-      ${
-        !this.legacyMode && !hasRunPartial
-          ? 'allowedOrigins: ["<unsafe_all_origins>"],'
-          : 'allowedOrigins: ["<same_origin>"],'
-      }
-      branding: { application: 'playwright' }
-    })
+    ;axe.configure(${JSON.stringify(config)})
     `;
   }
 }
