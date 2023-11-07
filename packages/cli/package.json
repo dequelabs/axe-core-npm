@@ -51,7 +51,7 @@
     "axe-core": "~4.8.2",
     "chromedriver": "latest",
     "colors": "^1.4.0",
-    "commander": "^9.4.1",
+    "commander": "^11.1.0",
     "selenium-webdriver": "^4.8.1"
   },
   "devDependencies": {
