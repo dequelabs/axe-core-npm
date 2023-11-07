@@ -6,7 +6,7 @@ import { assert } from 'chai';
 import Puppeteer, { Browser, Page } from 'puppeteer';
 import { createServer, Server } from 'http';
 import * as sinon from 'sinon';
-import testListen from 'test-listen';
+import listen from 'async-listen';
 import { AxePuppeteer } from '../src/index';
 import {
   startServer,
@@ -355,7 +355,9 @@ describe('AxePuppeteer', function () {
             }, 3000);
           }
         });
-        addr2 = await testListen(server2);
+        // async-listen adds trailing forward slash,
+        // this removes the unnecessary trailing forward slash
+        addr2 = (await listen(server2)).toString().replace(/\/$/, '');
       });
 
       after(() => {

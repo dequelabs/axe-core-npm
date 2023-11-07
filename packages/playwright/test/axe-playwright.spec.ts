@@ -3,7 +3,7 @@ import fs from 'fs';
 import { chromium, ChromiumBrowser, Page } from '@playwright/test';
 import express from 'express';
 import type { AxeResults, Result } from 'axe-core';
-import testListen from 'test-listen';
+import listen from 'async-listen';
 import { assert } from 'chai';
 import path from 'path';
 import { Server, createServer } from 'http';
@@ -38,7 +38,9 @@ describe('@axe-core/playwright', () => {
     const app = express();
     app.use(express.static(fixturesPath));
     server = createServer(app);
-    addr = await testListen(server);
+    // async-listen adds trailing forward slash,
+    // this removes the unnecessary trailing forward slash
+    addr = (await listen(server)).toString().replace(/\/$/, '');
   });
 
   after(async () => {

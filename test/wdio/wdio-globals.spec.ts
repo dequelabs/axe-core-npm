@@ -4,7 +4,7 @@ import { assert } from 'chai';
 import express from 'express';
 import { fixturesPath } from 'axe-test-fixtures';
 import { Server, createServer } from 'http';
-import testListen from 'test-listen';
+import listen from 'async-listen';
 
 describe('@wdio/globals', () => {
   let server: Server;
@@ -14,7 +14,9 @@ describe('@wdio/globals', () => {
     const app = express();
     app.use(express.static(fixturesPath));
     server = createServer(app);
-    addr = await testListen(server);
+    // async-listen adds trailing forward slash,
+    // this removes the unnecessary trailing forward slash
+    addr = (await listen(server)).toString().replace(/\/$/, '');
   });
 
   beforeEach(() => {

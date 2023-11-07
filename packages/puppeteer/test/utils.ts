@@ -1,6 +1,6 @@
 import express from 'express';
 import { createServer, Server } from 'http';
-import testListen from 'test-listen';
+import listen from 'async-listen';
 import { expect } from 'chai';
 import type { PuppeteerLaunchOptions } from 'puppeteer';
 import { fixturesPath } from 'axe-test-fixtures';
@@ -29,7 +29,9 @@ export async function startServer(): Promise<{ server: Server; addr: string }> {
   const app: express.Application = express();
   app.use(express.static(fixturesPath));
   const server: Server = createServer(app);
-  const addr = await testListen(server);
+  // async-listen adds trailing forward slash,
+  // this removes the unnecessary trailing forward slash
+  const addr = (await listen(server)).toString().replace(/\/$/, '');
 
   return { server, addr };
 }
