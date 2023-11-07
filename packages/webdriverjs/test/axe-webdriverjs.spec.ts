@@ -2,7 +2,7 @@ import 'mocha';
 import type { AxeResults, Result } from 'axe-core';
 import type { WebDriver } from 'selenium-webdriver';
 import express from 'express';
-import testListen from 'test-listen';
+import listen from 'async-listen';
 import { assert } from 'chai';
 import path from 'path';
 import fs from 'fs';
@@ -44,7 +44,9 @@ describe('@axe-core/webdriverjs', () => {
     const app = express();
     app.use(express.static(fixturesPath));
     server = createServer(app);
-    addr = await testListen(server);
+    // async-listen adds trailing forward slash,
+    // this removes the unnecessary trailing forward slash
+    addr = (await listen(server)).toString().replace(/\/$/, '');
   });
 
   beforeEach(async () => {

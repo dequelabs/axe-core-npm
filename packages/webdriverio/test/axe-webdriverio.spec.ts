@@ -1,6 +1,6 @@
 import * as webdriverio from 'webdriverio';
 import express from 'express';
-import testListen from 'test-listen';
+import listen from 'async-listen';
 import { assert } from 'chai';
 import chromedriver from 'chromedriver';
 import path from 'path';
@@ -96,7 +96,9 @@ describe('@axe-core/webdriverio', () => {
         let binaryPath;
         app.use(express.static(fixturesPath));
         server = createServer(app);
-        addr = await testListen(server);
+        // async-listen adds trailing forward slash,
+        // this removes the unnecessary trailing forward slash
+        addr = (await listen(server)).toString().replace(/\/$/, '');
         if (
           fs.existsSync(`C:/Program Files/Google/Chrome/Application/chrome.exe`)
         ) {
