@@ -25,7 +25,9 @@
   "scripts": {
     "build": "tsup src/index.ts --dts --format esm,cjs",
     "test": "mocha --timeout 60000 -r ts-node/register 'test/**.spec.ts'",
+    "test:export": "npm run test:esm && npm run test:commonjs",
     "test:esm": "node test/esmTest.mjs",
+    "test:commonjs": "node test/commonjsTest.js",
     "coverage": "nyc npm run test",
     "prepublishOnly": "npm run build"
   },
