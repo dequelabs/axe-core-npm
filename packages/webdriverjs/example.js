@@ -1,8 +1,6 @@
-const { AxeBuilder } = require('./dist/index');
+const { AxeBuilder } = require('@axe-core/webdriverjs');
 const { Builder } = require('selenium-webdriver');
 const chrome = require('selenium-webdriver/chrome');
-
-console.log(AxeBuilder);
 
 (async () => {
   const driver = new Builder()

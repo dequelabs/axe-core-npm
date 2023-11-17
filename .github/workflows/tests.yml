@@ -139,7 +139,6 @@ jobs:
           node-version: ${{ matrix.node }}
           cache: 'npm'
       - run: npm ci
-      - run: npm run build --workspace=packages/react
       - run: npm run test --workspace=packages/react
       # the tests builds the project using tsc and relies on `cache.ts` to be
       # built and be it's own file. however we don't want that for the export
