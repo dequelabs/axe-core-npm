@@ -1,14 +1,15 @@
-import defaultExport, { AxePuppeteer } from '../dist/index.mjs';
+// ensure compatibility of ESM format
+import defaultExport from '../dist/index.mjs';
+import { AxePuppeteer } from '../dist/index.mjs';
 import assert from 'assert';
 import puppeteer from 'puppeteer';
 import { fileURLToPath, pathToFileURL } from 'url';
 import { join } from 'path';
 import { fixturesPath } from 'axe-test-fixtures';
 
-const exportIsFunction = typeof defaultExport === 'function';
-const exportIsSame = defaultExport === AxePuppeteer;
-assert(exportIsFunction, 'export is not a function');
-assert(exportIsSame, 'default and named export is not the same');
+assert(typeof defaultExport === 'function', 'default export is not a function');
+assert(typeof AxePuppeteer === 'function', 'named export is not a function')
+assert(defaultExport === AxePuppeteer, 'default and named export are not the same');
 
 const options = {};
 
