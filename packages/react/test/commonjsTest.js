@@ -4,6 +4,7 @@ global.document = {};
 
 const implicitDefaultExport = require('../dist/index.js');
 const explicitDefaultExport = require('../dist/index.js').default;
+const { logToConsole } = require('../dist/index.js');
 const assert = require('assert');
 
 assert(
@@ -18,4 +19,9 @@ assert(
 assert(
   explicitDefaultExport === implicitDefaultExport,
   'explicit default and named export are not the same'
+);
+
+assert(
+  typeof logToConsole === 'function',
+  'logToConsole export is not a function'
 );
