@@ -15,9 +15,10 @@
   "scripts": {
     "start": "NODE_OPTIONS=--experimental-vm-modules jest --watch --env=jsdom",
     "test": "npm run build && npm run test:unit",
-    "test:export": "npm run test:esm && npm run test:commonjs",
+    "test:export": "npm run test:esm && npm run test:commonjs && npm run test:ts",
     "test:esm": "node tests/esmTest.mjs",
     "test:commonjs": "node tests/commonjsTest.js",
+    "test:ts": "tsc tests/tsTest.ts --noEmit --skipLibCheck --esModuleInterop",
     "test:unit": "NODE_OPTIONS=--experimental-vm-modules jest --collectCoverage",
     "build": "tsup src/axeReporterEarl.ts --dts --format esm,cjs",
     "prepublishOnly": "npm run build"
