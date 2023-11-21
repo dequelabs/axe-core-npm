@@ -413,7 +413,3 @@ export default function reactAxe(
 }
 
 reactAxe.logToConsole = logToConsole;
-
-if (typeof module === 'object') {
-  exports = module.exports = reactAxe;
-}

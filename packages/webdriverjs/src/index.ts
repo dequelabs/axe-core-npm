@@ -291,11 +291,4 @@ export default class AxeBuilder {
   }
 }
 
-// ensure backwards compatibility with commonJs default export
-if (typeof module === 'object') {
-  module.exports = AxeBuilder;
-  module.exports.default = AxeBuilder;
-  module.exports.AxeBuilder = AxeBuilder;
-}
-
 export { AxeBuilder };
