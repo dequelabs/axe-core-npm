@@ -8,6 +8,7 @@ on:
 jobs:
   create_sync_pull_request:
     runs-on: ubuntu-latest
+    timeout-minutes: 2
     steps:
       - uses: dequelabs/action-sync-branches@v1
         with:
