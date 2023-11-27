@@ -30,9 +30,20 @@ export const esbuildPluginCJSInterop = {
             return;
           }
 
-          const contents =
-            new TextDecoder().decode(file.contents) +
-            `
+          // merge contents with plugin code
+          const contents = new Uint8Array(
+            file.contents.length + pluginCode.length
+          );
+          contents.set(file.contents);
+          contents.set(pluginCode, file.contents.length);
+          file.contents = contents;
+        });
+      }
+    });
+  }
+};
+
+const pluginCode = new TextEncoder().encode(`
 if (module.exports.default) {
   var ___default_export = module.exports.default;
   var ___export_entries = Object.entries(module.exports);
@@ -45,10 +56,4 @@ if (module.exports.default) {
     module.exports[key] = value;
   });
 }
-`;
-          file.contents = new TextEncoder().encode(contents);
-        });
-      }
-    });
-  }
-};
+`);
