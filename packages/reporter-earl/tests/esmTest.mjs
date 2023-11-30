@@ -1,4 +1,5 @@
-import defaultExport from './dist/axeReporterEarl.mjs';
+// ensure compatibility of ESM format
+import defaultExport from '../dist/axeReporterEarl.mjs';
 import assert from 'assert';
 
 const exportIsFunction = typeof defaultExport === 'function';

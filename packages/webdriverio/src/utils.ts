@@ -13,10 +13,10 @@ import type {
 export const FRAME_LOAD_TIMEOUT = 1000;
 
 /**
- * Validates that the client provided is WebdriverIO v5 or v6.
+ * Validates that the client provided is WebdriverIO v5+.
  */
 export const isWebdriverClient = (client: Browser): boolean => {
-  if (!client || typeof client !== 'object') {
+  if (!client) {
     return false;
   }
 

@@ -3,6 +3,36 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [4.8.2](https://github.com/dequelabs/axe-core-npm/compare/v4.8.1...v4.8.2) (2023-11-30)
+
+
+### Bug Fixes
+
+* allow cjs version of packages to export a default value ([#943](https://github.com/dequelabs/axe-core-npm/issues/943)) ([b5aee34](https://github.com/dequelabs/axe-core-npm/commit/b5aee3424fe4d0fbc0b2065e9c0bc56ce4032755))
+* **webdriverio:** work with @wdio/globals ([#882](https://github.com/dequelabs/axe-core-npm/issues/882)) ([2e016b4](https://github.com/dequelabs/axe-core-npm/commit/2e016b4e17cff09f158427862f2fd2134a62cbc6))
+* **webdriverjs:** fix default commonJs export ([#927](https://github.com/dequelabs/axe-core-npm/issues/927)) ([b07d38c](https://github.com/dequelabs/axe-core-npm/commit/b07d38cc2d85c6127391686482abf762758dce34))
+
+
+
+
+
+## [4.8.1](https://github.com/dequelabs/axe-core-npm/compare/v4.7.3...v4.8.1) (2023-10-11)
+
+
+### Bug Fixes
+
+* pin axe-core version to accept patch updates only ([#838](https://github.com/dequelabs/axe-core-npm/issues/838)) ([2456ed6](https://github.com/dequelabs/axe-core-npm/commit/2456ed641781c2262bf71db24f7f97755422d5f6))
+* skip unloaded iframes for all apis ([#752](https://github.com/dequelabs/axe-core-npm/issues/752)) ([0b15629](https://github.com/dequelabs/axe-core-npm/commit/0b15629ac12613d9cdfec9f102ff1e3922d28ac2))
+
+
+### Features
+
+* Update axe-core to v4.8.2 ([#835](https://github.com/dequelabs/axe-core-npm/issues/835)) ([2ac1eaf](https://github.com/dequelabs/axe-core-npm/commit/2ac1eafa6318453003ccfd7c33625e63725a7c00))
+
+
+
+
+
 # [4.8.0](https://github.com/dequelabs/axe-core-npm/compare/v4.7.3...v4.8.0) (2023-09-28)
 
 

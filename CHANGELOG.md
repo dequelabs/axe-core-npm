@@ -3,6 +3,42 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [4.8.2](https://github.com/dequelabs/axe-core-npm/compare/v4.8.1...v4.8.2) (2023-11-30)
+
+
+### Bug Fixes
+
+* allow cjs version of packages to export a default value ([#943](https://github.com/dequelabs/axe-core-npm/issues/943)) ([b5aee34](https://github.com/dequelabs/axe-core-npm/commit/b5aee3424fe4d0fbc0b2065e9c0bc56ce4032755))
+* **webdriverio:** work with @wdio/globals ([#882](https://github.com/dequelabs/axe-core-npm/issues/882)) ([2e016b4](https://github.com/dequelabs/axe-core-npm/commit/2e016b4e17cff09f158427862f2fd2134a62cbc6))
+* **webdriverjs:** fix default commonJs export ([#927](https://github.com/dequelabs/axe-core-npm/issues/927)) ([b07d38c](https://github.com/dequelabs/axe-core-npm/commit/b07d38cc2d85c6127391686482abf762758dce34))
+
+
+
+
+
+## [4.8.1](https://github.com/dequelabs/axe-core-npm/compare/v4.7.3...v4.8.1) (2023-10-11)
+
+
+### Bug Fixes
+
+* **cli:** better error message for ChromeDriver version mismatch ([#680](https://github.com/dequelabs/axe-core-npm/issues/680)) ([10cf350](https://github.com/dequelabs/axe-core-npm/commit/10cf3509449587a14799fb168678258249bc1900)), closes [#679](https://github.com/dequelabs/axe-core-npm/issues/679)
+* **cli:** improve error message on script timeout ([#681](https://github.com/dequelabs/axe-core-npm/issues/681)) ([b407c6c](https://github.com/dequelabs/axe-core-npm/commit/b407c6cf1f8a980fc036b75c7b3f7198d3bb556c))
+* **cli:** include required files when publishing ([#851](https://github.com/dequelabs/axe-core-npm/issues/851)) ([3f1ff4b](https://github.com/dequelabs/axe-core-npm/commit/3f1ff4bd464215ce2eb1a243907872aaceadd21f))
+* **cli:** respect --exit regardless of other flags ([#750](https://github.com/dequelabs/axe-core-npm/issues/750)) ([bfa2328](https://github.com/dequelabs/axe-core-npm/commit/bfa232800d553d870933e5dfa26d669d2d566c08))
+* pin axe-core version to accept patch updates only ([#838](https://github.com/dequelabs/axe-core-npm/issues/838)) ([2456ed6](https://github.com/dequelabs/axe-core-npm/commit/2456ed641781c2262bf71db24f7f97755422d5f6))
+* skip unloaded iframes for all apis ([#752](https://github.com/dequelabs/axe-core-npm/issues/752)) ([0b15629](https://github.com/dequelabs/axe-core-npm/commit/0b15629ac12613d9cdfec9f102ff1e3922d28ac2))
+
+
+### Features
+
+* **cli:** add --chrome-path option ([#700](https://github.com/dequelabs/axe-core-npm/issues/700)) ([#704](https://github.com/dequelabs/axe-core-npm/issues/704)) ([ada5d28](https://github.com/dequelabs/axe-core-npm/commit/ada5d28ccbbf9121f9d1fb5172347019c2ae63d1))
+* **react:** export `logToConsole` fn ([#812](https://github.com/dequelabs/axe-core-npm/issues/812)) ([480fb12](https://github.com/dequelabs/axe-core-npm/commit/480fb1268ffa3547a8d056a7c274607fca3ca274))
+* Update axe-core to v4.8.2 ([#835](https://github.com/dequelabs/axe-core-npm/issues/835)) ([2ac1eaf](https://github.com/dequelabs/axe-core-npm/commit/2ac1eafa6318453003ccfd7c33625e63725a7c00))
+
+
+
+
+
 # [4.8.0](https://github.com/dequelabs/axe-core-npm/compare/v4.7.3...v4.8.0) (2023-09-28)
 
 

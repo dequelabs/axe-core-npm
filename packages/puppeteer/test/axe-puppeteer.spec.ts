@@ -6,7 +6,7 @@ import { assert } from 'chai';
 import Puppeteer, { Browser, Page } from 'puppeteer';
 import { createServer, Server } from 'http';
 import * as sinon from 'sinon';
-import testListen from 'test-listen';
+import listen from 'async-listen';
 import { AxePuppeteer } from '../src/index';
 import {
   startServer,
@@ -14,6 +14,7 @@ import {
   expectAsync,
   expectAsyncToNotThrow
 } from './utils';
+import { fixturesPath } from 'axe-test-fixtures';
 
 type SinonSpy = sinon.SinonSpy;
 
@@ -38,17 +39,16 @@ describe('AxePuppeteer', function () {
   before(async () => {
     const axePath = require.resolve('axe-core');
     axeSource = fs.readFileSync(axePath, 'utf8');
-    const externalPath = path.resolve(__dirname, 'fixtures', 'external');
     axeCrasherSource = fs.readFileSync(
-      path.join(externalPath, 'axe-crasher.js'),
+      path.join(fixturesPath, 'axe-crasher.js'),
       'utf8'
     );
     axeForceLegacy = fs.readFileSync(
-      path.join(externalPath, 'axe-force-legacy.js'),
+      path.join(fixturesPath, 'axe-force-legacy.js'),
       'utf8'
     );
     axeLargePartial = fs.readFileSync(
-      path.join(externalPath, 'axe-large-partial.js'),
+      path.join(fixturesPath, 'axe-large-partial.js'),
       'utf8'
     );
   });
@@ -75,7 +75,7 @@ describe('AxePuppeteer', function () {
   it('runs in parallel', async () => {
     // Just to prove Puppeteer runs scripts in parallel,
     // and so axe-core/puppeteer should too
-    const res = await page.goto(`${addr}/external/index.html`);
+    const res = await page.goto(`${addr}/index.html`);
     const p1 = page.evaluate(() => {
       window.parallel = true;
       return new Promise(res => {
@@ -94,7 +94,7 @@ describe('AxePuppeteer', function () {
 
   describe('constructor', () => {
     it('accepts a Page', async () => {
-      const res = await page.goto(`${addr}/external/index.html`);
+      const res = await page.goto(`${addr}/index.html`);
       const axePup = new AxePuppeteer(page);
 
       assert.equal(res?.status(), 200);
@@ -102,7 +102,7 @@ describe('AxePuppeteer', function () {
     });
 
     it('accepts a Frame', async () => {
-      const res = await page.goto(`${addr}/external/index.html`);
+      const res = await page.goto(`${addr}/index.html`);
       const axePup = new AxePuppeteer(page.mainFrame());
 
       assert.equal(res?.status(), 200);
@@ -116,7 +116,7 @@ describe('AxePuppeteer', function () {
           configure: () => {}
         }
       `;
-      const res = await page.goto(`${addr}/external/index.html`);
+      const res = await page.goto(`${addr}/index.html`);
       const evalSpy: SinonSpy = sinon.spy(page.mainFrame(), 'evaluate');
       await new AxePuppeteer(page, axeSource).analyze();
 
@@ -137,7 +137,7 @@ describe('AxePuppeteer', function () {
 
   describe('.analyze()', () => {
     it('sets the helpUrl application string', async () => {
-      const res = await page.goto(`${addr}/external/iframes/baz.html`);
+      const res = await page.goto(`${addr}/iframes/baz.html`);
       const { violations } = await new AxePuppeteer(page)
         .withRules('label')
         .analyze();
@@ -147,7 +147,7 @@ describe('AxePuppeteer', function () {
     });
 
     it('returns correct results metadata', async () => {
-      const res = await page.goto(`${addr}/external/index.html`);
+      const res = await page.goto(`${addr}/index.html`);
       const results = await new AxePuppeteer(page).analyze();
 
       assert.equal(res?.status(), 200);
@@ -160,12 +160,12 @@ describe('AxePuppeteer', function () {
       assert.isDefined(results.testEnvironment.windowWidth);
       assert.isDefined(results.testRunner.name);
       assert.isDefined(results.toolOptions.reporter);
-      assert.equal(results.url, `${addr}/external/index.html`);
+      assert.equal(results.url, `${addr}/index.html`);
     });
 
     it('properly isolates the call to axe.finishRun', async () => {
       let err;
-      const res = await page.goto(`${addr}/external/isolated-finish.html`);
+      const res = await page.goto(`${addr}/isolated-finish.html`);
       try {
         await new AxePuppeteer(page).analyze();
       } catch (e) {
@@ -179,7 +179,7 @@ describe('AxePuppeteer', function () {
     it('handles large results', async function () {
       /* this test handles a large amount of partial results a timeout may be required */
       this.timeout(50_000);
-      const res = await await page.goto(`${addr}/external/index.html`);
+      const res = await await page.goto(`${addr}/index.html`);
 
       assert.equal(res?.status(), 200);
 
@@ -193,7 +193,7 @@ describe('AxePuppeteer', function () {
     });
 
     it('returns the same results from runPartial as from legacy mode', async () => {
-      const res = await page.goto(`${addr}/external/nested-iframes.html`);
+      const res = await page.goto(`${addr}/nested-iframes.html`);
       const legacyResults = await new AxePuppeteer(
         page,
         axeSource + axeForceLegacy
@@ -210,7 +210,7 @@ describe('AxePuppeteer', function () {
 
     describe('returned promise', () => {
       it("returns results through analyze's promise", async () => {
-        const res = await page.goto(`${addr}/external/index.html`);
+        const res = await page.goto(`${addr}/index.html`);
         const results = await new AxePuppeteer(page)
           .withRules('label')
           .analyze();
@@ -231,7 +231,7 @@ describe('AxePuppeteer', function () {
           }
         `;
 
-        const res = await page.goto(`${addr}/external/index.html`);
+        const res = await page.goto(`${addr}/index.html`);
 
         const axePup = new AxePuppeteer(page, axeSource);
 
@@ -242,7 +242,7 @@ describe('AxePuppeteer', function () {
 
     describe('analyze callback', () => {
       it('returns results through the callback if passed', done => {
-        page.goto(`${addr}/external/index.html`).then(res => {
+        page.goto(`${addr}/index.html`).then(res => {
           new AxePuppeteer(page).analyze((err, results) => {
             try {
               assert.equal(res?.status(), 200);
@@ -268,7 +268,7 @@ describe('AxePuppeteer', function () {
           }
         `;
 
-        const res = await page.goto(`${addr}/external/index.html`);
+        const res = await page.goto(`${addr}/index.html`);
 
         assert.equal(res?.status(), 200);
 
@@ -283,7 +283,7 @@ describe('AxePuppeteer', function () {
     describe('error reporting', () => {
       it('throws if axe errors out on the top window', done => {
         page
-          .goto(`${addr}/external/crash.html`)
+          .goto(`${addr}/crash.html`)
           .then(res => {
             assert.equal(res?.status(), 200);
             return new AxePuppeteer(
@@ -299,7 +299,7 @@ describe('AxePuppeteer', function () {
 
       it('throws when injecting a problematic source', done => {
         page
-          .goto(`${addr}/external/crash.html`)
+          .goto(`${addr}/crash.html`)
           .then(res => {
             assert.equal(res?.status(), 200);
             return new AxePuppeteer(page, 'throw new Error()').analyze();
@@ -313,7 +313,7 @@ describe('AxePuppeteer', function () {
       it('throws when a setup fails', done => {
         const brokenSource = axeSource + `;window.axe.utils = {}`;
         page
-          .goto(`${addr}/external/index.html`)
+          .goto(`${addr}/index.html`)
           .then(res => {
             assert.equal(res?.status(), 200);
             return new AxePuppeteer(page, brokenSource)
@@ -355,7 +355,9 @@ describe('AxePuppeteer', function () {
             }, 3000);
           }
         });
-        addr2 = await testListen(server2);
+        // async-listen adds trailing forward slash,
+        // this removes the unnecessary trailing forward slash
+        addr2 = (await listen(server2)).toString().replace(/\/$/, '');
       });
 
       after(() => {
@@ -364,7 +366,7 @@ describe('AxePuppeteer', function () {
 
       it('gives a helpful error', done => {
         page
-          .goto(`${addr2}/external/index.html`)
+          .goto(`${addr2}/index.html`)
           .then(res => {
             assert.equal(res?.status(), 200);
           })
@@ -426,7 +428,7 @@ describe('AxePuppeteer', function () {
           }
         `;
 
-        const res = await page.goto(`${addr}/context.html`);
+        const res = await page.goto(`${addr}/context-include-exclude.html`);
         assert.equal(res?.status(), 200);
 
         const axePip = new AxePuppeteer(page, axeSource)
@@ -437,7 +439,7 @@ describe('AxePuppeteer', function () {
       });
 
       it('with labelled frame', async () => {
-        await page.goto(`${addr}/external/context-include-exclude.html`);
+        await page.goto(`${addr}/context-include-exclude.html`);
         const results = await new AxePuppeteer(page)
           .include({ fromFrames: ['#ifr-inc-excl', 'html'] })
           .exclude({ fromFrames: ['#ifr-inc-excl', '#foo-bar'] })
@@ -453,7 +455,7 @@ describe('AxePuppeteer', function () {
       });
 
       it('with include shadow DOM', async () => {
-        await page.goto(`${addr}/external/shadow-dom.html`);
+        await page.goto(`${addr}/shadow-dom.html`);
         const results = await new AxePuppeteer(page)
           .include([['#shadow-root-1', '#shadow-button-1']])
           .include([['#shadow-root-2', '#shadow-button-2']])
@@ -464,7 +466,7 @@ describe('AxePuppeteer', function () {
       });
 
       it('with exclude shadow DOM', async () => {
-        await page.goto(`${addr}/external/shadow-dom.html`);
+        await page.goto(`${addr}/shadow-dom.html`);
         const results = await new AxePuppeteer(page)
           .exclude([['#shadow-root-1', '#shadow-button-1']])
           .exclude([['#shadow-root-2', '#shadow-button-2']])
@@ -475,7 +477,7 @@ describe('AxePuppeteer', function () {
       });
 
       it('with labelled shadow DOM', async () => {
-        await page.goto(`${addr}/external/shadow-dom.html`);
+        await page.goto(`${addr}/shadow-dom.html`);
         const results = await new AxePuppeteer(page)
           .include({ fromShadowDom: ['#shadow-root-1', '#shadow-button-1'] })
           .exclude({ fromShadowDom: ['#shadow-root-2', '#shadow-button-2'] })
@@ -485,7 +487,7 @@ describe('AxePuppeteer', function () {
       });
 
       it('with labelled iframe and shadow DOM', async () => {
-        await page.goto(`${addr}/external/shadow-frames.html`);
+        await page.goto(`${addr}/shadow-frames.html`);
         const { violations } = await new AxePuppeteer(page)
           .exclude({
             fromFrames: [
@@ -519,7 +521,7 @@ describe('AxePuppeteer', function () {
           }
         `;
 
-        const res = await page.goto(`${addr}/context.html`);
+        const res = await page.goto(`${addr}/context-include-exclude.html`);
         assert.equal(res?.status(), 200);
 
         const axePip = new AxePuppeteer(page, axeSource)
@@ -553,7 +555,7 @@ describe('AxePuppeteer', function () {
           }
         `;
 
-        const res = await page.goto(`${addr}/context.html`);
+        const res = await page.goto(`${addr}/context-include-exclude.html`);
         assert.equal(res?.status(), 200);
 
         const axePip = new AxePuppeteer(page, axeSource).include('.include');
@@ -584,7 +586,7 @@ describe('AxePuppeteer', function () {
           }
         `;
 
-        const res = await page.goto(`${addr}/context.html`);
+        const res = await page.goto(`${addr}/context-include-exclude.html`);
         assert.equal(res?.status(), 200);
 
         const axePip = new AxePuppeteer(page, axeSource).exclude('.exclude');
@@ -607,7 +609,7 @@ describe('AxePuppeteer', function () {
           }
         `;
 
-      const res = await page.goto(`${addr}/context.html`);
+      const res = await page.goto(`${addr}/context-include-exclude.html`);
       assert.equal(res?.status(), 200);
 
       const axePip = new AxePuppeteer(page, axeSource);
@@ -617,7 +619,7 @@ describe('AxePuppeteer', function () {
 
     describe('.disableFrame()', () => {
       it('disables the given rule(s)', async () => {
-        const res = await page.goto(`${addr}/external/nested-iframes.html`);
+        const res = await page.goto(`${addr}/nested-iframes.html`);
         const results = await new AxePuppeteer(page)
           // Ignore all frames
           .disableFrame('#ifr-foo, #ifr-bar')
@@ -654,7 +656,7 @@ describe('AxePuppeteer', function () {
         ]
       };
 
-      const res = await page.goto(`${addr}/external/index.html`);
+      const res = await page.goto(`${addr}/index.html`);
       const results = await new AxePuppeteer(page)
         .configure(config)
         .withRules(['foo'])
@@ -684,7 +686,7 @@ describe('AxePuppeteer', function () {
   describe('options', () => {
     describe('.options()', () => {
       it('passes options to axe-core', async () => {
-        const res = await page.goto(`${addr}/external/index.html`);
+        const res = await page.goto(`${addr}/index.html`);
 
         const results = await new AxePuppeteer(page)
           // Disable the `region` rule
@@ -705,7 +707,7 @@ describe('AxePuppeteer', function () {
 
     describe('.withTags()', () => {
       it('only rules with the given tag(s)', async () => {
-        const res = await page.goto(`${addr}/external/index.html`);
+        const res = await page.goto(`${addr}/index.html`);
 
         const results = await new AxePuppeteer(page)
           .withTags(['best-practice'])
@@ -729,7 +731,7 @@ describe('AxePuppeteer', function () {
 
     describe('.withRules()', () => {
       it('only rules with the given rule(s)', async () => {
-        const res = await page.goto(`${addr}/external/index.html`);
+        const res = await page.goto(`${addr}/index.html`);
 
         const results = await new AxePuppeteer(page)
           // Only enable the `region` rule
@@ -751,7 +753,7 @@ describe('AxePuppeteer', function () {
 
     describe('.disableRules()', () => {
       it('disables the given rule(s)', async function () {
-        const res = await page.goto(`${addr}/external/index.html`);
+        const res = await page.goto(`${addr}/index.html`);
 
         const results = await new AxePuppeteer(page)
           // Disable the `region` rule
@@ -773,7 +775,7 @@ describe('AxePuppeteer', function () {
 
   describe('frame tests', () => {
     it('injects into nested iframes', async () => {
-      const res = await page.goto(`${addr}/external/nested-iframes.html`);
+      const res = await page.goto(`${addr}/nested-iframes.html`);
 
       const { violations } = await new AxePuppeteer(page)
         .options({ runOnly: 'label' })
@@ -796,7 +798,7 @@ describe('AxePuppeteer', function () {
     });
 
     it('tests framesets', async () => {
-      const res = await page.goto(`${addr}/external/nested-frameset.html`);
+      const res = await page.goto(`${addr}/nested-frameset.html`);
       const { violations } = await new AxePuppeteer(page)
         .options({ runOnly: 'label' })
         .analyze();
@@ -818,7 +820,7 @@ describe('AxePuppeteer', function () {
     });
 
     it('tests frames in shadow DOM', async () => {
-      const res = await page.goto(`${addr}/external/shadow-frames.html`);
+      const res = await page.goto(`${addr}/shadow-frames.html`);
       const { violations } = await new AxePuppeteer(page)
         .options({ runOnly: 'label' })
         .analyze();
@@ -837,7 +839,7 @@ describe('AxePuppeteer', function () {
     });
 
     it('reports erroring frames in frame-tested', async () => {
-      const res = await page.goto(`${addr}/external/crash-parent.html`);
+      const res = await page.goto(`${addr}/crash-parent.html`);
       const results = await new AxePuppeteer(page, axeSource + axeCrasherSource)
         .options({ runOnly: ['label', 'frame-tested'] })
         .analyze();
@@ -860,7 +862,7 @@ describe('AxePuppeteer', function () {
     });
 
     it('runs the same when passed a Frame', async () => {
-      const res = await page.goto(`${addr}/external/nested-iframes.html`);
+      const res = await page.goto(`${addr}/nested-iframes.html`);
       const pageResults = await new AxePuppeteer(page).analyze();
 
       // Calling AxePuppeteer with a frame is deprecated, and will show a warning
@@ -874,7 +876,7 @@ describe('AxePuppeteer', function () {
     });
 
     it('skips unloaded iframes (e.g. loading=lazy)', async () => {
-      const res = await page.goto(`${addr}/external/lazy-loaded-iframe.html`);
+      const res = await page.goto(`${addr}/lazy-loaded-iframe.html`);
       const results = await new AxePuppeteer(page)
         .options({ runOnly: ['label', 'frame-tested'] })
         .analyze();
@@ -899,7 +901,7 @@ describe('AxePuppeteer', function () {
   describe('axe.finishRun errors', () => {
     const finishRunThrows = `;axe.finishRun = () => { throw new Error("No finishRun")}`;
     it('throws an error if window.open throws', async () => {
-      const res = await page.goto(`${addr}/external/index.html`);
+      const res = await page.goto(`${addr}/index.html`);
       // eslint-disable-next-line @typescript-eslint/ban-ts-comment
       // @ts-ignore
       delete page.browser().newPage();
@@ -926,7 +928,7 @@ describe('AxePuppeteer', function () {
     });
 
     it('throw an error with modified url', async () => {
-      const res = await page.goto(`${addr}/external/index.html`);
+      const res = await page.goto(`${addr}/index.html`);
       // eslint-disable-next-line @typescript-eslint/ban-ts-comment
       // @ts-ignore
       delete page.browser().newPage();
@@ -955,7 +957,7 @@ describe('AxePuppeteer', function () {
     });
 
     it('throws an error if axe.finishRun throws', async () => {
-      const res = await page.goto(`${addr}/external/index.html`);
+      const res = await page.goto(`${addr}/index.html`);
 
       assert.equal(res?.status(), 200);
       try {
@@ -970,7 +972,7 @@ describe('AxePuppeteer', function () {
   describe('setLegacyMode', () => {
     const runPartialThrows = `;axe.runPartial = () => { throw new Error("No runPartial")}`;
     it('runs legacy mode when used', async () => {
-      const res = await page.goto(`${addr}/external/index.html`);
+      const res = await page.goto(`${addr}/index.html`);
       const results = await new AxePuppeteer(page, axeSource + runPartialThrows)
         .setLegacyMode()
         .analyze();
@@ -980,7 +982,7 @@ describe('AxePuppeteer', function () {
     });
 
     it('prevents cross-origin frame testing', async () => {
-      const res = await page.goto(`${addr}/external/cross-origin.html`);
+      const res = await page.goto(`${addr}/cross-origin.html`);
       const results = await new AxePuppeteer(page, axeSource + runPartialThrows)
         .withRules('frame-tested')
         .setLegacyMode()
@@ -995,7 +997,7 @@ describe('AxePuppeteer', function () {
     });
 
     it('can be disabled again', async () => {
-      const res = await page.goto(`${addr}/external/cross-origin.html`);
+      const res = await page.goto(`${addr}/cross-origin.html`);
       const results = await new AxePuppeteer(page)
         .withRules('frame-tested')
         .setLegacyMode()
@@ -1014,12 +1016,12 @@ describe('AxePuppeteer', function () {
   describe('without runPartial', () => {
     let axe403Source: string;
     before(() => {
-      const axePath = require.resolve('./fixtures/external/axe-core@legacy.js');
+      const axePath = path.join(fixturesPath, 'axe-core@legacy.js');
       axe403Source = fs.readFileSync(axePath, 'utf8');
     });
 
     it('can run', async () => {
-      const res = await page.goto(`${addr}/external/nested-iframes.html`);
+      const res = await page.goto(`${addr}/nested-iframes.html`);
       const results = await new AxePuppeteer(page, axe403Source)
         .withRules('label')
         .analyze();
@@ -1033,7 +1035,7 @@ describe('AxePuppeteer', function () {
     it('throws if the top level errors', done => {
       const source = axe403Source + axeCrasherSource;
       page
-        .goto(`${addr}/external/crash.html`)
+        .goto(`${addr}/crash.html`)
         .then(() => {
           return new AxePuppeteer(page, source).withRules('label').analyze();
         })
@@ -1047,7 +1049,7 @@ describe('AxePuppeteer', function () {
     });
 
     it('reports frame-tested', async () => {
-      const res = await page.goto(`${addr}/external/crash-parent.html`);
+      const res = await page.goto(`${addr}/crash-parent.html`);
       const results = await new AxePuppeteer(page, axeSource + axeCrasherSource)
         .withRules(['label', 'frame-tested'])
         .analyze();
@@ -1060,7 +1062,7 @@ describe('AxePuppeteer', function () {
     });
 
     it('tests cross-origin pages', async () => {
-      const res = await page.goto(`${addr}/external/cross-origin.html`);
+      const res = await page.goto(`${addr}/cross-origin.html`);
       const results = await new AxePuppeteer(page, axe403Source)
         .withRules('frame-tested')
         .analyze();

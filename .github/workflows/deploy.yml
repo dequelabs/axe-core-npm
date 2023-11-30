@@ -4,15 +4,17 @@ on:
   push:
     branches:
       - develop
+      - release
       - master
 
 jobs:
   canary:
     runs-on: ubuntu-latest
+    timeout-minutes: 10
     if: github.ref_name == 'develop' && github.repository_owner == 'dequelabs'
     steps:
-      - uses: actions/checkout@v3
-      - uses: actions/setup-node@v3
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
         with:
           node-version: 18
           cache: 'npm'
@@ -34,12 +36,39 @@ jobs:
             --force-publish \
             --yes
 
+  relase-candidate:
+    runs-on: ubuntu-latest
+    if: github.ref_name == 'release' && github.repository_owner == 'dequelabs'
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 18
+          cache: 'npm'
+      - run: npm ci
+      # Ensure packages are built
+      - run: npm run build
+      # Make sure the working tree is clean
+      - run: git reset --hard HEAD
+      - run: npm config set "//registry.npmjs.org/:_authToken" ${{ secrets.NPM_TOKEN }}
+      - run: |
+          npx lerna publish prepatch \
+            --no-verify-access \
+            --no-git-tag-version \
+            --no-push \
+            --canary \
+            --dist-tag=rc \
+            --exact \
+            --preid=$(git rev-parse --short HEAD) \
+            --force-publish \
+            --yes
+
   production:
     runs-on: ubuntu-latest
     if: github.ref_name == 'master' && github.repository_owner == 'dequelabs'
     steps:
-      - uses: actions/checkout@v3
-      - uses: actions/setup-node@v3
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
         with:
           node-version: 18
           cache: 'npm'
@@ -53,4 +82,10 @@ jobs:
           npx lerna publish from-package \
             --force-publish='*' \
             --yes
-      - uses: softprops/action-gh-release@de2c0eb89ae2a093876385947365aca7b0e5f844 # v0.1.15
+      - run: |
+          PKG_VERSION=$(jq -r .version < lerna.json)
+          gh release create $PKG_VERSION \
+            --title "Release $PKG_VERSION" \
+            --generate-notes \
+            --repo ${{ github.repository }}
+            --target master
