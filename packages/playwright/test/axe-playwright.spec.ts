@@ -472,7 +472,7 @@ describe('@axe-core/playwright', () => {
       const res = await page.goto(`${addr}/context-include-exclude.html`);
       const results = await new AxeBuilder({ page })
         .include('.include')
-        // .exclude('.exclude')
+        .exclude('.exclude')
         .analyze();
       const flattenTarget = flatPassesTargets(results);
 
