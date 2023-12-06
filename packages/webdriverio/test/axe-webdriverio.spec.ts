@@ -1,6 +1,6 @@
 import * as webdriverio from 'webdriverio';
 import express from 'express';
-import testListen from 'test-listen';
+import listen from 'async-listen';
 import { assert } from 'chai';
 import chromedriver from 'chromedriver';
 import path from 'path';
@@ -13,6 +13,7 @@ import { logOrRethrowError } from '../src/utils';
 import type { AxeResults, Result } from 'axe-core';
 import child_process from 'child_process';
 import { ChildProcessWithoutNullStreams } from 'child_process';
+import { fixturesPath } from 'axe-test-fixtures';
 
 const connectToChromeDriver = (port: number): Promise<void> => {
   let socket: net.Socket;
@@ -73,35 +74,31 @@ describe('@axe-core/webdriverio', () => {
       let client: webdriverio.Browser;
       const axePath = require.resolve('axe-core');
       const axeSource = fs.readFileSync(axePath, 'utf8');
-      const axeTestFixtures = path.resolve(
-        __dirname,
-        '..',
-        'fixtures',
-        'external'
-      );
       const axeLegacySource = fs.readFileSync(
-        path.resolve(axeTestFixtures, 'axe-core@legacy.js'),
+        path.resolve(fixturesPath, 'axe-core@legacy.js'),
         'utf-8'
       );
       const axeCrasherSource = fs.readFileSync(
-        path.join(axeTestFixtures, 'axe-crasher.js'),
+        path.join(fixturesPath, 'axe-crasher.js'),
         'utf8'
       );
       const axeForceLegacy = fs.readFileSync(
-        path.join(axeTestFixtures, 'axe-force-legacy.js'),
+        path.join(fixturesPath, 'axe-force-legacy.js'),
         'utf8'
       );
       const axeLargePartial = fs.readFileSync(
-        path.join(axeTestFixtures, 'axe-large-partial.js'),
+        path.join(fixturesPath, 'axe-large-partial.js'),
         'utf8'
       );
 
       beforeEach(async () => {
         const app = express();
         let binaryPath;
-        app.use(express.static(axeTestFixtures));
+        app.use(express.static(fixturesPath));
         server = createServer(app);
-        addr = await testListen(server);
+        // async-listen adds trailing forward slash,
+        // this removes the unnecessary trailing forward slash
+        addr = (await listen(server)).toString().replace(/\/$/, '');
         if (
           fs.existsSync(`C:/Program Files/Google/Chrome/Application/chrome.exe`)
         ) {
@@ -146,9 +143,43 @@ describe('@axe-core/webdriverio', () => {
 
         it('throws a useful error when not given a valid client', () => {
           assert.throws(
-            () => new AxeBuilder({ client: () => 'foobar' } as any),
+            () => new AxeBuilder({ client: 'invalid' } as any),
             /An instantiated WebdriverIO client greater than v5 is required/
           );
+        });
+
+        it('throws a useful error when client does not have execute function', () => {
+          assert.throws(
+            () => new AxeBuilder({ client: { switchToFrame() {} } } as any),
+            /An instantiated WebdriverIO client greater than v5 is required/
+          );
+        });
+
+        it('throws a useful error when client does not have switchToFrame function', () => {
+          assert.throws(
+            () => new AxeBuilder({ client: { execute() {} } } as any),
+            /An instantiated WebdriverIO client greater than v5 is required/
+          );
+        });
+
+        it('does not throw when client is valid', () => {
+          assert.doesNotThrow(
+            () =>
+              new AxeBuilder({
+                client: {
+                  execute() {},
+                  switchToFrame() {}
+                }
+              } as any)
+          );
+        });
+
+        it('allows client to be a function (@wdio/globals)', () => {
+          const client = () => {};
+          client.execute = () => {};
+          client.switchToFrame = () => {};
+
+          assert.doesNotThrow(() => new AxeBuilder({ client } as any));
         });
 
         describe('errorUrl', () => {

@@ -12,5 +12,5 @@
     "resolveJsonModule": true,
     "esModuleInterop": true
   },
-  "exclude": ["test", "dist", "node_modules"]
+  "exclude": ["test", "dist", "node_modules", "tsup.config.ts"]
 }

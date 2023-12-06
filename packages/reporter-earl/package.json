@@ -1,6 +1,6 @@
 {
   "name": "@axe-core/reporter-earl",
-  "version": "4.8.1",
+  "version": "4.8.2",
   "description": "A EARL+JSON-LD reporter for axe-core",
   "main": "dist/axeReporterEarl.js",
   "module": "./dist/axeReporterEarl.mjs",
@@ -15,7 +15,10 @@
   "scripts": {
     "start": "NODE_OPTIONS=--experimental-vm-modules jest --watch --env=jsdom",
     "test": "npm run build && npm run test:unit",
-    "test:esm": "node esmTest.mjs",
+    "test:export": "npm run test:esm && npm run test:commonjs && npm run test:ts",
+    "test:esm": "node tests/esmTest.mjs",
+    "test:commonjs": "node tests/commonjsTest.js",
+    "test:ts": "tsc tests/tsTest.ts --noEmit --skipLibCheck --esModuleInterop",
     "test:unit": "NODE_OPTIONS=--experimental-vm-modules jest --collectCoverage",
     "build": "tsup src/axeReporterEarl.ts --dts --format esm,cjs",
     "prepublishOnly": "npm run build"
@@ -42,7 +45,7 @@
   "devDependencies": {
     "@types/clone": "^2.1.1",
     "@types/jsonld": "github:types/jsonld",
-    "@types/node": "^18.8.3",
+    "@types/node": "^20.8.10",
     "axe-core": "~4.8.2",
     "clone": "^2.1.2",
     "cross-env": "^7.0.3",
@@ -51,7 +54,7 @@
     "jsonld": "^8.2.1",
     "ts-jest": "^29.0.3",
     "ts-node": "^10.9.1",
-    "tsup": "^6.7.0",
+    "tsup": "^7.2.0",
     "typescript": "^4.8.4"
   }
 }

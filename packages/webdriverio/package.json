@@ -1,6 +1,6 @@
 {
   "name": "@axe-core/webdriverio",
-  "version": "4.8.1",
+  "version": "4.8.2",
   "description": "Provides a method to inject and analyze web pages using axe",
   "contributors": [
     {
@@ -29,7 +29,10 @@
     "prebuild": "rimraf dist",
     "build": "tsup src/index.ts --dts --format esm,cjs",
     "test": "mocha --timeout 60000 -r ts-node/register 'test/**.spec.ts'",
+    "test:export": "npm run test:esm && npm run test:commonjs && npm run test:ts",
     "test:esm": "node test/esmTest.mjs",
+    "test:commonjs": "node test/commonjsTest.js",
+    "test:ts": "tsc test/tsTest.ts --noEmit --skipLibCheck --esModuleInterop",
     "coverage": "nyc npm run test",
     "prepare": "npm run build"
   },
@@ -54,8 +57,8 @@
     "@types/cssesc": "^3.0.0",
     "@types/express": "^4.17.14",
     "@types/mocha": "^10.0.0",
-    "@types/node": "^18.8.3",
-    "@types/test-listen": "^1.1.0",
+    "@types/node": "^20.8.10",
+    "async-listen": "^3.0.1",
     "axe-test-fixtures": "github:dequelabs/axe-test-fixtures#v1",
     "chai": "^4.3.6",
     "chromedriver": "latest",
@@ -64,11 +67,10 @@
     "express": "^4.18.2",
     "mocha": "^10.0.0",
     "nyc": "^15.1.0",
-    "rimraf": "^3.0.2",
+    "rimraf": "^5.0.5",
     "source-map-support": "^0.5.21",
-    "test-listen": "^1.1.0",
     "ts-node": "^10.9.1",
-    "tsup": "^6.7.0",
+    "tsup": "^7.2.0",
     "typescript": "^4.8.4",
     "webdriverio": "8.8.2"
   },
