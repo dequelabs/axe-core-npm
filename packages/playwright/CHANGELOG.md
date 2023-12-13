@@ -3,18 +3,6 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
-## [4.8.2](https://github.com/dequelabs/axe-core-npm/compare/v4.8.1...v4.8.2) (2023-11-30)
-
-
-### Bug Fixes
-
-* allow cjs version of packages to export a default value ([#943](https://github.com/dequelabs/axe-core-npm/issues/943)) ([b5aee34](https://github.com/dequelabs/axe-core-npm/commit/b5aee3424fe4d0fbc0b2065e9c0bc56ce4032755))
-* **webdriverjs:** fix default commonJs export ([#927](https://github.com/dequelabs/axe-core-npm/issues/927)) ([b07d38c](https://github.com/dequelabs/axe-core-npm/commit/b07d38cc2d85c6127391686482abf762758dce34))
-
-
-
-
-
 ## [4.8.1](https://github.com/dequelabs/axe-core-npm/compare/v4.7.3...v4.8.1) (2023-10-11)
 
 
