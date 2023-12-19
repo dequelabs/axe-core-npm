@@ -1,6 +1,6 @@
 {
   "name": "@axe-core/webdriverjs",
-  "version": "4.8.1",
+  "version": "4.8.2",
   "description": "Provides a method to inject and analyze web pages using axe",
   "contributors": [
     {
@@ -49,7 +49,10 @@
     "prebuild": "rimraf dist",
     "build": "tsup src/index.ts --dts --format esm,cjs",
     "test": "mocha --timeout 60000 -r ts-node/register 'test/**.spec.ts'",
+    "test:export": "npm run test:esm && npm run test:commonjs && npm run test:ts",
     "test:esm": "node test/esmTest.mjs",
+    "test:commonjs": "node test/commonjsTest.js",
+    "test:ts": "tsc test/tsTest.ts --noEmit --skipLibCheck --esModuleInterop",
     "coverage": "nyc npm run test",
     "prepare": "npm run build"
   },
@@ -83,7 +86,7 @@
     "selenium-webdriver": "^4.8.1",
     "ts-node": "^10.9.1",
     "tsup": "^7.2.0",
-    "typescript": "^4.8.4"
+    "typescript": "^5.2.2"
   },
   "dependencies": {
     "axe-core": "~4.8.2"

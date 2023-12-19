@@ -5,6 +5,7 @@ jobs:
   create_patch_release:
     name: Create release
     runs-on: ubuntu-latest
+    timeout-minutes: 3
     steps:
       - name: Determine if we skip cancel checks
         id: skip-checks

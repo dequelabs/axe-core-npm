@@ -10,6 +10,7 @@ on:
 jobs:
   canary:
     runs-on: ubuntu-latest
+    timeout-minutes: 10
     if: github.ref_name == 'develop' && github.repository_owner == 'dequelabs'
     steps:
       - uses: actions/checkout@v4
