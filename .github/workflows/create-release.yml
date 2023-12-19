@@ -12,6 +12,7 @@ jobs:
   create_release:
     name: Create release
     runs-on: ubuntu-latest
+    timeout-minutes: 3
     steps:
       - name: Checkout repo
         uses: actions/checkout@v4
