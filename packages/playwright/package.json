@@ -1,6 +1,6 @@
 {
   "name": "@axe-core/playwright",
-  "version": "4.8.1",
+  "version": "4.8.2",
   "description": "Provides a method to inject and analyze web pages using axe",
   "contributors": [
     {
@@ -68,7 +68,7 @@
     "rimraf": "^5.0.5",
     "ts-node": "^10.9.1",
     "tsup": "^7.2.0",
-    "typescript": "^4.8.4"
+    "typescript": "^5.2.2"
   },
   "peerDependencies": {
     "playwright-core": ">= 1.0.0"
