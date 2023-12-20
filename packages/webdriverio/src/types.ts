@@ -2,6 +2,9 @@ import type { AxeResults, BaseSelector } from 'axe-core';
 import * as axe from 'axe-core';
 import { type Browser, type Element } from 'webdriverio';
 
+// this type allows both webdriverio v8 and <=v7 Browser types
+// to work in the same codebase. every new feature that we use
+// from the Browser type will need to be added to the Pick list
 export type WdioBrowser =
   | Browser
   | Pick<
