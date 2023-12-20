@@ -1,6 +1,28 @@
-import type { Browser } from 'webdriverio';
 import type { AxeResults, BaseSelector } from 'axe-core';
 import * as axe from 'axe-core';
+import { type Browser, type Element } from 'webdriverio';
+
+export type WdioBrowser =
+  | Browser
+  | Pick<
+      WebdriverIO.Browser,
+      | '$$'
+      | '$'
+      | 'switchToFrame'
+      | 'switchToParentFrame'
+      | 'getWindowHandles'
+      | 'getWindowHandle'
+      | 'switchToWindow'
+      | 'createWindow'
+      | 'url'
+      | 'getTimeouts'
+      | 'setTimeout'
+      | 'closeWindow'
+      | 'executeAsync'
+      | 'execute'
+    >;
+
+export type WdioElement = Element | WebdriverIO.Element;
 
 export type CallbackFunction = (
   error: string | null,
@@ -8,7 +30,7 @@ export type CallbackFunction = (
 ) => void;
 
 export interface Options {
-  client: Browser;
+  client: WdioBrowser;
   axeSource?: string;
 }
 
