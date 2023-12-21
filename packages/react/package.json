@@ -71,7 +71,7 @@
     "@types/react": "17.0.0",
     "@types/react-dom": "17.0.0",
     "@types/requestidlecallback": "^0.3.5",
-    "@wojtekmaj/enzyme-adapter-react-17": "^0.6.7",
+    "@wojtekmaj/enzyme-adapter-react-17": "^0.8.0",
     "chai": "^4.3.6",
     "enzyme": "^3.11.0",
     "http-server": "^14.1.1",
