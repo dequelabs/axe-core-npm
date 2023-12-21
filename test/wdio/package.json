@@ -3,7 +3,8 @@
   "version": "4.8.2",
   "description": "Tests to ensure @wdio/globals works with @axe-core/webdriverio",
   "scripts": {
-    "test": "wdio run ./wdio.conf.ts"
+    "test": "wdio run ./wdio.conf.ts",
+    "build": "echo \"Empty build script for deploy pipeline\""
   },
   "devDependencies": {
     "@axe-core/webdriverio": "^4.8.2",
