@@ -16,7 +16,6 @@ import {
 import { getFilename } from 'cross-dirname';
 import { pathToFileURL } from 'url';
 
-import type { Browser, Element } from 'webdriverio';
 import type {
   RunOptions,
   AxeResults,
@@ -24,7 +23,13 @@ import type {
   SerialSelectorList,
   SerialFrameSelector
 } from 'axe-core';
-import type { Options, CallbackFunction, PartialResults } from './types';
+import type {
+  Options,
+  CallbackFunction,
+  PartialResults,
+  WdioBrowser,
+  WdioElement
+} from './types';
 
 let axeCorePath = '';
 async function loadAxePath() {
@@ -43,7 +48,7 @@ async function loadAxePath() {
 loadAxePath();
 
 export default class AxeBuilder {
-  private client: Browser;
+  private client: WdioBrowser;
   private axeSource: string;
   private includes: SerialSelectorList = [];
   private excludes: SerialSelectorList = [];
@@ -199,7 +204,9 @@ export default class AxeBuilder {
   /**
    * Injects `axe-core` into all frames.
    */
-  private async inject(browsingContext: Element | null = null): Promise<void> {
+  private async inject(
+    browsingContext: WdioElement | null = null
+  ): Promise<void> {
     await this.setBrowsingContext(browsingContext);
     const runPartialSupported = await axeSourceInject(
       this.client,
@@ -246,7 +253,7 @@ export default class AxeBuilder {
     // ensure we fail quickly if an iframe cannot be loaded (instead of waiting
     // the default length of 30 seconds)
     const { pageLoad } = await this.client.getTimeouts();
-    this.client.setTimeout({
+    (this.client as WebdriverIO.Browser).setTimeout({
       pageLoad: FRAME_LOAD_TIMEOUT
     });
 
@@ -254,7 +261,7 @@ export default class AxeBuilder {
     try {
       partials = await this.runPartialRecursive(context);
     } finally {
-      this.client.setTimeout({
+      (this.client as WebdriverIO.Browser).setTimeout({
         pageLoad
       });
     }
@@ -301,7 +308,7 @@ export default class AxeBuilder {
    * - https://webdriver.io/docs/api/webdriver.html#switchtoframe
    */
   private async setBrowsingContext(
-    id: null | Element | Browser = null
+    id: null | WdioElement | WdioBrowser = null
   ): Promise<void> {
     if (id) {
       await this.client.switchToFrame(id);
@@ -317,7 +324,7 @@ export default class AxeBuilder {
 
   private async runPartialRecursive(
     context: SerialContextObject,
-    frameStack: Element[] = []
+    frameStack: WdioElement[] = []
   ): Promise<PartialResults> {
     const frameContexts = await axeGetFrameContext(this.client, context);
     const partials: PartialResults = [
@@ -362,7 +369,7 @@ export default class AxeBuilder {
 
     try {
       await client.switchToWindow(newWindow.handle);
-      await client.url('about:blank');
+      await (client as WebdriverIO.Browser).url('about:blank');
     } catch (error) {
       throw new Error(
         `switchToWindow failed. Are you using updated browser drivers? \nDriver reported:\n${
