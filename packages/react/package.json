@@ -88,11 +88,5 @@
   "repository": {
     "type": "git",
     "url": "https://github.com/dequelabs/axe-core-npm.git"
-  },
-  "jest": {
-    "testEnvironment": "jsdom",
-    "setupFilesAfterEnv": [
-      "<rootDir>/test/jest.setup.js"
-    ]
   }
 }
