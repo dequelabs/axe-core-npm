@@ -145,7 +145,7 @@ export const axeRunPartial = (
         callback(JSON.stringify(partials))
       });`
       )
-      .then((r: unknown) => deserialize<PartialResult>(r as string))
+      .then(r => deserialize<PartialResult>(r as string))
   );
 };
 
@@ -187,7 +187,7 @@ export const axeRunLegacy = (
         callback(JSON.stringify(axeResults))
       });`
       )
-      .then((r: unknown) => deserialize<AxeResults>(r as string))
+      .then(r => deserialize<AxeResults>(r as string))
   );
 };
 
@@ -238,7 +238,7 @@ export const axeFinishRun = (
         )
       );
     })
-    .then((r: unknown) => deserialize<AxeResults>(r as string));
+    .then(r => deserialize<AxeResults>(r as string));
 };
 
 export const configureAllowedOrigins = (client: WdioBrowser): Promise<void> => {
