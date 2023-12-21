@@ -31,6 +31,10 @@ updates:
         versions: ['>=6.0.0']
       - dependency-name: 'node-fetch'
         versions: ['>=3.0.0']
+      - dependency-name: 'delay'
+        versions: ['>=6.0.0']
+      - dependency-name: 'tempy'
+        versions: ['>=2.0.0']
       # Breaking change due to node version requirements
       - dependency-name: 'commander'
         versions: ['>=10.0.0']
