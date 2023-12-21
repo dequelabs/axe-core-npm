@@ -71,7 +71,7 @@ describe('@axe-core/webdriverio', () => {
     describe(`WebdriverIO Async (${protocol} protocol)`, () => {
       let server: Server;
       let addr: string;
-      let client: webdriverio.Browser;
+      let client: WebdriverIO.Browser;
       const axePath = require.resolve('axe-core');
       const axeSource = fs.readFileSync(axePath, 'utf8');
       const axeLegacySource = fs.readFileSync(
