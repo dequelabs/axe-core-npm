@@ -3,17 +3,18 @@
   "version": "4.8.2",
   "description": "Tests to ensure @wdio/globals works with @axe-core/webdriverio",
   "scripts": {
-    "test": "wdio run ./wdio.conf.ts"
+    "test": "wdio run ./wdio.conf.ts",
+    "build": "echo \"Empty build script for deploy pipeline\""
   },
   "devDependencies": {
     "@axe-core/webdriverio": "^4.8.2",
     "@types/chai": "^4.3.9",
     "@types/mocha": "^10.0.3",
-    "@wdio/cli": "^8.20.2",
-    "@wdio/globals": "^8.20.0",
-    "@wdio/local-runner": "^8.20.0",
-    "@wdio/mocha-framework": "^8.20.0",
-    "@wdio/spec-reporter": "^8.20.0",
+    "@wdio/cli": "^8.27.0",
+    "@wdio/globals": "^8.27.0",
+    "@wdio/local-runner": "^8.27.0",
+    "@wdio/mocha-framework": "^8.27.0",
+    "@wdio/spec-reporter": "^8.27.0",
     "async-listen": "^3.0.1",
     "axe-test-fixtures": "github:dequelabs/axe-test-fixtures#v1",
     "chai": "^4.3.10",
