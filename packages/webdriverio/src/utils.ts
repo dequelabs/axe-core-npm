@@ -1,5 +1,4 @@
 import assert from 'assert';
-import type { Browser } from 'webdriverio';
 import type {
   AxeResults,
   PartialResult,
@@ -9,13 +8,14 @@ import type {
   SerialSelectorList,
   SerialContextObject
 } from 'axe-core';
+import type { WdioBrowser } from './types';
 
 export const FRAME_LOAD_TIMEOUT = 1000;
 
 /**
  * Validates that the client provided is WebdriverIO v5+.
  */
-export const isWebdriverClient = (client: Browser): boolean => {
+export const isWebdriverClient = (client: WdioBrowser): boolean => {
   if (!client) {
     return false;
   }
@@ -82,14 +82,14 @@ const promisify = <T>(thenable: Promise<T>): Promise<T> => {
 };
 
 export const axeSourceInject = async (
-  client: Browser,
+  client: WdioBrowser,
   axeSource: string
 ): Promise<{ runPartialSupported: boolean }> => {
   await assertFrameReady(client);
   return promisify(
     // Had to use executeAsync() because we could not use multiline statements in client.execute()
     // we were able to return a single boolean in a line but not when assigned to a variable.
-    client.executeAsync(`
+    (client as WebdriverIO.Browser).executeAsync(`
       var callback = arguments[arguments.length - 1];
       ${axeSource};
       window.axe.configure({
@@ -101,7 +101,7 @@ export const axeSourceInject = async (
   );
 };
 
-async function assertFrameReady(client: Browser): Promise<void> {
+async function assertFrameReady(client: WdioBrowser): Promise<void> {
   // Wait so that we know there is an execution context.
   // Assume that if we have an html node we have an execution context.
   try {
@@ -119,7 +119,7 @@ async function assertFrameReady(client: Browser): Promise<void> {
         reject();
       }, FRAME_LOAD_TIMEOUT);
     });
-    const executePromise = client.execute(() => {
+    const executePromise = (client as WebdriverIO.Browser).execute(() => {
       return document.readyState === 'complete';
     });
     const readyState = await Promise.race([timeoutPromise, executePromise]);
@@ -130,13 +130,13 @@ async function assertFrameReady(client: Browser): Promise<void> {
 }
 
 export const axeRunPartial = (
-  client: Browser,
+  client: WdioBrowser,
   context?: SerialContextObject,
   options?: RunOptions
 ): Promise<PartialResult> => {
   return promisify(
-    client
-      .executeAsync<string, []>(
+    (client as WebdriverIO.Browser)
+      .executeAsync(
         `
       var callback = arguments[arguments.length - 1];
       var context = ${JSON.stringify(context)} || document;
@@ -145,12 +145,12 @@ export const axeRunPartial = (
         callback(JSON.stringify(partials))
       });`
       )
-      .then((r: string) => deserialize<PartialResult>(r))
+      .then(r => deserialize<PartialResult>(r as string))
   );
 };
 
 export const axeGetFrameContext = (
-  client: Browser,
+  client: WdioBrowser,
   context: SerialContextObject
   // TODO: add proper types
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -158,7 +158,7 @@ export const axeGetFrameContext = (
   return promisify(
     // Had to use executeAsync() because we could not use multiline statements in client.execute()
     // we were able to return a single boolean in a line but not when assigned to a variable.
-    client.executeAsync(`
+    (client as WebdriverIO.Browser).executeAsync(`
       var callback = arguments[arguments.length - 1];
       var context = ${JSON.stringify(context)};
       var frameContexts = window.axe.utils.getFrameContexts(context);
@@ -168,14 +168,14 @@ export const axeGetFrameContext = (
 };
 
 export const axeRunLegacy = (
-  client: Browser,
+  client: WdioBrowser,
   context: SerialContextObject,
   options: RunOptions,
   config?: Spec
 ): Promise<AxeResults> => {
   return promisify(
-    client
-      .executeAsync<string, []>(
+    (client as WebdriverIO.Browser)
+      .executeAsync(
         `var callback = arguments[arguments.length - 1];
       var context = ${JSON.stringify(context)} || document;
       var options = ${JSON.stringify(options)} || {};
@@ -187,12 +187,12 @@ export const axeRunLegacy = (
         callback(JSON.stringify(axeResults))
       });`
       )
-      .then((r: string) => deserialize<AxeResults>(r))
+      .then(r => deserialize<AxeResults>(r as string))
   );
 };
 
 export const axeFinishRun = (
-  client: Browser,
+  client: WdioBrowser,
   axeSource: string,
   partialResults: PartialResults,
   options: RunOptions
@@ -207,7 +207,7 @@ export const axeFinishRun = (
   function chunkResults(result: string): Promise<void> {
     const chunk = JSON.stringify(result.substring(0, sizeLimit));
     return promisify(
-      client.execute(
+      (client as WebdriverIO.Browser).execute(
         `
         window.partialResults ??= '';
         window.partialResults += ${chunk};
@@ -223,7 +223,7 @@ export const axeFinishRun = (
   return chunkResults(partialString)
     .then(() => {
       return promisify(
-        client.executeAsync<string, []>(
+        (client as WebdriverIO.Browser).executeAsync(
           `var callback = arguments[arguments.length - 1];
       ${axeSource};
       window.axe.configure({
@@ -238,12 +238,12 @@ export const axeFinishRun = (
         )
       );
     })
-    .then((r: string) => deserialize<AxeResults>(r));
+    .then(r => deserialize<AxeResults>(r as string));
 };
 
-export const configureAllowedOrigins = (client: Browser): Promise<void> => {
+export const configureAllowedOrigins = (client: WdioBrowser): Promise<void> => {
   return promisify(
-    client.execute(`
+    (client as WebdriverIO.Browser).execute(`
       window.axe.configure({ allowedOrigins: ['<unsafe_all_origins>'] })
     `)
   );
