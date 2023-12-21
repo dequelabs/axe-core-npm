@@ -10,7 +10,8 @@
     "target": "esnext",
     "lib": ["dom", "esnext"],
     "resolveJsonModule": true,
-    "esModuleInterop": true
+    "esModuleInterop": true,
+    "skipLibCheck": true
   },
   "exclude": ["test", "dist", "node_modules", "tsup.config.ts"]
 }
