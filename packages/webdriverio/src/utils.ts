@@ -8,7 +8,7 @@ import type {
   SerialSelectorList,
   SerialContextObject
 } from 'axe-core';
-import { WdioBrowser } from './types';
+import type { WdioBrowser } from './types';
 
 export const FRAME_LOAD_TIMEOUT = 1000;
 
