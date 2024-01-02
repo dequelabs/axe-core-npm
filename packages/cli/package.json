@@ -48,12 +48,11 @@
   ],
   "dependencies": {
     "@axe-core/webdriverjs": "^4.8.2",
-    "axe-core": "~4.8.3",
+    "axe-core": "~4.8.2",
     "chromedriver": "latest",
     "colors": "^1.4.0",
     "commander": "^9.4.1",
-    "selenium-webdriver": "^4.8.1",
-    "undefined": "^0.1.0"
+    "selenium-webdriver": "^4.8.1"
   },
   "devDependencies": {
     "@types/chai": "^4.3.3",
