@@ -48,7 +48,7 @@
     "webdriverio"
   ],
   "dependencies": {
-    "axe-core": "~4.8.2",
+    "axe-core": "~4.8.3",
     "cssesc": "^3.0.0"
   },
   "devDependencies": {
