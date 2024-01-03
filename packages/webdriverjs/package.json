@@ -77,7 +77,7 @@
     "@types/selenium-webdriver": "^4.1.5",
     "async-listen": "^3.0.1",
     "axe-test-fixtures": "github:dequelabs/axe-test-fixtures#v1",
-    "chai": "^4.3.6",
+    "chai": "^5.0.0",
     "chromedriver": "latest",
     "express": "^4.18.2",
     "mocha": "^10.0.0",
