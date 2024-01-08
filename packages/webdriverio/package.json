@@ -71,7 +71,7 @@
     "rimraf": "^5.0.5",
     "source-map-support": "^0.5.21",
     "ts-node": "^10.9.1",
-    "tsup": "^7.2.0",
+    "tsup": "^8.0.1",
     "typescript": "^5.2.2",
     "webdriverio": "^8.8.2"
   },
