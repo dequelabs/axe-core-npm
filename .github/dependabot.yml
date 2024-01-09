@@ -35,6 +35,8 @@ updates:
         versions: ['>=6.0.0']
       - dependency-name: 'tempy'
         versions: ['>=2.0.0']
+      - dependency-name: 'chai'
+        versions: ['>=5.0.0']
       # Breaking change due to node version requirements
       - dependency-name: 'commander'
         versions: ['>=10.0.0']
