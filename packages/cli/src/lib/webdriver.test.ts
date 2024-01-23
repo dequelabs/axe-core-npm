@@ -72,7 +72,7 @@ describe('startDriver', () => {
     const options = config?.builder?.getChromeOptions();
     assert.isArray(options?.get('goog:chromeOptions').args);
     assert.deepEqual(options?.get('goog:chromeOptions').args, [
-      '--headless',
+      'headless',
       '--no-sandbox'
     ]);
   });
@@ -85,7 +85,7 @@ describe('startDriver', () => {
     const options = config?.builder?.getChromeOptions();
     assert.isArray(options?.get('goog:chromeOptions').args);
     assert.deepEqual(options?.get('goog:chromeOptions').args, [
-      '--headless',
+      'headless',
       'no-sandbox',
       'disable-dev-shm-usage'
     ]);

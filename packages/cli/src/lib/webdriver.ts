@@ -22,7 +22,7 @@ const startDriver = async (
     }
     // selenium-webdriver >= 4.17.0
     else {
-      options.addArguments('--headless');
+      options.addArguments('headless');
     }
 
     if (config.chromeOptions?.length) {
