@@ -5,7 +5,7 @@ import chrome from 'selenium-webdriver/chrome';
 export const Webdriver = (): WebDriver => {
   const builder = new Builder()
     .forBrowser('chrome')
-    .setChromeOptions(new chrome.Options().headless())
+    .setChromeOptions(new chrome.Options().addArguments('--headless=new'))
     .setChromeService(
       new chrome.ServiceBuilder(
         process.env.CHROMEDRIVER_PATH || chromedriver.path
