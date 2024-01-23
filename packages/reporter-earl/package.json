@@ -1,6 +1,6 @@
 {
   "name": "@axe-core/reporter-earl",
-  "version": "4.8.3",
+  "version": "4.8.4",
   "description": "A EARL+JSON-LD reporter for axe-core",
   "main": "dist/axeReporterEarl.js",
   "module": "./dist/axeReporterEarl.mjs",

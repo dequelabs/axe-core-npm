@@ -1,6 +1,6 @@
 {
   "name": "@axe-core/cli",
-  "version": "4.8.3",
+  "version": "4.8.4",
   "description": "A CLI for accessibility testing using axe-core",
   "author": {
     "name": "Wilco Fiers",
@@ -47,7 +47,7 @@
     "testing"
   ],
   "dependencies": {
-    "@axe-core/webdriverjs": "^4.8.3",
+    "@axe-core/webdriverjs": "^4.8.4",
     "axe-core": "~4.8.3",
     "chromedriver": "latest",
     "colors": "^1.4.0",
