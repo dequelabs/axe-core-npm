@@ -3,6 +3,29 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [4.8.4](https://github.com/dequelabs/axe-core-npm/compare/v4.8.1...v4.8.4) (2024-01-23)
+
+
+### Bug Fixes
+
+* allow cjs version of packages to export a default value ([#943](https://github.com/dequelabs/axe-core-npm/issues/943)) ([b5aee34](https://github.com/dequelabs/axe-core-npm/commit/b5aee3424fe4d0fbc0b2065e9c0bc56ce4032755))
+* Update axe-core to v4.8.3 ([#968](https://github.com/dequelabs/axe-core-npm/issues/968)) ([be9002c](https://github.com/dequelabs/axe-core-npm/commit/be9002c518b335f56fa21e1bff99e07281be814b))
+* Update axe-core to v4.8.3 ([#978](https://github.com/dequelabs/axe-core-npm/issues/978)) ([1c83740](https://github.com/dequelabs/axe-core-npm/commit/1c837404aa2a63fb6be6f04760d1faec886bc5dc))
+* **webdriverio:** fix types between v8 and <v8 ([#962](https://github.com/dequelabs/axe-core-npm/issues/962)) ([0511338](https://github.com/dequelabs/axe-core-npm/commit/0511338017f52fba78c6ff3708f0c9e950e7a34e))
+* **webdriverio:** work with @wdio/globals ([#882](https://github.com/dequelabs/axe-core-npm/issues/882)) ([2e016b4](https://github.com/dequelabs/axe-core-npm/commit/2e016b4e17cff09f158427862f2fd2134a62cbc6))
+* **webdriverjs:** fix default commonJs export ([#927](https://github.com/dequelabs/axe-core-npm/issues/927)) ([b07d38c](https://github.com/dequelabs/axe-core-npm/commit/b07d38cc2d85c6127391686482abf762758dce34))
+* **webdriverjs:** use new headless argument to fix selenium-webdriver@4.17.0 breaking release ([#992](https://github.com/dequelabs/axe-core-npm/issues/992)) ([0daba98](https://github.com/dequelabs/axe-core-npm/commit/0daba98684ede79bfb6488dd1b81f7d863e69d99))
+
+
+### Reverts
+
+* Revert "fix: Update axe-core to v4.8.3 (#968)" (#977) ([0aff5d8](https://github.com/dequelabs/axe-core-npm/commit/0aff5d86e539cb9054bc3bd62a2f2cba8a716b3e)), closes [#968](https://github.com/dequelabs/axe-core-npm/issues/968) [#977](https://github.com/dequelabs/axe-core-npm/issues/977)
+* Revert "chore: merge master into develop (#955)" (#956) ([07e7d9e](https://github.com/dequelabs/axe-core-npm/commit/07e7d9e7e166391e4fe406db5dc541f56ca44514)), closes [#955](https://github.com/dequelabs/axe-core-npm/issues/955) [#956](https://github.com/dequelabs/axe-core-npm/issues/956)
+
+
+
+
+
 ## [4.8.3](https://github.com/dequelabs/axe-core-npm/compare/v4.8.1...v4.8.3) (2024-01-09)
 
 
