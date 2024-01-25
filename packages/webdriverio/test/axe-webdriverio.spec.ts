@@ -119,7 +119,9 @@ describe('@axe-core/webdriverio', () => {
         };
 
         client = await webdriverio.remote(
-          protocol === 'webdriver' ? { ...options, port } : options
+          protocol === 'webdriver'
+            ? { ...options, port, hostname: 'localhost' }
+            : options
         );
       });
 
