@@ -132,7 +132,8 @@ async function assertFrameReady(client: WdioBrowser): Promise<void> {
 export const axeRunPartial = (
   client: WdioBrowser,
   context?: SerialContextObject,
-  options?: RunOptions
+  options?: RunOptions,
+  config?: Spec
 ): Promise<PartialResult> => {
   return promisify(
     (client as WebdriverIO.Browser)
@@ -141,6 +142,10 @@ export const axeRunPartial = (
       var callback = arguments[arguments.length - 1];
       var context = ${JSON.stringify(context)} || document;
       var options = ${JSON.stringify(options)} || {};
+      var config = ${JSON.stringify(config)} || {};
+      if (config) {
+        window.axe.configure(config);
+      }
       window.axe.runPartial(context, options).then(function (partials) {
         callback(JSON.stringify(partials))
       });`
@@ -179,7 +184,7 @@ export const axeRunLegacy = (
         `var callback = arguments[arguments.length - 1];
       var context = ${JSON.stringify(context)} || document;
       var options = ${JSON.stringify(options)} || {};
-      var config = ${JSON.stringify(config)} || null;
+      var config = ${JSON.stringify(config)} || {};
       if (config) {
         window.axe.configure(config);
       }

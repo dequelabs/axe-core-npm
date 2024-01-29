@@ -17,6 +17,7 @@ import { getFilename } from 'cross-dirname';
 import { pathToFileURL } from 'url';
 
 import type {
+  Spec,
   RunOptions,
   AxeResults,
   SerialContextObject,
@@ -56,6 +57,7 @@ export default class AxeBuilder {
   private disableFrameSelectors: string[] = [];
   private legacyMode = false;
   private errorUrl: string;
+  private config: Spec = {};
 
   constructor({ client, axeSource }: Options) {
     assert(
@@ -112,6 +114,14 @@ export default class AxeBuilder {
    */
   public options(options: RunOptions): this {
     this.option = options;
+    return this;
+  }
+
+  /**
+   * Set options to be passed into axe-core
+   */
+  public configure(config: Spec): this {
+    this.config = config;
     return this;
   }
 
@@ -238,7 +248,7 @@ export default class AxeBuilder {
   }
 
   private async analyzePromise(): Promise<AxeResults> {
-    const { client, axeSource } = this;
+    const { client, axeSource, config } = this;
     const context = normalizeContext(
       this.includes,
       this.excludes,
@@ -259,7 +269,7 @@ export default class AxeBuilder {
 
     let partials: PartialResults | null;
     try {
-      partials = await this.runPartialRecursive(context);
+      partials = await this.runPartialRecursive(context, [], config);
     } finally {
       (this.client as WebdriverIO.Browser).setTimeout({
         pageLoad
@@ -276,9 +286,9 @@ export default class AxeBuilder {
   }
 
   private async runLegacy(context: SerialContextObject): Promise<AxeResults> {
-    const { client, option } = this;
+    const { client, option, config } = this;
     await this.inject();
-    return axeRunLegacy(client, context, option);
+    return axeRunLegacy(client, context, option, config);
   }
 
   /**
@@ -324,7 +334,8 @@ export default class AxeBuilder {
 
   private async runPartialRecursive(
     context: SerialContextObject,
-    frameStack: WdioElement[] = []
+    frameStack: WdioElement[] = [],
+    config: Spec = {}
   ): Promise<PartialResults> {
     const frameContexts = await axeGetFrameContext(this.client, context);
     const partials: PartialResults = [
@@ -338,10 +349,11 @@ export default class AxeBuilder {
         await this.client.switchToFrame(frame);
         await axeSourceInject(this.client, this.script);
         partials.push(
-          ...(await this.runPartialRecursive(frameContext, [
-            ...frameStack,
-            frame
-          ]))
+          ...(await this.runPartialRecursive(
+            frameContext,
+            [...frameStack, frame],
+            config
+          ))
         );
       } catch (error) {
         const [topWindow] = await this.client.getWindowHandles();
