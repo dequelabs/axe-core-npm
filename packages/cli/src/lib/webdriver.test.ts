@@ -42,8 +42,8 @@ describe('startDriver', () => {
     browser = 'chrome-headless';
     driver = await startDriver(config);
     const capabilities = await driver.getCapabilities();
-
-    assert.equal(capabilities.get('browserName'), 'chrome');
+    // https://github.com/seleniumbase/SeleniumBase/issues/2343
+    assert.equal(capabilities.get('browserName'), 'chrome-headless-shell');
   });
 
   it('uses the chromedriver path with chrome-headless', async () => {
