@@ -43,7 +43,7 @@ describe('startDriver', () => {
     driver = await startDriver(config);
     const capabilities = await driver.getCapabilities();
     // https://github.com/seleniumbase/SeleniumBase/issues/2343\
-    assert.isTrue('chrome' in capabilities.get('browserName'));
+    assert.include(capabilities.get('browserName'), 'chrome');
   });
 
   it('uses the chromedriver path with chrome-headless', async () => {
