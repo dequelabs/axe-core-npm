@@ -6,7 +6,7 @@ Previous versions of this program were maintained at [dequelabs/react-axe](https
 
 ## React support
 
-This package does not support React 18 and above. Deque are working on alternatives for React 18+ developers and will update the community following product announcements at [axe-con 2024](https://www.deque.com/axe-con/).
+This package does not support React 18 and above. Deque is working on alternatives for React 18+ developers and will update the community following product announcements at [axe-con 2024](https://www.deque.com/axe-con/).
 
 ## Usage
 
