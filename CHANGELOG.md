@@ -3,6 +3,18 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [4.8.5](https://github.com/dequelabs/axe-core-npm/compare/v4.8.3...v4.8.5) (2024-02-07)
+
+
+### Bug Fixes
+
+* Update axe-core to v4.8.4 ([#1008](https://github.com/dequelabs/axe-core-npm/issues/1008)) ([d54f145](https://github.com/dequelabs/axe-core-npm/commit/d54f145a4078c4730a850e694c9eb77297c23a35))
+* **webdriverjs:** use new headless argument to fix selenium-webdriver@4.17.0 breaking release ([#992](https://github.com/dequelabs/axe-core-npm/issues/992)) ([0daba98](https://github.com/dequelabs/axe-core-npm/commit/0daba98684ede79bfb6488dd1b81f7d863e69d99))
+
+
+
+
+
 ## [4.8.4](https://github.com/dequelabs/axe-core-npm/compare/v4.8.3...v4.8.4) (2024-01-23)
 
 ### Bug Fixes

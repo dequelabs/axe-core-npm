@@ -1,13 +1,13 @@
 {
   "name": "wdio-tests",
-  "version": "4.8.4",
+  "version": "4.8.5",
   "description": "Tests to ensure @wdio/globals works with @axe-core/webdriverio",
   "scripts": {
     "test": "wdio run ./wdio.conf.ts",
     "build": "echo \"Empty build script for deploy pipeline\""
   },
   "devDependencies": {
-    "@axe-core/webdriverio": "^4.8.4",
+    "@axe-core/webdriverio": "^4.8.5",
     "@types/chai": "^4.3.9",
     "@types/mocha": "^10.0.3",
     "@wdio/cli": "^8.27.0",
