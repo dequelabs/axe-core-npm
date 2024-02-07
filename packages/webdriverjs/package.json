@@ -1,6 +1,6 @@
 {
   "name": "@axe-core/webdriverjs",
-  "version": "4.8.2",
+  "version": "4.8.4",
   "description": "Provides a method to inject and analyze web pages using axe",
   "contributors": [
     {
@@ -85,11 +85,11 @@
     "rimraf": "^5.0.5",
     "selenium-webdriver": "^4.8.1",
     "ts-node": "^10.9.1",
-    "tsup": "^7.2.0",
+    "tsup": "^8.0.1",
     "typescript": "^5.2.2"
   },
   "dependencies": {
-    "axe-core": "~4.8.3"
+    "axe-core": "~4.8.4"
   },
   "peerDependencies": {
     "selenium-webdriver": ">3.0.0-beta  || >=2.53.1 || >4.0.0-alpha"

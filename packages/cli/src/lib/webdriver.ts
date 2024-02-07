@@ -15,7 +15,16 @@ const startDriver = async (
       config.chromedriverPath || chromedriver.path
     );
 
-    let options = new chrome.Options().headless();
+    let options = new chrome.Options();
+    // selenium-webdriver < 4.17.0
+    if (typeof options.headless === 'function') {
+      options.headless();
+    }
+    // selenium-webdriver >= 4.17.0
+    else {
+      options.addArguments('headless');
+    }
+
     if (config.chromeOptions?.length) {
       options = config.chromeOptions.reduce(function (options, arg) {
         return options.addArguments(arg);
