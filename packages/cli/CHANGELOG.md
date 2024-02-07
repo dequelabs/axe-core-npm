@@ -5,81 +5,54 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 
 ## [4.8.4](https://github.com/dequelabs/axe-core-npm/compare/v4.8.3...v4.8.4) (2024-01-23)
 
-
 ### Bug Fixes
 
-* **webdriverjs:** use new headless argument to fix selenium-webdriver@4.17.0 breaking release ([#992](https://github.com/dequelabs/axe-core-npm/issues/992)) ([0daba98](https://github.com/dequelabs/axe-core-npm/commit/0daba98684ede79bfb6488dd1b81f7d863e69d99))
-
-
-
-
+- **webdriverjs:** use new headless argument to fix selenium-webdriver@4.17.0 breaking release ([#992](https://github.com/dequelabs/axe-core-npm/issues/992)) ([0daba98](https://github.com/dequelabs/axe-core-npm/commit/0daba98684ede79bfb6488dd1b81f7d863e69d99))
 
 ## [4.8.3](https://github.com/dequelabs/axe-core-npm/compare/v4.8.1...v4.8.3) (2024-01-09)
 
-
 ### Bug Fixes
 
-* Update axe-core to v4.8.3 ([#968](https://github.com/dequelabs/axe-core-npm/issues/968)) ([be9002c](https://github.com/dequelabs/axe-core-npm/commit/be9002c518b335f56fa21e1bff99e07281be814b))
-* Update axe-core to v4.8.3 ([#978](https://github.com/dequelabs/axe-core-npm/issues/978)) ([1c83740](https://github.com/dequelabs/axe-core-npm/commit/1c837404aa2a63fb6be6f04760d1faec886bc5dc))
-
+- Update axe-core to v4.8.3 ([#968](https://github.com/dequelabs/axe-core-npm/issues/968)) ([be9002c](https://github.com/dequelabs/axe-core-npm/commit/be9002c518b335f56fa21e1bff99e07281be814b))
+- Update axe-core to v4.8.3 ([#978](https://github.com/dequelabs/axe-core-npm/issues/978)) ([1c83740](https://github.com/dequelabs/axe-core-npm/commit/1c837404aa2a63fb6be6f04760d1faec886bc5dc))
 
 ### Reverts
 
-* Revert "fix: Update axe-core to v4.8.3 (#968)" (#977) ([0aff5d8](https://github.com/dequelabs/axe-core-npm/commit/0aff5d86e539cb9054bc3bd62a2f2cba8a716b3e)), closes [#968](https://github.com/dequelabs/axe-core-npm/issues/968) [#977](https://github.com/dequelabs/axe-core-npm/issues/977)
-* Revert "chore: merge master into develop (#955)" (#956) ([07e7d9e](https://github.com/dequelabs/axe-core-npm/commit/07e7d9e7e166391e4fe406db5dc541f56ca44514)), closes [#955](https://github.com/dequelabs/axe-core-npm/issues/955) [#956](https://github.com/dequelabs/axe-core-npm/issues/956)
-
-
-
-
+- Revert "fix: Update axe-core to v4.8.3 (#968)" (#977) ([0aff5d8](https://github.com/dequelabs/axe-core-npm/commit/0aff5d86e539cb9054bc3bd62a2f2cba8a716b3e)), closes [#968](https://github.com/dequelabs/axe-core-npm/issues/968) [#977](https://github.com/dequelabs/axe-core-npm/issues/977)
+- Revert "chore: merge master into develop (#955)" (#956) ([07e7d9e](https://github.com/dequelabs/axe-core-npm/commit/07e7d9e7e166391e4fe406db5dc541f56ca44514)), closes [#955](https://github.com/dequelabs/axe-core-npm/issues/955) [#956](https://github.com/dequelabs/axe-core-npm/issues/956)
 
 ## [4.8.2](https://github.com/dequelabs/axe-core-npm/compare/v4.8.1...v4.8.2) (2023-11-30)
 
 **Note:** Version bump only for package @axe-core/cli
 
-
-
-
-
 ## [4.8.1](https://github.com/dequelabs/axe-core-npm/compare/v4.7.3...v4.8.1) (2023-10-11)
-
 
 ### Bug Fixes
 
-* **cli:** better error message for ChromeDriver version mismatch ([#680](https://github.com/dequelabs/axe-core-npm/issues/680)) ([10cf350](https://github.com/dequelabs/axe-core-npm/commit/10cf3509449587a14799fb168678258249bc1900)), closes [#679](https://github.com/dequelabs/axe-core-npm/issues/679)
-* **cli:** improve error message on script timeout ([#681](https://github.com/dequelabs/axe-core-npm/issues/681)) ([b407c6c](https://github.com/dequelabs/axe-core-npm/commit/b407c6cf1f8a980fc036b75c7b3f7198d3bb556c))
-* **cli:** include required files when publishing ([#851](https://github.com/dequelabs/axe-core-npm/issues/851)) ([3f1ff4b](https://github.com/dequelabs/axe-core-npm/commit/3f1ff4bd464215ce2eb1a243907872aaceadd21f))
-* **cli:** respect --exit regardless of other flags ([#750](https://github.com/dequelabs/axe-core-npm/issues/750)) ([bfa2328](https://github.com/dequelabs/axe-core-npm/commit/bfa232800d553d870933e5dfa26d669d2d566c08))
-* pin axe-core version to accept patch updates only ([#838](https://github.com/dequelabs/axe-core-npm/issues/838)) ([2456ed6](https://github.com/dequelabs/axe-core-npm/commit/2456ed641781c2262bf71db24f7f97755422d5f6))
-
+- **cli:** better error message for ChromeDriver version mismatch ([#680](https://github.com/dequelabs/axe-core-npm/issues/680)) ([10cf350](https://github.com/dequelabs/axe-core-npm/commit/10cf3509449587a14799fb168678258249bc1900)), closes [#679](https://github.com/dequelabs/axe-core-npm/issues/679)
+- **cli:** improve error message on script timeout ([#681](https://github.com/dequelabs/axe-core-npm/issues/681)) ([b407c6c](https://github.com/dequelabs/axe-core-npm/commit/b407c6cf1f8a980fc036b75c7b3f7198d3bb556c))
+- **cli:** include required files when publishing ([#851](https://github.com/dequelabs/axe-core-npm/issues/851)) ([3f1ff4b](https://github.com/dequelabs/axe-core-npm/commit/3f1ff4bd464215ce2eb1a243907872aaceadd21f))
+- **cli:** respect --exit regardless of other flags ([#750](https://github.com/dequelabs/axe-core-npm/issues/750)) ([bfa2328](https://github.com/dequelabs/axe-core-npm/commit/bfa232800d553d870933e5dfa26d669d2d566c08))
+- pin axe-core version to accept patch updates only ([#838](https://github.com/dequelabs/axe-core-npm/issues/838)) ([2456ed6](https://github.com/dequelabs/axe-core-npm/commit/2456ed641781c2262bf71db24f7f97755422d5f6))
 
 ### Features
 
-* **cli:** add --chrome-path option ([#700](https://github.com/dequelabs/axe-core-npm/issues/700)) ([#704](https://github.com/dequelabs/axe-core-npm/issues/704)) ([ada5d28](https://github.com/dequelabs/axe-core-npm/commit/ada5d28ccbbf9121f9d1fb5172347019c2ae63d1))
-* Update axe-core to v4.8.2 ([#835](https://github.com/dequelabs/axe-core-npm/issues/835)) ([2ac1eaf](https://github.com/dequelabs/axe-core-npm/commit/2ac1eafa6318453003ccfd7c33625e63725a7c00))
-
-
-
-
+- **cli:** add --chrome-path option ([#700](https://github.com/dequelabs/axe-core-npm/issues/700)) ([#704](https://github.com/dequelabs/axe-core-npm/issues/704)) ([ada5d28](https://github.com/dequelabs/axe-core-npm/commit/ada5d28ccbbf9121f9d1fb5172347019c2ae63d1))
+- Update axe-core to v4.8.2 ([#835](https://github.com/dequelabs/axe-core-npm/issues/835)) ([2ac1eaf](https://github.com/dequelabs/axe-core-npm/commit/2ac1eafa6318453003ccfd7c33625e63725a7c00))
 
 # [4.8.0](https://github.com/dequelabs/axe-core-npm/compare/v4.7.3...v4.8.0) (2023-09-28)
 
-
 ### Bug Fixes
 
-* **cli:** better error message for ChromeDriver version mismatch ([#680](https://github.com/dequelabs/axe-core-npm/issues/680)) ([10cf350](https://github.com/dequelabs/axe-core-npm/commit/10cf3509449587a14799fb168678258249bc1900)), closes [#679](https://github.com/dequelabs/axe-core-npm/issues/679)
-* **cli:** improve error message on script timeout ([#681](https://github.com/dequelabs/axe-core-npm/issues/681)) ([b407c6c](https://github.com/dequelabs/axe-core-npm/commit/b407c6cf1f8a980fc036b75c7b3f7198d3bb556c))
-* **cli:** respect --exit regardless of other flags ([#750](https://github.com/dequelabs/axe-core-npm/issues/750)) ([bfa2328](https://github.com/dequelabs/axe-core-npm/commit/bfa232800d553d870933e5dfa26d669d2d566c08))
-* pin axe-core version to accept patch updates only ([#838](https://github.com/dequelabs/axe-core-npm/issues/838)) ([2456ed6](https://github.com/dequelabs/axe-core-npm/commit/2456ed641781c2262bf71db24f7f97755422d5f6))
-
+- **cli:** better error message for ChromeDriver version mismatch ([#680](https://github.com/dequelabs/axe-core-npm/issues/680)) ([10cf350](https://github.com/dequelabs/axe-core-npm/commit/10cf3509449587a14799fb168678258249bc1900)), closes [#679](https://github.com/dequelabs/axe-core-npm/issues/679)
+- **cli:** improve error message on script timeout ([#681](https://github.com/dequelabs/axe-core-npm/issues/681)) ([b407c6c](https://github.com/dequelabs/axe-core-npm/commit/b407c6cf1f8a980fc036b75c7b3f7198d3bb556c))
+- **cli:** respect --exit regardless of other flags ([#750](https://github.com/dequelabs/axe-core-npm/issues/750)) ([bfa2328](https://github.com/dequelabs/axe-core-npm/commit/bfa232800d553d870933e5dfa26d669d2d566c08))
+- pin axe-core version to accept patch updates only ([#838](https://github.com/dequelabs/axe-core-npm/issues/838)) ([2456ed6](https://github.com/dequelabs/axe-core-npm/commit/2456ed641781c2262bf71db24f7f97755422d5f6))
 
 ### Features
 
-* **cli:** add --chrome-path option ([#700](https://github.com/dequelabs/axe-core-npm/issues/700)) ([#704](https://github.com/dequelabs/axe-core-npm/issues/704)) ([ada5d28](https://github.com/dequelabs/axe-core-npm/commit/ada5d28ccbbf9121f9d1fb5172347019c2ae63d1))
-* Update axe-core to v4.8.2 ([#835](https://github.com/dequelabs/axe-core-npm/issues/835)) ([2ac1eaf](https://github.com/dequelabs/axe-core-npm/commit/2ac1eafa6318453003ccfd7c33625e63725a7c00))
-
-
-
-
+- **cli:** add --chrome-path option ([#700](https://github.com/dequelabs/axe-core-npm/issues/700)) ([#704](https://github.com/dequelabs/axe-core-npm/issues/704)) ([ada5d28](https://github.com/dequelabs/axe-core-npm/commit/ada5d28ccbbf9121f9d1fb5172347019c2ae63d1))
+- Update axe-core to v4.8.2 ([#835](https://github.com/dequelabs/axe-core-npm/issues/835)) ([2ac1eaf](https://github.com/dequelabs/axe-core-npm/commit/2ac1eafa6318453003ccfd7c33625e63725a7c00))
 
 ## [4.7.3](https://github.com/dequelabs/axe-core-npm/compare/v4.7.2...v4.7.3) (2023-06-09)
 
