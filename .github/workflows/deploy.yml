@@ -84,10 +84,10 @@ jobs:
             --yes
       - run: |
           PKG_VERSION=$(jq -r .version < lerna.json)
-          gh release create $PKG_VERSION \
+          gh release create v$PKG_VERSION \
             --title "Release $PKG_VERSION" \
             --generate-notes \
-            --repo ${{ github.repository }}
+            --repo ${{ github.repository }} \
             --target master
         env:
           GH_TOKEN: ${{ github.token }}
