@@ -7,73 +7,46 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 
 **Note:** Version bump only for package @axe-core/reporter-earl
 
-
-
-
-
 ## [4.8.3](https://github.com/dequelabs/axe-core-npm/compare/v4.8.1...v4.8.3) (2024-01-09)
-
 
 ### Bug Fixes
 
-* allow cjs version of packages to export a default value ([#943](https://github.com/dequelabs/axe-core-npm/issues/943)) ([b5aee34](https://github.com/dequelabs/axe-core-npm/commit/b5aee3424fe4d0fbc0b2065e9c0bc56ce4032755))
-* Update axe-core to v4.8.3 ([#968](https://github.com/dequelabs/axe-core-npm/issues/968)) ([be9002c](https://github.com/dequelabs/axe-core-npm/commit/be9002c518b335f56fa21e1bff99e07281be814b))
-* Update axe-core to v4.8.3 ([#978](https://github.com/dequelabs/axe-core-npm/issues/978)) ([1c83740](https://github.com/dequelabs/axe-core-npm/commit/1c837404aa2a63fb6be6f04760d1faec886bc5dc))
-* **webdriverjs:** fix default commonJs export ([#927](https://github.com/dequelabs/axe-core-npm/issues/927)) ([b07d38c](https://github.com/dequelabs/axe-core-npm/commit/b07d38cc2d85c6127391686482abf762758dce34))
-
+- allow cjs version of packages to export a default value ([#943](https://github.com/dequelabs/axe-core-npm/issues/943)) ([b5aee34](https://github.com/dequelabs/axe-core-npm/commit/b5aee3424fe4d0fbc0b2065e9c0bc56ce4032755))
+- Update axe-core to v4.8.3 ([#968](https://github.com/dequelabs/axe-core-npm/issues/968)) ([be9002c](https://github.com/dequelabs/axe-core-npm/commit/be9002c518b335f56fa21e1bff99e07281be814b))
+- Update axe-core to v4.8.3 ([#978](https://github.com/dequelabs/axe-core-npm/issues/978)) ([1c83740](https://github.com/dequelabs/axe-core-npm/commit/1c837404aa2a63fb6be6f04760d1faec886bc5dc))
+- **webdriverjs:** fix default commonJs export ([#927](https://github.com/dequelabs/axe-core-npm/issues/927)) ([b07d38c](https://github.com/dequelabs/axe-core-npm/commit/b07d38cc2d85c6127391686482abf762758dce34))
 
 ### Reverts
 
-* Revert "fix: Update axe-core to v4.8.3 (#968)" (#977) ([0aff5d8](https://github.com/dequelabs/axe-core-npm/commit/0aff5d86e539cb9054bc3bd62a2f2cba8a716b3e)), closes [#968](https://github.com/dequelabs/axe-core-npm/issues/968) [#977](https://github.com/dequelabs/axe-core-npm/issues/977)
-* Revert "chore: merge master into develop (#955)" (#956) ([07e7d9e](https://github.com/dequelabs/axe-core-npm/commit/07e7d9e7e166391e4fe406db5dc541f56ca44514)), closes [#955](https://github.com/dequelabs/axe-core-npm/issues/955) [#956](https://github.com/dequelabs/axe-core-npm/issues/956)
-
-
-
-
+- Revert "fix: Update axe-core to v4.8.3 (#968)" (#977) ([0aff5d8](https://github.com/dequelabs/axe-core-npm/commit/0aff5d86e539cb9054bc3bd62a2f2cba8a716b3e)), closes [#968](https://github.com/dequelabs/axe-core-npm/issues/968) [#977](https://github.com/dequelabs/axe-core-npm/issues/977)
+- Revert "chore: merge master into develop (#955)" (#956) ([07e7d9e](https://github.com/dequelabs/axe-core-npm/commit/07e7d9e7e166391e4fe406db5dc541f56ca44514)), closes [#955](https://github.com/dequelabs/axe-core-npm/issues/955) [#956](https://github.com/dequelabs/axe-core-npm/issues/956)
 
 ## [4.8.2](https://github.com/dequelabs/axe-core-npm/compare/v4.8.1...v4.8.2) (2023-11-30)
 
-
 ### Bug Fixes
 
-* allow cjs version of packages to export a default value ([#943](https://github.com/dequelabs/axe-core-npm/issues/943)) ([b5aee34](https://github.com/dequelabs/axe-core-npm/commit/b5aee3424fe4d0fbc0b2065e9c0bc56ce4032755))
-* **webdriverjs:** fix default commonJs export ([#927](https://github.com/dequelabs/axe-core-npm/issues/927)) ([b07d38c](https://github.com/dequelabs/axe-core-npm/commit/b07d38cc2d85c6127391686482abf762758dce34))
-
-
-
-
+- allow cjs version of packages to export a default value ([#943](https://github.com/dequelabs/axe-core-npm/issues/943)) ([b5aee34](https://github.com/dequelabs/axe-core-npm/commit/b5aee3424fe4d0fbc0b2065e9c0bc56ce4032755))
+- **webdriverjs:** fix default commonJs export ([#927](https://github.com/dequelabs/axe-core-npm/issues/927)) ([b07d38c](https://github.com/dequelabs/axe-core-npm/commit/b07d38cc2d85c6127391686482abf762758dce34))
 
 ## [4.8.1](https://github.com/dequelabs/axe-core-npm/compare/v4.7.3...v4.8.1) (2023-10-11)
 
-
 ### Bug Fixes
 
-* pin axe-core version to accept patch updates only ([#838](https://github.com/dequelabs/axe-core-npm/issues/838)) ([2456ed6](https://github.com/dequelabs/axe-core-npm/commit/2456ed641781c2262bf71db24f7f97755422d5f6))
-
+- pin axe-core version to accept patch updates only ([#838](https://github.com/dequelabs/axe-core-npm/issues/838)) ([2456ed6](https://github.com/dequelabs/axe-core-npm/commit/2456ed641781c2262bf71db24f7f97755422d5f6))
 
 ### Features
 
-* Update axe-core to v4.8.2 ([#835](https://github.com/dequelabs/axe-core-npm/issues/835)) ([2ac1eaf](https://github.com/dequelabs/axe-core-npm/commit/2ac1eafa6318453003ccfd7c33625e63725a7c00))
-
-
-
-
+- Update axe-core to v4.8.2 ([#835](https://github.com/dequelabs/axe-core-npm/issues/835)) ([2ac1eaf](https://github.com/dequelabs/axe-core-npm/commit/2ac1eafa6318453003ccfd7c33625e63725a7c00))
 
 # [4.8.0](https://github.com/dequelabs/axe-core-npm/compare/v4.7.3...v4.8.0) (2023-09-28)
 
-
 ### Bug Fixes
 
-* pin axe-core version to accept patch updates only ([#838](https://github.com/dequelabs/axe-core-npm/issues/838)) ([2456ed6](https://github.com/dequelabs/axe-core-npm/commit/2456ed641781c2262bf71db24f7f97755422d5f6))
-
+- pin axe-core version to accept patch updates only ([#838](https://github.com/dequelabs/axe-core-npm/issues/838)) ([2456ed6](https://github.com/dequelabs/axe-core-npm/commit/2456ed641781c2262bf71db24f7f97755422d5f6))
 
 ### Features
 
-* Update axe-core to v4.8.2 ([#835](https://github.com/dequelabs/axe-core-npm/issues/835)) ([2ac1eaf](https://github.com/dequelabs/axe-core-npm/commit/2ac1eafa6318453003ccfd7c33625e63725a7c00))
-
-
-
-
+- Update axe-core to v4.8.2 ([#835](https://github.com/dequelabs/axe-core-npm/issues/835)) ([2ac1eaf](https://github.com/dequelabs/axe-core-npm/commit/2ac1eafa6318453003ccfd7c33625e63725a7c00))
 
 ## [4.7.3](https://github.com/dequelabs/axe-core-npm/compare/v4.7.2...v4.7.3) (2023-06-09)
 
