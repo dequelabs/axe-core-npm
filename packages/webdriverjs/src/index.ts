@@ -274,9 +274,7 @@ export default class AxeBuilder {
     await driver.switchTo().window(win);
 
     try {
-      await driver.executeScript(`window.open('about:blank')`);
-      const handlers = await driver.getAllWindowHandles();
-      await driver.switchTo().window(handlers[handlers.length - 1]);
+      await driver.switchTo().newWindow('tab');
       await driver.get('about:blank');
     } catch (error) {
       throw new Error(
