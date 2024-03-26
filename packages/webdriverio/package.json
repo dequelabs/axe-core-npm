@@ -49,8 +49,7 @@
   ],
   "dependencies": {
     "axe-core": "~4.9.0",
-    "cssesc": "^3.0.0",
-    "undefined": "^0.1.0"
+    "cssesc": "^3.0.0"
   },
   "devDependencies": {
     "@types/chai": "^4.3.3",
