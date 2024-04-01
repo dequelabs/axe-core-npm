@@ -1,6 +1,7 @@
 import { WebDriver, Builder } from 'selenium-webdriver';
 import chromedriver from 'chromedriver';
 import chrome from 'selenium-webdriver/chrome';
+import firefox from 'selenium-webdriver/firefox';
 
 export const Webdriver = (): WebDriver => {
   const builder = new Builder()
@@ -17,4 +18,15 @@ export const Webdriver = (): WebDriver => {
   }
 
   return builder.build();
+};
+
+export const FirefoxDriver = (): WebDriver => {
+  return new Builder()
+    .forBrowser('firefox')
+    .setFirefoxOptions(new firefox.Options().addArguments('--headless'))
+    .build();
+};
+
+export const SafariDriver = (): WebDriver => {
+  return new Builder().forBrowser('safari').build();
 };
