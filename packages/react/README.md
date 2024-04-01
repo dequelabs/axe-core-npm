@@ -4,6 +4,10 @@ Test your React application with the [axe-core](https://github.com/dequelabs/axe
 
 Previous versions of this program were maintained at [dequelabs/react-axe](https://github.com/dequelabs/react-axe).
 
+## React support
+
+This package does not support React 18 and above. Deque is working on alternatives for React 18+ developers and will update the community following product announcements at [axe-con 2024](https://www.deque.com/axe-con/).
+
 ## Usage
 
 Install the module from NPM or elsewhere
