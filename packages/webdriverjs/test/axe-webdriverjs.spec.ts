@@ -1,6 +1,6 @@
 import 'mocha';
 import type { AxeResults, Result } from 'axe-core';
-import { WebDriver } from 'selenium-webdriver';
+import type { WebDriver } from 'selenium-webdriver';
 import express from 'express';
 import listen from 'async-listen';
 import { assert } from 'chai';
