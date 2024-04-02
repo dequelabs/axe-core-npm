@@ -105,7 +105,7 @@ describe('startDriver', () => {
     assert.deepEqual(timeoutValue.script, 10000000);
   });
 
-  it('test headless option in selenium-webdriver < 4.17.0', async () => {
+  it('invokes `options.headless()` on versions of selenium-webdriver < 4.17.0', async () => {
     const stub = sinon.stub(chrome, 'Options').returns({
       headless: () => {}
     });
