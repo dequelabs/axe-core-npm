@@ -23,6 +23,8 @@ describe('startDriver', () => {
   });
 
   afterEach(async () => {
+    // try catch required due to `chrome.options` being mocked with sinon
+    // and not properly creating a driver
     try {
       await driver.quit();
     } catch (error) {}
@@ -109,6 +111,9 @@ describe('startDriver', () => {
     const stub = sinon.stub(chrome, 'Options').returns({
       headless: () => {}
     });
+
+    // try catch required due to `chrome.options` being mocked with sinon
+    // and not properly creating a driver
     try {
       driver = await startDriver(config);
     } catch (error) {}
