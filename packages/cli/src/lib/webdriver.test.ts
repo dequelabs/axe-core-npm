@@ -4,9 +4,10 @@ import { startDriver } from './webdriver';
 import { WebDriver } from 'selenium-webdriver';
 import chromedriver from 'chromedriver';
 import chrome from 'selenium-webdriver/chrome';
-import type { Options } from 'selenium-webdriver/chrome';
 import path from 'path';
 import { WebdriverConfigParams } from '../types';
+import sinon from 'sinon';
+
 describe('startDriver', () => {
   let config: WebdriverConfigParams;
   let browser: string;
@@ -100,5 +101,15 @@ describe('startDriver', () => {
 
     assert.isObject(timeoutValue);
     assert.deepEqual(timeoutValue.script, 10000000);
+  });
+
+  it('test headless option in selenium-webdriver < 4.17.0', async () => {
+    const stub = sinon.stub(chrome, 'Options').returns({
+      headless: () => {}
+    });
+
+    driver = await startDriver(config);
+    assert.isTrue(stub.calledOnce);
+    stub.restore();
   });
 });
