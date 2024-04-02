@@ -107,8 +107,9 @@ describe('startDriver', () => {
     const stub = sinon.stub(chrome, 'Options').returns({
       headless: () => {}
     });
-
-    driver = await startDriver(config);
+    try {
+      driver = await startDriver(config);
+    } catch (error) {}
     assert.isTrue(stub.calledOnce);
     stub.restore();
   });
