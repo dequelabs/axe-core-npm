@@ -23,7 +23,9 @@ describe('startDriver', () => {
   });
 
   afterEach(async () => {
-    await driver.quit();
+    try {
+      await driver.quit();
+    } catch (error) {}
   });
 
   it('creates a driver', async () => {
