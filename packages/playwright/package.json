@@ -1,6 +1,6 @@
 {
   "name": "@axe-core/playwright",
-  "version": "4.8.5",
+  "version": "4.9.0",
   "description": "Provides a method to inject and analyze web pages using axe",
   "contributors": [
     {
@@ -51,7 +51,7 @@
     "prepare": "npx playwright install && npm run build"
   },
   "dependencies": {
-    "axe-core": "~4.8.4"
+    "axe-core": "~4.9.0"
   },
   "devDependencies": {
     "@playwright/test": "^1.34.3",

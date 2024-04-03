@@ -7,10 +7,11 @@ import { assert } from 'chai';
 import path from 'path';
 import fs from 'fs';
 import { Server, createServer } from 'http';
-import { Webdriver } from './test-utils';
+import { FirefoxDriver, SafariDriver, Webdriver } from './test-utils';
 import { AxeBuilder } from '../src';
 import { axeRunPartial } from '../src/browser';
 import { fixturesPath } from 'axe-test-fixtures';
+import { Command, Name } from 'selenium-webdriver/lib/command';
 
 const dylangConfig = JSON.parse(
   fs.readFileSync(path.join(fixturesPath, 'dylang-config.json'), 'utf8')
@@ -837,6 +838,48 @@ describe('@axe-core/webdriverjs', () => {
         );
       }
     });
+    it('throws an error if switchTo fails', async () => {
+      driver.switchTo = () => {
+        throw new Error('switchTo failed.');
+      };
+      const title = await driver.getTitle();
+
+      assert.notEqual(title, 'Error');
+      try {
+        await new AxeBuilder(driver, axeSource).analyze();
+        assert.fail('Should have thrown');
+      } catch (err) {
+        assert.match((err as Error).message, /switchTo failed./);
+      }
+    });
+    it('throws an error if unable to determine window handle', async () => {
+      // note: overriding executeScript to run twice and thus force finishRun to throw
+      driver.executeScript = async (script, ...args) => {
+        driver.execute(
+          new Command(Name.EXECUTE_SCRIPT)
+            .setParameter('script', script)
+            .setParameter('args', args)
+        );
+        return driver.execute(
+          new Command(Name.EXECUTE_SCRIPT)
+            .setParameter('script', script)
+            .setParameter('args', args)
+        );
+      };
+      const title = await driver.getTitle();
+
+      assert.notEqual(title, 'Error');
+      try {
+        await new AxeBuilder(driver, axeSource).analyze();
+        assert.fail('Should have thrown');
+      } catch (err) {
+        assert.match((err as Error).message, /Unable to determine window/);
+        assert.include(
+          (err as Error).message,
+          'Please check out https://github.com/dequelabs/axe-core-npm/blob/develop/packages/webdriverjs/error-handling.md'
+        );
+      }
+    });
   });
 
   describe('setLegacyMode', () => {
@@ -1025,5 +1068,32 @@ describe('@axe-core/webdriverjs', () => {
       assert.deepEqual(allowedOrigins, ['*']);
       assert.lengthOf(allowedOrigins, 1);
     });
+  });
+
+  describe('driver', () => {
+    it(`should not throw when it's Chrome`, async () => {
+      assert.doesNotThrow(async () => {
+        await driver.get(`${addr}/index.html`);
+        await driver.get('about:blank');
+      }, Error);
+    });
+    it(`should not throw when it's Firefox`, async () => {
+      driver = FirefoxDriver();
+      assert.doesNotThrow(async () => {
+        await driver.get(`${addr}/index.html`);
+        await driver.get('about:blank');
+      }, Error);
+    });
+    // skip this if we're not on Mac
+    (process.platform === 'darwin' ? it : it.skip)(
+      `should not throw when it's Safari`,
+      async () => {
+        driver = SafariDriver();
+        assert.doesNotThrow(async () => {
+          await driver.get(`${addr}/index.html`);
+          await driver.get('about:blank');
+        }, Error);
+      }
+    );
   });
 });
