@@ -37,7 +37,9 @@ export async function startServer(): Promise<{ server: Server; addr: string }> {
 }
 
 export function puppeteerOpts(): PuppeteerLaunchOptions {
-  const options: PuppeteerLaunchOptions = {};
+  const options: PuppeteerLaunchOptions = {
+    headless: 'new'
+  };
 
   if (process.env.CI) {
     options.args = [];
