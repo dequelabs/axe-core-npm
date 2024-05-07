@@ -390,6 +390,8 @@ describe('@axe-core/webdriverjs', () => {
         .options({ runOnly: ['label', 'frame-tested'] })
         .analyze();
 
+      assert.notEqual(title, 'Error');
+
       // chrome version 124 (regardless of webdriver version) is able to load
       // lazy loaded iframes and run axe on them without timing out, but we
       // still want to test that our code works with versions <124 to handle
@@ -400,7 +402,6 @@ describe('@axe-core/webdriverjs', () => {
         .split('.')
         .map(Number);
       if (majorVersion < 124) {
-        assert.notEqual(title, 'Error');
         assert.equal(results.incomplete[0].id, 'frame-tested');
         assert.lengthOf(results.incomplete[0].nodes, 1);
         assert.deepEqual(results.incomplete[0].nodes[0].target, [

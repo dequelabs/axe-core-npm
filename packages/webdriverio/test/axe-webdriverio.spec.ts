@@ -893,12 +893,25 @@ describe('@axe-core/webdriverio', () => {
               .analyze();
 
             assert.notEqual(title, 'Error');
-            assert.equal(results.incomplete[0].id, 'frame-tested');
-            assert.lengthOf(results.incomplete[0].nodes, 1);
-            assert.deepEqual(results.incomplete[0].nodes[0].target, [
-              '#ifr-lazy',
-              '#lazy-iframe'
-            ]);
+
+            // chrome version 124 (regardless of webdriver version) is able to load
+            // lazy loaded iframes and run axe on them without timing out, but we
+            // still want to test that our code works with versions <124 to handle
+            // the iframe by giving a frame-tested incomplete
+            const [majorVersion] = client.capabilities.browserVersion
+              .split('.')
+              .map(Number);
+            if (majorVersion < 124) {
+              assert.equal(results.incomplete[0].id, 'frame-tested');
+              assert.lengthOf(results.incomplete[0].nodes, 1);
+              assert.deepEqual(results.incomplete[0].nodes[0].target, [
+                '#ifr-lazy',
+                '#lazy-iframe'
+              ]);
+            } else {
+              assert.isEmpty(results.incomplete);
+            }
+
             assert.equal(results.violations[0].id, 'label');
             assert.lengthOf(results.violations[0].nodes, 1);
             assert.deepEqual(results.violations[0].nodes[0].target, [
