@@ -48,7 +48,7 @@ const connectToChromeDriver = (port: number): Promise<void> => {
 
 describe('@axe-core/webdriverio', () => {
   let port: number;
-  for (const protocol of ['devtools'] as const) {
+  for (const protocol of ['devtools', 'webdriver'] as const) {
     if (protocol === 'webdriver') {
       port = 9515;
 
