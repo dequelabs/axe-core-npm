@@ -409,6 +409,7 @@ describe('@axe-core/webdriverjs', () => {
           '#lazy-iframe'
         ]);
       } else {
+        assert.equal(results.passes[0].id, 'frame-tested');
         assert.isEmpty(results.incomplete);
       }
 

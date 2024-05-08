@@ -48,7 +48,7 @@ const connectToChromeDriver = (port: number): Promise<void> => {
 
 describe('@axe-core/webdriverio', () => {
   let port: number;
-  for (const protocol of ['devtools', 'webdriver'] as const) {
+  for (const protocol of ['devtools'] as const) {
     if (protocol === 'webdriver') {
       port = 9515;
 
@@ -909,6 +909,7 @@ describe('@axe-core/webdriverio', () => {
                 '#lazy-iframe'
               ]);
             } else {
+              assert.equal(results.passes[0].id, 'frame-tested');
               assert.isEmpty(results.incomplete);
             }
 

@@ -15,7 +15,6 @@ import {
   expectAsyncToNotThrow
 } from './utils';
 import { fixturesPath } from 'axe-test-fixtures';
-import { version } from 'puppeteer/package.json';
 
 type SinonSpy = sinon.SinonSpy;
 
@@ -884,12 +883,16 @@ describe('AxePuppeteer', function () {
 
       assert.equal(res?.status(), 200);
 
-      // puppeteer version 22 (regardless of chrome version) is able to load
+      // chrome version 124 (regardless of webdriver version) is able to load
       // lazy loaded iframes and run axe on them without timing out, but we
-      // still want to test that our code works with versions <22 to handle
+      // still want to test that our code works with versions <124 to handle
       // the iframe by giving a frame-tested incomplete
-      const [majorVersion] = version.split('.').map(Number);
-      if (majorVersion < 22) {
+      const browserVersion = await page.browser().version();
+      const [majorVersion] = browserVersion
+        .substr(browserVersion.indexOf('/') + 1)
+        .split('.')
+        .map(Number);
+      if (majorVersion < 124) {
         assert.equal(results.incomplete[0].id, 'frame-tested');
         assert.lengthOf(results.incomplete[0].nodes, 1);
         assert.deepEqual(results.incomplete[0].nodes[0].target, [
@@ -897,6 +900,7 @@ describe('AxePuppeteer', function () {
           '#lazy-iframe'
         ]);
       } else {
+        assert.equal(results.passes[0].id, 'frame-tested');
         assert.isEmpty(results.incomplete);
       }
 
