@@ -15,6 +15,7 @@ import {
   expectAsyncToNotThrow
 } from './utils';
 import { fixturesPath } from 'axe-test-fixtures';
+import { setTimeout as promiseTimeout } from 'timers/promises';
 
 type SinonSpy = sinon.SinonSpy;
 
@@ -23,12 +24,6 @@ declare global {
     parallel?: boolean;
   }
 }
-
-const sleep = function (n: number) {
-  return new Promise(resolve => {
-    setTimeout(resolve, n);
-  });
-};
 
 describe('AxePuppeteer', function () {
   let browser: Browser;
@@ -885,7 +880,7 @@ describe('AxePuppeteer', function () {
       const res = await page.goto(`${addr}/lazy-loaded-iframe.html`);
 
       // allow time for the top-level iframe to load
-      await sleep(1000);
+      await promiseTimeout(1000);
 
       const results = await new AxePuppeteer(page)
         .options({ runOnly: ['label', 'frame-tested'] })

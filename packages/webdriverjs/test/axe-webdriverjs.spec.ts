@@ -12,16 +12,11 @@ import { AxeBuilder } from '../src';
 import { axeRunPartial } from '../src/browser';
 import { fixturesPath } from 'axe-test-fixtures';
 import { Command, Name } from 'selenium-webdriver/lib/command';
+import { setTimeout as promiseTimeout } from 'timers/promises';
 
 const dylangConfig = JSON.parse(
   fs.readFileSync(path.join(fixturesPath, 'dylang-config.json'), 'utf8')
 );
-
-const sleep = function (n: number) {
-  return new Promise(resolve => {
-    setTimeout(resolve, n);
-  });
-};
 
 describe('@axe-core/webdriverjs', () => {
   let driver: WebDriver;
@@ -393,7 +388,7 @@ describe('@axe-core/webdriverjs', () => {
       const title = await driver.getTitle();
 
       // allow time for the top-level iframe to load
-      await sleep(1000);
+      await promiseTimeout(1000);
 
       const results = await new AxeBuilder(driver)
         .options({ runOnly: ['label', 'frame-tested'] })

@@ -14,6 +14,7 @@ import type { AxeResults, Result } from 'axe-core';
 import child_process from 'child_process';
 import { ChildProcessWithoutNullStreams } from 'child_process';
 import { fixturesPath } from 'axe-test-fixtures';
+import { setTimeout as promiseTimeout } from 'timers/promises';
 
 const connectToChromeDriver = (port: number): Promise<void> => {
   let socket: net.Socket;
@@ -43,12 +44,6 @@ const connectToChromeDriver = (port: number): Promise<void> => {
       socket.destroy();
       return reject(err);
     });
-  });
-};
-
-const sleep = function (n: number) {
-  return new Promise(resolve => {
-    setTimeout(resolve, n);
   });
 };
 
@@ -895,7 +890,7 @@ describe('@axe-core/webdriverio', () => {
             const title = await client.getTitle();
 
             // allow time for the top-level iframe to load
-            await sleep(1000);
+            await promiseTimeout(1000);
 
             const results = await new AxeBuilder({ client })
               .options({ runOnly: ['label', 'frame-tested'] })
