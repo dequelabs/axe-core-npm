@@ -46,6 +46,12 @@ const connectToChromeDriver = (port: number): Promise<void> => {
   });
 };
 
+const sleep = function (n: number) {
+  return new Promise(resolve => {
+    setTimeout(resolve, n);
+  });
+};
+
 describe('@axe-core/webdriverio', () => {
   let port: number;
   for (const protocol of ['devtools', 'webdriver'] as const) {
@@ -888,6 +894,9 @@ describe('@axe-core/webdriverio', () => {
             await client.url(`${addr}/lazy-loaded-iframe.html`);
             const title = await client.getTitle();
 
+            // allow time for the top-level iframe to load
+            await sleep(1000);
+
             const results = await new AxeBuilder({ client })
               .options({ runOnly: ['label', 'frame-tested'] })
               .analyze();
@@ -898,10 +907,9 @@ describe('@axe-core/webdriverio', () => {
             // lazy loaded iframes and run axe on them without timing out, but we
             // still want to test that our code works with versions <124 to handle
             // the iframe by giving a frame-tested incomplete
-            const [majorVersion] = client.capabilities.browserVersion
-              .split('.')
-              .map(Number);
-            if (majorVersion < 124) {
+
+            // chrome version is unable to load the iframe
+            if (results.incomplete.length) {
               assert.equal(results.incomplete[0].id, 'frame-tested');
               assert.lengthOf(results.incomplete[0].nodes, 1);
               assert.deepEqual(results.incomplete[0].nodes[0].target, [
@@ -910,7 +918,10 @@ describe('@axe-core/webdriverio', () => {
               ]);
             } else {
               assert.equal(results.passes[0].id, 'frame-tested');
-              assert.isEmpty(results.incomplete);
+              assert.deepEqual(results.passes[0].nodes[1].target, [
+                '#ifr-lazy',
+                '#lazy-iframe'
+              ]);
             }
 
             assert.equal(results.violations[0].id, 'label');

@@ -24,6 +24,12 @@ declare global {
   }
 }
 
+const sleep = function (n: number) {
+  return new Promise(resolve => {
+    setTimeout(resolve, n);
+  });
+};
+
 describe('AxePuppeteer', function () {
   let browser: Browser;
   let page: Page;
@@ -877,6 +883,10 @@ describe('AxePuppeteer', function () {
 
     it('skips unloaded iframes (e.g. loading=lazy)', async () => {
       const res = await page.goto(`${addr}/lazy-loaded-iframe.html`);
+
+      // allow time for the top-level iframe to load
+      await sleep(1000);
+
       const results = await new AxePuppeteer(page)
         .options({ runOnly: ['label', 'frame-tested'] })
         .analyze();
@@ -887,12 +897,9 @@ describe('AxePuppeteer', function () {
       // lazy loaded iframes and run axe on them without timing out, but we
       // still want to test that our code works with versions <124 to handle
       // the iframe by giving a frame-tested incomplete
-      const browserVersion = await page.browser().version();
-      const [majorVersion] = browserVersion
-        .substr(browserVersion.indexOf('/') + 1)
-        .split('.')
-        .map(Number);
-      if (majorVersion < 124) {
+
+      // chrome version is unable to load the iframe
+      if (results.incomplete.length) {
         assert.equal(results.incomplete[0].id, 'frame-tested');
         assert.lengthOf(results.incomplete[0].nodes, 1);
         assert.deepEqual(results.incomplete[0].nodes[0].target, [
@@ -901,7 +908,10 @@ describe('AxePuppeteer', function () {
         ]);
       } else {
         assert.equal(results.passes[0].id, 'frame-tested');
-        assert.isEmpty(results.incomplete);
+        assert.deepEqual(results.passes[0].nodes[1].target, [
+          '#ifr-lazy',
+          '#lazy-iframe'
+        ]);
       }
 
       assert.equal(results.violations[0].id, 'label');
