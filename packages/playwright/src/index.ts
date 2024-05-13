@@ -185,7 +185,14 @@ export default class AxeBuilder {
 
   private async inject(frames: Frame[]): Promise<void> {
     for (const iframe of frames) {
-      await iframe.evaluate(await this.script());
+      const race = new Promise((_, reject) => {
+        setTimeout(() => {
+          reject(new Error('Script Timeout'));
+        }, 1000);
+      });
+      const evaluate = iframe.evaluate(this.script());
+
+      await Promise.race([evaluate, race]);
       await iframe.evaluate(await this.axeConfigure());
     }
   }
