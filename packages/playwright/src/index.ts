@@ -183,7 +183,7 @@ export default class AxeBuilder {
    * @returns Promise<void>
    */
 
-  private async inject(frames: Frame[]): Promise<void> {
+  private async inject(frames: Frame[], shouldThrow?: boolean): Promise<void> {
     for (const iframe of frames) {
       const race = new Promise((_, reject) => {
         setTimeout(() => {
@@ -192,8 +192,15 @@ export default class AxeBuilder {
       });
       const evaluate = iframe.evaluate(this.script());
 
-      await Promise.race([evaluate, race]);
-      await iframe.evaluate(await this.axeConfigure());
+      try {
+        await Promise.race([evaluate, race]);
+        await iframe.evaluate(await this.axeConfigure());
+      } catch (err) {
+        // in legacy mode we don't want to throw the error we just want to skip injecting into the frame
+        if (shouldThrow) {
+          throw err;
+        }
+      }
     }
   }
 
@@ -263,7 +270,7 @@ export default class AxeBuilder {
           iframeHandle.asElement() as ElementHandle<Element>;
         const childFrame = await iframeElement.contentFrame();
         if (childFrame) {
-          await this.inject([childFrame]);
+          await this.inject([childFrame], true);
           childResults = await this.runPartialRecursive(
             childFrame,
             frameContext
