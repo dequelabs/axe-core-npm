@@ -52,7 +52,7 @@
     "chromedriver": "latest",
     "colors": "^1.4.0",
     "commander": "^9.4.1",
-    "selenium-webdriver": "~4.17.0"
+    "selenium-webdriver": "~4.20.0"
   },
   "devDependencies": {
     "@types/chai": "^4.3.3",
