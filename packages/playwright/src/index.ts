@@ -151,7 +151,7 @@ export default class AxeBuilder {
     const context = normalizeContext(this.includes, this.excludes);
     const { page } = this;
 
-    page.evaluate(this.script());
+    await page.evaluate(this.script());
     const runPartialDefined = await page.evaluate<boolean>(
       'typeof window.axe.runPartial === "function"'
     );
