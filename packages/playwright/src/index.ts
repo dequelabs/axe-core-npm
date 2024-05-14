@@ -295,8 +295,8 @@ export default class AxeBuilder {
       'Please make sure that you have popup blockers disabled.'
     );
 
-    blankPage.evaluate(this.script());
-    blankPage.evaluate(await this.axeConfigure());
+    await blankPage.evaluate(this.script());
+    await blankPage.evaluate(await this.axeConfigure());
 
     // evaluate has a size limit on the number of characters so we'll need
     // to split partialResults into chunks if it exceeds that limit.
