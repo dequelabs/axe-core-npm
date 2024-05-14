@@ -6,7 +6,11 @@ Previous versions of this program were maintained at [dequelabs/react-axe](https
 
 ## React support
 
-This package does not support React 18 and above. Deque is working on alternatives for React 18+ developers and will update the community following product announcements at [axe-con 2024](https://www.deque.com/axe-con/).
+This package does not support React 18 and above. Deque released a product called [axe Developer Hub](https://www.deque.com/axe/developer-hub/). This product has [numerous JavaScript/TypeScript test framework integrations](https://docs.deque.com/developer-hub/2/en/dh-platform-support#browser-automation-platform-support) and is Deque's recommended path forward for users of this library who wish to use more modern versions of React.
+
+The product has a free plan where each licensed user gets 1 API key. This is a good option for open-source projects or solo developers looking for high-quality accessibility feedback. [Sign up for the free plan](https://axe.deque.com/signup?product=axe-devtools-watcher&redirect_uri=https%3A%2F%2Faxe.deque.com%2Faxe-watcher%2Fstartup).
+
+For more information, read the [blog post: Introducing axe Developer Hub, now available as part of axe DevTools for Web](https://www.deque.com/blog/introducing-axe-developer-hub-now-available-as-part-of-axe-devtools-for-web/)
 
 ## Usage
 
