@@ -10,7 +10,7 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 2
     steps:
-      - uses: dequelabs/action-sync-branches@v1.0.1
+      - uses: dequelabs/action-sync-branches@v1
         with:
           github-token: ${{ secrets.PAT }}
           pr-title: 'chore: merge master into develop'
