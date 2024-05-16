@@ -3,9 +3,12 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
-## [4.9.1](https://github.com/dequelabs/axe-core-npm/compare/v4.9.0...v4.9.1) (2024-05-10)
+## [4.9.1](https://github.com/dequelabs/axe-core-npm/compare/v4.9.0...v4.9.1) (2024-05-15)
 
-**Note:** Version bump only for package @axe-core/playwright
+
+### Bug Fixes
+
+* **playwright:** skip unloaded iframes ([#1060](https://github.com/dequelabs/axe-core-npm/issues/1060)) ([d30dae4](https://github.com/dequelabs/axe-core-npm/commit/d30dae4a6fede397bc49b5171c4cb4c43e545b53))
 
 
 

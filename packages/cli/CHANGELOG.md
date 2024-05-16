@@ -7,31 +7,17 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 
 **Note:** Version bump only for package @axe-core/cli
 
-
-
-
-
 # [4.9.0](https://github.com/dequelabs/axe-core-npm/compare/v4.8.5...v4.9.0) (2024-04-01)
-
 
 ### Features
 
-* Update axe-core to v4.9.0 ([#1028](https://github.com/dequelabs/axe-core-npm/issues/1028)) ([7e152b6](https://github.com/dequelabs/axe-core-npm/commit/7e152b65ff30b9e1cb26c3b0564457b32a0d35b2))
-
-
-
-
+- Update axe-core to v4.9.0 ([#1028](https://github.com/dequelabs/axe-core-npm/issues/1028)) ([7e152b6](https://github.com/dequelabs/axe-core-npm/commit/7e152b65ff30b9e1cb26c3b0564457b32a0d35b2))
 
 ## [4.8.5](https://github.com/dequelabs/axe-core-npm/compare/v4.8.4...v4.8.5) (2024-02-08)
 
-
 ### Bug Fixes
 
-* Update axe-core to v4.8.4 ([#1008](https://github.com/dequelabs/axe-core-npm/issues/1008)) ([d54f145](https://github.com/dequelabs/axe-core-npm/commit/d54f145a4078c4730a850e694c9eb77297c23a35))
-
-
-
-
+- Update axe-core to v4.8.4 ([#1008](https://github.com/dequelabs/axe-core-npm/issues/1008)) ([d54f145](https://github.com/dequelabs/axe-core-npm/commit/d54f145a4078c4730a850e694c9eb77297c23a35))
 
 ## [4.8.4](https://github.com/dequelabs/axe-core-npm/compare/v4.8.3...v4.8.4) (2024-01-23)
 
