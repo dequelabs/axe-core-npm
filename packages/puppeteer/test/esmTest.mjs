@@ -3,13 +3,16 @@ import defaultExport from '../dist/index.mjs';
 import { AxePuppeteer } from '../dist/index.mjs';
 import assert from 'assert';
 import puppeteer from 'puppeteer';
-import { fileURLToPath, pathToFileURL } from 'url';
+import { pathToFileURL } from 'url';
 import { join } from 'path';
 import { fixturesPath } from 'axe-test-fixtures';
 
 assert(typeof defaultExport === 'function', 'default export is not a function');
-assert(typeof AxePuppeteer === 'function', 'named export is not a function')
-assert(defaultExport === AxePuppeteer, 'default and named export are not the same');
+assert(typeof AxePuppeteer === 'function', 'named export is not a function');
+assert(
+  defaultExport === AxePuppeteer,
+  'default and named export are not the same'
+);
 
 const options = {};
 

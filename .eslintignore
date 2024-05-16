@@ -1,6 +1,0 @@
-packages/cli/src/testutils/*
-packages/cli/src/**/**/*.test.ts
-packages/reporter-earl/coverage
-packages/react/examples/**
-**/dist/*
-**/fixtures/external/*

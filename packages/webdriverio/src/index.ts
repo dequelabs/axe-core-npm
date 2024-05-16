@@ -72,7 +72,7 @@ export default class AxeBuilder {
     } else {
       try {
         this.axeSource = fs.readFileSync(axeCorePath, 'utf-8');
-      } catch (e) {
+      } catch {
         throw new Error(
           'Unable to find axe-core source. Is axe-core installed?'
         );
@@ -343,7 +343,7 @@ export default class AxeBuilder {
             frame
           ]))
         );
-      } catch (error) {
+      } catch {
         const [topWindow] = await this.client.getWindowHandles();
         await this.client.switchToWindow(topWindow);
 
