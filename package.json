@@ -16,8 +16,6 @@
     "build": "npm run --workspaces build"
   },
   "devDependencies": {
-    "@typescript-eslint/eslint-plugin": "^8.0.0-alpha.12",
-    "@typescript-eslint/parser": "^8.0.0-alpha.12",
     "axe-test-fixtures": "github:dequelabs/axe-test-fixtures#v1",
     "eslint": "^9.2.0",
     "eslint-config-prettier": "^9.1.0",

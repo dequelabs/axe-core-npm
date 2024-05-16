@@ -1,4 +1,3 @@
-const typescriptParser = require('@typescript-eslint/parser');
 const globals = require('globals');
 const eslint = require('@eslint/js');
 const tseslint = require('typescript-eslint');
@@ -11,7 +10,7 @@ module.exports = [
   ...tseslint.configs.recommended,
   {
     languageOptions: {
-      parser: typescriptParser,
+      parser: tseslint.parser,
       globals: {
         ...globals.node,
         ...globals.mocha,
@@ -24,7 +23,8 @@ module.exports = [
       }
     },
     plugins: {
-      prettier: eslintPluginPrettier
+      prettier: eslintPluginPrettier,
+      '@typescript-eslint': tseslint.plugin
     },
     rules: {
       '@typescript-eslint/camelcase': 'off',
