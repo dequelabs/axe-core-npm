@@ -1,6 +1,6 @@
 {
   "name": "@axe-core/cli",
-  "version": "4.9.0",
+  "version": "4.9.1",
   "description": "A CLI for accessibility testing using axe-core",
   "author": {
     "name": "Wilco Fiers",
@@ -47,23 +47,25 @@
     "testing"
   ],
   "dependencies": {
-    "@axe-core/webdriverjs": "^4.9.0",
-    "axe-core": "~4.9.0",
+    "@axe-core/webdriverjs": "^4.9.1",
+    "axe-core": "~4.9.1",
     "chromedriver": "latest",
     "colors": "^1.4.0",
     "commander": "^9.4.1",
-    "selenium-webdriver": "~4.17.0"
+    "selenium-webdriver": "~4.20.0"
   },
   "devDependencies": {
     "@types/chai": "^4.3.3",
     "@types/chromedriver": "^81.0.1",
     "@types/mocha": "^10.0.0",
     "@types/selenium-webdriver": "^4.1.5",
+    "@types/sinon": "^17.0.3",
     "chai": "^4.3.6",
     "execa": "5.1.1",
     "mocha": "^10.0.0",
     "nyc": "^15.1.0",
     "rimraf": "^5.0.5",
+    "sinon": "^17.0.1",
     "tempy": "^1.0.0",
     "ts-node": "^10.9.1",
     "typescript": "^5.2.2"
