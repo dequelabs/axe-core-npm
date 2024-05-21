@@ -17,7 +17,7 @@ const startDriver = async (
 
     let options = new chrome.Options();
     // selenium-webdriver < 4.17.0
-    if (typeof options.headless === 'function') {
+    if ('headless' in options && typeof options.headless === 'function') {
       options.headless();
     }
     // selenium-webdriver >= 4.17.0

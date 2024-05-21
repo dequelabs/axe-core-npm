@@ -151,7 +151,7 @@ export default class AxeBuilder {
     const context = normalizeContext(this.includes, this.excludes);
     const { page } = this;
 
-    page.evaluate(this.script());
+    await page.evaluate(this.script());
     const runPartialDefined = await page.evaluate<boolean>(
       'typeof window.axe.runPartial === "function"'
     );
@@ -183,10 +183,24 @@ export default class AxeBuilder {
    * @returns Promise<void>
    */
 
-  private async inject(frames: Frame[]): Promise<void> {
+  private async inject(frames: Frame[], shouldThrow?: boolean): Promise<void> {
     for (const iframe of frames) {
-      await iframe.evaluate(await this.script());
-      await iframe.evaluate(await this.axeConfigure());
+      const race = new Promise((_, reject) => {
+        setTimeout(() => {
+          reject(new Error('Script Timeout'));
+        }, 1000);
+      });
+      const evaluate = iframe.evaluate(this.script());
+
+      try {
+        await Promise.race([evaluate, race]);
+        await iframe.evaluate(await this.axeConfigure());
+      } catch (err) {
+        // in legacy mode we don't want to throw the error we just want to skip injecting into the frame
+        if (shouldThrow) {
+          throw err;
+        }
+      }
     }
   }
 
@@ -256,7 +270,7 @@ export default class AxeBuilder {
           iframeHandle.asElement() as ElementHandle<Element>;
         const childFrame = await iframeElement.contentFrame();
         if (childFrame) {
-          await this.inject([childFrame]);
+          await this.inject([childFrame], true);
           childResults = await this.runPartialRecursive(
             childFrame,
             frameContext
@@ -281,8 +295,8 @@ export default class AxeBuilder {
       'Please make sure that you have popup blockers disabled.'
     );
 
-    blankPage.evaluate(this.script());
-    blankPage.evaluate(await this.axeConfigure());
+    await blankPage.evaluate(this.script());
+    await blankPage.evaluate(await this.axeConfigure());
 
     // evaluate has a size limit on the number of characters so we'll need
     // to split partialResults into chunks if it exceeds that limit.

@@ -59,7 +59,7 @@ jobs:
       - run: npm ci
         # HACK: Force a TTY to enable browser-driver-manager to manipulate stdout.
       - shell: 'script -q -e -c "bash {0}"'
-        run: npx browser-driver-manager install chromedriver=121 --verbose
+        run: npx browser-driver-manager install chromedriver=125 --verbose
         working-directory: packages/cli
       - run: npm run coverage --workspace=packages/cli
 

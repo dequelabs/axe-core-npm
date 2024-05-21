@@ -274,9 +274,21 @@ export default class AxeBuilder {
     await driver.switchTo().window(win);
 
     try {
-      await driver.executeScript(`window.open('about:blank')`);
-      const handlers = await driver.getAllWindowHandles();
-      await driver.switchTo().window(handlers[handlers.length - 1]);
+      // This is a workaround to maintain support for Selenium 3, which does not have the `newWindow` API in Selenium 4.
+      // TODO: Remove this workaround should we drop support for Selenium 3
+      // https://github.com/dequelabs/axe-core-npm/issues/1032
+      const beforeHandles = await driver.getAllWindowHandles();
+      await driver.executeScript(`window.open('about:blank', '_blank')`);
+      const afterHandles = await driver.getAllWindowHandles();
+      const newHandles = afterHandles.filter(
+        afterHandle => beforeHandles.indexOf(afterHandle) === -1
+      );
+
+      if (newHandles.length !== 1) {
+        throw new Error('Unable to determine window handle');
+      }
+      const newHandle = newHandles[0];
+      await driver.switchTo().window(newHandle);
       await driver.get('about:blank');
     } catch (error) {
       throw new Error(

@@ -3,6 +3,28 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [4.9.1](https://github.com/dequelabs/axe-core-npm/compare/v4.9.0...v4.9.1) (2024-05-15)
+
+
+### Bug Fixes
+
+* **playwright:** skip unloaded iframes ([#1060](https://github.com/dequelabs/axe-core-npm/issues/1060)) ([d30dae4](https://github.com/dequelabs/axe-core-npm/commit/d30dae4a6fede397bc49b5171c4cb4c43e545b53))
+
+
+
+
+
+# [4.9.0](https://github.com/dequelabs/axe-core-npm/compare/v4.8.5...v4.9.0) (2024-04-01)
+
+
+### Features
+
+* Update axe-core to v4.9.0 ([#1028](https://github.com/dequelabs/axe-core-npm/issues/1028)) ([7e152b6](https://github.com/dequelabs/axe-core-npm/commit/7e152b65ff30b9e1cb26c3b0564457b32a0d35b2))
+
+
+
+
+
 ## [4.8.5](https://github.com/dequelabs/axe-core-npm/compare/v4.8.4...v4.8.5) (2024-02-08)
 
 

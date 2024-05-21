@@ -3,7 +3,6 @@ import { assert } from 'chai';
 import tempy from 'tempy';
 import { join } from 'path';
 import { mkdirSync, writeFileSync, rmSync } from 'fs';
-import { dependencies } from '../../package.json';
 import * as utils from './utils';
 
 describe('utils', () => {
@@ -83,11 +82,7 @@ describe('utils', () => {
         writeFileSync(join(parentDirname, 'axe.js'), 'parent');
 
         const cliDirname = join(tempDir, 'packages', 'cli');
-        const nodeModDirname = join(
-          cliDirname,
-          'node_modules',
-          'axe-core'
-        );
+        const nodeModDirname = join(cliDirname, 'node_modules', 'axe-core');
         mkdirSync(nodeModDirname, { recursive: true });
         writeFileSync(join(nodeModDirname, 'axe.js'), 'node modules');
 

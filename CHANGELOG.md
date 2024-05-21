@@ -3,16 +3,29 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
-## [4.8.5](https://github.com/dequelabs/axe-core-npm/compare/v4.8.4...v4.8.5) (2024-02-08)
-
+## [4.9.1](https://github.com/dequelabs/axe-core-npm/compare/v4.9.0...v4.9.1) (2024-05-15)
 
 ### Bug Fixes
 
-* Update axe-core to v4.8.4 ([#1008](https://github.com/dequelabs/axe-core-npm/issues/1008)) ([d54f145](https://github.com/dequelabs/axe-core-npm/commit/d54f145a4078c4730a850e694c9eb77297c23a35))
+- **playwright:** skip unloaded iframes ([#1060](https://github.com/dequelabs/axe-core-npm/issues/1060)) ([d30dae4](https://github.com/dequelabs/axe-core-npm/commit/d30dae4a6fede397bc49b5171c4cb4c43e545b53))
 
+- Update axe-core to v4.9.1 ([#1055](https://github.com/dequelabs/axe-core-npm/issues/1055)) ([8644fbd](https://github.com/dequelabs/axe-core-npm/commit/8644fbd2d2b407c68b5ff3bd7b8368c6c173e355))
 
+# [4.9.0](https://github.com/dequelabs/axe-core-npm/compare/v4.8.5...v4.9.0) (2024-04-01)
 
+### Bug Fixes
 
+- get correct new window handle with Selenium 3 workaround ([#1031](https://github.com/dequelabs/axe-core-npm/issues/1031)) ([b72c735](https://github.com/dequelabs/axe-core-npm/commit/b72c73571c12c81c2ef3dc3ebe89e15769f0942b)), closes [#1027](https://github.com/dequelabs/axe-core-npm/issues/1027) [/github.com/dequelabs/axe-core-maven-html/blob/ad58b26a8d0e2f1afed33b2c5cbca22b54644b99/selenium/src/main/java/com/deque/html/axecore/extensions/WebDriverExtensions.java#L126](https://github.com//github.com/dequelabs/axe-core-maven-html/blob/ad58b26a8d0e2f1afed33b2c5cbca22b54644b99/selenium/src/main/java/com/deque/html/axecore/extensions/WebDriverExtensions.java/issues/L126) [#936](https://github.com/dequelabs/axe-core-npm/issues/936)
+
+### Features
+
+- Update axe-core to v4.9.0 ([#1028](https://github.com/dequelabs/axe-core-npm/issues/1028)) ([7e152b6](https://github.com/dequelabs/axe-core-npm/commit/7e152b65ff30b9e1cb26c3b0564457b32a0d35b2))
+
+## [4.8.5](https://github.com/dequelabs/axe-core-npm/compare/v4.8.4...v4.8.5) (2024-02-08)
+
+### Bug Fixes
+
+- Update axe-core to v4.8.4 ([#1008](https://github.com/dequelabs/axe-core-npm/issues/1008)) ([d54f145](https://github.com/dequelabs/axe-core-npm/commit/d54f145a4078c4730a850e694c9eb77297c23a35))
 
 ## [4.8.4](https://github.com/dequelabs/axe-core-npm/compare/v4.8.3...v4.8.4) (2024-01-23)
 

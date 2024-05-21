@@ -19,7 +19,7 @@ const testPages = async (
     const currentUrl = urls[0].replace(/[,;]$/, '');
 
     if (events?.onTestStart) {
-      events?.onTestStart(currentUrl);
+      events.onTestStart(currentUrl);
     }
 
     if (config.timer) {
