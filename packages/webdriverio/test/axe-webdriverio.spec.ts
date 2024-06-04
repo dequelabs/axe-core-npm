@@ -18,8 +18,6 @@ import { fixturesPath } from 'axe-test-fixtures';
 const connectToChromeDriver = (port: number): Promise<void> => {
   let socket: net.Socket;
   return new Promise((resolve, reject) => {
-    // eslint-disable-next-line prefer-const
-
     // Give up after 1s
     const timer = setTimeout(() => {
       socket.destroy();

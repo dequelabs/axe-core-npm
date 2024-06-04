@@ -33,7 +33,8 @@ module.exports = [
       '@typescript-eslint/ban-types': 'off',
       '@typescript-eslint/no-unused-vars': 'error',
       '@typescript-eslint/no-explicit-any': 'error',
-      '@typescript-eslint/no-non-null-assertion': 'error'
+      '@typescript-eslint/no-non-null-assertion': 'error',
+      '@typescript-eslint/no-require-imports': 'off'
     }
   },
   {
@@ -54,11 +55,19 @@ module.exports = [
     }
   },
   {
-    files: ['**/*.test.ts', '**/*.test.tsx', '**/*.spec.ts', '**/*.spec.tsx'],
+    files: [
+      '**/*.test.ts',
+      '**/*.test.tsx',
+      '**/*.spec.ts',
+      '**/*.spec.tsx',
+      '**/test/**',
+      '**/tests/**'
+    ],
     rules: {
       '@typescript-eslint/no-empty-function': 'off',
       '@typescript-eslint/no-explicit-any': 'off',
-      '@typescript-eslint/no-non-null-assertion': 'off'
+      '@typescript-eslint/no-non-null-assertion': 'off',
+      '@typescript-eslint/no-unused-expressions': 'off'
     }
   },
   {
