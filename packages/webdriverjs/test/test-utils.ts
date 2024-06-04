@@ -4,9 +4,14 @@ import chrome from 'selenium-webdriver/chrome';
 import firefox from 'selenium-webdriver/firefox';
 
 export const Webdriver = (): WebDriver => {
+  // Weird type change since 4.23.1 release
+  // @see https://github.com/DefinitelyTyped/DefinitelyTyped/discussions/69724
+  const options = new chrome.Options();
+  options.addArguments('headless');
+
   const builder = new Builder()
     .forBrowser('chrome')
-    .setChromeOptions(new chrome.Options().addArguments('headless'))
+    .setChromeOptions(options)
     .setChromeService(
       new chrome.ServiceBuilder(
         process.env.CHROMEDRIVER_PATH || chromedriver.path

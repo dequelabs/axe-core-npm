@@ -854,17 +854,18 @@ describe('@axe-core/webdriverjs', () => {
     });
     it('throws an error if unable to determine window handle', async () => {
       // note: overriding executeScript to run twice and thus force finishRun to throw
-      driver.executeScript = async (script, ...args) => {
-        driver.execute(
-          new Command(Name.EXECUTE_SCRIPT)
-            .setParameter('script', script)
-            .setParameter('args', args)
-        );
-        return driver.execute(
-          new Command(Name.EXECUTE_SCRIPT)
-            .setParameter('script', script)
-            .setParameter('args', args)
-        );
+      driver.executeScript = async <T>(
+        script: string | Function,
+        ...args: any[]
+      ): Promise<T> => {
+        const command = new Command(Name.EXECUTE_SCRIPT);
+        command.setParameter('script', script);
+        command.setParameter('args', args);
+
+        await driver.execute(command);
+        const res = (await driver.execute(command)) as T;
+
+        return res;
       };
       const title = await driver.getTitle();
 
