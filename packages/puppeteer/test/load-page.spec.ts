@@ -32,7 +32,8 @@ describe('loadPage', function () {
 
   it('handles creating a page for you', async function () {
     const url = fixtureFileURL('index.html');
-    const results = await (await loadPage(browser, url)).analyze();
+    const page = await loadPage(browser, url);
+    const results = await page.analyze();
     expect(results).to.exist;
   });
 
