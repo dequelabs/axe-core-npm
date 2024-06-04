@@ -27,7 +27,8 @@ const startDriver = async (
 
     if (config.chromeOptions?.length) {
       options = config.chromeOptions.reduce(function (options, arg) {
-        return options.addArguments(arg);
+        options.addArguments(arg);
+        return options;
       }, options);
     }
 
