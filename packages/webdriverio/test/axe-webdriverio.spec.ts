@@ -2,7 +2,6 @@ import * as webdriverio from 'webdriverio';
 import express from 'express';
 import listen from 'async-listen';
 import { assert } from 'chai';
-import chromedriver from 'chromedriver';
 import path from 'path';
 import { Server, createServer } from 'http';
 import net from 'net';
@@ -14,6 +13,13 @@ import type { AxeResults, Result } from 'axe-core';
 import child_process from 'child_process';
 import { ChildProcessWithoutNullStreams } from 'child_process';
 import { fixturesPath } from 'axe-test-fixtures';
+import { config } from 'dotenv';
+import os from 'os';
+
+const HOME_DIR = os.homedir();
+const BDM_CACHE_DIR = path.resolve(HOME_DIR, '.browser-driver-manager');
+
+config({ path: path.resolve(BDM_CACHE_DIR, '.env') });
 
 const connectToChromeDriver = (port: number): Promise<void> => {
   let socket: net.Socket;
@@ -53,8 +59,11 @@ describe('@axe-core/webdriverio', () => {
       let chromedriverProcess: ChildProcessWithoutNullStreams;
 
       before(async () => {
-        const path = process.env.CHROMEDRIVER_PATH ?? chromedriver.path;
-        chromedriverProcess = child_process.spawn(path, [`--port=${port}`]);
+        const path =
+          process.env.CHROMEDRIVER_PATH ?? process.env.CHROMEDRIVER_TEST_PATH;
+        chromedriverProcess = child_process.spawn(path as string, [
+          `--port=${port}`
+        ]);
         chromedriverProcess.stdout.pipe(process.stdout);
         chromedriverProcess.stderr.pipe(process.stderr);
         await delay(500);
