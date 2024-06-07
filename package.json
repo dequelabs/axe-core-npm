@@ -53,6 +53,6 @@
     ]
   },
   "dependencies": {
-    "browser-driver-manager": "^1.0.4"
+    "browser-driver-manager": "^2.0.0"
   }
 }
