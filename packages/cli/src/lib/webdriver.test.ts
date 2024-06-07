@@ -2,10 +2,12 @@ import 'mocha';
 import { assert } from 'chai';
 import { startDriver } from './webdriver';
 import { WebDriver } from 'selenium-webdriver';
+import chrome from 'selenium-webdriver/chrome';
 import { config } from 'dotenv';
 import os from 'os';
 import path from 'path';
 import { WebdriverConfigParams } from '../types';
+import sinon from 'sinon';
 
 const HOME_DIR = os.homedir();
 const BDM_CACHE_DIR = path.resolve(HOME_DIR, '.browser-driver-manager');
@@ -116,18 +118,17 @@ describe('startDriver', () => {
     assert.deepEqual(timeoutValue.script, 10000000);
   });
 
-  // TODO: this test should run
-  // it('invokes `options.headless()` on versions of selenium-webdriver < 4.17.0', async () => {
-  //   const stub = sinon.stub(chrome, 'Options').returns({
-  //     headless: () => {}
-  //   });
+  it('invokes `options.headless()` on versions of selenium-webdriver < 4.17.0', async () => {
+    const stub = sinon.stub(chrome, 'Options').returns({
+      headless: () => {}
+    });
 
-  //   // try catch required due to `chrome.options` being mocked with sinon
-  //   // and not properly creating a driver
-  //   try {
-  //     driver = await startDriver(config);
-  //   } catch (error) {}
-  //   assert.isTrue(stub.calledOnce);
-  //   stub.restore();
-  // });
+    // try catch required due to `chrome.options` being mocked with sinon
+    // and not properly creating a driver
+    try {
+      driver = await startDriver(config);
+    } catch (error) {}
+    assert.isTrue(stub.calledOnce);
+    stub.restore();
+  });
 });
