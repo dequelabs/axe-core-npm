@@ -1,7 +1,14 @@
 import { WebDriver, Builder } from 'selenium-webdriver';
-import chromedriver from 'chromedriver';
 import chrome from 'selenium-webdriver/chrome';
 import firefox from 'selenium-webdriver/firefox';
+import { config } from 'dotenv';
+import os from 'os';
+import path from 'path';
+
+const HOME_DIR = os.homedir();
+const BDM_CACHE_DIR = path.resolve(HOME_DIR, '.browser-driver-manager');
+
+config({ path: path.resolve(BDM_CACHE_DIR, '.env') });
 
 export const Webdriver = (): WebDriver => {
   // Weird type change since 4.23.1 release
@@ -14,7 +21,7 @@ export const Webdriver = (): WebDriver => {
     .setChromeOptions(options)
     .setChromeService(
       new chrome.ServiceBuilder(
-        process.env.CHROMEDRIVER_PATH || chromedriver.path
+        process.env.CHROMEDRIVER_PATH || process.env.CHROMEDRIVER_TEST_PATH
       )
     );
 
