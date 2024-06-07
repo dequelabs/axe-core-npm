@@ -137,7 +137,7 @@ const cli = async (
         
         This will install the latest synced versions. You may install specific synced versions using 
         
-        $ npx browser-driver-manager install \`chrome@<version>\`
+        $ npx browser-driver-manager install chrome@<version>
 
         where <version> is a specific version, e.g. 123.45.67, or a channel, e.g. canary.
 
