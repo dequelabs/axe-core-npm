@@ -116,7 +116,9 @@ const cli = async (
     } catch (e) {
       if (e instanceof selenium_error.ScriptTimeoutError) {
         console.error(error('Error: %s'), e.message);
-        console.log(`The timeout is currently configured to be ${timeout} seconds (you can change it with --timeout).`)
+        console.log(
+          `The timeout is currently configured to be ${timeout} seconds (you can change it with --timeout).`
+        );
         process.exit(2);
       }
       // Provide a more user-friendly error message when there's a ChromeDriver/Chrome version mismatch.
@@ -129,12 +131,19 @@ const cli = async (
         )
       ) {
         console.error(error('Error: %s'), e.message);
-        console.log(`\nPlease install a matching version of ChromeDriver and run axe with the --chromedriver-path option:
+        console.log(`\nPlease use browser-driver-manager to install matching versions of Chrome and ChromeDriver:
+        
+        $ npx browser-driver-manager install chrome
+        
+        This will install the latest synced versions. You may install specific synced versions using 
+        
+        $ npx browser-driver-manager install \`chrome@<version>\`
 
-    $ npm install -g chromedriver@<version>
-    $ axe --chromedriver-path $(npm root -g)/chromedriver/bin/chromedriver <url...>
+        where <version> is a specific version, e.g. 123.45.67, or a channel, e.g. canary.
 
-(where <version> is the first number of the "current browser version" reported above.)`);
+        You may also pass the \`--chromedriver-path\` option to axe:
+
+        $ axe --chromedriver-path <path/to/chromedriver-executable>`);
         process.exit(2);
       } else {
         throw e;
