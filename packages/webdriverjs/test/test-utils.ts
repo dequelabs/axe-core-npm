@@ -20,9 +20,7 @@ export const Webdriver = (): WebDriver => {
     .forBrowser('chrome')
     .setChromeOptions(options)
     .setChromeService(
-      new chrome.ServiceBuilder(
-        process.env.CHROMEDRIVER_PATH || process.env.CHROMEDRIVER_TEST_PATH
-      )
+      new chrome.ServiceBuilder(process.env.CHROMEDRIVER_TEST_PATH)
     );
 
   if (process.env.REMOTE_SELENIUM_URL) {

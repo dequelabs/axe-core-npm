@@ -59,8 +59,7 @@ describe('@axe-core/webdriverio', () => {
       let chromedriverProcess: ChildProcessWithoutNullStreams;
 
       before(async () => {
-        const path =
-          process.env.CHROMEDRIVER_PATH ?? process.env.CHROMEDRIVER_TEST_PATH;
+        const path = process.env.CHROMEDRIVER_TEST_PATH;
         chromedriverProcess = child_process.spawn(path as string, [
           `--port=${port}`
         ]);
