@@ -2,6 +2,15 @@ import fs from 'fs';
 import path from 'path';
 import colors from 'colors';
 import type { AxeResults, UnlabelledFrameSelector } from 'axe-core';
+import { config } from 'dotenv';
+import os from 'os';
+
+const HOME_DIR = os.homedir();
+const BDM_CACHE_DIR = path.resolve(HOME_DIR, '.browser-driver-manager');
+
+config({ path: path.resolve(BDM_CACHE_DIR, '.env') });
+
+export const { CHROMEDRIVER_TEST_PATH } = process.env;
 
 export const saveOutcome = (
   outcome: AxeResults | AxeResults[],

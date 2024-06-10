@@ -3,18 +3,10 @@ import { assert } from 'chai';
 import { startDriver } from './webdriver';
 import { WebDriver } from 'selenium-webdriver';
 import chrome from 'selenium-webdriver/chrome';
-import { config } from 'dotenv';
-import os from 'os';
 import path from 'path';
 import { WebdriverConfigParams } from '../types';
 import sinon from 'sinon';
-
-const HOME_DIR = os.homedir();
-const BDM_CACHE_DIR = path.resolve(HOME_DIR, '.browser-driver-manager');
-
-config({ path: path.resolve(BDM_CACHE_DIR, '.env') });
-
-const { CHROMEDRIVER_TEST_PATH } = process.env;
+import { CHROMEDRIVER_TEST_PATH } from './utils';
 
 describe('startDriver', () => {
   let config: WebdriverConfigParams;

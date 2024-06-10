@@ -2,13 +2,7 @@ import path from 'path';
 import { Builder, type WebDriver } from 'selenium-webdriver';
 import chrome from 'selenium-webdriver/chrome';
 import { WebdriverConfigParams } from '../types';
-import { config } from 'dotenv';
-import os from 'os';
-
-const HOME_DIR = os.homedir();
-const BDM_CACHE_DIR = path.resolve(HOME_DIR, '.browser-driver-manager');
-
-config({ path: path.resolve(BDM_CACHE_DIR, '.env') });
+import { CHROMEDRIVER_TEST_PATH } from './utils';
 
 const startDriver = async (
   config: WebdriverConfigParams
@@ -18,7 +12,7 @@ const startDriver = async (
   /* istanbul ignore else */
   if (config.browser === 'chrome-headless') {
     const service = new chrome.ServiceBuilder(
-      config.chromedriverPath || process.env.CHROMEDRIVER_TEST_PATH
+      config.chromedriverPath || CHROMEDRIVER_TEST_PATH
     );
 
     let options = new chrome.Options();
