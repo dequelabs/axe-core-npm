@@ -40,9 +40,6 @@ const startDriver = async (
 
     if (config.chromePath) {
       options.setChromeBinaryPath(path.resolve(config.chromePath));
-    } else {
-      // TODO: write a test for this
-      options.setChromeBinaryPath(process.env.CHROME_TEST_PATH as string);
     }
 
     builder = new Builder()

@@ -59,7 +59,7 @@ describe('startDriver', () => {
     assert.include(capabilities.get('browserName'), 'chrome');
   });
 
-  it('uses the chromedriver path with chrome-headless', async () => {
+  it.only('uses the chromedriver path with chrome-headless', async () => {
     browser = 'chrome-headless';
     driver = await startDriver(config);
     const chromedriverPath = (config as any).builder.chromeService_.exe_;
