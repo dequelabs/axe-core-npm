@@ -8,7 +8,9 @@ Previous versions of this program were maintained at [dequelabs/axe-webdriverjs]
 
 Install [Node.js](https://docs.npmjs.com/getting-started/installing-node) if you haven't already.
 
-> Download and install any necessary browser drivers on your machine's PATH. [More on Webdriver setup](https://www.selenium.dev/documentation/en/webdriver/). To install the latest version of Chromedriver globally, run `npx browser-driver-manager install chrome`.
+> Download and install any necessary browser drivers on your machine's PATH. [More on Webdriver setup](https://www.selenium.dev/documentation/en/webdriver/).
+
+To install the latest version of Chromedriver globally, install browser-driver-manager: `npm install -g browser-driver-manager`. Then run `npx browser-driver-manager install chrome`.
 
 Install Selenium Webdriver: `npm install selenium-webdriver`
 
