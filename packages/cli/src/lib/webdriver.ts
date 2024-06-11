@@ -1,4 +1,5 @@
 import path from 'path';
+import chromedriver from 'chromedriver';
 import { Builder, type WebDriver } from 'selenium-webdriver';
 import chrome from 'selenium-webdriver/chrome';
 import { WebdriverConfigParams } from '../types';
@@ -12,7 +13,7 @@ const startDriver = async (
   /* istanbul ignore else */
   if (config.browser === 'chrome-headless') {
     const service = new chrome.ServiceBuilder(
-      config.chromedriverPath || CHROMEDRIVER_TEST_PATH
+      config.chromedriverPath ?? CHROMEDRIVER_TEST_PATH ?? chromedriver.path
     );
 
     let options = new chrome.Options();
