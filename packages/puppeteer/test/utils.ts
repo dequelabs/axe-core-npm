@@ -4,13 +4,7 @@ import listen from 'async-listen';
 import { expect } from 'chai';
 import type { PuppeteerLaunchOptions } from 'puppeteer';
 import { fixturesPath } from 'axe-test-fixtures';
-import path from 'path';
-import os from 'os';
-import { config } from 'dotenv';
-const HOME_DIR = os.homedir();
-const BDM_CACHE_DIR = path.resolve(HOME_DIR, '.browser-driver-manager');
-
-config({ path: path.resolve(BDM_CACHE_DIR, '.env') });
+import chromedriver from 'chromedriver';
 
 export async function expectAsync(
   fn: () => Promise<any>
@@ -49,7 +43,7 @@ export function puppeteerOpts(): PuppeteerLaunchOptions {
   if (process.env.CI) {
     options.args = [];
     options.args.push('--no-sandbox', '--disable-setuid-sandbox');
-    options.executablePath = process.env.CHROME_TEST_PATH;
+    options.executablePath = chromedriver.path;
   }
 
   return options;
