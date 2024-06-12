@@ -42,6 +42,7 @@ export function puppeteerOpts(): PuppeteerLaunchOptions {
   if (process.env.CI) {
     options.args = [];
     options.args.push('--no-sandbox', '--disable-setuid-sandbox');
+    options.executablePath = '/usr/bin/google-chrome-stable';
   }
 
   return options;
