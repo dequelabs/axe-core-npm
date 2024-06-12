@@ -4,6 +4,7 @@ import listen from 'async-listen';
 import { expect } from 'chai';
 import type { PuppeteerLaunchOptions } from 'puppeteer';
 import { fixturesPath } from 'axe-test-fixtures';
+import chromedriver from 'chromedriver';
 
 export async function expectAsync(
   fn: () => Promise<any>
@@ -42,7 +43,7 @@ export function puppeteerOpts(): PuppeteerLaunchOptions {
   if (process.env.CI) {
     options.args = [];
     options.args.push('--no-sandbox', '--disable-setuid-sandbox');
-    options.executablePath = '/usr/bin/google-chrome-stable';
+    options.executablePath = chromedriver.path;
   }
 
   return options;
