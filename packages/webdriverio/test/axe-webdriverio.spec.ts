@@ -118,7 +118,7 @@ describe('@axe-core/webdriverio', () => {
             browserName: 'chrome',
             'goog:chromeOptions': {
               args: ['--headless'],
-              binary: binaryPath
+              binary: binaryPath ?? process.env.CHROME_TEST_PATH ?? null
             }
           },
           logLevel: 'error'
