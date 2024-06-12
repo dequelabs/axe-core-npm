@@ -10,7 +10,7 @@ const BDM_CACHE_DIR = path.resolve(HOME_DIR, '.browser-driver-manager');
 
 config({ path: path.resolve(BDM_CACHE_DIR, '.env') });
 
-export const { CHROMEDRIVER_TEST_PATH } = process.env;
+export const { CHROME_TEST_PATH, CHROMEDRIVER_TEST_PATH } = process.env;
 
 export const saveOutcome = (
   outcome: AxeResults | AxeResults[],
