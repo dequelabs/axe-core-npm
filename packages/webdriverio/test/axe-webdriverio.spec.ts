@@ -99,17 +99,11 @@ describe('@axe-core/webdriverio', () => {
 
       beforeEach(async () => {
         const app = express();
-        let binaryPath;
         app.use(express.static(fixturesPath));
         server = createServer(app);
         // async-listen adds trailing forward slash,
         // this removes the unnecessary trailing forward slash
         addr = (await listen(server)).toString().replace(/\/$/, '');
-        if (
-          fs.existsSync(`C:/Program Files/Google/Chrome/Application/chrome.exe`)
-        ) {
-          binaryPath = `C:/Program Files/Google/Chrome/Application/chrome.exe`;
-        }
 
         const options: webdriverio.RemoteOptions = {
           path: '/',
@@ -118,7 +112,7 @@ describe('@axe-core/webdriverio', () => {
             browserName: 'chrome',
             'goog:chromeOptions': {
               args: ['--headless'],
-              binary: binaryPath ?? (process.env.CHROME_TEST_PATH as string)
+              binary: process.env.CHROME_TEST_PATH as string
             }
           },
           logLevel: 'error'
