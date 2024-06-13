@@ -6,7 +6,7 @@ import chrome from 'selenium-webdriver/chrome';
 import path from 'path';
 import { WebdriverConfigParams } from '../types';
 import sinon from 'sinon';
-import { CHROMEDRIVER_TEST_PATH } from './utils';
+import { CHROME_TEST_PATH, CHROMEDRIVER_TEST_PATH } from './utils';
 
 describe('startDriver', () => {
   let config: WebdriverConfigParams;
@@ -49,6 +49,14 @@ describe('startDriver', () => {
     const capabilities = await driver.getCapabilities();
     // https://github.com/seleniumbase/SeleniumBase/issues/2343\
     assert.include(capabilities.get('browserName'), 'chrome');
+  });
+
+  it('uses the chrome path with chrome-headless', async () => {
+    browser = 'chrome-headless';
+    driver = await startDriver(config);
+    const options = config?.builder?.getChromeOptions();
+    const chromePath = (options as any).get('goog:chromeOptions').binary;
+    assert.equal(chromePath, CHROME_TEST_PATH);
   });
 
   it('uses the chromedriver path with chrome-headless', async () => {
