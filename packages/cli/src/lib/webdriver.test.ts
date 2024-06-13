@@ -12,6 +12,16 @@ describe('startDriver', () => {
   let config: WebdriverConfigParams;
   let browser: string;
   let driver: WebDriver;
+  before(() => {
+    assert(
+      process.env.CHROME_TEST_PATH,
+      'CHROME_TEST_PATH is not set. Run `npx browser-driver-manager install chrome`'
+    );
+    assert(
+      process.env.CHROMEDRIVER_TEST_PATH,
+      'CHROMEDRIVER_TEST_PATH is not set. Run `npx browser-driver-manager install chrome`'
+    );
+  });
   beforeEach(() => {
     browser = 'chrome-headless';
     config = {
