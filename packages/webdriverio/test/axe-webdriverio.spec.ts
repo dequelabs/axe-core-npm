@@ -59,6 +59,14 @@ describe('@axe-core/webdriverio', () => {
       let chromedriverProcess: ChildProcessWithoutNullStreams;
 
       before(async () => {
+        assert(
+          process.env.CHROME_TEST_PATH,
+          'CHROME_TEST_PATH is not set. Run `npx browser-driver-manager install chrome`'
+        );
+        assert(
+          process.env.CHROMEDRIVER_TEST_PATH,
+          'CHROMEDRIVER_TEST_PATH is not set. Run `npx browser-driver-manager install chrome`'
+        );
         const path = process.env.CHROMEDRIVER_TEST_PATH;
         chromedriverProcess = child_process.spawn(path as string, [
           `--port=${port}`
