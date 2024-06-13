@@ -2,16 +2,26 @@ import 'mocha';
 import { assert } from 'chai';
 import { startDriver } from './webdriver';
 import { WebDriver } from 'selenium-webdriver';
-import chromedriver from 'chromedriver';
 import chrome from 'selenium-webdriver/chrome';
 import path from 'path';
 import { WebdriverConfigParams } from '../types';
 import sinon from 'sinon';
+import { CHROME_TEST_PATH, CHROMEDRIVER_TEST_PATH } from './utils';
 
 describe('startDriver', () => {
   let config: WebdriverConfigParams;
   let browser: string;
   let driver: WebDriver;
+  before(() => {
+    assert(
+      process.env.CHROME_TEST_PATH,
+      'CHROME_TEST_PATH is not set. Run `npx browser-driver-manager install chrome`'
+    );
+    assert(
+      process.env.CHROMEDRIVER_TEST_PATH,
+      'CHROMEDRIVER_TEST_PATH is not set. Run `npx browser-driver-manager install chrome`'
+    );
+  });
   beforeEach(() => {
     browser = 'chrome-headless';
     config = {
@@ -51,21 +61,32 @@ describe('startDriver', () => {
     assert.include(capabilities.get('browserName'), 'chrome');
   });
 
+  it('uses the chrome path with chrome-headless', async () => {
+    browser = 'chrome-headless';
+    driver = await startDriver(config);
+    const options = config?.builder?.getChromeOptions();
+    const chromePath = (options as any).get('goog:chromeOptions').binary;
+    assert.equal(chromePath, CHROME_TEST_PATH);
+  });
+
   it('uses the chromedriver path with chrome-headless', async () => {
     browser = 'chrome-headless';
     driver = await startDriver(config);
     const chromedriverPath = (config as any).builder.chromeService_.exe_;
 
-    assert.equal(chromedriverPath, chromedriver.path);
+    assert.equal(chromedriverPath, CHROMEDRIVER_TEST_PATH);
   });
 
   it('uses the passed in chromedriver path with chrome-headless', async () => {
     browser = 'chrome-headless';
-    config.chromedriverPath = path.relative(process.cwd(), chromedriver.path);
+    config.chromedriverPath = path.relative(
+      process.cwd(),
+      CHROMEDRIVER_TEST_PATH as string
+    );
     driver = await startDriver(config);
     const chromedriverPath = (config as any).builder.chromeService_.exe_;
 
-    assert.notEqual(config.chromedriverPath, chromedriver.path);
+    assert.notEqual(config.chromedriverPath, CHROMEDRIVER_TEST_PATH);
     assert.equal(chromedriverPath, config.chromedriverPath);
   });
 
