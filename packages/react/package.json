@@ -60,7 +60,7 @@
   "author": "Dylan Barrell (dylan@barrell.com)",
   "license": "MPL-2.0",
   "dependencies": {
-    "axe-core": "~4.9.1",
+    "axe-core": "~4.10.0",
     "requestidlecallback": "^0.3.0"
   },
   "devDependencies": {
