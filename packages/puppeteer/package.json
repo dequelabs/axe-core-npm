@@ -55,7 +55,7 @@
     "typescript": "^5.2.2"
   },
   "dependencies": {
-    "axe-core": "~4.9.1"
+    "axe-core": "~4.10.0"
   },
   "peerDependencies": {
     "puppeteer": ">=1.10.0"
