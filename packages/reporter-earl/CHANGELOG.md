@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [4.10.0](https://github.com/dequelabs/axe-core-npm/compare/v4.9.1...v4.10.0) (2024-08-05)
+
+
+### Features
+
+* Update axe-core to v4.10.0 ([#1088](https://github.com/dequelabs/axe-core-npm/issues/1088)) ([bb94776](https://github.com/dequelabs/axe-core-npm/commit/bb94776ff65798d016e961f62c76c4622bb3b48b))
+
+
+
+
+
 ## [4.9.1](https://github.com/dequelabs/axe-core-npm/compare/v4.9.0...v4.9.1) (2024-05-15)
 
 **Note:** Version bump only for package @axe-core/reporter-earl
