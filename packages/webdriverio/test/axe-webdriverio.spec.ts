@@ -2,7 +2,6 @@ import * as webdriverio from 'webdriverio';
 import express from 'express';
 import listen from 'async-listen';
 import { assert } from 'chai';
-import chromedriver from 'chromedriver';
 import path from 'path';
 import { Server, createServer } from 'http';
 import net from 'net';
@@ -14,12 +13,17 @@ import type { AxeResults, Result } from 'axe-core';
 import child_process from 'child_process';
 import { ChildProcessWithoutNullStreams } from 'child_process';
 import { fixturesPath } from 'axe-test-fixtures';
+import { config } from 'dotenv';
+import os from 'os';
+
+const HOME_DIR = os.homedir();
+const BDM_CACHE_DIR = path.resolve(HOME_DIR, '.browser-driver-manager');
+
+config({ path: path.resolve(BDM_CACHE_DIR, '.env') });
 
 const connectToChromeDriver = (port: number): Promise<void> => {
   let socket: net.Socket;
   return new Promise((resolve, reject) => {
-    // eslint-disable-next-line prefer-const
-
     // Give up after 1s
     const timer = setTimeout(() => {
       socket.destroy();
@@ -55,8 +59,18 @@ describe('@axe-core/webdriverio', () => {
       let chromedriverProcess: ChildProcessWithoutNullStreams;
 
       before(async () => {
-        const path = process.env.CHROMEDRIVER_PATH ?? chromedriver.path;
-        chromedriverProcess = child_process.spawn(path, [`--port=${port}`]);
+        assert(
+          process.env.CHROME_TEST_PATH,
+          'CHROME_TEST_PATH is not set. Run `npx browser-driver-manager install chrome`'
+        );
+        assert(
+          process.env.CHROMEDRIVER_TEST_PATH,
+          'CHROMEDRIVER_TEST_PATH is not set. Run `npx browser-driver-manager install chrome`'
+        );
+        const path = process.env.CHROMEDRIVER_TEST_PATH;
+        chromedriverProcess = child_process.spawn(path as string, [
+          `--port=${port}`
+        ]);
         chromedriverProcess.stdout.pipe(process.stdout);
         chromedriverProcess.stderr.pipe(process.stderr);
         await delay(500);
@@ -93,17 +107,11 @@ describe('@axe-core/webdriverio', () => {
 
       beforeEach(async () => {
         const app = express();
-        let binaryPath;
         app.use(express.static(fixturesPath));
         server = createServer(app);
         // async-listen adds trailing forward slash,
         // this removes the unnecessary trailing forward slash
         addr = (await listen(server)).toString().replace(/\/$/, '');
-        if (
-          fs.existsSync(`C:/Program Files/Google/Chrome/Application/chrome.exe`)
-        ) {
-          binaryPath = `C:/Program Files/Google/Chrome/Application/chrome.exe`;
-        }
 
         const options: webdriverio.RemoteOptions = {
           path: '/',
@@ -112,7 +120,7 @@ describe('@axe-core/webdriverio', () => {
             browserName: 'chrome',
             'goog:chromeOptions': {
               args: ['--headless'],
-              binary: binaryPath
+              binary: process.env.CHROME_TEST_PATH as string
             }
           },
           logLevel: 'error'

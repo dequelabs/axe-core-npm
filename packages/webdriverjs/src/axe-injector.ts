@@ -88,7 +88,6 @@ export default class AxeInjectorLegacy {
     // does not return a "real promise" (ManagedPromise)
     // and we want to await it.
     return new Promise((resolve, reject) => {
-      /* eslint-disable no-undef */
       this.driver
         // https://github.com/vercel/pkg/issues/676
         // we need to pass a string vs a function so we manually stringified the function

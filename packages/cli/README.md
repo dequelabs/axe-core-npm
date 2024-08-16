@@ -10,7 +10,11 @@ Install [Node.js](https://docs.npmjs.com/getting-started/installing-node) if you
 
 Install axe CLI globally: `npm install @axe-core/cli -g`
 
-Lastly, install the webdrivers of the browsers you wish to use. A webdriver is a driver for your web browsers. It allows other programs on your machine to open a browser and operate it. Current information about available webdrivers can be found at [selenium-webdriver project](https://www.npmjs.com/package/selenium-webdriver). Alternatively, you could use [Webdriver manager](https://www.npmjs.com/package/webdriver-manager)
+Lastly, install the webdrivers of the browsers you wish to use. A webdriver is a driver for your web browsers. It allows other programs on your machine to open a browser and operate it.
+
+To install the latest version of Chromedriver globally, install browser-driver-manager: `npm install -g browser-driver-manager`. Then run `npx browser-driver-manager install chrome`.
+
+Current information about other available webdrivers can be found at [selenium-webdriver project](https://www.npmjs.com/package/selenium-webdriver). Alternatively, you could use [Webdriver manager](https://www.npmjs.com/package/webdriver-manager)
 
 ## Usage
 

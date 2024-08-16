@@ -47,5 +47,4 @@ export default class AxePartialRunner {
 // See: https://stackoverflow.com/questions/40920179/should-i-refrain-from-handling-promise-rejection-asynchronously
 export const caught = ((f: () => void) => {
   return <T>(p: Promise<T>): Promise<T> => (p.catch(f), p);
-  /* eslint-disable @typescript-eslint/no-empty-function */
 })(() => {});

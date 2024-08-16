@@ -3,6 +3,7 @@ import chromedriver from 'chromedriver';
 import { Builder, type WebDriver } from 'selenium-webdriver';
 import chrome from 'selenium-webdriver/chrome';
 import { WebdriverConfigParams } from '../types';
+import { CHROME_TEST_PATH, CHROMEDRIVER_TEST_PATH } from './utils';
 
 const startDriver = async (
   config: WebdriverConfigParams
@@ -12,7 +13,7 @@ const startDriver = async (
   /* istanbul ignore else */
   if (config.browser === 'chrome-headless') {
     const service = new chrome.ServiceBuilder(
-      config.chromedriverPath || chromedriver.path
+      config.chromedriverPath ?? CHROMEDRIVER_TEST_PATH ?? chromedriver.path
     );
 
     let options = new chrome.Options();
@@ -27,8 +28,13 @@ const startDriver = async (
 
     if (config.chromeOptions?.length) {
       options = config.chromeOptions.reduce(function (options, arg) {
-        return options.addArguments(arg);
+        options.addArguments(arg);
+        return options;
       }, options);
+    }
+
+    if (CHROME_TEST_PATH) {
+      options.setChromeBinaryPath(path.resolve(CHROME_TEST_PATH));
     }
 
     if (config.chromePath) {

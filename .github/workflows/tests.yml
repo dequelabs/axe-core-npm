@@ -37,7 +37,7 @@ jobs:
       - run: npm ci
       # HACK: Force a TTY to enable browser-driver-manager to manipulate stdout.
       - shell: 'script -q -e -c "bash {0}"'
-        run: npx browser-driver-manager install chromedriver --verbose
+        run: npx browser-driver-manager install chrome
         working-directory: packages/puppeteer
       - run: npm run build --workspace=packages/puppeteer
       - run: npm run coverage --workspace=packages/puppeteer
@@ -59,7 +59,7 @@ jobs:
       - run: npm ci
         # HACK: Force a TTY to enable browser-driver-manager to manipulate stdout.
       - shell: 'script -q -e -c "bash {0}"'
-        run: npx browser-driver-manager install chromedriver=125 --verbose
+        run: npx browser-driver-manager install chrome
         working-directory: packages/cli
       - run: npm run coverage --workspace=packages/cli
 
@@ -79,7 +79,7 @@ jobs:
       - run: npm ci
       # HACK: Force a TTY to enable browser-driver-manager to manipulate stdout.
       - shell: 'script -q -e -c "bash {0}"'
-        run: npx browser-driver-manager install chromedriver --verbose
+        run: npx browser-driver-manager install chrome
         working-directory: packages/webdriverjs
       - run: npm run build --workspace=packages/webdriverjs
       - run: npm run coverage --workspace=packages/webdriverjs
@@ -101,7 +101,7 @@ jobs:
       - run: npm ci
       # HACK: Force a TTY to enable browser-driver-manager to manipulate stdout.
       - shell: 'script -q -e -c "bash {0}"'
-        run: npx browser-driver-manager install chromedriver --verbose
+        run: npx browser-driver-manager install chrome
         working-directory: packages/webdriverio
       - run: npm run build --workspace=packages/webdriverio
       - run: npm run coverage --workspace=packages/webdriverio

@@ -1,6 +1,6 @@
 {
   "name": "@axe-core/react",
-  "version": "4.9.1",
+  "version": "4.10.0",
   "description": "Dynamic accessibility analysis for React using axe-core",
   "main": "./dist/index.js",
   "module": "./dist/index.mjs",
@@ -60,7 +60,7 @@
   "author": "Dylan Barrell (dylan@barrell.com)",
   "license": "MPL-2.0",
   "dependencies": {
-    "axe-core": "~4.9.1",
+    "axe-core": "~4.10.0",
     "requestidlecallback": "^0.3.0"
   },
   "devDependencies": {
@@ -80,7 +80,7 @@
     "react": "17.0.0",
     "react-dom": "17.0.0",
     "react-shadow": "^20.4.0",
-    "sinon": "^17.0.1",
+    "sinon": "^18.0.0",
     "ts-node": "^10.9.1",
     "tsup": "^8.0.1",
     "typescript": "^5.2.2"
