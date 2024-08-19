@@ -10,7 +10,6 @@ reactAxe(React, ReactDOM, 1000, {
   checks: [
     {
       id: 'my-check',
-      // eslint-disable-next-line @typescript-eslint/explicit-function-return-type, @typescript-eslint/no-empty-function
       evaluate() {}
     }
   ],

@@ -3,6 +3,23 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [4.10.0](https://github.com/dequelabs/axe-core-npm/compare/v4.9.1...v4.10.0) (2024-08-16)
+
+
+### Bug Fixes
+
+* **cli:** include `dotenv` dep ([#1103](https://github.com/dequelabs/axe-core-npm/issues/1103)) ([5d34355](https://github.com/dequelabs/axe-core-npm/commit/5d34355066b96009cea9bca7024ba5e777c5309c)), closes [#1102](https://github.com/dequelabs/axe-core-npm/issues/1102)
+* **playwright:** Add missing await on page.evaluate ([#1063](https://github.com/dequelabs/axe-core-npm/issues/1063)) ([20b8bbf](https://github.com/dequelabs/axe-core-npm/commit/20b8bbffdda0b81dbb169f27d5d223adc4d3941a))
+
+
+### Features
+
+* Update axe-core to v4.10.0 ([#1088](https://github.com/dequelabs/axe-core-npm/issues/1088)) ([bb94776](https://github.com/dequelabs/axe-core-npm/commit/bb94776ff65798d016e961f62c76c4622bb3b48b))
+
+
+
+
+
 ## [4.9.1](https://github.com/dequelabs/axe-core-npm/compare/v4.9.0...v4.9.1) (2024-05-15)
 
 ### Bug Fixes
