@@ -4,6 +4,7 @@ import type {
   RunOptions,
   AxeResults,
   SerialContextObject,
+  Spec,
   PartialResults,
   SerialSelectorList,
   SerialFrameSelector
@@ -23,6 +24,7 @@ import AxePartialRunner from './AxePartialRunner';
 
 export default class AxeBuilder {
   private page: Page;
+  private config: Spec | null;
   private includes: SerialSelectorList;
   private excludes: SerialSelectorList;
   private option: RunOptions;
@@ -34,6 +36,7 @@ export default class AxeBuilder {
     this.page = page;
     this.includes = [];
     this.excludes = [];
+    this.config = {};
     this.option = {};
     this.source = axeSource || source;
     this.errorUrl =
@@ -127,6 +130,20 @@ export default class AxeBuilder {
     for (const rule of rules) {
       this.option.rules[rule] = { enabled: false };
     }
+    return this;
+  }
+
+  /**
+   * Set configuration for `axe-core`.
+   * This value is passed directly to `axe.configure()`
+   */
+  public configure(config: Spec): this {
+    if (typeof config !== 'object') {
+      throw new Error(
+        'AxeBuilder needs an object to configure. See axe-core configure API.'
+      );
+    }
+    this.config = config;
     return this;
   }
 
@@ -327,15 +344,23 @@ export default class AxeBuilder {
       'typeof window.axe?.runPartial === "function"'
     );
 
+    const allowedOrigins =
+      !this.legacyMode && !hasRunPartial
+        ? ['<unsafe_all_origins>']
+        : ['<same_origin>'];
+    const branding = { application: 'playwright' };
+
+    const axeConfig = {
+      allowedOrigins: allowedOrigins,
+      branding: branding
+    };
+
+    const jsonString = JSON.stringify({ ...axeConfig, ...this.config });
+
     return `
-    ;axe.configure({
-      ${
-        !this.legacyMode && !hasRunPartial
-          ? 'allowedOrigins: ["<unsafe_all_origins>"],'
-          : 'allowedOrigins: ["<same_origin>"],'
-      }
-      branding: { application: 'playwright' }
-    })
+    ;axe.configure(
+      ${jsonString}
+    )
     `;
   }
 }

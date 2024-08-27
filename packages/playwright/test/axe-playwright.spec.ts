@@ -279,6 +279,54 @@ describe('@axe-core/playwright', () => {
     });
   });
 
+  describe('configure', () => {
+    it('provides results in default locale', async () => {
+      await page.goto(`${addr}/index.html`);
+      const results = await new AxeBuilder({ page }).analyze();
+      const pass = results.passes[0];
+
+      assert.strictEqual(pass.id, 'aria-hidden-body');
+      assert.strictEqual(
+        pass.description,
+        'Ensure aria-hidden="true" is not present on the document body.'
+      );
+      assert.strictEqual(
+        pass.help,
+        'aria-hidden="true" must not be present on the document body'
+      );
+    });
+
+    it('provides results in supplied locale', async () => {
+      await page.goto(`${addr}/index.html`);
+      const results = await new AxeBuilder({ page })
+        .configure({
+          locale: {
+            lang: 'de',
+            rules: {
+              'aria-hidden-body': {
+                description:
+                  "Stellt sicher, dass aria-hidden='true' nicht am <body>-Element des Dokumentes verwendet wird.",
+                help: "Aria-hidden='true' darf nicht für den <body> des Dokumentes verwendet werden."
+              }
+            }
+          }
+        })
+        .analyze();
+
+      const pass = results.passes[0];
+
+      assert.strictEqual(pass.id, 'aria-hidden-body');
+      assert.strictEqual(
+        pass.description,
+        "Stellt sicher, dass aria-hidden='true' nicht am <body>-Element des Dokumentes verwendet wird."
+      );
+      assert.strictEqual(
+        pass.help,
+        "Aria-hidden='true' darf nicht für den <body> des Dokumentes verwendet werden."
+      );
+    });
+  });
+
   describe('options', () => {
     it('passes options to axe-core', async () => {
       const res = await page.goto(`${addr}/index.html`);
