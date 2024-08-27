@@ -138,6 +138,32 @@ Skips verification of the rules provided. Accepts a String of a single rule ID o
 new AxeBuilder({ page }).disableRules('color-contrast');
 ```
 
+### AxeBuilder#configure(config: [axe.Spec](https://github.com/dequelabs/axe-core/blob/develop/doc/API.md#api-name-axeconfigure))
+
+Inject an axe configuration object to modify the ruleset before running Analyze. Subsequent calls to this method will invalidate previous ones by calling `axe.configure` and replacing the config object. See [axe-core API documentation](https://github.com/dequelabs/axe-core/blob/master/doc/API.md#api-name-axeconfigure) for documentation on the object structure.
+
+```js
+const config = {
+  locale: {
+    lang: 'de',
+    rules: {
+      'aria-hidden-body': {
+        description:
+          "Stellt sicher, dass aria-hidden='true' nicht am <body>-Element des Dokumentes verwendet wird.",
+        help: "Aria-hidden='true' darf nicht für den <body> des Dokumentes verwendet werden."
+      }
+    }
+  }
+};
+
+new AxeBuilder(driver).configure(config).analyze((err, results) => {
+  if (err) {
+    // Handle error somehow
+  }
+  console.log(results);
+});
+```
+
 ### AxeBuilder#setLegacyMode(legacyMode: boolean = true)
 
 Set the frame testing method to "legacy mode". In this mode, axe will not open a blank page in which to aggregate its results. This can be used in an environment where opening a blank page is causes issues.
