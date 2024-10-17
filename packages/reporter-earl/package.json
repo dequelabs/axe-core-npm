@@ -1,6 +1,6 @@
 {
   "name": "@axe-core/reporter-earl",
-  "version": "4.10.0",
+  "version": "4.10.1",
   "description": "A EARL+JSON-LD reporter for axe-core",
   "main": "dist/axeReporterEarl.js",
   "module": "./dist/axeReporterEarl.mjs",
@@ -45,8 +45,8 @@
   "devDependencies": {
     "@types/clone": "^2.1.1",
     "@types/jsonld": "github:types/jsonld",
-    "@types/node": "^20.8.10",
-    "axe-core": "~4.10.0",
+    "@types/node": "^22.0.2",
+    "axe-core": "~4.10.1",
     "clone": "^2.1.2",
     "cross-env": "^7.0.3",
     "jest": "^29.1.2",
