@@ -51,7 +51,7 @@
     "prepare": "npx playwright install && npm run build"
   },
   "dependencies": {
-    "axe-core": "~4.10.0"
+    "axe-core": "~4.10.1"
   },
   "devDependencies": {
     "@playwright/test": "^1.44.0",
