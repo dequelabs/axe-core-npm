@@ -3,7 +3,7 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
-## [4.10.1](https://github.com/dequelabs/axe-core-npm/compare/v4.10.0...v4.10.1) (2024-10-17)
+## [4.10.1](https://github.com/dequelabs/axe-core-npm/compare/v4.10.0...v4.10.1) (2024-10-29)
 
 **Note:** Version bump only for package wdio-tests
 
