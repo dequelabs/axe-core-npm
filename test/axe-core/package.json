@@ -7,9 +7,9 @@
     "build": "echo \"No build required, skipping...\""
   },
   "devDependencies": {
-    "glob": "^10.3.3",
+    "glob": "^11.0.0",
     "mocha": "^10.2.0",
     "semver": "^7.5.4"
   },
-  "version": "4.10.0"
+  "version": "4.10.1"
 }

@@ -203,7 +203,7 @@ const cli = async (
           'issues can automatically be detected. \nManual testing is ' +
           'always required. For more information see:\n%s\n'
       ),
-      link('https://dequeuniversity.com/curriculum/courses/testingmethods')
+      link('https://dequeuniversity.com/class/testing')
     );
   } catch (e) {
     /* istanbul ignore else */
