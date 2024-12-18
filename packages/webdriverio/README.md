@@ -6,6 +6,12 @@
 
 Support for `@wdio/sync` is deprecated and testing for it will be removed in a future release.
 
+## WebDriver Bidi Support
+
+We're aware of an [issue](https://github.com/dequelabs/axe-core-npm/issues/1144) that occurs when using [WebdriverIO v9](https://webdriver.io/blog/2024/08/15/webdriverio-v9-release) and the [WebDriver Bidi protocol](https://w3c.github.io/webdriver-bidi/). We're investigating this issue and plan to update the community more thoroughly in early 2025.
+
+If you are encountering this issue and wish to share your experience please add to the [GitHub issue](https://github.com/dequelabs/axe-core-npm/issues/1144).
+
 ## Getting Started
 
 Install [Node.js](https://docs.npmjs.com/getting-started/installing-node) if you haven't already.
