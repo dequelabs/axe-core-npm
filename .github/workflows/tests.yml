@@ -61,7 +61,7 @@ jobs:
       - shell: 'script -q -e -c "bash {0}"'
         run: npx browser-driver-manager install chrome
         working-directory: packages/cli
-      - run: npm run coverage --workspace=packages/cli
+      - run: DEBUG_CLI_TESTS=true npm run coverage --workspace=packages/cli
 
   webdriverjs:
     strategy:

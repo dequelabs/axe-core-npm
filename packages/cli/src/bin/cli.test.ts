@@ -40,11 +40,9 @@ describe('cli', () => {
     it('should run an analysis', async () => {
       const result = await runCLI(`file://${SIMPLE_HTML_FILE}`);
       assert.equal(result.exitCode, 0);
-      console.log(result.stdout);
       assert.include(
         result.stdout,
-        'Violation of "marquee" with 1 occurrences!',
-        `result.stdout: ${result.stdout}`
+        'Violation of "marquee" with 1 occurrences!'
       );
     });
   });
@@ -196,7 +194,6 @@ describe('cli', () => {
         '--include',
         'marquee'
       );
-      console.log(result);
       assert.notInclude(result.stdout, 'Violation of "region"');
       assert.include(
         result.stdout,
@@ -214,8 +211,7 @@ describe('cli', () => {
 
       assert.include(
         result.stderr,
-        'javascript error: No elements found for include in page Context',
-        `result.stderr: ${result.stderr}`
+        'javascript error: No elements found for include in page Context'
       );
       assert.equal(result.exitCode, 1);
     });
