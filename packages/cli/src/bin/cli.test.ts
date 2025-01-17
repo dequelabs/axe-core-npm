@@ -192,7 +192,9 @@ describe('cli', () => {
       const result = await runCLI(
         `file://${SIMPLE_HTML_FILE}`,
         '--include',
-        'marquee'
+        'marquee',
+        '--headless',
+        'true'
       );
       assert.notInclude(result.stdout, 'Violation of "region"');
       assert.include(
