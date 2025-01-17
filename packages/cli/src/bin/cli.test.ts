@@ -196,6 +196,7 @@ describe('cli', () => {
         '--headless',
         'true'
       );
+      console.log(result);
       assert.notInclude(result.stdout, 'Violation of "region"');
       assert.include(
         result.stdout,
