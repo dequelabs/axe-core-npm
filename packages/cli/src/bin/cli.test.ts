@@ -40,9 +40,11 @@ describe('cli', () => {
     it('should run an analysis', async () => {
       const result = await runCLI(`file://${SIMPLE_HTML_FILE}`);
       assert.equal(result.exitCode, 0);
+      console.log(result.stdout);
       assert.include(
         result.stdout,
-        'Violation of "marquee" with 1 occurrences!'
+        'Violation of "marquee" with 1 occurrences!',
+        `result.stdout: ${result.stdout}`
       );
     });
   });
