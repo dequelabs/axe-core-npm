@@ -193,8 +193,7 @@ describe('cli', () => {
         `file://${SIMPLE_HTML_FILE}`,
         '--include',
         'marquee',
-        '--headless',
-        'true'
+        '--headless'
       );
       console.log(result);
       assert.notInclude(result.stdout, 'Violation of "region"');
