@@ -23,7 +23,7 @@ export const Webdriver = (): WebDriver => {
   // Weird type change since 4.23.1 release
   // @see https://github.com/DefinitelyTyped/DefinitelyTyped/discussions/69724
   const options = new chrome.Options();
-  options.addArguments('headless');
+  // options.addArguments('headless');
   options.setBinaryPath(process.env.CHROME_TEST_PATH as string);
 
   const builder = new Builder()
