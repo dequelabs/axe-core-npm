@@ -196,11 +196,11 @@ describe('cli', () => {
         '--include',
         'marquee'
       );
+      console.log(result);
       assert.notInclude(result.stdout, 'Violation of "region"');
       assert.include(
         result.stdout,
-        'Violation of "marquee" with 1 occurrences!',
-        `result.stdout: ${result.stdout}`
+        'Violation of "marquee" with 1 occurrences!'
       );
     });
 
