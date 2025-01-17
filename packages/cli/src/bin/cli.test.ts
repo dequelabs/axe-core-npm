@@ -214,7 +214,8 @@ describe('cli', () => {
 
       assert.include(
         result.stderr,
-        'javascript error: No elements found for include in page Context'
+        'javascript error: No elements found for include in page Context',
+        `result.stderr: ${result.stderr}`
       );
       assert.equal(result.exitCode, 1);
     });
