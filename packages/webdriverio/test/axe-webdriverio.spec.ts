@@ -119,7 +119,12 @@ describe('@axe-core/webdriverio', () => {
           capabilities: {
             browserName: 'chrome',
             'goog:chromeOptions': {
-              args: ['--headless'],
+              args: [
+                '--headless',
+                // Required for CI runners using >=Ubuntu 24.04
+                // @see https://github.com/SeleniumHQ/selenium/issues/14609
+                '--no-sandbox'
+              ],
               binary: process.env.CHROME_TEST_PATH as string
             }
           },
