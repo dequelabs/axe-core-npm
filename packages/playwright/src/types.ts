@@ -5,7 +5,11 @@ import type {
   ContextObject,
   CrossTreeSelector,
   PartialResult,
-  SerialContextObject
+  SerialContextObject,
+  Rule,
+  Check,
+  Standards,
+  Locale
 } from 'axe-core';
 
 export type PartialResults = PartialResult | null;
@@ -18,6 +22,18 @@ export interface AnalyzePageParams {
 export interface AxePlaywrightParams {
   page: Page;
   axeSource?: string;
+  axeConfigOptions?: AxeConfigOptions;
+}
+
+export interface AxeConfigOptions {
+  branding?: string;
+  checks?: Check[];
+  rules?: Rule[];
+  standards?: Standards;
+  locale?: Locale;
+  axeVersion?: string;
+  disableOtherRules?: boolean;
+  noHtml?: boolean;
 }
 
 export interface AnalyzePageResponse {

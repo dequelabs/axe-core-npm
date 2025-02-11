@@ -11,7 +11,7 @@ import type {
 import axe from 'axe-core';
 const { source } = axe;
 import { normalizeContext, analyzePage } from './utils';
-import type { AxePlaywrightParams } from './types';
+import type { AxeConfigOptions, AxePlaywrightParams } from './types';
 import {
   axeFinishRun,
   axeGetFrameContexts,
@@ -27,15 +27,17 @@ export default class AxeBuilder {
   private excludes: SerialSelectorList;
   private option: RunOptions;
   private source: string;
+  private axeConfigOptions: AxeConfigOptions | null;
   private legacyMode = false;
   private errorUrl: string;
 
-  constructor({ page, axeSource }: AxePlaywrightParams) {
+  constructor({ page, axeSource, axeConfigOptions }: AxePlaywrightParams) {
     this.page = page;
     this.includes = [];
     this.excludes = [];
     this.option = {};
     this.source = axeSource || source;
+    this.axeConfigOptions = axeConfigOptions || null;
     this.errorUrl =
       'https://github.com/dequelabs/axe-core-npm/blob/develop/packages/playwright/error-handling.md';
   }
@@ -334,7 +336,13 @@ export default class AxeBuilder {
           ? 'allowedOrigins: ["<unsafe_all_origins>"],'
           : 'allowedOrigins: ["<same_origin>"],'
       }
-      branding: { application: 'playwright' }
+      ${this.axeConfigOptions?.branding ? `branding: ${this.axeConfigOptions.branding},` : ''}
+      ${this.axeConfigOptions?.checks ? `checks: ${JSON.stringify(this.axeConfigOptions.checks)},` : ''}
+      ${this.axeConfigOptions?.rules ? `rules: ${JSON.stringify(this.axeConfigOptions.rules)},` : ''}
+      ${this.axeConfigOptions?.axeVersion ? `axeVersion: ${this.axeConfigOptions.axeVersion},` : ''}
+      ${this.axeConfigOptions?.disableOtherRules ? `disableOtherRules: ${this.axeConfigOptions.disableOtherRules},` : ''}
+      ${this.axeConfigOptions?.locale ? `locale: ${JSON.stringify(this.axeConfigOptions.locale)},` : ''}
+      ${this.axeConfigOptions?.standards ? `standards: ${JSON.stringify(this.axeConfigOptions.standards)},` : ''}
     })
     `;
   }
