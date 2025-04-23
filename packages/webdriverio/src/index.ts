@@ -369,7 +369,7 @@ export default class AxeBuilder {
 
     try {
       await client.switchToWindow(newWindow.handle);
-      await (client as WebdriverIO.Browser).url('about:blank');
+      await (client as WebdriverIO.Browser).url('data:text/html,');
     } catch (error) {
       throw new Error(
         `switchToWindow failed. Are you using updated browser drivers? \nDriver reported:\n${
