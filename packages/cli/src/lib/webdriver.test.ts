@@ -90,30 +90,17 @@ describe('startDriver', () => {
     assert.equal(chromedriverPath, config.chromedriverPath);
   });
 
-  it('passes the --no-sandbox argument to chromeOptions', async () => {
-    browser = 'chrome-headless';
-    config.chromeOptions = ['--no-sandbox'];
-    driver = await startDriver(config);
-
-    const options = config?.builder?.getChromeOptions();
-    assert.isArray(options?.get('goog:chromeOptions').args);
-    assert.deepEqual(options?.get('goog:chromeOptions').args, [
-      'headless',
-      '--no-sandbox'
-    ]);
-  });
-
   it('passes multiple arguments argument to chromeOptions', async () => {
     browser = 'chrome-headless';
-    config.chromeOptions = ['no-sandbox', 'disable-dev-shm-usage'];
+    config.chromeOptions = ['disable-dev-shm-usage'];
     driver = await startDriver(config);
 
     const options = config?.builder?.getChromeOptions();
     assert.isArray(options?.get('goog:chromeOptions').args);
     assert.deepEqual(options?.get('goog:chromeOptions').args, [
       'headless',
-      'no-sandbox',
-      'disable-dev-shm-usage'
+      'disable-dev-shm-usage',
+      'no-sandbox'
     ]);
   });
 

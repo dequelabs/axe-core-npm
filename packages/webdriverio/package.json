@@ -1,6 +1,6 @@
 {
   "name": "@axe-core/webdriverio",
-  "version": "4.10.1",
+  "version": "4.10.2",
   "description": "Provides a method to inject and analyze web pages using axe",
   "contributors": [
     {
@@ -48,7 +48,7 @@
     "webdriverio"
   ],
   "dependencies": {
-    "axe-core": "~4.10.2",
+    "axe-core": "~4.10.3",
     "cssesc": "^3.0.0"
   },
   "devDependencies": {
@@ -76,7 +76,7 @@
     "webdriverio": "^8.8.2"
   },
   "peerDependencies": {
-    "webdriverio": "^5 || ^6 || ^7 || ^8"
+    "webdriverio": "^5 || ^6 || ^7 || ^8 || ^9"
   },
   "nyc": {
     "include": [

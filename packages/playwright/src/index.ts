@@ -26,7 +26,7 @@ export default class AxeBuilder {
   private includes: SerialSelectorList;
   private excludes: SerialSelectorList;
   private option: RunOptions;
-  private source: string;
+  private axeSource: string | undefined;
   private legacyMode = false;
   private errorUrl: string;
 
@@ -35,7 +35,7 @@ export default class AxeBuilder {
     this.includes = [];
     this.excludes = [];
     this.option = {};
-    this.source = axeSource || source;
+    this.axeSource = axeSource;
     this.errorUrl =
       'https://github.com/dequelabs/axe-core-npm/blob/develop/packages/playwright/error-handling.md';
   }
@@ -210,7 +210,7 @@ export default class AxeBuilder {
    */
 
   private script(): string {
-    return this.source;
+    return this.axeSource || source;
   }
 
   private async runLegacy(context: SerialContextObject): Promise<AxeResults> {
