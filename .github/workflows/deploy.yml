@@ -87,7 +87,6 @@ jobs:
           gh release create v$PKG_VERSION \
             --title "Release $PKG_VERSION" \
             --notes-from-tag \
-            --repo ${{ github.repository }} \
             --target master
         env:
           GH_TOKEN: ${{ github.token }}
