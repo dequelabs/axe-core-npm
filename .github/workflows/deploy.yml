@@ -16,7 +16,7 @@ jobs:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with:
-          node-version: 18
+          node-version: 22
           cache: 'npm'
       - run: npm ci
       # Ensure packages are built
@@ -43,7 +43,7 @@ jobs:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with:
-          node-version: 18
+          node-version: 22
           cache: 'npm'
       - run: npm ci
       # Ensure packages are built
@@ -70,7 +70,7 @@ jobs:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with:
-          node-version: 18
+          node-version: 22
           cache: 'npm'
       - run: npm ci
       # Ensure packages are built
@@ -86,7 +86,7 @@ jobs:
           PKG_VERSION=$(jq -r .version < lerna.json)
           gh release create v$PKG_VERSION \
             --title "Release $PKG_VERSION" \
-            --generate-notes \
+            --notes-from-tag \
             --repo ${{ github.repository }} \
             --target master
         env:

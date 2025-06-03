@@ -35,6 +35,9 @@ const startDriver = async (
 
     if (CHROME_TEST_PATH) {
       options.setChromeBinaryPath(path.resolve(CHROME_TEST_PATH));
+      // Required for CI runners using >=Ubuntu 24.04
+      // @see https://github.com/SeleniumHQ/selenium/issues/14609
+      options.addArguments('no-sandbox');
     }
 
     if (config.chromePath) {
