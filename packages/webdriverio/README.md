@@ -2,6 +2,8 @@
 
 > Provides a chainable axe API for WebdriverIO and automatically injects into all frames.
 
+This package does not follow Semantic Versioning (SemVer) but instead uses the major and minor version (but not patch version) of axe-core that the package uses. For example, if the API version is v4.7.2, then the axe-core version used by the package will be v4.7.x. The patch version of this package may include bug fixes and new API features but will not introduce breaking changes.
+
 ## Feature Deprecation Notice
 
 Support for `@wdio/sync` is deprecated and testing for it will be removed in a future release.
