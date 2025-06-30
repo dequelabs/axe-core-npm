@@ -4,7 +4,7 @@ import { getFilename } from 'cross-dirname';
 import { pathToFileURL } from 'url';
 
 interface IInjectAxeArgs {
-  source?: string | Function;
+  source?: string | (() => undefined);
   selector: string;
   logOnError?: boolean;
   args?: any[];
@@ -72,7 +72,7 @@ async function injectJSModule(frame: Frame): Promise<void> {
 
 function injectJSSource(
   frame: Frame,
-  source: string | Function,
+  source: string | (() => unknown),
   args: any[] = []
 ): Promise<void> {
   return frame.evaluate(source as any, ...args) as Promise<void>;
