@@ -2,9 +2,10 @@ import * as fs from 'fs';
 import { Frame } from 'puppeteer';
 import { getFilename } from 'cross-dirname';
 import { pathToFileURL } from 'url';
+import type { Spec } from 'axe-core';
 
 interface IInjectAxeArgs {
-  source?: string | Function;
+  source?: string | (() => undefined) | ((config?: Spec | undefined) => void);
   selector: string;
   logOnError?: boolean;
   args?: any[];
@@ -72,7 +73,7 @@ async function injectJSModule(frame: Frame): Promise<void> {
 
 function injectJSSource(
   frame: Frame,
-  source: string | Function,
+  source: string | (() => unknown),
   args: any[] = []
 ): Promise<void> {
   return frame.evaluate(source as any, ...args) as Promise<void>;

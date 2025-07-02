@@ -13,7 +13,7 @@ export async function getDummyData(version = '3.1'): Promise<RawResult[]> {
       </main>
     `;
     const params: any = {
-      reporter: function (raw: any, _: any, callback: Function) {
+      reporter: function (raw: any, _: any, callback: (arg: unknown) => any) {
         callback(JSON.parse(JSON.stringify(raw)));
       },
       rules: [
