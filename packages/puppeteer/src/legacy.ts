@@ -2,9 +2,10 @@ import * as fs from 'fs';
 import { Frame } from 'puppeteer';
 import { getFilename } from 'cross-dirname';
 import { pathToFileURL } from 'url';
+import type { Spec } from 'axe-core';
 
 interface IInjectAxeArgs {
-  source?: string | (() => undefined);
+  source?: string | (() => undefined) | ((config?: Spec | undefined) => void);
   selector: string;
   logOnError?: boolean;
   args?: any[];
