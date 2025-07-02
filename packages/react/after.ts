@@ -1,11 +1,11 @@
-let restoreFunctions: Function[] = [];
+let restoreFunctions: (() => unknown)[] = [];
 
 export default function after(
   host: React.Component,
   name: string,
-  cb: Function
+  cb: (host: React.Component) => unknown
 ): void {
-  const originalFn: Function = host[name];
+  const originalFn: () => unknown = host[name];
   let restoreFn: () => void;
 
   if (originalFn) {
