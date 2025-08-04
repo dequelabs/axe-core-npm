@@ -45,6 +45,25 @@ describe('utils', () => {
       }
     });
 
+    describe('with prefixes of known browsers', () => {
+      const testCases = [
+        ['c', 'chrome'],
+        ['ch', 'chrome'],
+        ['chr', 'chrome'],
+        ['f', 'firefox'],
+        ['g', 'firefox'],
+        ['i', 'ie'],
+        ['e', 'ie'], // backcompat; ideally we'd have had this return edge
+        ['s', 'safari'],
+        ['saf', 'safari']
+      ];
+      for (const [prefix, browser] of testCases) {
+        it(`given ${prefix} returns ${browser}`, () => {
+          assert.deepEqual(utils.parseBrowser(prefix), browser);
+        });
+      }
+    });
+
     it('given no browser returns chrome-headless', () => {
       assert.deepEqual(utils.parseBrowser(), 'chrome-headless');
     });

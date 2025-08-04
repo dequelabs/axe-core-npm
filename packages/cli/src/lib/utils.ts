@@ -46,36 +46,41 @@ export const parseUrl = (url: string): string => {
 
 /**
  * Convert a user provided browser name into a normalized form
- * for internal use. Conversion is case-insensitive. If no browser
- * is provided, it defaults to 'chrome-headless'.
+ * for internal use. Conversion is case-insensitive. Any matching
+ * character set may also be provided if it is shorter than the
+ * expected strings. If no browser is provided, it defaults
+ * to 'chrome-headless'.
+ *
+ * @throws {Error} If the browser is not recognized.
  */
 export const parseBrowser = (browser?: string): string | Error => {
   if (!browser) {
     return 'chrome-headless';
   }
 
+  const l = browser.length;
   switch (browser.toLowerCase()) {
     case 'ff':
-    case 'firefox':
-    case 'gecko':
-    case 'marionette':
+    case 'firefox'.substr(0, l):
+    case 'gecko'.substr(0, l):
+    case 'marionette'.substr(0, l):
       return 'firefox';
 
-    case 'chrome':
+    case 'chrome'.substr(0, l):
       return 'chrome';
 
     case 'ie':
-    case 'explorer':
-    case 'internetexplorer':
-    case 'internet_explorer':
-    case 'internet-explorer':
+    case 'explorer'.substr(0, l):
+    case 'internetexplorer'.substr(0, l):
+    case 'internet_explorer'.substr(0, l):
+    case 'internet-explorer'.substr(0, l):
       return 'ie';
 
-    case 'safari':
+    case 'safari'.substr(0, l):
       return 'safari';
 
-    case 'edge':
-    case 'microsoftedge':
+    case 'edge'.substr(0, l):
+    case 'microsoftedge'.substr(0, l):
       return 'MicrosoftEdge';
 
     default:
