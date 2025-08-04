@@ -53,7 +53,7 @@ export const parseUrl = (url: string): string => {
  *
  * @throws {Error} If the browser is not recognized.
  */
-export const parseBrowser = (browser?: string): string | Error => {
+export const parseBrowser = (browser?: string): string => {
   if (!browser) {
     return 'chrome-headless';
   }
