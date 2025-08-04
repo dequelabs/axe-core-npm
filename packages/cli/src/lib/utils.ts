@@ -51,26 +51,26 @@ export const parseBrowser = (browser?: string): string | Error => {
 
   switch (browser.toLowerCase()) {
     case 'ff':
-    case 'firefox'.substring(0):
-    case 'gecko'.substring(0):
-    case 'marionette'.substring(0):
+    case 'firefox':
+    case 'gecko':
+    case 'marionette':
       return 'firefox';
 
-    case 'chrome'.substring(0):
+    case 'chrome':
       return 'chrome';
 
     case 'ie':
-    case 'explorer'.substring(0):
-    case 'internetexplorer'.substring(0):
-    case 'internet_explorer'.substring(0):
-    case 'internet-explorer'.substring(0):
+    case 'explorer':
+    case 'internetexplorer':
+    case 'internet_explorer':
+    case 'internet-explorer':
       return 'ie';
 
-    case 'safari'.substring(0):
+    case 'safari':
       return 'safari';
 
-    case 'edge'.substring(0):
-    case 'microsoftedge'.substring(0):
+    case 'edge':
+    case 'microsoftedge':
       return 'MicrosoftEdge';
 
     default:

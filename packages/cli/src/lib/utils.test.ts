@@ -19,7 +19,30 @@ describe('utils', () => {
 
   describe('parseBrowser', () => {
     it('given an unknown browser returns error', () => {
-      assert.throws(() => utils.parseBrowser('foobar'));
+      const incorrectBrowsers = [
+        // Truly unknown browser strings
+        'foobar',
+        // Representative strings of browsers with invalid data after
+        'ie-extra',
+        'ff-extra',
+        'safari-extra',
+        'edge-extra',
+        'chrome-extra',
+        // Representative strings of browsers with invalid data before
+        'extra-ie',
+        'extra-ff',
+        'extra-safari',
+        'extra-edge',
+        'extra-chrome'
+      ];
+
+      for (const browser of incorrectBrowsers) {
+        assert.throws(
+          () => utils.parseBrowser(browser),
+          Error,
+          `Unknown browser ${browser}`
+        );
+      }
     });
 
     it('given no browser returns chrome-headless', () => {
