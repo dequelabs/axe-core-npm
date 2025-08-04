@@ -44,6 +44,11 @@ export const parseUrl = (url: string): string => {
   return url;
 };
 
+/**
+ * Convert a user provided browser name into a normalized form
+ * for internal use. Conversion is case-insensitive. If no browser
+ * is provided, it defaults to 'chrome-headless'.
+ */
 export const parseBrowser = (browser?: string): string | Error => {
   if (!browser) {
     return 'chrome-headless';
