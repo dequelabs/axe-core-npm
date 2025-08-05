@@ -44,7 +44,16 @@ export const parseUrl = (url: string): string => {
   return url;
 };
 
-export const parseBrowser = (browser?: string): string | Error => {
+/**
+ * Convert a user provided browser name into a normalized form
+ * for internal use. Conversion is case-insensitive. Any matching
+ * character set may also be provided if it is shorter than the
+ * expected strings. If no browser is provided, it defaults
+ * to 'chrome-headless'.
+ *
+ * @throws {Error} If the browser is not recognized.
+ */
+export const parseBrowser = (browser?: string): string => {
   if (!browser) {
     return 'chrome-headless';
   }
@@ -52,26 +61,26 @@ export const parseBrowser = (browser?: string): string | Error => {
   const l = browser.length;
   switch (browser.toLowerCase()) {
     case 'ff':
-    case 'firefox'.substr(0, l):
-    case 'gecko'.substr(0, l):
-    case 'marionette'.substr(0, l):
+    case 'firefox'.substring(0, l):
+    case 'gecko'.substring(0, l):
+    case 'marionette'.substring(0, l):
       return 'firefox';
 
-    case 'chrome'.substr(0, l):
+    case 'chrome'.substring(0, l):
       return 'chrome';
 
     case 'ie':
-    case 'explorer'.substr(0, l):
-    case 'internetexplorer'.substr(0, l):
-    case 'internet_explorer'.substr(0, l):
-    case 'internet-explorer'.substr(0, l):
+    case 'explorer'.substring(0, l):
+    case 'internetexplorer'.substring(0, l):
+    case 'internet_explorer'.substring(0, l):
+    case 'internet-explorer'.substring(0, l):
       return 'ie';
 
-    case 'safari'.substr(0, l):
+    case 'safari'.substring(0, l):
       return 'safari';
 
-    case 'edge'.substr(0, l):
-    case 'microsoftedge'.substr(0, l):
+    case 'edge'.substring(0, l):
+    case 'microsoftedge'.substring(0, l):
       return 'MicrosoftEdge';
 
     default:

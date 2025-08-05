@@ -19,7 +19,49 @@ describe('utils', () => {
 
   describe('parseBrowser', () => {
     it('given an unknown browser returns error', () => {
-      assert.throws(() => utils.parseBrowser('foobar'));
+      const incorrectBrowsers = [
+        // Truly unknown browser strings
+        'foobar',
+        // Representative strings of browsers with invalid data after
+        'ie-extra',
+        'ff-extra',
+        'safari-extra',
+        'edge-extra',
+        'chrome-extra',
+        // Representative strings of browsers with invalid data before
+        'extra-ie',
+        'extra-ff',
+        'extra-safari',
+        'extra-edge',
+        'extra-chrome'
+      ];
+
+      for (const browser of incorrectBrowsers) {
+        assert.throws(
+          () => utils.parseBrowser(browser),
+          Error,
+          `Unknown browser ${browser}`
+        );
+      }
+    });
+
+    describe('with prefixes of known browsers', () => {
+      const testCases = [
+        ['c', 'chrome'],
+        ['ch', 'chrome'],
+        ['chr', 'chrome'],
+        ['f', 'firefox'],
+        ['g', 'firefox'],
+        ['i', 'ie'],
+        ['e', 'ie'], // backcompat; ideally we'd have had this return edge
+        ['s', 'safari'],
+        ['saf', 'safari']
+      ];
+      for (const [prefix, browser] of testCases) {
+        it(`given ${prefix} returns ${browser}`, () => {
+          assert.deepEqual(utils.parseBrowser(prefix), browser);
+        });
+      }
     });
 
     it('given no browser returns chrome-headless', () => {
