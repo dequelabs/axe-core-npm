@@ -1411,13 +1411,8 @@ describe('@axe-core/webdriverio', () => {
 
           assert.notEqual(title, 'Error');
 
-          // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-          // @ts-ignore
-          delete client.createWindow;
-          // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-          // @ts-ignore
-          client.createWindow = () => {
-            return { handle: null };
+          client.createWindow = (type: 'tab' | 'window') => {
+            return Promise.resolve({ handle: '', type });
           };
           try {
             await new AxeBuilder({
@@ -1443,13 +1438,8 @@ describe('@axe-core/webdriverio', () => {
 
           assert.notEqual(title, 'Error');
 
-          // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-          // @ts-ignore
-          delete client.createWindow;
-          // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-          // @ts-ignore
-          client.createWindow = () => {
-            return { handle: null };
+          client.createWindow = (type: 'tab' | 'window') => {
+            return Promise.resolve({ handle: '', type });
           };
           try {
             const builder = new AxeBuilder({

@@ -16,10 +16,9 @@ describe('events()', () => {
     'waitingMessage',
     'onTestStart',
     'onTestComplete'
-  ];
+  ] as const;
   for (const eventFunction of functions) {
     it(`${eventFunction} is a typeof function`, () => {
-      // @ts-ignore
       assert.isFunction(event[eventFunction]);
     });
   }
