@@ -58,12 +58,7 @@ program
     '--load-delay <n>',
     'Set how much time (milliseconds) axe will wait after page load before running the audit (default: 0)'
   )
-  .option(
-    '--timeout <n>',
-    'Set how much time (seconds) axe has to run',
-    // @ts-ignore
-    90
-  )
+  .option('--timeout <n>', 'Set how much time (seconds) axe has to run', '90')
   .option('--timer', 'Log the time it takes to run')
   .option('--show-errors [boolean]', 'Display the full error stack', true)
   // TODO: Replace this with a reporter option, this required adding
