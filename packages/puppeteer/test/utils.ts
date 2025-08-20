@@ -2,7 +2,7 @@ import express from 'express';
 import { createServer, Server } from 'http';
 import listen from 'async-listen';
 import { expect } from 'chai';
-import type { PuppeteerLaunchOptions } from 'puppeteer';
+import type { LaunchOptions } from 'puppeteer';
 import { fixturesPath } from 'axe-test-fixtures';
 
 export async function expectAsync(
@@ -36,8 +36,8 @@ export async function startServer(): Promise<{ server: Server; addr: string }> {
   return { server, addr };
 }
 
-export function puppeteerOpts(): PuppeteerLaunchOptions {
-  const options: PuppeteerLaunchOptions = {};
+export function puppeteerOpts(): LaunchOptions {
+  const options: LaunchOptions = {};
 
   if (process.env.CI) {
     options.args = [];
