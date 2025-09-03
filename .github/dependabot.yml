@@ -44,6 +44,14 @@ updates:
       # Breaking change due to node version requirements
       - dependency-name: 'commander'
         versions: ['>=10.0.0']
+      # Not supported
+      # @see https://github.com/dequelabs/axe-core-npm/issues/500
+      - dependency-name: 'react'
+        versions: ['>=18.0.0']
+      - dependency-name: 'react-dom'
+        versions: ['>=18.0.0']
+      - dependency-name: '@types/react-dom'
+        versions: ['>=18.0.0']
     groups:
       # Any updates not caught by the group config will get individual PRs
       npm-low-risk:
