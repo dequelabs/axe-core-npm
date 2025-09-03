@@ -50,6 +50,8 @@ updates:
         versions: ['>=18.0.0']
       - dependency-name: 'react-dom'
         versions: ['>=18.0.0']
+      - dependency-name: '@types/react'
+        versions: ['>=18.0.0']
       - dependency-name: '@types/react-dom'
         versions: ['>=18.0.0']
     groups:
