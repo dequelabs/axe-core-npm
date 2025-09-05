@@ -45,7 +45,6 @@ jobs:
       - run: npm run test:export --workspace=packages/puppeteer
 
   cli:
-    if: false
     strategy:
       matrix:
         node: [18, 20, 22]
@@ -66,7 +65,6 @@ jobs:
       - run: npm run coverage --workspace=packages/cli
 
   webdriverjs:
-    if: false
     strategy:
       matrix:
         node: [18, 20, 22]
@@ -89,7 +87,6 @@ jobs:
       - run: npm run test:export --workspace=packages/webdriverjs
 
   webdriverio:
-    if: false
     strategy:
       matrix:
         node: [18, 20, 22]
@@ -112,7 +109,6 @@ jobs:
       - run: npm run test:export --workspace=packages/webdriverio
 
   reporter_earl:
-    if: false
     strategy:
       matrix:
         node: [18, 20, 22]
@@ -131,7 +127,6 @@ jobs:
       - run: npm run test:export --workspace=packages/reporter-earl
 
   react:
-    if: false
     strategy:
       matrix:
         node: [18, 20, 22]
@@ -153,7 +148,6 @@ jobs:
       - run: npm run test:export --workspace=packages/react
 
   playwright:
-    if: false
     strategy:
       matrix:
         node: [18, 20, 22]
@@ -173,7 +167,6 @@ jobs:
       - run: npm run test:export --workspace=packages/playwright
 
   wdio_globals_test:
-    if: false
     strategy:
       matrix:
         node: [18, 20, 22]
