@@ -64,12 +64,16 @@ describe('AxePuppeteer', function () {
   beforeEach(async () => {
     const opts = puppeteerOpts();
     browser = await Puppeteer.launch(opts);
+    console.log('Browser launched');
     page = await browser.newPage();
+    console.log('New page created');
   });
 
   afterEach(async () => {
     await page.close();
+    console.log('Page closed');
     await browser.close();
+    console.log('Browser closed');
   });
 
   it('runs in parallel', async () => {
@@ -94,11 +98,16 @@ describe('AxePuppeteer', function () {
 
   describe('constructor', () => {
     it('accepts a Page', async () => {
+      console.log('Visiting test page');
       const res = await page.goto(`${addr}/index.html`);
+      console.log('Test page visited');
       const axePup = new AxePuppeteer(page);
+      console.log('Created AxePuppeteer instance');
 
       assert.equal(res?.status(), 200);
+      console.log('Analyzing...');
       await expectAsyncToNotThrow(() => axePup.analyze());
+      console.log('Analyzed');
     });
 
     it('accepts a Frame', async () => {
