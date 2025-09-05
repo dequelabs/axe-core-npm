@@ -23,6 +23,7 @@ jobs:
 
   puppeteer:
     strategy:
+      fail-fast: false
       matrix:
         node: [18, 20, 22]
     runs-on: deque-ubuntu-latest-4core
@@ -45,6 +46,7 @@ jobs:
 
   cli:
     strategy:
+      fail-fast: false
       matrix:
         node: [18, 20, 22]
     runs-on: ubuntu-latest
@@ -65,6 +67,7 @@ jobs:
 
   webdriverjs:
     strategy:
+      fail-fast: false
       matrix:
         node: [18, 20, 22]
     runs-on: ubuntu-latest
@@ -87,6 +90,7 @@ jobs:
 
   webdriverio:
     strategy:
+      fail-fast: false
       matrix:
         node: [18, 20, 22]
     runs-on: ubuntu-latest
@@ -109,6 +113,7 @@ jobs:
 
   reporter_earl:
     strategy:
+      fail-fast: false
       matrix:
         node: [18, 20, 22]
     runs-on: ubuntu-latest
@@ -127,6 +132,7 @@ jobs:
 
   react:
     strategy:
+      fail-fast: false
       matrix:
         node: [18, 20, 22]
     runs-on: ubuntu-latest
@@ -148,6 +154,7 @@ jobs:
 
   playwright:
     strategy:
+      fail-fast: false
       matrix:
         node: [18, 20, 22]
     runs-on: ubuntu-latest
@@ -167,6 +174,7 @@ jobs:
 
   wdio_globals_test:
     strategy:
+      fail-fast: false
       matrix:
         node: [18, 20, 22]
     runs-on: ubuntu-latest
