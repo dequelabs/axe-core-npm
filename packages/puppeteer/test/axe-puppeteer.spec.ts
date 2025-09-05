@@ -29,6 +29,7 @@ describe('AxePuppeteer', function () {
   let page: Page;
   let server: Server;
   let addr: string;
+  let loggedVersion = false;
   this.timeout(10000);
 
   let axeSource: string;
@@ -64,6 +65,13 @@ describe('AxePuppeteer', function () {
   beforeEach(async () => {
     const opts = puppeteerOpts();
     browser = await Puppeteer.launch(opts);
+    if (!loggedVersion) {
+      console.log(
+        'Running AxePuppeteer tests on Puppeteer with browser',
+        await browser.version()
+      );
+      loggedVersion = true;
+    }
     page = await browser.newPage();
   });
 
