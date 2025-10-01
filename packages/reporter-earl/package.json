@@ -7,9 +7,9 @@
   "types": "./dist/axeReporterEarl.d.ts",
   "exports": {
     ".": {
+      "types": "./dist/axeReporterEarl.d.ts",
       "import": "./dist/axeReporterEarl.mjs",
-      "require": "./dist/axeReporterEarl.js",
-      "types": "./dist/axeReporterEarl.d.ts"
+      "require": "./dist/axeReporterEarl.js"
     }
   },
   "scripts": {
