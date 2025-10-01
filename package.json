@@ -18,7 +18,7 @@
   "devDependencies": {
     "axe-test-fixtures": "github:dequelabs/axe-test-fixtures#v1",
     "eslint": "^9.2.0",
-    "eslint-config-prettier": "^9.1.0",
+    "eslint-config-prettier": "^10.1.8",
     "eslint-plugin-prettier": "^5.1.3",
     "globals": "^16.3.0",
     "husky": "^9.0.10",
