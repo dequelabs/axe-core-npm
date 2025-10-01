@@ -2,8 +2,11 @@
 // which depends on TextEncoder ... which however isn't provided by jsdom, see
 // https://github.com/jsdom/jsdom/issues/2524.
 import { TextEncoder, TextDecoder } from 'util';
-global.TextEncoder = TextEncoder;
-global.TextDecoder = TextDecoder as any;
+type Encoder = typeof global.TextEncoder;
+type Decoder = typeof global.TextDecoder;
+
+global.TextEncoder = TextEncoder as unknown as Encoder;
+global.TextDecoder = TextDecoder as unknown as Decoder;
 
 import jsonld from 'jsonld';
 import axe from 'axe-core';

@@ -13,7 +13,7 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 5
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
       - uses: actions/setup-node@v4
         with:
           node-version: 22
@@ -22,14 +22,15 @@ jobs:
       - run: npm run lint
 
   puppeteer:
-    strategy:
+    strategy: &strategy_matrix
+      fail-fast: false
       matrix:
         node: [18, 20, 22]
-    runs-on: ubuntu-latest
+    runs-on: deque-ubuntu-latest-4core
     timeout-minutes: 15
     needs: lint
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
       - uses: actions/setup-node@v4
         with:
           node-version: ${{ matrix.node}}
@@ -44,14 +45,12 @@ jobs:
       - run: npm run test:export --workspace=packages/puppeteer
 
   cli:
-    strategy:
-      matrix:
-        node: [18, 20, 22]
+    strategy: *strategy_matrix
     runs-on: ubuntu-latest
     timeout-minutes: 15
     needs: lint
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
       - uses: actions/setup-node@v4
         with:
           node-version: ${{ matrix.node }}
@@ -64,14 +63,12 @@ jobs:
       - run: npm run coverage --workspace=packages/cli
 
   webdriverjs:
-    strategy:
-      matrix:
-        node: [18, 20, 22]
+    strategy: *strategy_matrix
     runs-on: ubuntu-latest
     timeout-minutes: 15
     needs: lint
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
       - uses: actions/setup-node@v4
         with:
           node-version: ${{ matrix.node }}
@@ -86,14 +83,12 @@ jobs:
       - run: npm run test:export --workspace=packages/webdriverjs
 
   webdriverio:
-    strategy:
-      matrix:
-        node: [18, 20, 22]
+    strategy: *strategy_matrix
     runs-on: ubuntu-latest
     timeout-minutes: 15
     needs: lint
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
       - uses: actions/setup-node@v4
         with:
           node-version: ${{ matrix.node }}
@@ -108,14 +103,12 @@ jobs:
       - run: npm run test:export --workspace=packages/webdriverio
 
   reporter_earl:
-    strategy:
-      matrix:
-        node: [18, 20, 22]
+    strategy: *strategy_matrix
     runs-on: ubuntu-latest
     timeout-minutes: 15
     needs: lint
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
       - uses: actions/setup-node@v4
         with:
           node-version: ${{ matrix.node }}
@@ -126,14 +119,12 @@ jobs:
       - run: npm run test:export --workspace=packages/reporter-earl
 
   react:
-    strategy:
-      matrix:
-        node: [18, 20, 22]
+    strategy: *strategy_matrix
     runs-on: ubuntu-latest
     timeout-minutes: 15
     needs: lint
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
       - uses: actions/setup-node@v4
         with:
           node-version: ${{ matrix.node }}
@@ -147,14 +138,12 @@ jobs:
       - run: npm run test:export --workspace=packages/react
 
   playwright:
-    strategy:
-      matrix:
-        node: [18, 20, 22]
+    strategy: *strategy_matrix
     runs-on: ubuntu-latest
     timeout-minutes: 25
     needs: lint
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
       - uses: actions/setup-node@v4
         with:
           node-version: ${{ matrix.node }}
@@ -166,14 +155,12 @@ jobs:
       - run: npm run test:export --workspace=packages/playwright
 
   wdio_globals_test:
-    strategy:
-      matrix:
-        node: [18, 20, 22]
+    strategy: *strategy_matrix
     runs-on: ubuntu-latest
     timeout-minutes: 15
     needs: lint
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
       - uses: actions/setup-node@v4
         with:
           node-version: ${{ matrix.node }}
@@ -187,7 +174,7 @@ jobs:
     timeout-minutes: 5
     needs: lint
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
       - uses: actions/setup-node@v4
         with:
           node-version: 22
