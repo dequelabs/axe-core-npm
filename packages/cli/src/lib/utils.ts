@@ -8,7 +8,7 @@ import os from 'os';
 const HOME_DIR = os.homedir();
 const BDM_CACHE_DIR = path.resolve(HOME_DIR, '.browser-driver-manager');
 
-config({ path: path.resolve(BDM_CACHE_DIR, '.env') });
+config({ path: path.resolve(BDM_CACHE_DIR, '.env'), quiet: true });
 
 export const { CHROME_TEST_PATH, CHROMEDRIVER_TEST_PATH } = process.env;
 
