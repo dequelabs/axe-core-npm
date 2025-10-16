@@ -4,6 +4,8 @@ Provides a command line interface for [axe](https://github.com/dequelabs/axe-cor
 
 Previous versions of this program were maintained at [dequelabs/axe-cli](https://github.com/dequelabs/axe-cli).
 
+This package does not follow Semantic Versioning (SemVer) but instead uses the major and minor version (but not patch version) of axe-core that the package uses. For example, if the API version is v4.7.2, then the axe-core version used by the package will be v4.7.x. The patch version of this package may include bug fixes and new API features but will not introduce breaking changes.
+
 ## Getting Started
 
 Install [Node.js](https://docs.npmjs.com/getting-started/installing-node) if you haven't already. This project requires Node 6+. By default, axe-cli runs Chrome in headless mode, which requires Chrome 59 or up.
