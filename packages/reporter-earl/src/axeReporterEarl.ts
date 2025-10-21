@@ -18,7 +18,7 @@ export function createEarlReport(
 export default function axeReporterEarl(
   rawResults: RawResult[],
   {},
-  callback: Function
+  callback: (result: EarlResult) => unknown
 ): void {
   callback(createEarlReport(rawResults));
 }

@@ -50,7 +50,11 @@ const nodes: Node[] = [document.documentElement];
 // N milliseconds. If `immediate` is passed, trigger the function on the
 // leading edge, instead of the trailing.
 // @see https://davidwalsh.name/javascript-debounce-function
-function debounce(func: Function, wait: number, immediate?: boolean): Function {
+function debounce(
+  func: (component: unknown) => void,
+  wait: number,
+  immediate?: boolean
+): () => unknown {
   let _timeout;
   return function (...args): void {
     const later = (): void => {
@@ -274,7 +278,7 @@ function checkNode(component: React.Component): void {
  */
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 function componentAfterRender(component: any): void {
-  const debounceCheckNode: Function = debounce(checkNode, timeout, true);
+  const debounceCheckNode: () => unknown = debounce(checkNode, timeout, true);
   after(component, 'componentDidMount', debounceCheckNode);
   after(component, 'componentDidUpdate', debounceCheckNode);
 }

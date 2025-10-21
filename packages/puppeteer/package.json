@@ -1,6 +1,6 @@
 {
   "name": "@axe-core/puppeteer",
-  "version": "4.10.2",
+  "version": "4.11.0",
   "description": "Provides a chainable axe API for Puppeteer and automatically injects into all frames",
   "repository": {
     "type": "git",
@@ -36,7 +36,7 @@
   "license": "MPL-2.0",
   "devDependencies": {
     "@types/chai": "^4.3.3",
-    "@types/express": "^4.17.14",
+    "@types/express": "^5.0.3",
     "@types/mocha": "^10.0.0",
     "@types/node": "^22.0.2",
     "@types/sinon": "^17.0.0",
@@ -44,10 +44,10 @@
     "axe-test-fixtures": "github:dequelabs/axe-test-fixtures#v1",
     "chai": "^4.3.6",
     "cross-dirname": "^0.1.0",
-    "express": "^4.18.2",
-    "mocha": "^10.0.0",
+    "express": "^5.1.0",
+    "mocha": "^11.7.1",
     "nyc": "^17.1.0",
-    "puppeteer": "22.12.1",
+    "puppeteer": "24.22.2",
     "sinon": "^18.0.0",
     "source-map-support": "^0.5.21",
     "ts-node": "^10.9.1",
@@ -55,7 +55,7 @@
     "typescript": "^5.2.2"
   },
   "dependencies": {
-    "axe-core": "~4.10.3"
+    "axe-core": "~4.11.0"
   },
   "peerDependencies": {
     "puppeteer": ">=1.10.0"

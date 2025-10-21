@@ -15,6 +15,7 @@ import { ChildProcessWithoutNullStreams } from 'child_process';
 import { fixturesPath } from 'axe-test-fixtures';
 import { config } from 'dotenv';
 import os from 'os';
+import sinon from 'sinon';
 
 const HOME_DIR = os.homedir();
 const BDM_CACHE_DIR = path.resolve(HOME_DIR, '.browser-driver-manager');
@@ -139,6 +140,7 @@ describe('@axe-core/webdriverio', () => {
       });
 
       afterEach(async () => {
+        sinon.restore();
         await client.deleteSession();
         server.close();
       });
@@ -1411,14 +1413,10 @@ describe('@axe-core/webdriverio', () => {
 
           assert.notEqual(title, 'Error');
 
-          // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-          // @ts-ignore
-          delete client.createWindow;
-          // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-          // @ts-ignore
-          client.createWindow = () => {
-            return { handle: null };
-          };
+          const createWindowStub = sinon.stub(client, 'createWindow');
+          createWindowStub.callsFake((type: 'tab' | 'window') => {
+            return Promise.resolve({ handle: '', type });
+          });
           try {
             await new AxeBuilder({
               client,
@@ -1443,14 +1441,10 @@ describe('@axe-core/webdriverio', () => {
 
           assert.notEqual(title, 'Error');
 
-          // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-          // @ts-ignore
-          delete client.createWindow;
-          // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-          // @ts-ignore
-          client.createWindow = () => {
-            return { handle: null };
-          };
+          const createWindowStub = sinon.stub(client, 'createWindow');
+          createWindowStub.callsFake((type: 'tab' | 'window') => {
+            return Promise.resolve({ handle: '', type });
+          });
           try {
             const builder = new AxeBuilder({
               client,

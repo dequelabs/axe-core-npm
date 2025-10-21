@@ -29,6 +29,7 @@ describe('AxePuppeteer', function () {
   let page: Page;
   let server: Server;
   let addr: string;
+  let loggedVersion = false;
   this.timeout(10000);
 
   let axeSource: string;
@@ -64,6 +65,13 @@ describe('AxePuppeteer', function () {
   beforeEach(async () => {
     const opts = puppeteerOpts();
     browser = await Puppeteer.launch(opts);
+    if (!loggedVersion) {
+      console.log(
+        'Running AxePuppeteer tests on Puppeteer with browser',
+        await browser.version()
+      );
+      loggedVersion = true;
+    }
     page = await browser.newPage();
   });
 
@@ -902,13 +910,8 @@ describe('AxePuppeteer', function () {
     const finishRunThrows = `;axe.finishRun = () => { throw new Error("No finishRun")}`;
     it('throws an error if window.open throws', async () => {
       const res = await page.goto(`${addr}/index.html`);
-      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-      // @ts-ignore
-      delete page.browser().newPage();
-      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-      // @ts-ignore
       page.browser().newPage = async () => {
-        return null;
+        return null as unknown as Page;
       };
 
       assert.equal(res?.status(), 200);
@@ -929,13 +932,8 @@ describe('AxePuppeteer', function () {
 
     it('throw an error with modified url', async () => {
       const res = await page.goto(`${addr}/index.html`);
-      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-      // @ts-ignore
-      delete page.browser().newPage();
-      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-      // @ts-ignore
       page.browser().newPage = async () => {
-        return null;
+        return null as unknown as Page;
       };
 
       assert.equal(res?.status(), 200);
