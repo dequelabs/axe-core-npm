@@ -3,6 +3,24 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [4.11.0](https://github.com/dequelabs/axe-core-npm/compare/v4.10.1...v4.11.0) (2025-10-14)
+
+
+### Bug Fixes
+
+* Optimize AxeBuilder memory usage. ([#1154](https://github.com/dequelabs/axe-core-npm/issues/1154)) ([e53cd36](https://github.com/dequelabs/axe-core-npm/commit/e53cd36d0770a8323577946b0438f058b87a0aad)), closes [/github.com/bensenescu/axe-core-npm/blob/develop/packages/puppeteer/src/axePuppeteer.ts#L59](https://github.com//github.com/bensenescu/axe-core-npm/blob/develop/packages/puppeteer/src/axePuppeteer.ts/issues/L59) [/github.com/bensenescu/axe-core-npm/blob/develop/packages/puppeteer/src/utils.ts#L34](https://github.com//github.com/bensenescu/axe-core-npm/blob/develop/packages/puppeteer/src/utils.ts/issues/L34)
+* Update axe-core to v4.10.3 ([#1155](https://github.com/dequelabs/axe-core-npm/issues/1155)) ([f8e3a14](https://github.com/dequelabs/axe-core-npm/commit/f8e3a14043c7288ca9373a5f1543ffd27cedf256))
+* **wdio:** resolve blank navigation issue in WDIO v9 ([#1169](https://github.com/dequelabs/axe-core-npm/issues/1169)) ([6505560](https://github.com/dequelabs/axe-core-npm/commit/6505560d646ddc6db8a9b4cf772af08ff3f08dc3))
+
+
+### Features
+
+* Update axe-core to v4.11.0 ([#1233](https://github.com/dequelabs/axe-core-npm/issues/1233)) ([2758476](https://github.com/dequelabs/axe-core-npm/commit/27584764815148bf902f29010cca0f4f2230cf46))
+
+
+
+
+
 ## [4.10.2](https://github.com/dequelabs/axe-core-npm/compare/v4.10.1...v4.10.2) (2025-05-12)
 
 
