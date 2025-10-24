@@ -11,19 +11,30 @@ jobs:
   canary:
     runs-on: ubuntu-latest
     timeout-minutes: 10
+    environment: registry.npmjs.org
+    permissions:
+      # Required for OIDC
+      id-token: write
+      contents: read
     if: github.ref_name == 'develop' && github.repository_owner == 'dequelabs'
     steps:
-      - uses: actions/checkout@v5
-      - uses: actions/setup-node@v5
+      - uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0
+      - uses: actions/setup-node@2028fbc5c25fe9cf00d9f06a71cc4710d4507903 # v6.0.0
         with:
+          registry-url: 'https://registry.npmjs.org/'
           node-version: 22
           cache: 'npm'
+      - name: Update npm to 11 if needed
+        run: |
+          CURRENT_NPM=$(npm -v | cut -d. -f1)
+          if [ "$CURRENT_NPM" -lt 11 ]; then
+            npm install -g npm@11
+          fi
       - run: npm ci
       # Ensure packages are built
       - run: npm run build
       # Make sure the working tree is clean
       - run: git reset --hard HEAD
-      - run: npm config set "//registry.npmjs.org/:_authToken" ${{ secrets.NPM_TOKEN }}
       - run: |
           npx lerna publish prepatch \
             --no-verify-access \
@@ -38,19 +49,30 @@ jobs:
 
   relase-candidate:
     runs-on: ubuntu-latest
+    environment: registry.npmjs.org
+    permissions:
+      # Required for OIDC
+      id-token: write
+      contents: read
     if: github.ref_name == 'release' && github.repository_owner == 'dequelabs'
     steps:
-      - uses: actions/checkout@v5
-      - uses: actions/setup-node@v5
+      - uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0
+      - uses: actions/setup-node@2028fbc5c25fe9cf00d9f06a71cc4710d4507903 # v6.0.0
         with:
+          registry-url: 'https://registry.npmjs.org/'
           node-version: 22
           cache: 'npm'
+      - name: Update npm to 11 if needed
+        run: |
+          CURRENT_NPM=$(npm -v | cut -d. -f1)
+          if [ "$CURRENT_NPM" -lt 11 ]; then
+            npm install -g npm@11
+          fi
       - run: npm ci
       # Ensure packages are built
       - run: npm run build
       # Make sure the working tree is clean
       - run: git reset --hard HEAD
-      - run: npm config set "//registry.npmjs.org/:_authToken" ${{ secrets.NPM_TOKEN }}
       - run: |
           npx lerna publish prepatch \
             --no-verify-access \
@@ -65,19 +87,30 @@ jobs:
 
   production:
     runs-on: ubuntu-latest
+    environment: registry.npmjs.org
+    permissions:
+      # Required for OIDC
+      id-token: write
+      contents: read
     if: github.ref_name == 'master' && github.repository_owner == 'dequelabs'
     steps:
-      - uses: actions/checkout@v5
-      - uses: actions/setup-node@v5
+      - uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0
+      - uses: actions/setup-node@2028fbc5c25fe9cf00d9f06a71cc4710d4507903 # v6.0.0
         with:
+          registry-url: 'https://registry.npmjs.org/'
           node-version: 22
           cache: 'npm'
+      - name: Update npm to 11 if needed
+        run: |
+          CURRENT_NPM=$(npm -v | cut -d. -f1)
+          if [ "$CURRENT_NPM" -lt 11 ]; then
+            npm install -g npm@11
+          fi
       - run: npm ci
       # Ensure packages are built
       - run: npm run build
       # Make sure the working tree is clean
       - run: git reset --hard HEAD
-      - run: npm config set "//registry.npmjs.org/:_authToken" ${{ secrets.NPM_TOKEN }}
       - run: |
           npx lerna publish from-package \
             --force-publish='*' \
