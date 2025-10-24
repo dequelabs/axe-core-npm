@@ -47,7 +47,7 @@ jobs:
             --force-publish \
             --yes
 
-  relase-candidate:
+  release-candidate:
     runs-on: ubuntu-latest
     environment: registry.npmjs.org
     permissions:
