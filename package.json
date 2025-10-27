@@ -4,8 +4,7 @@
   "license": "MPL-2.0",
   "workspaces": [
     "packages/*",
-    "test/axe-core",
-    "test/wdio"
+    "test/*"
   ],
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
