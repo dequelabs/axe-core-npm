@@ -12,7 +12,7 @@
     "lint": "eslint .",
     "prepare": "husky install",
     "precommit": "lint-staged",
-    "build": "npm run --workspaces build"
+    "build": "npm run --workspaces build --if-present"
   },
   "devDependencies": {
     "axe-test-fixtures": "github:dequelabs/axe-test-fixtures#v1",
