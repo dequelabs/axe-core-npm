@@ -12,7 +12,7 @@ jobs:
     timeout-minutes: 2
     steps:
       - uses: actions/checkout@v5
-      - uses: actions/setup-node@v5
+      - uses: actions/setup-node@v6
         with:
           node-version: 22
       - uses: dequelabs/axe-api-team-public/.github/actions/create-update-axe-core-pull-request-v1@main
