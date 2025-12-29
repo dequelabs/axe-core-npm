@@ -16,17 +16,17 @@
   },
   "devDependencies": {
     "axe-test-fixtures": "github:dequelabs/axe-test-fixtures#v1",
-    "eslint": "^9.2.0",
+    "eslint": "^9.39.2",
     "eslint-config-prettier": "^10.1.8",
-    "eslint-plugin-prettier": "^5.1.3",
-    "globals": "^16.3.0",
-    "husky": "^9.0.10",
-    "lerna": "9.0.0",
-    "lint-staged": "^16.1.2",
-    "prettier": "^3.0.3",
+    "eslint-plugin-prettier": "^5.5.4",
+    "globals": "^16.5.0",
+    "husky": "^9.1.7",
+    "lerna": "9.0.3",
+    "lint-staged": "^16.2.7",
+    "prettier": "^3.7.4",
     "react": "^17.0.0",
     "typescript": "^5.2.2",
-    "typescript-eslint": "^8.0.0-alpha.12"
+    "typescript-eslint": "^8.50.1"
   },
   "prettier": {
     "semi": true,
@@ -52,6 +52,6 @@
     ]
   },
   "dependencies": {
-    "browser-driver-manager": "^2.0.0"
+    "browser-driver-manager": "^2.0.1"
   }
 }
