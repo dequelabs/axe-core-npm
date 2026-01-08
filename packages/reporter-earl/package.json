@@ -46,7 +46,7 @@
     "@types/clone": "^2.1.1",
     "@types/jsonld": "github:types/jsonld",
     "@types/node": "^22.0.2",
-    "axe-core": "~4.11.0",
+    "axe-core": "~4.11.1",
     "clone": "^2.1.2",
     "jest": "^30.0.5",
     "jest-environment-jsdom": "^30.1.2",
