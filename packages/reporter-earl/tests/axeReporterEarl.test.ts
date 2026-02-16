@@ -1,6 +1,7 @@
 // jsonld depends on @digitalbazaar/http-client, which depends on the undici HTTP client, which depends
 // on TextEncoder, TextDecoder, and ReadableStream ... which however isn't provided by jsdom
-// @see https://github.com/jsdom/jsdom/issues/2524.
+// @see https://github.com/jsdom/jsdom/issues/2524
+// @see https://github.com/mswjs/msw/discussions/1934
 import { TextEncoder, TextDecoder } from 'node:util';
 import ReadableStream from 'node:stream/web';
 type Encoder = typeof global.TextEncoder;
