@@ -1,6 +1,6 @@
 {
   "name": "@axe-core/webdriverjs",
-  "version": "4.11.0",
+  "version": "4.11.1",
   "description": "Provides a method to inject and analyze web pages using axe",
   "contributors": [
     {
@@ -40,9 +40,9 @@
   "types": "./dist/index.d.ts",
   "exports": {
     ".": {
+      "types": "./dist/index.d.ts",
       "import": "./dist/index.mjs",
-      "require": "./dist/index.js",
-      "types": "./dist/index.d.ts"
+      "require": "./dist/index.js"
     }
   },
   "scripts": {
@@ -87,7 +87,7 @@
     "typescript": "^5.2.2"
   },
   "dependencies": {
-    "axe-core": "~4.11.0"
+    "axe-core": "~4.11.1"
   },
   "peerDependencies": {
     "selenium-webdriver": ">3.0.0-beta  || >=2.53.1 || >4.0.0-alpha"

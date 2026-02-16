@@ -3,6 +3,18 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [4.11.1](https://github.com/dequelabs/axe-core-npm/compare/v4.11.0...v4.11.1) (2026-01-09)
+
+
+### Bug Fixes
+
+* reorder exports to place types first ([#1261](https://github.com/dequelabs/axe-core-npm/issues/1261)) ([40d22e3](https://github.com/dequelabs/axe-core-npm/commit/40d22e3cd6381796d731802efc71bc21c924025e)), closes [#1243](https://github.com/dequelabs/axe-core-npm/issues/1243)
+* Update axe-core to v4.11.1 ([#1271](https://github.com/dequelabs/axe-core-npm/issues/1271)) ([77f577e](https://github.com/dequelabs/axe-core-npm/commit/77f577ed47510045e75b939fa97ac1d4f91b219b))
+
+
+
+
+
 # [4.11.0](https://github.com/dequelabs/axe-core-npm/compare/v4.10.1...v4.11.0) (2025-10-14)
 
 
