@@ -25,7 +25,7 @@ jobs:
     strategy: &strategy_matrix
       fail-fast: false
       matrix:
-        node: [18, 20, 24]
+        node: [18, 20, 22, 24]
     runs-on: deque-ubuntu-latest-4core
     timeout-minutes: 15
     needs: lint
