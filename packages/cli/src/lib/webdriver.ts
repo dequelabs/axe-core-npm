@@ -14,7 +14,9 @@ const startDriver = async (
   if (config.browser === 'chrome-headless') {
     const service = new chrome.ServiceBuilder(
       config.chromedriverPath ?? CHROMEDRIVER_TEST_PATH ?? chromedriver.path
-    );
+    )
+      .loggingTo(path.join(__dirname, '..', 'chromedriver-log.txt'))
+      .enableVerboseLogging();
 
     let options = new chrome.Options();
     // selenium-webdriver < 4.17.0

@@ -23,15 +23,25 @@ const PATH_TO_AXE_250 = path.resolve(
   'axe-core@2.5.0.js'
 );
 
+after(() => {
+  const file = fs.readFileSync(
+    path.join(__dirname, '..', 'chromedriver-log.txt'),
+    'utf8'
+  );
+  console.log(file);
+});
+
 describe('cli', () => {
   it('--help', async () => {
     const result = await runCLI('--help');
+    assert.equal(result.stderr, '');
     assert.equal(result.exitCode, 0);
     assert.include(result.stdout, 'Options:');
   });
 
   it('--version', async () => {
     const result = await runCLI('--version');
+    assert.equal(result.stderr, '');
     assert.equal(result.exitCode, 0);
     assert.deepEqual(result.stdout, version);
   });
@@ -39,6 +49,7 @@ describe('cli', () => {
   describe('given a file:// url', () => {
     it('should run an analysis', async () => {
       const result = await runCLI(`file://${SIMPLE_HTML_FILE}`);
+      assert.equal(result.stderr, '');
       assert.equal(result.exitCode, 0);
       assert.include(
         result.stdout,
@@ -66,6 +77,7 @@ describe('cli', () => {
 
     it('should run an analysis', async () => {
       const result = await runCLI(`http://127.0.0.1:${port}/`);
+      assert.equal(result.stderr, '');
       assert.equal(result.exitCode, 0);
       assert.include(
         result.stdout,
@@ -82,6 +94,7 @@ describe('cli', () => {
         PATH_TO_AXE_250
       );
 
+      assert.equal(result.stderr, '');
       assert.equal(result.exitCode, 0);
       assert.include(
         result.stdout,
@@ -111,6 +124,7 @@ describe('cli', () => {
         'firefox',
         '--verbose'
       );
+      assert.equal(result.stderr, '');
       assert.equal(result.exitCode, 0);
       assert.include(result.stdout, 'Firefox');
     });
@@ -123,6 +137,7 @@ describe('cli', () => {
         '--rules',
         'region'
       );
+      assert.equal(result.stderr, '');
       assert.equal(result.exitCode, 0);
       assert.include(result.stdout, 'Violation of "region" with');
     });
@@ -135,6 +150,7 @@ describe('cli', () => {
         '--tags',
         'cat.parsing,wcag222'
       );
+      assert.equal(result.stderr, '');
       assert.equal(result.exitCode, 0);
       // Region is tagged with "cat.keyboard", "best-practice"
       assert.notInclude(result.stdout, 'Violation of "region" with');
@@ -180,6 +196,7 @@ describe('cli', () => {
         reportDir
       );
 
+      assert.equal(result.stderr, '');
       assert.equal(result.exitCode, 0);
       const files = fs.readdirSync(reportDir);
       const report = files.find(f => f.endsWith('.json'));
@@ -269,6 +286,7 @@ describe('cli', () => {
   describe('--stdout', () => {
     it('should only emit JSON to stdout', async () => {
       const result = await runCLI(`file://${SIMPLE_HTML_FILE}`, '--stdout');
+      assert.equal(result.stderr, '');
       assert.equal(result.exitCode, 0);
       assert.doesNotThrow(
         () => JSON.parse(result.stdout),
@@ -280,6 +298,7 @@ describe('cli', () => {
   describe('--timer', () => {
     it('should log the time it takes to run', async () => {
       const result = await runCLI(`file://${SIMPLE_HTML_FILE}`, '--timer');
+      assert.equal(result.stderr, '');
       assert.equal(result.exitCode, 0);
       assert.isEmpty(result.stderr);
       assert.include(result.stdout, 'axe-core execution time');
@@ -293,6 +312,7 @@ describe('cli', () => {
         `file://${SIMPLE_HTML_FILE}`,
         '--no-reporter'
       );
+      assert.equal(result.stderr, '');
       assert.equal(result.exitCode, 0);
       assert.notInclude(
         result.stdout,
@@ -346,6 +366,7 @@ describe('cli', () => {
         reportDir
       );
       const [report] = fs.readdirSync(reportDir);
+      assert.equal(result.stderr, '');
       assert.equal(result.exitCode, 0);
       assert.equal(report, 'test-name.json');
     });
@@ -358,6 +379,7 @@ describe('cli', () => {
         '--load-delay',
         '1000'
       );
+      assert.equal(result.stderr, '');
       assert.equal(result.exitCode, 0);
       assert.include(
         result.stdout,
@@ -369,6 +391,7 @@ describe('cli', () => {
   describe('--verbose', () => {
     it('should output metadata such as test tool name, version and environment', async () => {
       const result = await runCLI(`file://${SIMPLE_HTML_FILE}`, '--verbose');
+      assert.equal(result.stderr, '');
       assert.equal(result.exitCode, 0);
       assert.include(result.stdout, 'Test Runner');
       assert.include(result.stdout, 'Test Engine');
