@@ -15,7 +15,7 @@ const startDriver = async (
     const service = new chrome.ServiceBuilder(
       config.chromedriverPath ?? CHROMEDRIVER_TEST_PATH ?? chromedriver.path
     )
-      .loggingTo(path.join(__dirname, '..', 'chromedriver-log.txt'))
+      .loggingTo(path.join(__dirname, '..', 'tmp-chromedriver-log.txt'))
       .enableVerboseLogging();
 
     let options = new chrome.Options();

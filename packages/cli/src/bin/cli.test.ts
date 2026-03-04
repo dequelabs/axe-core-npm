@@ -23,15 +23,46 @@ const PATH_TO_AXE_250 = path.resolve(
   'axe-core@2.5.0.js'
 );
 
+const VERBOSE_FILE = path.join(__dirname, '..', 'chromedriver-log.txt');
+const TMP_VERBOSE_FILE = path.join(__dirname, '..', 'tmp-chromedriver-log.txt');
+
+before(() => {
+  try {
+    fs.writeFileSync(VERBOSE_FILE, '');
+  } catch {}
+});
+
 after(() => {
-  const file = fs.readFileSync(
-    path.join(__dirname, '..', 'chromedriver-log.txt'),
-    'utf8'
-  );
+  const file = fs.readFileSync(VERBOSE_FILE, 'utf8');
   console.log(file);
 });
 
 describe('cli', () => {
+  beforeEach(function (done) {
+    fs.appendFile(
+      VERBOSE_FILE,
+      `\n====== ${this.currentTest?.fullTitle()} ======\n`,
+      function (err) {
+        if (err) console.error('verbose file does not exist');
+        done();
+      }
+    );
+  });
+
+  afterEach(done => {
+    // chromedriver overwrites the contents of the file so we'll copy it to another file
+    let file;
+    try {
+      file = fs.readFileSync(TMP_VERBOSE_FILE, 'utf8');
+      fs.appendFile(VERBOSE_FILE, file, function (err) {
+        if (err) console.error('verbose file does not exist!', err);
+        done();
+      });
+    } catch {
+      return done();
+    }
+  });
+
   it('--help', async () => {
     const result = await runCLI('--help');
     assert.equal(result.stderr, '');

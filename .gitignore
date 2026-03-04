@@ -8,3 +8,5 @@ packages/react/test/index.js
 packages/react/cypress/screenshots
 packages/react/verify-release-*
 chromedriver-log.txt
+tmp-chromedriver-log.txt
+.DS_Store
