@@ -42,6 +42,10 @@ const startDriver = async (
       options.addArguments('no-sandbox');
     }
 
+    options.addArguments(
+      `--disable-features=PartitionAllocSchedulerLoopQuarantineTaskControlledPurge`
+    );
+
     if (config.chromePath) {
       options.setChromeBinaryPath(path.resolve(config.chromePath));
     }
