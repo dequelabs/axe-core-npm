@@ -24,7 +24,7 @@ export const Webdriver = (): WebDriver => {
   // @see https://github.com/DefinitelyTyped/DefinitelyTyped/discussions/69724
   const options = new chrome.Options();
   options
-    .addArguments('headless')
+    .addArguments('headless', '--disable-dev-shm-usage', '--disable-gpu')
     // Required for CI runners using >=Ubuntu 24.04
     // @see https://github.com/SeleniumHQ/selenium/issues/14609
     .addArguments('no-sandbox');
