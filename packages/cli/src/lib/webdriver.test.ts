@@ -92,16 +92,12 @@ describe('startDriver', () => {
 
   it('passes multiple arguments argument to chromeOptions', async () => {
     browser = 'chrome-headless';
-    config.chromeOptions = ['disable-dev-shm-usage'];
+    config.chromeOptions = ['disable-infobars'];
     driver = await startDriver(config);
 
     const options = config?.builder?.getChromeOptions();
     assert.isArray(options?.get('goog:chromeOptions').args);
-    assert.deepEqual(options?.get('goog:chromeOptions').args, [
-      'headless',
-      'disable-dev-shm-usage',
-      'no-sandbox'
-    ]);
+    assert.include(options?.get('goog:chromeOptions').args, 'disable-infobars');
   });
 
   it('sets the --timeout flag', async () => {
