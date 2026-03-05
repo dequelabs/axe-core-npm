@@ -40,6 +40,9 @@ const startDriver = async (
       options.addArguments('no-sandbox');
     }
 
+    options.addArguments('disable-dev-shm-usage');
+    options.addArguments('disable-gpu');
+
     if (config.chromePath) {
       options.setChromeBinaryPath(path.resolve(config.chromePath));
     }
