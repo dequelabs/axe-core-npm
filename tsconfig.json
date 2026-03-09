@@ -7,7 +7,6 @@
     "module": "esnext",
     "moduleResolution": "node",
     "noImplicitAny": true,
-    "noImplicitReturns": true,
     "noImplicitThis": true,
     "outDir": "dist",
     "pretty": true,
