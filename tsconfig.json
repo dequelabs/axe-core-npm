@@ -1,17 +1,25 @@
 {
   "compilerOptions": {
-    "moduleResolution": "node",
-    "target": "esnext",
-    "module": "esnext",
-    "lib": ["dom", "esnext"],
-    "strict": true,
-    "pretty": true,
-    "sourceMap": true,
+    "allowJs": true,
     "declaration": true,
-    "outDir": "dist",
     "esModuleInterop": true,
-    "resolveJsonModule": true
+    "lib": ["dom", "esnext"],
+    "module": "esnext",
+    "moduleResolution": "node",
+    "noImplicitAny": true,
+    "noImplicitReturns": true,
+    "noImplicitThis": true,
+    "outDir": "dist",
+    "pretty": true,
+    "removeComments": true,
+    "resolveJsonModule": true,
+    "skipLibCheck": true,
+    "sourceMap": true,
+    "strict": true,
+    "strictNullChecks": true,
+    "target": "esnext"
   },
+  "exclude": ["**/*.test.ts", "**/test/**/*.ts"],
   "ts-node": {
     "compilerOptions": {
       "module": "commonjs",

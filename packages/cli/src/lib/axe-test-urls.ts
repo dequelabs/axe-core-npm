@@ -3,6 +3,20 @@ import AxeBuilder from '@axe-core/webdriverjs';
 import { AxeResults } from 'axe-core';
 import { EventResponse, ConfigParams } from '../types';
 
+type Func = (...args: ['a', number] | ['b', string]) => void;
+
+const f1: Func = (kind, payload) => {
+  if (kind === 'a') {
+    payload.toFixed(); // 'payload' narrowed to 'number'
+  }
+  if (kind === 'b') {
+    payload.toUpperCase(); // 'payload' narrowed to 'string'
+  }
+};
+
+f1('a', 42);
+f1('b', 'hello');
+
 const testPages = async (
   urls: string | string[],
   config: ConfigParams,
@@ -67,7 +81,7 @@ const testPages = async (
           events?.startTimer('axe-core execution time');
         }
 
-        axe.analyze((err: Error | null, results: AxeResults) => {
+        axe.analyze((err, results) => {
           if (config.timer) {
             events?.endTimer('axe-core execution time');
           }
@@ -83,7 +97,7 @@ const testPages = async (
           }
 
           // Move to the next item
-          testPages(urls.slice(1), config, events).then((out: AxeResults) => {
+          testPages(urls.slice(1), config, events).then(out => {
             resolve([results].concat(out));
           });
         });
