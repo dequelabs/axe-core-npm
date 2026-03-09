@@ -3,20 +3,6 @@ import AxeBuilder from '@axe-core/webdriverjs';
 import { AxeResults } from 'axe-core';
 import { EventResponse, ConfigParams } from '../types';
 
-type Func = (...args: ['a', number] | ['b', string]) => void;
-
-const f1: Func = (kind, payload) => {
-  if (kind === 'a') {
-    payload.toFixed(); // 'payload' narrowed to 'number'
-  }
-  if (kind === 'b') {
-    payload.toUpperCase(); // 'payload' narrowed to 'string'
-  }
-};
-
-f1('a', 42);
-f1('b', 'hello');
-
 const testPages = async (
   urls: string | string[],
   config: ConfigParams,
