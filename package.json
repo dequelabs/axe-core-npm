@@ -7,14 +7,15 @@
     "test/*"
   ],
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
     "fmt": "prettier --write .",
     "lint": "eslint .",
     "prepare": "husky install",
     "precommit": "lint-staged",
-    "build": "npm run --workspaces build --if-present"
+    "build": "npm run --workspaces build --if-present",
+    "test": "npm run --workspaces test --if-present"
   },
   "devDependencies": {
+    "@types/node": "^25.4.0",
     "axe-test-fixtures": "github:dequelabs/axe-test-fixtures#v1",
     "eslint": "^9.2.0",
     "eslint-config-prettier": "^10.1.8",
@@ -25,7 +26,8 @@
     "lint-staged": "^16.1.2",
     "prettier": "^3.0.3",
     "react": "^17.0.0",
-    "typescript": "^5.2.2",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.9.3",
     "typescript-eslint": "^8.0.0-alpha.12"
   },
   "prettier": {

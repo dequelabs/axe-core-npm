@@ -45,15 +45,12 @@
   "devDependencies": {
     "@types/clone": "^2.1.1",
     "@types/jsonld": "github:types/jsonld",
-    "@types/node": "^24.10.13",
     "axe-core": "~4.11.1",
     "clone": "^2.1.2",
     "jest": "^30.0.5",
     "jest-environment-jsdom": "^30.1.2",
     "jsonld": "^9.0.0",
     "ts-jest": "^29.0.3",
-    "ts-node": "^10.9.1",
-    "tsup": "^8.0.1",
-    "typescript": "^5.2.2"
+    "tsup": "^8.0.1"
   }
 }
