@@ -17,7 +17,7 @@
   "devDependencies": {
     "@types/node": "^25.4.0",
     "axe-test-fixtures": "github:dequelabs/axe-test-fixtures#v1",
-    "eslint": "^9.2.0",
+    "eslint": "^10.0.2",
     "eslint-config-prettier": "^10.1.8",
     "eslint-plugin-prettier": "^5.1.3",
     "globals": "^17.3.0",
