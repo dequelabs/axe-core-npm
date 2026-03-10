@@ -5,8 +5,11 @@ import http from 'http';
 import net from 'net';
 import path from 'path';
 import fs from 'fs';
-import { version } from '../../package.json';
 import runCLI from '../testutils/';
+
+const { version } = JSON.parse(
+  fs.readFileSync(path.resolve(__dirname, '../../package.json'), 'utf-8')
+);
 
 const SIMPLE_HTML_FILE = path.join(__dirname, '..', 'testutils', 'simple.html');
 const SIMPLE_CLEAN_HTML_FILE = path.join(
