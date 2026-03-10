@@ -6,6 +6,7 @@ import net from 'net';
 import path from 'path';
 import fs from 'fs';
 import runCLI from '../testutils/';
+import { ExecaSyncError } from 'execa';
 
 const { version } = JSON.parse(
   fs.readFileSync(path.resolve(__dirname, '../../package.json'), 'utf-8')
@@ -161,6 +162,11 @@ describe('cli', () => {
       try {
         await runCLI(`file://${SIMPLE_CLEAN_HTML_FILE}`, '--exit');
       } catch (error) {
+        // Stupid hack to get type scoping to work.
+        // We know this is not empty, because something is thrown.
+        // But we can't use `instanceOf` to check the type because
+        // the old version of execa does not expose a class for the error.
+        assert.isNotEmpty<ExecaSyncError>(error);
         assert.equal(error.exitCode, 0);
         assert.include(
           error.stdout,
