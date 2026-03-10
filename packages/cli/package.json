@@ -80,10 +80,10 @@
       "text-summary",
       "html"
     ],
-    "statements": 90,
-    "branches": 85,
+    "statements": 95,
+    "branches": 91,
     "functions": 94,
-    "lines": 90,
+    "lines": 95,
     "exclude": [
       "dist",
       "coverage",

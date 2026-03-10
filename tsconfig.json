@@ -23,7 +23,8 @@
   "ts-node": {
     "compilerOptions": {
       "module": "commonjs",
-      "target": "es5"
+      "target": "es5",
+      "removeComments": false
     }
   }
 }
