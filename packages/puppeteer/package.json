@@ -46,7 +46,7 @@
     "express": "^5.1.0",
     "mocha": "^11.7.1",
     "nyc": "^17.1.0",
-    "puppeteer": "24.34.0",
+    "puppeteer": "24.37.5",
     "sinon": "^21.0.0",
     "source-map-support": "^0.5.21",
     "tsup": "^8.0.1"
