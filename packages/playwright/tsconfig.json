@@ -1,4 +1,9 @@
 {
   "extends": "../../tsconfig.json",
-  "include": ["src"]
+  "include": ["src"],
+  "compilerOptions": {
+    // We use istanbul ignore comments. They need to be
+    // preserved otherwise the test coverage fails.
+    "removeComments": false
+  }
 }

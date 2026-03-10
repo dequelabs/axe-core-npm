@@ -1,9 +1,14 @@
 #!/usr/bin/env node
 
 import { Command } from 'commander';
-import { version } from '../../package.json';
+import { readFileSync } from 'fs';
+import { resolve } from 'path';
 import { splitList } from '../lib/utils';
 import cli from '.';
+
+const { version } = JSON.parse(
+  readFileSync(resolve(__dirname, '../../package.json'), 'utf-8')
+);
 
 const program = new Command();
 

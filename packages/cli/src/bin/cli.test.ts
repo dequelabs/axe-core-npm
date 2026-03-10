@@ -5,8 +5,12 @@ import http from 'http';
 import net from 'net';
 import path from 'path';
 import fs from 'fs';
-import { version } from '../../package.json';
 import runCLI from '../testutils/';
+import type { ExecaSyncError } from 'execa';
+
+const { version } = JSON.parse(
+  fs.readFileSync(path.resolve(__dirname, '../../package.json'), 'utf-8')
+);
 
 const SIMPLE_HTML_FILE = path.join(__dirname, '..', 'testutils', 'simple.html');
 const SIMPLE_CLEAN_HTML_FILE = path.join(
@@ -146,9 +150,10 @@ describe('cli', () => {
       try {
         await runCLI(`file://${SIMPLE_HTML_FILE}`, '--exit');
       } catch (error) {
-        assert.equal(error.exitCode, 1);
+        const err = error as ExecaSyncError;
+        assert.equal(err.exitCode, 1);
         assert.include(
-          error.stdout,
+          err.stdout,
           'Violation of "marquee" with 1 occurrences!'
         );
       }
@@ -158,9 +163,10 @@ describe('cli', () => {
       try {
         await runCLI(`file://${SIMPLE_CLEAN_HTML_FILE}`, '--exit');
       } catch (error) {
-        assert.equal(error.exitCode, 0);
+        const err = error as ExecaSyncError;
+        assert.equal(err.exitCode, 0);
         assert.include(
-          error.stdout,
+          err.stdout,
           'Violation of "marquee" with 1 occurrences!'
         );
       }
@@ -382,9 +388,10 @@ describe('cli', () => {
       try {
         await runCLI(`file://${SIMPLE_HTML_FILE}`, '--timeout', '0');
       } catch (error) {
-        assert.notEqual(error.exitCode, 0);
+        const err = error as ExecaSyncError;
+        assert.notEqual(err.exitCode, 0);
         assert.include(
-          error.stderr,
+          err.stderr,
           'An error occurred while testing this page.'
         );
       }
