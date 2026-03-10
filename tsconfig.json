@@ -5,7 +5,7 @@
     "esModuleInterop": true,
     "lib": ["dom", "esnext"],
     "module": "esnext",
-    "moduleResolution": "nodenext",
+    "moduleResolution": "node",
     "noImplicitAny": true,
     "noImplicitReturns": true,
     "noImplicitThis": true,
@@ -23,7 +23,6 @@
   "ts-node": {
     "compilerOptions": {
       "module": "commonjs",
-      "moduleResolution": "node",
       "target": "es5"
     }
   }
