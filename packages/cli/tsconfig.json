@@ -5,7 +5,10 @@
     "module": "commonjs",
     "outDir": "./dist/",
     "target": "ES2015",
-    "types": ["node"]
+    "types": ["node"],
+    // We use istanbul ignore comments. They need to be
+    // preserved otherwise the test coverage fails.
+    "removeComments": false
   },
   "include": ["./src/lib", "./src/bin"]
 }
