@@ -6,7 +6,7 @@ import net from 'net';
 import path from 'path';
 import fs from 'fs';
 import runCLI from '../testutils/';
-import { ExecaSyncError } from 'execa';
+import type { ExecaSyncError } from 'execa';
 
 const { version } = JSON.parse(
   fs.readFileSync(path.resolve(__dirname, '../../package.json'), 'utf-8')
@@ -150,9 +150,10 @@ describe('cli', () => {
       try {
         await runCLI(`file://${SIMPLE_HTML_FILE}`, '--exit');
       } catch (error) {
-        assert.equal(error.exitCode, 1);
+        const err = error as ExecaSyncError;
+        assert.equal(err.exitCode, 1);
         assert.include(
-          error.stdout,
+          err.stdout,
           'Violation of "marquee" with 1 occurrences!'
         );
       }
@@ -162,14 +163,10 @@ describe('cli', () => {
       try {
         await runCLI(`file://${SIMPLE_CLEAN_HTML_FILE}`, '--exit');
       } catch (error) {
-        // Stupid hack to get type scoping to work.
-        // We know this is not empty, because something is thrown.
-        // But we can't use `instanceOf` to check the type because
-        // the old version of execa does not expose a class for the error.
-        assert.isNotEmpty<ExecaSyncError>(error);
-        assert.equal(error.exitCode, 0);
+        const err = error as ExecaSyncError;
+        assert.equal(err.exitCode, 0);
         assert.include(
-          error.stdout,
+          err.stdout,
           'Violation of "marquee" with 1 occurrences!'
         );
       }
@@ -391,9 +388,10 @@ describe('cli', () => {
       try {
         await runCLI(`file://${SIMPLE_HTML_FILE}`, '--timeout', '0');
       } catch (error) {
-        assert.notEqual(error.exitCode, 0);
+        const err = error as ExecaSyncError;
+        assert.notEqual(err.exitCode, 0);
         assert.include(
-          error.stderr,
+          err.stderr,
           'An error occurred while testing this page.'
         );
       }
