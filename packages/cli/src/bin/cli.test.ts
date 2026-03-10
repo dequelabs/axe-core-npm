@@ -5,6 +5,7 @@ import http from 'http';
 import net from 'net';
 import path from 'path';
 import fs from 'fs';
+import execa from 'execa';
 import { version } from '../../package.json';
 import runCLI from '../testutils/';
 
@@ -146,9 +147,9 @@ describe('cli', () => {
       try {
         await runCLI(`file://${SIMPLE_HTML_FILE}`, '--exit');
       } catch (error) {
-        assert.equal(error.exitCode, 1);
+        assert.equal((error as execa.ExecaReturnBase<string>).exitCode, 1);
         assert.include(
-          error.stdout,
+          (error as execa.ExecaReturnBase<string>).stdout,
           'Violation of "marquee" with 1 occurrences!'
         );
       }
@@ -158,9 +159,9 @@ describe('cli', () => {
       try {
         await runCLI(`file://${SIMPLE_CLEAN_HTML_FILE}`, '--exit');
       } catch (error) {
-        assert.equal(error.exitCode, 0);
+        assert.equal((error as execa.ExecaReturnBase<string>).exitCode, 0);
         assert.include(
-          error.stdout,
+          (error as execa.ExecaReturnBase<string>).stdout,
           'Violation of "marquee" with 1 occurrences!'
         );
       }
@@ -382,9 +383,9 @@ describe('cli', () => {
       try {
         await runCLI(`file://${SIMPLE_HTML_FILE}`, '--timeout', '0');
       } catch (error) {
-        assert.notEqual(error.exitCode, 0);
+        assert.notEqual((error as execa.ExecaReturnBase<string>).exitCode, 0);
         assert.include(
-          error.stderr,
+          (error as execa.ExecaReturnBase<string>).stderr,
           'An error occurred while testing this page.'
         );
       }
