@@ -25,6 +25,7 @@ export const isWebdriverClient = (client: WdioBrowser): boolean => {
   }
 
   // @wdio/globals browser uses proxies for the functions so using `'switchToFrame' in client` doesn't work
+  // @see https://github.com/webdriverio/webdriverio/blob/main/packages/wdio-globals/src/index.ts
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const c = client as any;
   if (

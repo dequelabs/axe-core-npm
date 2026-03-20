@@ -201,9 +201,15 @@ describe('@axe-core/webdriverio', () => {
         });
 
         it('allows client to be a function (@wdio/globals)', () => {
-          const client = () => {};
-          client.execute = () => {};
-          client.switchToFrame = () => {};
+          const target = {
+            execute() {},
+            switchToFrame() {}
+          };
+          const client = new Proxy(target, {
+            has() {
+              return false;
+            }
+          });
 
           assert.doesNotThrow(() => new AxeBuilder({ client } as any));
         });
