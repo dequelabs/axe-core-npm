@@ -6,12 +6,12 @@ export interface WdioElement {
 }
 
 // Shared methods present in all supported WDIO versions. Every new feature that
-// we use from the Browser type will need to be added to the list
+// we use from the Browser type will need to be added to the list.
 // Hand-written rather than Pick<WebdriverIO.Browser, ...> because:
 //   - WebdriverIO.Browser.$$ returns ChainablePromiseArray, whose awaited type
 //     doesn't expose .concat(), breaking usage in index.ts.
 //   - Several picked methods carry a `this: Browser` context constraint that
-//     TypeScript enforces even through our narrower union type.
+//     TypeScript enforces even through our narrower union type
 interface WdioBrowserBase {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   $$(selector: string): PromiseLike<any>;
@@ -41,7 +41,6 @@ interface WdioBrowserLegacy extends WdioBrowserBase {
 }
 
 // WDIO v9: frame/window navigation via the new API.
-// switchFrame / switchWindow are not on the v8 global type, so declared manually.
 interface WdioBrowserV9 extends WdioBrowserBase {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   switchFrame(element: any): Promise<any>;
@@ -49,10 +48,7 @@ interface WdioBrowserV9 extends WdioBrowserBase {
   switchWindow(matcher: any): Promise<any>;
 }
 
-/**
- * A real WDIO browser object from any supported version (v5–v9).
- * The discriminant is the presence of `switchFrame` (v9) vs `switchToFrame` (v5–v8).
- */
+// A WDIO browser object from any supported version (v5–v9).
 export type WdioBrowser = WdioBrowserLegacy | WdioBrowserV9;
 
 export type CallbackFunction = (
