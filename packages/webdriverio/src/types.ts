@@ -14,8 +14,9 @@ export interface WdioElement {
 //     TypeScript enforces even through our narrower union type
 interface WdioBrowserBase {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  $$(selector: string): PromiseLike<any>;
-  $(selector: string): PromiseLike<WdioElement | undefined>;
+  $$(selector: string): any;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  $(selector: string): any;
   execute<T = unknown>(
     script: string | ((...args: unknown[]) => T),
     ...args: unknown[]
