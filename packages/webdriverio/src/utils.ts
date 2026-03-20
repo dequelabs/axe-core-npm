@@ -8,7 +8,7 @@ import type {
   SerialSelectorList,
   SerialContextObject
 } from 'axe-core';
-import type { WdioBrowser } from './types';
+import type { WdioBrowser, WdioElement } from './types';
 
 export const FRAME_LOAD_TIMEOUT = 1000;
 
@@ -24,7 +24,7 @@ export const isWebdriverClient = (client: WdioBrowser): boolean => {
     return false;
   }
 
-  if (typeof client.switchToFrame !== 'function') {
+  if (!('switchFrame' in client) && !('switchToFrame' in client)) {
     return false;
   }
 
@@ -81,6 +81,38 @@ const promisify = <T>(thenable: Promise<T>): Promise<T> => {
   });
 };
 
+export async function clientSwitchFrame(
+  client: WdioBrowser,
+  id: WdioElement | null
+): Promise<void> {
+  if ('switchFrame' in client) {
+    await client.switchFrame(id);
+  } else {
+    await client.switchToFrame(id);
+  }
+}
+
+export async function clientSwitchParentFrame(
+  client: WdioBrowser
+): Promise<void> {
+  if ('switchFrame' in client) {
+    await client.switchFrame(null);
+  } else {
+    await client.switchToParentFrame();
+  }
+}
+
+export async function clientSwitchWindow(
+  client: WdioBrowser,
+  handle: string
+): Promise<void> {
+  if ('switchWindow' in client) {
+    await client.switchWindow(handle);
+  } else {
+    await client.switchToWindow(handle);
+  }
+}
+
 export const axeSourceInject = async (
   client: WdioBrowser,
   axeSource: string
@@ -89,7 +121,7 @@ export const axeSourceInject = async (
   return promisify(
     // Had to use executeAsync() because we could not use multiline statements in client.execute()
     // we were able to return a single boolean in a line but not when assigned to a variable.
-    (client as WebdriverIO.Browser).executeAsync(`
+    client.executeAsync(`
       var callback = arguments[arguments.length - 1];
       ${axeSource};
       window.axe.configure({
@@ -119,7 +151,7 @@ async function assertFrameReady(client: WdioBrowser): Promise<void> {
         reject();
       }, FRAME_LOAD_TIMEOUT);
     });
-    const executePromise = (client as WebdriverIO.Browser).execute(() => {
+    const executePromise = client.execute(() => {
       return document.readyState === 'complete';
     });
     const readyState = await Promise.race([timeoutPromise, executePromise]);
@@ -135,7 +167,7 @@ export const axeRunPartial = (
   options?: RunOptions
 ): Promise<PartialResult> => {
   return promisify(
-    (client as WebdriverIO.Browser)
+    client
       .executeAsync(
         `
       var callback = arguments[arguments.length - 1];
@@ -158,7 +190,7 @@ export const axeGetFrameContext = (
   return promisify(
     // Had to use executeAsync() because we could not use multiline statements in client.execute()
     // we were able to return a single boolean in a line but not when assigned to a variable.
-    (client as WebdriverIO.Browser).executeAsync(`
+    client.executeAsync(`
       var callback = arguments[arguments.length - 1];
       var context = ${JSON.stringify(context)};
       var frameContexts = window.axe.utils.getFrameContexts(context);
@@ -174,7 +206,7 @@ export const axeRunLegacy = (
   config?: Spec
 ): Promise<AxeResults> => {
   return promisify(
-    (client as WebdriverIO.Browser)
+    client
       .executeAsync(
         `var callback = arguments[arguments.length - 1];
       var context = ${JSON.stringify(context)} || document;
@@ -207,7 +239,7 @@ export const axeFinishRun = (
   function chunkResults(result: string): Promise<void> {
     const chunk = JSON.stringify(result.substring(0, sizeLimit));
     return promisify(
-      (client as WebdriverIO.Browser).execute(
+      client.execute(
         `
         window.partialResults ??= '';
         window.partialResults += ${chunk};
@@ -224,7 +256,7 @@ export const axeFinishRun = (
   return chunkResults(partialString)
     .then(() => {
       return promisify(
-        (client as WebdriverIO.Browser).executeAsync(
+        client.executeAsync(
           `var callback = arguments[arguments.length - 1];
       ${axeSource};
       window.axe.configure({
@@ -244,7 +276,7 @@ export const axeFinishRun = (
 
 export const configureAllowedOrigins = (client: WdioBrowser): Promise<void> => {
   return promisify(
-    (client as WebdriverIO.Browser).execute(`
+    client.execute(`
       window.axe.configure({ allowedOrigins: ['<unsafe_all_origins>'] })
     `)
   );

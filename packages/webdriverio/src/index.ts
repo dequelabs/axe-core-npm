@@ -11,6 +11,9 @@ import {
   axeFinishRun,
   axeRunLegacy,
   configureAllowedOrigins,
+  clientSwitchFrame,
+  clientSwitchParentFrame,
+  clientSwitchWindow,
   FRAME_LOAD_TIMEOUT
 } from './utils';
 import { getFilename } from 'cross-dirname';
@@ -230,7 +233,7 @@ export default class AxeBuilder {
           continue;
         }
         await this.inject(iframe);
-        await this.client.switchToParentFrame();
+        await clientSwitchParentFrame(this.client);
       } catch (error) {
         logOrRethrowError(error);
       }
@@ -253,7 +256,7 @@ export default class AxeBuilder {
     // ensure we fail quickly if an iframe cannot be loaded (instead of waiting
     // the default length of 30 seconds)
     const { pageLoad } = await this.client.getTimeouts();
-    (this.client as WebdriverIO.Browser).setTimeout({
+    this.client.setTimeout({
       pageLoad: FRAME_LOAD_TIMEOUT
     });
 
@@ -261,7 +264,7 @@ export default class AxeBuilder {
     try {
       partials = await this.runPartialRecursive(context);
     } finally {
-      (this.client as WebdriverIO.Browser).setTimeout({
+      this.client.setTimeout({
         pageLoad
       });
     }
@@ -308,12 +311,12 @@ export default class AxeBuilder {
    * - https://webdriver.io/docs/api/webdriver.html#switchtoframe
    */
   private async setBrowsingContext(
-    id: null | WdioElement | WdioBrowser = null
+    id: WdioElement | null = null
   ): Promise<void> {
     if (id) {
-      await this.client.switchToFrame(id);
+      await clientSwitchFrame(this.client, id);
     } else {
-      await this.client.switchToParentFrame();
+      await clientSwitchParentFrame(this.client);
     }
   }
 
@@ -335,7 +338,7 @@ export default class AxeBuilder {
       try {
         const frame = await this.client.$(frameSelector);
         assert(frame, `Expect frame of "${frameSelector}" to be defined`);
-        await this.client.switchToFrame(frame);
+        await clientSwitchFrame(this.client, frame);
         await axeSourceInject(this.client, this.script);
         partials.push(
           ...(await this.runPartialRecursive(frameContext, [
@@ -345,16 +348,16 @@ export default class AxeBuilder {
         );
       } catch {
         const [topWindow] = await this.client.getWindowHandles();
-        await this.client.switchToWindow(topWindow);
+        await clientSwitchWindow(this.client, topWindow);
 
         for (const frameElm of frameStack) {
-          await this.client.switchToFrame(frameElm);
+          await clientSwitchFrame(this.client, frameElm);
         }
 
         partials.push(null);
       }
     }
-    await this.client.switchToParentFrame();
+    await clientSwitchParentFrame(this.client);
     return partials;
   }
 
@@ -368,8 +371,8 @@ export default class AxeBuilder {
     );
 
     try {
-      await client.switchToWindow(newWindow.handle);
-      await (client as WebdriverIO.Browser).url('data:text/html,');
+      await clientSwitchWindow(client, newWindow.handle);
+      await client.url('data:text/html,');
     } catch (error) {
       throw new Error(
         `switchToWindow failed. Are you using updated browser drivers? \nDriver reported:\n${
@@ -381,7 +384,7 @@ export default class AxeBuilder {
     const res = await axeFinishRun(client, axeSource, partials, option);
     // Cleanup
     await client.closeWindow();
-    await client.switchToWindow(win);
+    await clientSwitchWindow(client, win);
 
     return res;
   }

@@ -191,6 +191,15 @@ describe('@axe-core/webdriverio', () => {
           );
         });
 
+        it('does not throw when client is valid (v9 API)', () => {
+          assert.doesNotThrow(
+            () =>
+              new AxeBuilder({
+                client: { execute() {}, switchFrame() {} }
+              } as any)
+          );
+        });
+
         it('allows client to be a function (@wdio/globals)', () => {
           const client = () => {};
           client.execute = () => {};
