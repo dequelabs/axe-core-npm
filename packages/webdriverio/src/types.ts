@@ -5,7 +5,8 @@ export interface WdioElement {
   isExisting(): Promise<boolean>;
 }
 
-// Shared methods present in all supported WDIO versions.
+// Shared methods present in all supported WDIO versions. Every new feature that
+// we use from the Browser type will need to be added to the list
 // Hand-written rather than Pick<WebdriverIO.Browser, ...> because:
 //   - WebdriverIO.Browser.$$ returns ChainablePromiseArray, whose awaited type
 //     doesn't expose .concat(), breaking usage in index.ts.
