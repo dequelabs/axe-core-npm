@@ -200,7 +200,7 @@ describe('@axe-core/webdriverio', () => {
           );
         });
 
-        it('allows client to be a function (@wdio/globals)', () => {
+        it('allows client to be an object with proxies (@wdio/globals)', () => {
           const target = {
             execute() {},
             switchToFrame() {}
