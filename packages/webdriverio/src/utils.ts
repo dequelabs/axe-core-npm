@@ -92,20 +92,24 @@ export async function clientSwitchFrame(
   client: WdioBrowser,
   id: WdioElement | null
 ): Promise<void> {
-  if ('switchFrame' in client) {
-    await client.switchFrame(id);
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const c = client as any;
+  if (typeof c.switchFrame === 'function') {
+    await c.switchFrame(id);
   } else {
-    await client.switchToFrame(id);
+    await c.switchToFrame(id);
   }
 }
 
 export async function clientSwitchParentFrame(
   client: WdioBrowser
 ): Promise<void> {
-  if ('switchFrame' in client) {
-    await client.switchFrame(null);
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const c = client as any;
+  if (typeof c.switchFrame === 'function') {
+    await c.switchFrame(null);
   } else {
-    await client.switchToParentFrame();
+    await c.switchToParentFrame();
   }
 }
 
@@ -113,10 +117,12 @@ export async function clientSwitchWindow(
   client: WdioBrowser,
   handle: string
 ): Promise<void> {
-  if ('switchWindow' in client) {
-    await client.switchWindow(handle);
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const c = client as any;
+  if (typeof c.switchWindow === 'function') {
+    await c.switchWindow(handle);
   } else {
-    await client.switchToWindow(handle);
+    await c.switchToWindow(handle);
   }
 }
 
