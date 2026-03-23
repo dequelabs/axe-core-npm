@@ -114,7 +114,7 @@ describe('@axe-core/webdriverio', () => {
         // this removes the unnecessary trailing forward slash
         addr = (await listen(server)).toString().replace(/\/$/, '');
 
-        const options: webdriverio.RemoteOptions = {
+        const options: Parameters<typeof webdriverio.remote>[0] = {
           path: '/',
           automationProtocol: protocol,
           capabilities: {
@@ -147,14 +147,14 @@ describe('@axe-core/webdriverio', () => {
       describe('AxeBuilder', () => {
         if (protocol === 'devtools') {
           it('check to make sure that client is running devtools protocol', () => {
-            assert.isTrue(client.isDevTools);
+            assert.isTrue((client as any).isDevTools);
           });
         }
 
         if (protocol === 'webdriver') {
           it('check to make sure that client is running webdriver protocol', () => {
             // there is no `isWebdriver` option
-            assert.isUndefined(client.isDevTools);
+            assert.isUndefined((client as any).isDevTools);
           });
         }
 

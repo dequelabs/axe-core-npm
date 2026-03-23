@@ -17,14 +17,17 @@ interface WdioBrowserBase {
   $$(selector: string): any;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   $(selector: string): any;
-  execute<T = unknown>(
-    script: string | ((...args: unknown[]) => T),
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  execute(
+    script: string | ((...args: unknown[]) => unknown),
     ...args: unknown[]
-  ): Promise<T>;
-  executeAsync<T = unknown>(script: string, ...args: unknown[]): Promise<T>;
+  ): Promise<any>;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  executeAsync(script: string, ...args: unknown[]): Promise<any>;
   getTimeouts(): Promise<{ pageLoad?: number }>;
   setTimeout(options: { pageLoad?: number }): Promise<void>;
-  url(url: string): Promise<void | string>;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  url(url: string): Promise<any>;
   getWindowHandles(): Promise<string[]>;
   getWindowHandle(): Promise<string>;
   createWindow(type: 'tab' | 'window'): Promise<{ handle: string }>;
