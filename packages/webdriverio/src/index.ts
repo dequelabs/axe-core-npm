@@ -253,7 +253,7 @@ export default class AxeBuilder {
     // ensure we fail quickly if an iframe cannot be loaded (instead of waiting
     // the default length of 30 seconds)
     const { pageLoad } = await this.client.getTimeouts();
-    (this.client as unknown as WebdriverIO.Browser).setTimeout({
+    this.client.setTimeout({
       pageLoad: FRAME_LOAD_TIMEOUT
     });
 
@@ -261,7 +261,7 @@ export default class AxeBuilder {
     try {
       partials = await this.runPartialRecursive(context);
     } finally {
-      (this.client as unknown as WebdriverIO.Browser).setTimeout({
+      this.client.setTimeout({
         pageLoad
       });
     }
@@ -369,7 +369,7 @@ export default class AxeBuilder {
 
     try {
       await client.switchToWindow(newWindow.handle);
-      await (client as unknown as WebdriverIO.Browser).url('data:text/html,');
+      await client.url('data:text/html,');
     } catch (error) {
       throw new Error(
         `switchToWindow failed. Are you using updated browser drivers? \nDriver reported:\n${
@@ -388,3 +388,4 @@ export default class AxeBuilder {
 }
 
 export { AxeBuilder };
+export { WdioBrowser, WdioElement };

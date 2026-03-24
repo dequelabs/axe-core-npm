@@ -89,7 +89,7 @@ export const axeSourceInject = async (
   return promisify(
     // Had to use executeAsync() because we could not use multiline statements in client.execute()
     // we were able to return a single boolean in a line but not when assigned to a variable.
-    (client as unknown as WebdriverIO.Browser).executeAsync(`
+    client.executeAsync(`
       var callback = arguments[arguments.length - 1];
       ${axeSource};
       window.axe.configure({
@@ -119,11 +119,9 @@ async function assertFrameReady(client: WdioBrowser): Promise<void> {
         reject();
       }, FRAME_LOAD_TIMEOUT);
     });
-    const executePromise = (client as unknown as WebdriverIO.Browser).execute(
-      () => {
-        return document.readyState === 'complete';
-      }
-    );
+    const executePromise = client.execute(() => {
+      return document.readyState === 'complete';
+    });
     const readyState = await Promise.race([timeoutPromise, executePromise]);
     assert(readyState);
   } catch {
@@ -137,7 +135,7 @@ export const axeRunPartial = (
   options?: RunOptions
 ): Promise<PartialResult> => {
   return promisify(
-    (client as unknown as WebdriverIO.Browser)
+    client
       .executeAsync(
         `
       var callback = arguments[arguments.length - 1];
@@ -160,7 +158,7 @@ export const axeGetFrameContext = (
   return promisify(
     // Had to use executeAsync() because we could not use multiline statements in client.execute()
     // we were able to return a single boolean in a line but not when assigned to a variable.
-    (client as unknown as WebdriverIO.Browser).executeAsync(`
+    client.executeAsync(`
       var callback = arguments[arguments.length - 1];
       var context = ${JSON.stringify(context)};
       var frameContexts = window.axe.utils.getFrameContexts(context);
@@ -176,7 +174,7 @@ export const axeRunLegacy = (
   config?: Spec
 ): Promise<AxeResults> => {
   return promisify(
-    (client as unknown as WebdriverIO.Browser)
+    client
       .executeAsync(
         `var callback = arguments[arguments.length - 1];
       var context = ${JSON.stringify(context)} || document;
@@ -209,7 +207,7 @@ export const axeFinishRun = (
   function chunkResults(result: string): Promise<void> {
     const chunk = JSON.stringify(result.substring(0, sizeLimit));
     return promisify(
-      (client as unknown as WebdriverIO.Browser).execute(
+      client.execute(
         `
         window.partialResults ??= '';
         window.partialResults += ${chunk};
@@ -226,7 +224,7 @@ export const axeFinishRun = (
   return chunkResults(partialString)
     .then(() => {
       return promisify(
-        (client as unknown as WebdriverIO.Browser).executeAsync(
+        client.executeAsync(
           `var callback = arguments[arguments.length - 1];
       ${axeSource};
       window.axe.configure({
@@ -246,7 +244,7 @@ export const axeFinishRun = (
 
 export const configureAllowedOrigins = (client: WdioBrowser): Promise<void> => {
   return promisify(
-    (client as unknown as WebdriverIO.Browser).execute(`
+    client.execute(`
       window.axe.configure({ allowedOrigins: ['<unsafe_all_origins>'] })
     `)
   );
