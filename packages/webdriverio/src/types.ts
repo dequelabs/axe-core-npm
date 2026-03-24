@@ -1,5 +1,6 @@
 import type { AxeResults, BaseSelector } from 'axe-core';
 import * as axe from 'axe-core';
+// eslint-disable-next-line  @typescript-eslint/no-unused-vars
 import { type Element } from 'webdriverio';
 
 export type WdioElement = {
@@ -9,11 +10,9 @@ export type WdioElement = {
 export interface WdioBrowserLegacy {
   $$(
     selector: string | ((...args: unknown[]) => unknown)
-  ): Promise<WebdriverIO.Element[]>;
+  ): Promise<WdioElement[]>;
 
-  $(
-    selector: string | ((...args: unknown[]) => unknown)
-  ): Promise<WebdriverIO.Element>;
+  $(selector: string | ((...args: unknown[]) => unknown)): Promise<WdioElement>;
 
   execute<T = unknown>(
     script: string | ((...args: unknown[]) => T),
@@ -62,13 +61,13 @@ export interface WdioBrowserV8 {
       | string
       | ((...args: unknown[]) => unknown)
       | object
-      | WebdriverIO.Element[]
+      | WdioElement[]
       | HTMLElement[]
   ): Promise<WebdriverIO.ElementArray>;
 
   $(
     selector: string | ((...args: unknown[]) => unknown) | object
-  ): Promise<WebdriverIO.Element>;
+  ): Promise<WdioElement>;
 
   execute<T = unknown>(
     script: string | ((...args: unknown[]) => T),
