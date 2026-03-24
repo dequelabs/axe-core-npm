@@ -17,10 +17,11 @@ interface WdioBrowserBase {
   $$(selector: string): any;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   $(selector: string): any;
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+
   execute(
     script: string | ((...args: unknown[]) => unknown),
     ...args: unknown[]
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
   ): Promise<any>;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   executeAsync(script: string, ...args: unknown[]): Promise<any>;
