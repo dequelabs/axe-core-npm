@@ -2,6 +2,10 @@ import type { AxeResults, BaseSelector } from 'axe-core';
 import * as axe from 'axe-core';
 import { type Element } from 'webdriverio';
 
+export type WdioElement = {
+  isExisting(): Promise<boolean>;
+};
+
 export interface WdioBrowserLegacy {
   $$(
     selector: string | ((...args: unknown[]) => unknown)
@@ -117,8 +121,6 @@ export interface WdioBrowserV8 {
 }
 
 export type WdioBrowser = WdioBrowserLegacy | WdioBrowserV8;
-
-export type WdioElement = Element | WebdriverIO.Element;
 
 export type CallbackFunction = (
   error: string | null,
