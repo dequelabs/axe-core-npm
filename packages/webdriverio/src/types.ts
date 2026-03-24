@@ -1,33 +1,122 @@
 import type { AxeResults, BaseSelector } from 'axe-core';
 import * as axe from 'axe-core';
-import { type Browser, type Element } from 'webdriverio';
+import { type Element } from 'webdriverio';
 
-/*
-  This type allows both webdriverio v8 and <=v7 Browser types
-  to work in the same codebase. The types are incompatible with
-  each other, but are compatible with the functions that we use.
-  Every new feature that we use from the Browser type will need
-  to be added to the Pick list
-*/
-export type WdioBrowser =
-  | Browser
-  | Pick<
-      WebdriverIO.Browser,
-      | '$$'
-      | '$'
-      | 'switchToFrame'
-      | 'switchToParentFrame'
-      | 'getWindowHandles'
-      | 'getWindowHandle'
-      | 'switchToWindow'
-      | 'createWindow'
-      | 'url'
-      | 'getTimeouts'
-      | 'setTimeout'
-      | 'closeWindow'
-      | 'executeAsync'
-      | 'execute'
-    >;
+export interface WdioBrowserLegacy {
+  $$(
+    selector: string | ((...args: unknown[]) => unknown)
+  ): Promise<WebdriverIO.Element[]>;
+
+  $(
+    selector: string | ((...args: unknown[]) => unknown)
+  ): Promise<WebdriverIO.Element>;
+
+  execute<T = unknown>(
+    script: string | ((...args: unknown[]) => T),
+    ...args: unknown[]
+  ): Promise<T>;
+
+  executeAsync<T = unknown>(
+    script: string | ((...args: unknown[]) => void),
+    ...args: unknown[]
+  ): Promise<T>;
+
+  getTimeouts(): Promise<{
+    implicit?: number;
+    pageLoad?: number;
+    script?: number;
+  }>;
+
+  setTimeout(timeouts: {
+    implicit?: number;
+    pageLoad?: number;
+    script?: number;
+  }): Promise<void>;
+
+  url(url: string): Promise<void>;
+
+  getWindowHandles(): Promise<string[]>;
+
+  getWindowHandle(): Promise<string>;
+
+  createWindow(
+    type: 'tab' | 'window'
+  ): Promise<{ handle: string; type: string }>;
+
+  closeWindow(): Promise<void>;
+
+  switchToFrame(id: number | object | null): Promise<void>;
+
+  switchToParentFrame(): Promise<void>;
+
+  switchToWindow(handle: string): Promise<void>;
+}
+
+export interface WdioBrowserV8 {
+  $$(
+    selector:
+      | string
+      | ((...args: unknown[]) => unknown)
+      | object
+      | WebdriverIO.Element[]
+      | HTMLElement[]
+  ): Promise<WebdriverIO.ElementArray>;
+
+  $(
+    selector: string | ((...args: unknown[]) => unknown) | object
+  ): Promise<WebdriverIO.Element>;
+
+  execute<T = unknown>(
+    script: string | ((...args: unknown[]) => T),
+    ...args: unknown[]
+  ): Promise<T>;
+
+  executeAsync<T = unknown>(
+    script: string | ((...args: unknown[]) => void),
+    ...args: unknown[]
+  ): Promise<T>;
+
+  getTimeouts(): Promise<{
+    implicit?: number;
+    pageLoad?: number;
+    script?: number;
+  }>;
+
+  setTimeout(timeouts: {
+    implicit?: number;
+    pageLoad?: number;
+    script?: number;
+  }): Promise<void>;
+
+  url(
+    path: string,
+    options?: {
+      wait?: 'none' | 'interactive' | 'networkIdle' | 'complete';
+      headers?: Record<string, string>;
+      auth?: { user: string; pass: string };
+      timeout?: number;
+      onBeforeLoad?: () => unknown;
+    }
+  ): Promise<unknown>;
+
+  getWindowHandles(): Promise<string[]>;
+
+  getWindowHandle(): Promise<string>;
+
+  createWindow(
+    type: 'tab' | 'window'
+  ): Promise<{ handle: string; type: string }>;
+
+  closeWindow(): Promise<void>;
+
+  switchToFrame(id: number | object | null): Promise<void>;
+
+  switchToParentFrame(): Promise<void>;
+
+  switchToWindow(handle: string): Promise<void>;
+}
+
+export type WdioBrowser = WdioBrowserLegacy | WdioBrowserV8;
 
 export type WdioElement = Element | WebdriverIO.Element;
 
