@@ -57,7 +57,7 @@
     "@types/cssesc": "^3.0.0",
     "@types/express": "^5.0.3",
     "@types/mocha": "^10.0.6",
-    "@wdio/globals": "^9.17.0",
+    "@wdio/globals": "^9.27.0",
     "async-listen": "^3.0.1",
     "axe-test-fixtures": "github:dequelabs/axe-test-fixtures#v1",
     "chai": "^4.3.6",
