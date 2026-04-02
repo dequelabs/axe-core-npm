@@ -106,10 +106,14 @@ export async function clientSwitchParentFrame(
 ): Promise<void> {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const c = client as any;
-  if (typeof c.switchFrame === 'function') {
-    await c.switchFrame(null);
-  } else {
+  // Prefer switchToParentFrame (v8 and v9 via @wdio/protocols) because it
+  // correctly switches to the immediate parent frame. In WDIO v9 WebDriver
+  // Classic (non-BiDi), switchFrame(null) calls switchToFrame(null) which
+  // switches to the top-level frame instead of the parent frame.
+  if (typeof c.switchToParentFrame === 'function') {
     await c.switchToParentFrame();
+  } else if (typeof c.switchFrame === 'function') {
+    await c.switchFrame(null);
   }
 }
 

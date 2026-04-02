@@ -22,6 +22,12 @@ const BDM_CACHE_DIR = path.resolve(HOME_DIR, '.browser-driver-manager');
 
 config({ path: path.resolve(BDM_CACHE_DIR, '.env') });
 
+// devtools protocol was removed in WDIO v9
+const wdioMajorVersion = parseInt(
+  require('webdriverio/package.json').version,
+  10
+);
+
 const connectToChromeDriver = (port: number): Promise<void> => {
   let socket: net.Socket;
   return new Promise((resolve, reject) => {
@@ -83,7 +89,13 @@ describe('@axe-core/webdriverio', () => {
       });
     }
 
-    describe(`WebdriverIO Async (${protocol} protocol)`, () => {
+    describe(`WebdriverIO Async (${protocol} protocol)`, function () {
+      before(function () {
+        if (protocol === 'devtools' && wdioMajorVersion >= 9) {
+          this.skip();
+        }
+      });
+
       let server: Server;
       let addr: string;
       let client: WebdriverIO.Browser;
