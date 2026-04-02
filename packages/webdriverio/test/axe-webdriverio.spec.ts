@@ -22,11 +22,25 @@ const BDM_CACHE_DIR = path.resolve(HOME_DIR, '.browser-driver-manager');
 
 config({ path: path.resolve(BDM_CACHE_DIR, '.env') });
 
-// devtools protocol was removed in WDIO v9
-const wdioMajorVersion = parseInt(
-  require('webdriverio/package.json').version,
-  10
-);
+// devtools protocol was removed in WDIO v9.
+// require('webdriverio/package.json') fails when the package uses an exports
+// field that doesn't include ./package.json, so walk up from the resolved
+// entry point instead (fs.readFileSync bypasses the exports restriction).
+const wdioMajorVersion = (() => {
+  let dir = path.dirname(require.resolve('webdriverio'));
+  while (dir !== path.dirname(dir)) {
+    try {
+      const pkg = JSON.parse(
+        fs.readFileSync(path.join(dir, 'package.json'), 'utf-8')
+      );
+      if (pkg.name === 'webdriverio') return parseInt(pkg.version, 10);
+    } catch {
+      /* continue walking */
+    }
+    dir = path.dirname(dir);
+  }
+  return 0;
+})();
 
 const connectToChromeDriver = (port: number): Promise<void> => {
   let socket: net.Socket;
