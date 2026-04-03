@@ -12,7 +12,6 @@ import {
   axeRunLegacy,
   configureAllowedOrigins,
   clientSwitchFrame,
-  clientSwitchParentFrame,
   clientSwitchWindow,
   FRAME_LOAD_TIMEOUT
 } from './utils';
@@ -233,7 +232,16 @@ export default class AxeBuilder {
           continue;
         }
         await this.inject(iframe);
-        await clientSwitchParentFrame(this.client);
+        // After inject(iframe) returns we are still inside iframe. Navigate
+        // back to top-level via switchToWindow (which correctly sets the BiDi
+        // browsing context from getWindowHandles(), avoiding the classic-handle
+        // mismatch that switchFrame(null) causes in BiDi mode), then re-enter
+        // browsingContext if needed.
+        const [topWindow] = await this.client.getWindowHandles();
+        await clientSwitchWindow(this.client, topWindow);
+        if (browsingContext !== null) {
+          await clientSwitchFrame(this.client, browsingContext);
+        }
       } catch (error) {
         logOrRethrowError(error);
       }
@@ -313,11 +321,7 @@ export default class AxeBuilder {
   private async setBrowsingContext(
     id: WdioElement | null = null
   ): Promise<void> {
-    if (id) {
-      await clientSwitchFrame(this.client, id);
-    } else {
-      await clientSwitchParentFrame(this.client);
-    }
+    await clientSwitchFrame(this.client, id);
   }
 
   /**
@@ -357,7 +361,17 @@ export default class AxeBuilder {
         partials.push(null);
       }
     }
-    await clientSwitchParentFrame(this.client);
+    // Navigate back to the parent context by switching to the top-level window
+    // (via getWindowHandles + switchToWindow, which correctly sets the BiDi
+    // context) then re-traversing the frame stack up to (but not including)
+    // the last frame. This avoids the WDIO v9 BiDi race condition where
+    // switchToParentFrame synchronously resets #currentContext before the async
+    // parent lookup resolves, causing subsequent BiDi calls to run in wrong context.
+    const [topWindow] = await this.client.getWindowHandles();
+    await clientSwitchWindow(this.client, topWindow);
+    for (let i = 0; i < frameStack.length - 1; i++) {
+      await clientSwitchFrame(this.client, frameStack[i]);
+    }
     return partials;
   }
 

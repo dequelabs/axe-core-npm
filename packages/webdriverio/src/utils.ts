@@ -123,10 +123,13 @@ export async function clientSwitchWindow(
 ): Promise<void> {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const c = client as any;
-  if (typeof c.switchWindow === 'function') {
-    await c.switchWindow(handle);
-  } else {
+  // Prefer switchToWindow (handle-based) over switchWindow (pattern match).
+  // switchWindow matches by title/URL/name in v8, so passing a window handle
+  // string fails with "No window found". switchToWindow takes a handle directly.
+  if (typeof c.switchToWindow === 'function') {
     await c.switchToWindow(handle);
+  } else if (typeof c.switchWindow === 'function') {
+    await c.switchWindow(handle);
   }
 }
 
