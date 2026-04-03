@@ -90,15 +90,19 @@ const promisify = <T>(thenable: Promise<T>): Promise<T> => {
 
 export async function clientSwitchFrame(
   client: WdioBrowser,
-  id: WdioElement | null
-): Promise<void> {
+  id: WdioElement | null | string
+): Promise<string | undefined> {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const c = client as any;
   if (typeof c.switchFrame === 'function') {
-    await c.switchFrame(id);
-  } else {
+    // WDIO v9 BiDi: switchFrame accepts elements, null, or context ID strings.
+    // It returns the BiDi browsing context ID, which we capture for safe re-entry.
+    return (await c.switchFrame(id)) as string;
+  } else if (typeof id !== 'string') {
+    // Classic WebDriver (WDIO v5–v8): no string context ID support.
     await c.switchToFrame(id);
   }
+  return undefined;
 }
 
 export async function clientSwitchParentFrame(
@@ -172,7 +176,16 @@ async function assertFrameReady(client: WdioBrowser): Promise<void> {
       }, FRAME_LOAD_TIMEOUT);
     });
     const executePromise = client.execute(() => {
-      return document.readyState === 'complete';
+      // In WDIO v9 BiDi mode, executing scripts in a lazy-loaded cross-origin
+      // iframe succeeds even when the frame hasn't loaded its content yet
+      // (BiDi bypasses same-origin restrictions). The frame's document will be
+      // about:blank until the browser actually fetches the remote URL.
+      // Classic WebDriver throws a cross-origin error in this case, which is
+      // caught and treated as an untestable frame. We replicate that behavior
+      // here by also checking that the document isn't still at about:blank.
+      return (
+        document.readyState === 'complete' && document.URL !== 'about:blank'
+      );
     });
     const readyState = await Promise.race([timeoutPromise, executePromise]);
     assert(readyState);

@@ -207,9 +207,23 @@ export default class AxeBuilder {
    * Injects `axe-core` into all frames.
    */
   private async inject(
-    browsingContext: WdioElement | null = null
+    browsingContext: WdioElement | null = null,
+    browsingContextId: string | null = null
   ): Promise<void> {
-    await this.setBrowsingContext(browsingContext);
+    // Navigate to the target browsing context and capture its BiDi context ID.
+    // In WDIO v9 BiDi mode, switchFrame returns the browsing context ID string,
+    // which we use later to safely re-enter this frame after deep injection.
+    // In Classic WebDriver mode, switchFrame returns undefined and we fall back
+    // to re-entering via the original element reference.
+    if (browsingContext !== null) {
+      const result = await clientSwitchFrame(this.client, browsingContext);
+      if (typeof result === 'string') {
+        browsingContextId = result;
+      }
+    } else {
+      await clientSwitchFrame(this.client, null);
+    }
+
     const runPartialSupported = await axeSourceInject(
       this.client,
       this.axeSource
@@ -228,18 +242,27 @@ export default class AxeBuilder {
 
     for (const iframe of iframes) {
       try {
-        if (!(await iframe.isExisting())) {
+        const exists = await iframe.isExisting();
+        if (!exists) {
           continue;
         }
         await this.inject(iframe);
-        // After inject(iframe) returns we are still inside iframe. Navigate
-        // back to top-level via switchToWindow (which correctly sets the BiDi
-        // browsing context from getWindowHandles(), avoiding the classic-handle
-        // mismatch that switchFrame(null) causes in BiDi mode), then re-enter
-        // browsingContext if needed.
-        const [topWindow] = await this.client.getWindowHandles();
-        await clientSwitchWindow(this.client, topWindow);
-        if (browsingContext !== null) {
+        // After injecting into iframe (and its descendants), navigate back to
+        // this level. switchFrame(null) reliably resets to the top-level context.
+        // Then re-enter this frame using its BiDi context ID (WDIO v9 BiDi) or
+        // its element reference (Classic WebDriver).
+        //
+        // We use the context ID rather than the element reference because in WDIO
+        // v9 BiDi mode, Chrome may assign new document IDs to intermediate frame
+        // contexts after a deep switchFrame(null). An element's SharedId encodes
+        // the document ID at query time; if the document ID has since changed, the
+        // SharedId is stale and Chrome rejects it with "no such node". Passing a
+        // context ID string instead causes WDIO to re-query fresh element
+        // references via browsingContextLocateNodes, bypassing the stale-ID issue.
+        await clientSwitchFrame(this.client, null);
+        if (browsingContextId !== null) {
+          await clientSwitchFrame(this.client, browsingContextId);
+        } else if (browsingContext !== null) {
           await clientSwitchFrame(this.client, browsingContext);
         }
       } catch (error) {
@@ -312,16 +335,6 @@ export default class AxeBuilder {
       selector += `:not(${disableFrameSelector})`;
     }
     return selector;
-  }
-
-  /**
-   * Set browsing context - when `null` sets top level page as context
-   * - https://webdriver.io/docs/api/webdriver.html#switchtoframe
-   */
-  private async setBrowsingContext(
-    id: WdioElement | null = null
-  ): Promise<void> {
-    await clientSwitchFrame(this.client, id);
   }
 
   /**
