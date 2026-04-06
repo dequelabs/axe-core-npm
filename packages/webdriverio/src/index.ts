@@ -261,7 +261,9 @@ export default class AxeBuilder {
         // references via browsingContextLocateNodes, bypassing the stale-ID issue.
         await clientSwitchFrame(this.client, null);
         if (browsingContextId !== null) {
-          await clientSwitchFrame(this.client, browsingContextId);
+          // browsingContextId is only set on v9 BiDi clients, so switchFrame is available.
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          await (this.client as any).switchFrame(browsingContextId);
         } else if (browsingContext !== null) {
           await clientSwitchFrame(this.client, browsingContext);
         }
@@ -344,9 +346,12 @@ export default class AxeBuilder {
 
   private async runPartialRecursive(
     context: SerialContextObject,
-    frameStack: WdioElement[] = []
+    frameStack: WdioElement[] = [],
+    topWindow?: string
   ): Promise<PartialResults> {
-    const topWindow = await this.client.getWindowHandle();
+    if (topWindow === undefined) {
+      topWindow = await this.client.getWindowHandle();
+    }
     const frameContexts = await axeGetFrameContext(this.client, context);
     const partials: PartialResults = [
       await axeRunPartial(this.client, context, this.option)
@@ -359,10 +364,11 @@ export default class AxeBuilder {
         await clientSwitchFrame(this.client, frame);
         await axeSourceInject(this.client, this.script);
         partials.push(
-          ...(await this.runPartialRecursive(frameContext, [
-            ...frameStack,
-            frame
-          ]))
+          ...(await this.runPartialRecursive(
+            frameContext,
+            [...frameStack, frame],
+            topWindow
+          ))
         );
       } catch {
         await clientSwitchWindow(this.client, topWindow);

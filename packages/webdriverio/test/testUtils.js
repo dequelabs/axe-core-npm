@@ -19,24 +19,32 @@ const getFreePort = () => {
   });
 };
 
-const connectToChromeDriver = port => {
-  let socket;
-  return new Promise((resolve, reject) => {
-    const timer = setTimeout(() => {
-      socket.destroy();
-      reject(new Error('Unable to connect to ChromeDriver'));
-    }, 1000);
-    socket = net.createConnection({ host: 'localhost', port }, () => {
-      clearTimeout(timer);
-      socket.destroy();
-      resolve();
+const connectToChromeDriver = (port, retries = 10, interval = 200) => {
+  const attempt = () => {
+    return new Promise((resolve, reject) => {
+      const socket = net.createConnection({ host: 'localhost', port }, () => {
+        socket.destroy();
+        resolve();
+      });
+      socket.once('error', err => {
+        socket.destroy();
+        reject(err);
+      });
     });
-    socket.once('error', err => {
-      clearTimeout(timer);
-      socket.destroy();
-      reject(err);
+  };
+
+  const retry = remaining => {
+    return attempt().catch(err => {
+      if (remaining <= 0) {
+        throw new Error(`Unable to connect to ChromeDriver: ${err.message}`);
+      }
+      return new Promise(resolve => setTimeout(resolve, interval)).then(() =>
+        retry(remaining - 1)
+      );
     });
-  });
+  };
+
+  return retry(retries);
 };
 
 const loadBdmEnv = () => {

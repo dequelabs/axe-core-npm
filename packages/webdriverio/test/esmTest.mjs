@@ -33,7 +33,6 @@ async function integrationTest() {
     `--port=${port}`
   ], { stdio: 'inherit' });
 
-  await new Promise(r => setTimeout(r, 500));
   await connectToChromeDriver(port);
 
   let client;
