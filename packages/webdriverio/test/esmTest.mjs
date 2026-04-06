@@ -52,8 +52,25 @@ const connectToChromeDriver = port => {
   });
 };
 
+const getFreePort = () => {
+  return new Promise((resolve, reject) => {
+    const server = net.createServer();
+    server.listen(0, '127.0.0.1', () => {
+      const { port } = server.address();
+      server.close(err => {
+        if (err) {
+          reject(err);
+        } else {
+          resolve(port);
+        }
+      });
+    });
+    server.once('error', reject);
+  });
+};
+
 async function integrationTest() {
-  const port = 9516;
+  const port = await getFreePort();
 
   assert(
     process.env.CHROMEDRIVER_TEST_PATH,
@@ -66,7 +83,7 @@ async function integrationTest() {
 
   const chromedriverProcess = spawn(process.env.CHROMEDRIVER_TEST_PATH, [
     `--port=${port}`
-  ]);
+  ], { stdio: 'inherit' });
 
   await new Promise(r => setTimeout(r, 500));
   await connectToChromeDriver(port);
