@@ -346,6 +346,7 @@ export default class AxeBuilder {
     context: SerialContextObject,
     frameStack: WdioElement[] = []
   ): Promise<PartialResults> {
+    const topWindow = await this.client.getWindowHandle();
     const frameContexts = await axeGetFrameContext(this.client, context);
     const partials: PartialResults = [
       await axeRunPartial(this.client, context, this.option)
@@ -364,7 +365,6 @@ export default class AxeBuilder {
           ]))
         );
       } catch {
-        const [topWindow] = await this.client.getWindowHandles();
         await clientSwitchWindow(this.client, topWindow);
 
         for (const frameElm of frameStack) {
@@ -380,7 +380,6 @@ export default class AxeBuilder {
     // the last frame. This avoids the WDIO v9 BiDi race condition where
     // switchToParentFrame synchronously resets #currentContext before the async
     // parent lookup resolves, causing subsequent BiDi calls to run in wrong context.
-    const [topWindow] = await this.client.getWindowHandles();
     await clientSwitchWindow(this.client, topWindow);
     for (let i = 0; i < frameStack.length - 1; i++) {
       await clientSwitchFrame(this.client, frameStack[i]);
