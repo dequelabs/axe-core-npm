@@ -8,7 +8,7 @@ import net from 'net';
 import fs from 'fs';
 import delay from 'delay';
 import { AxeBuilder } from '../src';
-import { logOrRethrowError } from '../src/utils';
+import { logOrRethrowError, clientSwitchFrame } from '../src/utils';
 import type { AxeResults, Result } from 'axe-core';
 import child_process from 'child_process';
 import { ChildProcessWithoutNullStreams } from 'child_process';
@@ -1578,4 +1578,46 @@ describe('@axe-core/webdriverio', () => {
       });
     });
   }
+
+  describe('clientSwitchFrame', () => {
+    it('calls switchFrame with an element and returns the context ID on a v9-style client', async () => {
+      const contextId = 'some-bidi-context-id';
+      const stubClient = { switchFrame: sinon.stub().resolves(contextId) };
+      const element = {} as any;
+      const result = await clientSwitchFrame(stubClient as any, element);
+      assert.isTrue(stubClient.switchFrame.calledOnceWith(element));
+      assert.equal(result, contextId);
+    });
+
+    it('calls switchFrame with a context ID string for re-entry on a v9-style client', async () => {
+      const contextId = 'some-bidi-context-id';
+      const stubClient = { switchFrame: sinon.stub().resolves(contextId) };
+      const result = await clientSwitchFrame(stubClient as any, contextId);
+      assert.isTrue(stubClient.switchFrame.calledOnceWith(contextId));
+      assert.equal(result, contextId);
+    });
+
+    it('calls switchFrame with null on a v9-style client', async () => {
+      const contextId = 'top-level-context-id';
+      const stubClient = { switchFrame: sinon.stub().resolves(contextId) };
+      const result = await clientSwitchFrame(stubClient as any, null);
+      assert.isTrue(stubClient.switchFrame.calledOnceWith(null));
+      assert.equal(result, contextId);
+    });
+
+    it('calls switchToFrame with an element and returns undefined on a v8-style client', async () => {
+      const stubClient = { switchToFrame: sinon.stub().resolves(undefined) };
+      const element = {} as any;
+      const result = await clientSwitchFrame(stubClient as any, element);
+      assert.isTrue(stubClient.switchToFrame.calledOnceWith(element));
+      assert.isUndefined(result);
+    });
+
+    it('does not call switchToFrame with a string context ID on a v8-style client and returns undefined', async () => {
+      const stubClient = { switchToFrame: sinon.stub().resolves(undefined) };
+      const result = await clientSwitchFrame(stubClient as any, 'some-context-id');
+      assert.isFalse(stubClient.switchToFrame.called);
+      assert.isUndefined(result);
+    });
+  });
 });
