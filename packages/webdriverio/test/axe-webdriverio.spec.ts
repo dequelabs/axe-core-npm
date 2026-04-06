@@ -42,6 +42,20 @@ const wdioMajorVersion = (() => {
   return 0;
 })();
 
+const getFreePort = (): Promise<number> => {
+  return new Promise((resolve, reject) => {
+    const server = net.createServer();
+    server.listen(0, '127.0.0.1', () => {
+      const { port } = server.address() as net.AddressInfo;
+      server.close(err => {
+        if (err) reject(err);
+        else resolve(port);
+      });
+    });
+    server.once('error', reject);
+  });
+};
+
 const connectToChromeDriver = (port: number): Promise<void> => {
   let socket: net.Socket;
   return new Promise((resolve, reject) => {
@@ -75,11 +89,10 @@ describe('@axe-core/webdriverio', () => {
   let port: number;
   for (const protocol of ['devtools', 'webdriver'] as const) {
     if (protocol === 'webdriver') {
-      port = 9515;
-
       let chromedriverProcess: ChildProcessWithoutNullStreams;
 
       before(async () => {
+        port = await getFreePort();
         assert(
           process.env.CHROME_TEST_PATH,
           'CHROME_TEST_PATH is not set. Run `npx browser-driver-manager install chrome`'

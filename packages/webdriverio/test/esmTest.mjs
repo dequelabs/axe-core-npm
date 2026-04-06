@@ -33,18 +33,6 @@ try {
   // .env file not found; env vars may already be set in the environment
 }
 
-const getFreePort = () => {
-  return new Promise((resolve, reject) => {
-    const server = net.createServer();
-    server.unref();
-    server.on('error', reject);
-    server.listen(0, () => {
-      const { port } = server.address();
-      server.close(() => resolve(port));
-    });
-  });
-};
-
 const connectToChromeDriver = port => {
   return new Promise((resolve, reject) => {
     const timer = setTimeout(() => {
