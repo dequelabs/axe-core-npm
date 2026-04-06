@@ -4,7 +4,6 @@ import listen from 'async-listen';
 import { assert } from 'chai';
 import path from 'path';
 import { Server, createServer } from 'http';
-import net from 'net';
 import fs from 'fs';
 import delay from 'delay';
 import { AxeBuilder } from '../src';
@@ -13,14 +12,15 @@ import type { AxeResults, Result } from 'axe-core';
 import child_process from 'child_process';
 import { ChildProcessWithoutNullStreams } from 'child_process';
 import { fixturesPath } from 'axe-test-fixtures';
-import { config } from 'dotenv';
-import os from 'os';
 import sinon from 'sinon';
 
-const HOME_DIR = os.homedir();
-const BDM_CACHE_DIR = path.resolve(HOME_DIR, '.browser-driver-manager');
+const {
+  getFreePort,
+  connectToChromeDriver,
+  loadBdmEnv
+} = require('./testUtils');
 
-config({ path: path.resolve(BDM_CACHE_DIR, '.env') });
+loadBdmEnv();
 
 // devtools protocol was removed in WDIO v9.
 // require('webdriverio/package.json') fails when the package uses an exports
@@ -41,49 +41,6 @@ const wdioMajorVersion = (() => {
   }
   return 0;
 })();
-
-const getFreePort = (): Promise<number> => {
-  return new Promise((resolve, reject) => {
-    const server = net.createServer();
-    server.listen(0, '127.0.0.1', () => {
-      const { port } = server.address() as net.AddressInfo;
-      server.close(err => {
-        if (err) reject(err);
-        else resolve(port);
-      });
-    });
-    server.once('error', reject);
-  });
-};
-
-const connectToChromeDriver = (port: number): Promise<void> => {
-  let socket: net.Socket;
-  return new Promise((resolve, reject) => {
-    // Give up after 1s
-    const timer = setTimeout(() => {
-      socket.destroy();
-      reject(new Error('Unable to connect to ChromeDriver'));
-    }, 1000);
-
-    const connectionListener = (): void => {
-      clearTimeout(timer);
-      socket.destroy();
-      return resolve();
-    };
-
-    socket = net.createConnection(
-      { host: 'localhost', port },
-      connectionListener
-    );
-
-    // Fail on error
-    socket.once('error', (err: Error) => {
-      clearTimeout(timer);
-      socket.destroy();
-      return reject(err);
-    });
-  });
-};
 
 describe('@axe-core/webdriverio', () => {
   let port: number;
@@ -1628,7 +1585,10 @@ describe('@axe-core/webdriverio', () => {
 
     it('does not call switchToFrame with a string context ID on a v8-style client and returns undefined', async () => {
       const stubClient = { switchToFrame: sinon.stub().resolves(undefined) };
-      const result = await clientSwitchFrame(stubClient as any, 'some-context-id');
+      const result = await clientSwitchFrame(
+        stubClient as any,
+        'some-context-id'
+      );
       assert.isFalse(stubClient.switchToFrame.called);
       assert.isUndefined(result);
     });
