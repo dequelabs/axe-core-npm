@@ -38,8 +38,7 @@ async function loadAxePath() {
   if (typeof require === 'function' && typeof require.resolve === 'function') {
     axeCorePath = require.resolve('axe-core');
   } else {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const { createRequire } = (await import('node:module')) as any;
+    const { createRequire } = await import('node:module');
     // `getFilename` is needed because esm's `import.meta.url` is illegal syntax in cjs
     const filename = pathToFileURL(getFilename()).toString();
 
@@ -260,10 +259,9 @@ export default class AxeBuilder {
         // context ID string instead causes WDIO to re-query fresh element
         // references via browsingContextLocateNodes, bypassing the stale-ID issue.
         await clientSwitchFrame(this.client, null);
-        if (browsingContextId !== null) {
+        if (browsingContextId !== null && 'switchFrame' in this.client) {
           // browsingContextId is only set on v9 BiDi clients, so switchFrame is available.
-          // eslint-disable-next-line @typescript-eslint/no-explicit-any
-          await (this.client as any).switchFrame(browsingContextId);
+          await this.client.switchFrame(browsingContextId);
         } else if (browsingContext !== null) {
           await clientSwitchFrame(this.client, browsingContext);
         }

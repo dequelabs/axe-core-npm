@@ -26,8 +26,7 @@ export const isWebdriverClient = (client: WdioBrowser): boolean => {
 
   // @wdio/globals browser uses proxies for the functions so using `'switchToFrame' in client` doesn't work
   // @see https://github.com/webdriverio/webdriverio/blob/main/packages/wdio-globals/src/index.ts
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const c = client as any;
+  const c = client as unknown as Record<string, unknown>;
   if (
     typeof c.switchToFrame !== 'function' &&
     typeof c.switchFrame !== 'function'
@@ -155,8 +154,9 @@ async function assertFrameReady(client: WdioBrowser): Promise<void> {
         reject();
       }, FRAME_LOAD_TIMEOUT);
     });
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const isBiDi = typeof (client as any).switchFrame === 'function';
+    const isBiDi =
+      typeof (client as unknown as Record<string, unknown>).switchFrame ===
+      'function';
     const executePromise = isBiDi
       ? client.execute(() => {
           // In WDIO v9 BiDi mode, executing scripts in a lazy-loaded cross-origin
