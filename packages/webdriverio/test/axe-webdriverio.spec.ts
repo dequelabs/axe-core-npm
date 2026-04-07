@@ -6,7 +6,11 @@ import path from 'path';
 import { Server, createServer } from 'http';
 import fs from 'fs';
 import { AxeBuilder } from '../src';
-import { logOrRethrowError, clientSwitchFrame } from '../src/utils';
+import {
+  logOrRethrowError,
+  clientSwitchFrame,
+  clientSwitchWindow
+} from '../src/utils';
 import type { AxeResults, Result } from 'axe-core';
 import child_process from 'child_process';
 import { ChildProcessWithoutNullStreams } from 'child_process';
@@ -1571,6 +1575,30 @@ describe('@axe-core/webdriverio', () => {
       const result = await clientSwitchFrame(stubClient as any, element);
       assert.isTrue(stubClient.switchToFrame.calledOnceWith(element));
       assert.isUndefined(result);
+    });
+  });
+
+  describe('clientSwitchWindow', () => {
+    it('calls switchToWindow with a handle on a v8-style client', async () => {
+      const stubClient = { switchToWindow: sinon.stub().resolves() };
+      await clientSwitchWindow(stubClient as any, 'window-handle');
+      assert.isTrue(stubClient.switchToWindow.calledOnceWith('window-handle'));
+    });
+
+    it('calls switchWindow with a handle on a v9-style client', async () => {
+      const stubClient = { switchWindow: sinon.stub().resolves() };
+      await clientSwitchWindow(stubClient as any, 'window-handle');
+      assert.isTrue(stubClient.switchWindow.calledOnceWith('window-handle'));
+    });
+
+    it('prefers switchToWindow over switchWindow when both are present', async () => {
+      const stubClient = {
+        switchToWindow: sinon.stub().resolves(),
+        switchWindow: sinon.stub().resolves()
+      };
+      await clientSwitchWindow(stubClient as any, 'window-handle');
+      assert.isTrue(stubClient.switchToWindow.calledOnceWith('window-handle'));
+      assert.isFalse(stubClient.switchWindow.called);
     });
   });
 });
