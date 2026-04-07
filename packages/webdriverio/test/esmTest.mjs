@@ -6,9 +6,14 @@ import { pathToFileURL } from 'url';
 import { join } from 'path';
 import { fixturesPath } from 'axe-test-fixtures';
 import { spawn } from 'child_process';
-import { getFreePort, connectToChromeDriver } from './testUtils.js';
+import { getFreePort, connectToChromeDriver, loadBdmEnv } from './testUtils.js';
 
-const { default: { path: chromedriverPath } } = await import('chromedriver');
+const { default: { path: chromedriverPackagePath } } = await import('chromedriver');
+// Prefer a browser-driver-manager installed chromedriver (matched to the local
+// Chrome version) if available, otherwise fall back to the chromedriver package.
+loadBdmEnv();
+const chromedriverPath = process.env.CHROMEDRIVER_TEST_PATH ?? chromedriverPackagePath;
+const chromeBinary = process.env.CHROME_TEST_PATH;
 
 assert(typeof defaultExport === 'function', 'default export is not a function');
 assert(typeof AxeBuilder === 'function', 'named export is not a function');
@@ -28,15 +33,17 @@ async function integrationTest() {
 
   let client;
   try {
+    const chromeOptions = {
+      args: ['--headless', '--no-sandbox'],
+      ...(chromeBinary ? { binary: chromeBinary } : {})
+    };
     const options = {
       path: '/',
       hostname: 'localhost',
       port,
       capabilities: {
         browserName: 'chrome',
-        'goog:chromeOptions': {
-          args: ['--headless', '--no-sandbox']
-        }
+        'goog:chromeOptions': chromeOptions
       },
       logLevel: 'error'
     };
