@@ -91,13 +91,16 @@ export async function clientSwitchFrame(
   client: WdioBrowser,
   id: WdioElement | null
 ): Promise<string | undefined> {
-  if ('switchFrame' in client) {
+  const c = client as unknown as Record<string, unknown>;
+  if (typeof c.switchFrame === 'function') {
     // WDIO v9 BiDi: switchFrame accepts elements or null.
     // It returns the BiDi browsing context ID, which we capture for safe re-entry.
-    return (await client.switchFrame(id)) as string;
+    return (await (c.switchFrame as (id: unknown) => Promise<string>)(
+      id
+    )) as string;
   } else {
     // Classic WebDriver (WDIO v5–v8).
-    await client.switchToFrame(id);
+    await (c.switchToFrame as (id: unknown) => Promise<void>)(id);
   }
   return undefined;
 }
@@ -106,13 +109,14 @@ export async function clientSwitchWindow(
   client: WdioBrowser,
   handle: string
 ): Promise<void> {
+  const c = client as unknown as Record<string, unknown>;
   // Prefer switchToWindow (handle-based) over switchWindow (pattern match).
   // switchWindow matches by title/URL/name in v8, so passing a window handle
   // string fails with "No window found". switchToWindow takes a handle directly.
-  if ('switchToWindow' in client) {
-    await client.switchToWindow(handle);
-  } else if ('switchWindow' in client) {
-    await client.switchWindow(handle);
+  if (typeof c.switchToWindow === 'function') {
+    await (c.switchToWindow as (handle: string) => Promise<void>)(handle);
+  } else if (typeof c.switchWindow === 'function') {
+    await (c.switchWindow as (handle: string) => Promise<void>)(handle);
   }
 }
 
