@@ -67,7 +67,7 @@ const testPages = async (
           events?.startTimer('axe-core execution time');
         }
 
-        axe.analyze((err: Error | null, results: AxeResults) => {
+        axe.analyze((err, results) => {
           if (config.timer) {
             events?.endTimer('axe-core execution time');
           }
@@ -83,7 +83,7 @@ const testPages = async (
           }
 
           // Move to the next item
-          testPages(urls.slice(1), config, events).then((out: AxeResults) => {
+          testPages(urls.slice(1), config, events).then(out => {
             resolve([results].concat(out));
           });
         });

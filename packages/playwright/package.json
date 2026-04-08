@@ -58,7 +58,6 @@
     "@types/chai": "^4.3.3",
     "@types/express": "^5.0.3",
     "@types/mocha": "^10.0.0",
-    "@types/node": "^24.10.13",
     "async-listen": "^3.0.1",
     "axe-test-fixtures": "github:dequelabs/axe-test-fixtures#v1",
     "chai": "^4.3.6",
@@ -66,9 +65,7 @@
     "mocha": "^11.7.1",
     "nyc": "^17.1.0",
     "rimraf": "^6.0.1",
-    "ts-node": "^10.9.1",
-    "tsup": "^8.0.1",
-    "typescript": "^5.2.2"
+    "tsup": "^8.0.1"
   },
   "peerDependencies": {
     "playwright-core": ">= 1.0.0"
