@@ -10,17 +10,17 @@
   "author": "Wilco Fiers",
   "license": "ISC",
   "dependencies": {
-    "@axe-core/cli": "latest",
-    "@axe-core/playwright": "latest",
-    "@axe-core/puppeteer": "latest",
-    "@axe-core/webdriverio": "latest",
-    "@axe-core/webdriverjs": "latest",
+    "@axe-core/cli": "*",
+    "@axe-core/playwright": "*",
+    "@axe-core/puppeteer": "*",
+    "@axe-core/webdriverio": "*",
+    "@axe-core/webdriverjs": "*",
     "chai": "^4.3.4",
     "execa": "^5.1.1",
     "mocha": "^11.7.5",
     "playwright": "^1.16.3",
-    "puppeteer": "^24.33.0",
-    "selenium-webdriver": "^4.1.0",
+    "puppeteer": "^24.40.0",
+    "selenium-webdriver": "^4.35.0",
     "webdriverio": "^7.16.10"
   }
 }
