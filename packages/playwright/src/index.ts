@@ -310,6 +310,7 @@ export default class AxeBuilder {
       if (result.length > sizeLimit) {
         return await chunkResults(result.substr(sizeLimit));
       }
+      return;
     }
 
     await chunkResults(partialString);

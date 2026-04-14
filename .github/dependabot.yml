@@ -54,6 +54,10 @@ updates:
         versions: ['>=18.0.0']
       - dependency-name: '@types/react-dom'
         versions: ['>=18.0.0']
+      # Keep @types/node aligned with the Node.js major version being developed on
+      # to avoid type incompatibilities and unexpected breaking changes
+      - dependency-name: '@types/node'
+        update-types: ['version-update:semver-major']
     groups:
       # Any updates not caught by the group config will get individual PRs
       npm-low-risk:

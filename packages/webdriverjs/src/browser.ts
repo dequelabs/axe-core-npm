@@ -79,6 +79,7 @@ export function axeFinishRun(
       if (result.length > sizeLimit) {
         return chunkResults(result.substr(sizeLimit));
       }
+      return;
     });
   }
 
