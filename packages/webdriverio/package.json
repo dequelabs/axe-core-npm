@@ -48,13 +48,12 @@
     "webdriverio"
   ],
   "dependencies": {
-    "axe-core": "~4.11.1",
+    "axe-core": "~4.11.3",
     "cssesc": "^3.0.0"
   },
   "devDependencies": {
     "@types/chai": "^4.3.3",
     "@types/chromedriver": "^81.0.1",
-    "chromedriver": "^146",
     "@types/cssesc": "^3.0.0",
     "@types/express": "^5.0.3",
     "@types/mocha": "^10.0.6",
@@ -62,6 +61,7 @@
     "async-listen": "^3.0.1",
     "axe-test-fixtures": "github:dequelabs/axe-test-fixtures#v1",
     "chai": "^4.3.6",
+    "chromedriver": "^146",
     "cross-dirname": "^0.1.0",
     "delay": "^5.0.0",
     "devtools": "^8.27.2",
