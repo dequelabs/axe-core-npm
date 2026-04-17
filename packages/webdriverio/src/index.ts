@@ -11,6 +11,8 @@ import {
   axeFinishRun,
   axeRunLegacy,
   configureAllowedOrigins,
+  clientSwitchFrame,
+  clientSwitchWindow,
   FRAME_LOAD_TIMEOUT
 } from './utils';
 import { getFilename } from 'cross-dirname';
@@ -36,8 +38,7 @@ async function loadAxePath() {
   if (typeof require === 'function' && typeof require.resolve === 'function') {
     axeCorePath = require.resolve('axe-core');
   } else {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const { createRequire } = (await import('node:module')) as any;
+    const { createRequire } = await import('node:module');
     // `getFilename` is needed because esm's `import.meta.url` is illegal syntax in cjs
     const filename = pathToFileURL(getFilename()).toString();
 
@@ -205,9 +206,23 @@ export default class AxeBuilder {
    * Injects `axe-core` into all frames.
    */
   private async inject(
-    browsingContext: WdioElement | null = null
+    browsingContext: WdioElement | null = null,
+    browsingContextId: string | null = null
   ): Promise<void> {
-    await this.setBrowsingContext(browsingContext);
+    // Navigate to the target browsing context and capture its BiDi context ID.
+    // In WDIO v9 BiDi mode, switchFrame returns the browsing context ID string,
+    // which we use later to safely re-enter this frame after deep injection.
+    // In Classic WebDriver mode, switchFrame returns undefined and we fall back
+    // to re-entering via the original element reference.
+    if (browsingContext !== null) {
+      const result = await clientSwitchFrame(this.client, browsingContext);
+      if (typeof result === 'string') {
+        browsingContextId = result;
+      }
+    } else {
+      await clientSwitchFrame(this.client, null);
+    }
+
     const runPartialSupported = await axeSourceInject(
       this.client,
       this.axeSource
@@ -226,11 +241,30 @@ export default class AxeBuilder {
 
     for (const iframe of iframes) {
       try {
-        if (!(await iframe.isExisting())) {
+        const exists = await iframe.isExisting();
+        if (!exists) {
           continue;
         }
         await this.inject(iframe);
-        await this.client.switchToParentFrame();
+        // After injecting into iframe (and its descendants), navigate back to
+        // this level. switchFrame(null) reliably resets to the top-level context.
+        // Then re-enter this frame using its BiDi context ID (WDIO v9 BiDi) or
+        // its element reference (Classic WebDriver).
+        //
+        // We use the context ID rather than the element reference because in WDIO
+        // v9 BiDi mode, Chrome may assign new document IDs to intermediate frame
+        // contexts after a deep switchFrame(null). An element's SharedId encodes
+        // the document ID at query time; if the document ID has since changed, the
+        // SharedId is stale and Chrome rejects it with "no such node". Passing a
+        // context ID string instead causes WDIO to re-query fresh element
+        // references via browsingContextLocateNodes, bypassing the stale-ID issue.
+        await clientSwitchFrame(this.client, null);
+        if (browsingContextId !== null && 'switchFrame' in this.client) {
+          // browsingContextId is only set on v9 BiDi clients, so switchFrame is available.
+          await this.client.switchFrame(browsingContextId);
+        } else if (browsingContext !== null) {
+          await clientSwitchFrame(this.client, browsingContext);
+        }
       } catch (error) {
         logOrRethrowError(error);
       }
@@ -253,7 +287,7 @@ export default class AxeBuilder {
     // ensure we fail quickly if an iframe cannot be loaded (instead of waiting
     // the default length of 30 seconds)
     const { pageLoad } = await this.client.getTimeouts();
-    (this.client as WebdriverIO.Browser).setTimeout({
+    this.client.setTimeout({
       pageLoad: FRAME_LOAD_TIMEOUT
     });
 
@@ -261,7 +295,7 @@ export default class AxeBuilder {
     try {
       partials = await this.runPartialRecursive(context);
     } finally {
-      (this.client as WebdriverIO.Browser).setTimeout({
+      this.client.setTimeout({
         pageLoad
       });
     }
@@ -304,28 +338,18 @@ export default class AxeBuilder {
   }
 
   /**
-   * Set browsing context - when `null` sets top level page as context
-   * - https://webdriver.io/docs/api/webdriver.html#switchtoframe
-   */
-  private async setBrowsingContext(
-    id: null | WdioElement | WdioBrowser = null
-  ): Promise<void> {
-    if (id) {
-      await this.client.switchToFrame(id);
-    } else {
-      await this.client.switchToParentFrame();
-    }
-  }
-
-  /**
    * Get partial results from the current context and its child frames
    * @param {ContextObject} context
    */
 
   private async runPartialRecursive(
     context: SerialContextObject,
-    frameStack: WdioElement[] = []
+    frameStack: WdioElement[] = [],
+    topWindow?: string
   ): Promise<PartialResults> {
+    if (topWindow === undefined) {
+      topWindow = await this.client.getWindowHandle();
+    }
     const frameContexts = await axeGetFrameContext(this.client, context);
     const partials: PartialResults = [
       await axeRunPartial(this.client, context, this.option)
@@ -335,26 +359,35 @@ export default class AxeBuilder {
       try {
         const frame = await this.client.$(frameSelector);
         assert(frame, `Expect frame of "${frameSelector}" to be defined`);
-        await this.client.switchToFrame(frame);
+        await clientSwitchFrame(this.client, frame);
         await axeSourceInject(this.client, this.script);
         partials.push(
-          ...(await this.runPartialRecursive(frameContext, [
-            ...frameStack,
-            frame
-          ]))
+          ...(await this.runPartialRecursive(
+            frameContext,
+            [...frameStack, frame],
+            topWindow
+          ))
         );
       } catch {
-        const [topWindow] = await this.client.getWindowHandles();
-        await this.client.switchToWindow(topWindow);
+        await clientSwitchWindow(this.client, topWindow);
 
         for (const frameElm of frameStack) {
-          await this.client.switchToFrame(frameElm);
+          await clientSwitchFrame(this.client, frameElm);
         }
 
         partials.push(null);
       }
     }
-    await this.client.switchToParentFrame();
+    // Navigate back to the parent context by switching to the top-level window
+    // (via getWindowHandles + switchToWindow, which correctly sets the BiDi
+    // context) then re-traversing the frame stack up to (but not including)
+    // the last frame. This avoids the WDIO v9 BiDi race condition where
+    // switchToParentFrame synchronously resets #currentContext before the async
+    // parent lookup resolves, causing subsequent BiDi calls to run in wrong context.
+    await clientSwitchWindow(this.client, topWindow);
+    for (let i = 0; i < frameStack.length - 1; i++) {
+      await clientSwitchFrame(this.client, frameStack[i]);
+    }
     return partials;
   }
 
@@ -368,8 +401,8 @@ export default class AxeBuilder {
     );
 
     try {
-      await client.switchToWindow(newWindow.handle);
-      await (client as WebdriverIO.Browser).url('data:text/html,');
+      await clientSwitchWindow(client, newWindow.handle);
+      await client.url('data:text/html,');
     } catch (error) {
       throw new Error(
         `switchToWindow failed. Are you using updated browser drivers? \nDriver reported:\n${
@@ -381,7 +414,7 @@ export default class AxeBuilder {
     const res = await axeFinishRun(client, axeSource, partials, option);
     // Cleanup
     await client.closeWindow();
-    await client.switchToWindow(win);
+    await clientSwitchWindow(client, win);
 
     return res;
   }

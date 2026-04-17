@@ -1,6 +1,6 @@
 {
   "name": "@axe-core/release-tests",
-  "version": "4.11.1",
+  "version": "4.11.2",
   "description": "Tests to ensure release script ran successfully",
   "scripts": {
     "test": "mocha test/*.js --timeout 15000"

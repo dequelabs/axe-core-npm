@@ -1,12 +1,21 @@
-// jsonld depends on @digitalbazaar/http-client, which depends on the undici HTTP client,
-// which depends on TextEncoder ... which however isn't provided by jsdom, see
-// https://github.com/jsdom/jsdom/issues/2524.
-import { TextEncoder, TextDecoder } from 'util';
+// jsonld depends on @digitalbazaar/http-client, which depends on the undici HTTP client, which depends
+// on TextEncoder, TextDecoder, and ReadableStream ... which however isn't provided by jsdom
+// @see https://github.com/jsdom/jsdom/issues/2524
+// @see https://github.com/mswjs/msw/discussions/1934
+import { TextEncoder, TextDecoder } from 'node:util';
+import ReadableStream from 'node:stream/web';
 type Encoder = typeof global.TextEncoder;
 type Decoder = typeof global.TextDecoder;
+type ReadableStream = typeof global.ReadableStream;
 
 global.TextEncoder = TextEncoder as unknown as Encoder;
 global.TextDecoder = TextDecoder as unknown as Decoder;
+global.ReadableStream = ReadableStream as unknown as ReadableStream;
+
+// jsonld depends on @digitalbazaar/rdf-canonize, which depends on setImmedate which jsdom overrides?
+// @see https://github.com/prisma/prisma/issues/8558#issuecomment-2192317371
+import { setImmediate } from 'node:timers';
+global.setImmediate = setImmediate;
 
 import jsonld from 'jsonld';
 import axe from 'axe-core';

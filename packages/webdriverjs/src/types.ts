@@ -18,8 +18,7 @@ export interface AxeInjectorParams extends Options {
 }
 
 export type CallbackFunction = (
-  error: Error | null,
-  results: AxeResults | null
+  ...args: [Error, null] | [null, AxeResults]
 ) => void;
 
 export type InjectCallback = (err?: Error) => void;

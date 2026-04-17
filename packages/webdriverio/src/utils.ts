@@ -8,7 +8,7 @@ import type {
   SerialSelectorList,
   SerialContextObject
 } from 'axe-core';
-import type { WdioBrowser } from './types';
+import type { WdioBrowser, WdioElement } from './types';
 
 export const FRAME_LOAD_TIMEOUT = 1000;
 
@@ -24,7 +24,13 @@ export const isWebdriverClient = (client: WdioBrowser): boolean => {
     return false;
   }
 
-  if (typeof client.switchToFrame !== 'function') {
+  // @wdio/globals browser uses proxies for the functions so using `'switchToFrame' in client` doesn't work
+  // @see https://github.com/webdriverio/webdriverio/blob/main/packages/wdio-globals/src/index.ts
+  const c = client as unknown as Record<string, unknown>;
+  if (
+    typeof c.switchToFrame !== 'function' &&
+    typeof c.switchFrame !== 'function'
+  ) {
     return false;
   }
 
@@ -81,6 +87,39 @@ const promisify = <T>(thenable: Promise<T>): Promise<T> => {
   });
 };
 
+export async function clientSwitchFrame(
+  client: WdioBrowser,
+  id: WdioElement | null
+): Promise<string | undefined> {
+  const c = client as unknown as Record<string, unknown>;
+  if (typeof c.switchFrame === 'function') {
+    // WDIO v9 BiDi: switchFrame accepts elements or null.
+    // It returns the BiDi browsing context ID, which we capture for safe re-entry.
+    return (await (c.switchFrame as (id: unknown) => Promise<string>)(
+      id
+    )) as string;
+  } else {
+    // Classic WebDriver (WDIO v5–v8).
+    await (c.switchToFrame as (id: unknown) => Promise<void>)(id);
+  }
+  return undefined;
+}
+
+export async function clientSwitchWindow(
+  client: WdioBrowser,
+  handle: string
+): Promise<void> {
+  const c = client as unknown as Record<string, unknown>;
+  // Prefer switchToWindow (handle-based) over switchWindow (pattern match).
+  // switchWindow matches by title/URL/name in v8, so passing a window handle
+  // string fails with "No window found". switchToWindow takes a handle directly.
+  if (typeof c.switchToWindow === 'function') {
+    await (c.switchToWindow as (handle: string) => Promise<void>)(handle);
+  } else if (typeof c.switchWindow === 'function') {
+    await (c.switchWindow as (handle: string) => Promise<void>)(handle);
+  }
+}
+
 export const axeSourceInject = async (
   client: WdioBrowser,
   axeSource: string
@@ -89,7 +128,7 @@ export const axeSourceInject = async (
   return promisify(
     // Had to use executeAsync() because we could not use multiline statements in client.execute()
     // we were able to return a single boolean in a line but not when assigned to a variable.
-    (client as WebdriverIO.Browser).executeAsync(`
+    client.executeAsync(`
       var callback = arguments[arguments.length - 1];
       ${axeSource};
       window.axe.configure({
@@ -119,9 +158,23 @@ async function assertFrameReady(client: WdioBrowser): Promise<void> {
         reject();
       }, FRAME_LOAD_TIMEOUT);
     });
-    const executePromise = (client as WebdriverIO.Browser).execute(() => {
-      return document.readyState === 'complete';
-    });
+    const isBiDi =
+      typeof (client as unknown as Record<string, unknown>).switchFrame ===
+      'function';
+    const executePromise = isBiDi
+      ? client.execute(() => {
+          // In WDIO v9 BiDi mode, executing scripts in a lazy-loaded cross-origin
+          // iframe succeeds even when the frame hasn't loaded its content yet
+          // (BiDi bypasses same-origin restrictions). The frame's document will be
+          // about:blank until the browser actually fetches the remote URL.
+          // Classic WebDriver throws a cross-origin error in this case, which is
+          // caught and treated as an untestable frame. We replicate that behavior
+          // here by also checking that the document isn't still at about:blank.
+          return (
+            document.readyState === 'complete' && document.URL !== 'about:blank'
+          );
+        })
+      : client.execute(() => document.readyState === 'complete');
     const readyState = await Promise.race([timeoutPromise, executePromise]);
     assert(readyState);
   } catch {
@@ -135,7 +188,7 @@ export const axeRunPartial = (
   options?: RunOptions
 ): Promise<PartialResult> => {
   return promisify(
-    (client as WebdriverIO.Browser)
+    client
       .executeAsync(
         `
       var callback = arguments[arguments.length - 1];
@@ -158,7 +211,7 @@ export const axeGetFrameContext = (
   return promisify(
     // Had to use executeAsync() because we could not use multiline statements in client.execute()
     // we were able to return a single boolean in a line but not when assigned to a variable.
-    (client as WebdriverIO.Browser).executeAsync(`
+    client.executeAsync(`
       var callback = arguments[arguments.length - 1];
       var context = ${JSON.stringify(context)};
       var frameContexts = window.axe.utils.getFrameContexts(context);
@@ -174,7 +227,7 @@ export const axeRunLegacy = (
   config?: Spec
 ): Promise<AxeResults> => {
   return promisify(
-    (client as WebdriverIO.Browser)
+    client
       .executeAsync(
         `var callback = arguments[arguments.length - 1];
       var context = ${JSON.stringify(context)} || document;
@@ -207,7 +260,7 @@ export const axeFinishRun = (
   function chunkResults(result: string): Promise<void> {
     const chunk = JSON.stringify(result.substring(0, sizeLimit));
     return promisify(
-      (client as WebdriverIO.Browser).execute(
+      client.execute(
         `
         window.partialResults ??= '';
         window.partialResults += ${chunk};
@@ -217,13 +270,14 @@ export const axeFinishRun = (
       if (result.length > sizeLimit) {
         return chunkResults(result.substr(sizeLimit));
       }
+      return;
     });
   }
 
   return chunkResults(partialString)
     .then(() => {
       return promisify(
-        (client as WebdriverIO.Browser).executeAsync(
+        client.executeAsync(
           `var callback = arguments[arguments.length - 1];
       ${axeSource};
       window.axe.configure({
@@ -243,7 +297,7 @@ export const axeFinishRun = (
 
 export const configureAllowedOrigins = (client: WdioBrowser): Promise<void> => {
   return promisify(
-    (client as WebdriverIO.Browser).execute(`
+    client.execute(`
       window.axe.configure({ allowedOrigins: ['<unsafe_all_origins>'] })
     `)
   );

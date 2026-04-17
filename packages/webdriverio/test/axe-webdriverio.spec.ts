@@ -4,62 +4,55 @@ import listen from 'async-listen';
 import { assert } from 'chai';
 import path from 'path';
 import { Server, createServer } from 'http';
-import net from 'net';
 import fs from 'fs';
-import delay from 'delay';
 import { AxeBuilder } from '../src';
-import { logOrRethrowError } from '../src/utils';
+import {
+  logOrRethrowError,
+  clientSwitchFrame,
+  clientSwitchWindow
+} from '../src/utils';
 import type { AxeResults, Result } from 'axe-core';
 import child_process from 'child_process';
 import { ChildProcessWithoutNullStreams } from 'child_process';
 import { fixturesPath } from 'axe-test-fixtures';
-import { config } from 'dotenv';
-import os from 'os';
 import sinon from 'sinon';
 
-const HOME_DIR = os.homedir();
-const BDM_CACHE_DIR = path.resolve(HOME_DIR, '.browser-driver-manager');
+const {
+  getFreePort,
+  connectToChromeDriver,
+  loadBdmEnv
+} = require('./testUtils');
 
-config({ path: path.resolve(BDM_CACHE_DIR, '.env') });
+loadBdmEnv();
 
-const connectToChromeDriver = (port: number): Promise<void> => {
-  let socket: net.Socket;
-  return new Promise((resolve, reject) => {
-    // Give up after 1s
-    const timer = setTimeout(() => {
-      socket.destroy();
-      reject(new Error('Unable to connect to ChromeDriver'));
-    }, 1000);
-
-    const connectionListener = (): void => {
-      clearTimeout(timer);
-      socket.destroy();
-      return resolve();
-    };
-
-    socket = net.createConnection(
-      { host: 'localhost', port },
-      connectionListener
-    );
-
-    // Fail on error
-    socket.once('error', (err: Error) => {
-      clearTimeout(timer);
-      socket.destroy();
-      return reject(err);
-    });
-  });
-};
+// devtools protocol was removed in WDIO v9.
+// require('webdriverio/package.json') fails when the package uses an exports
+// field that doesn't include ./package.json, so walk up from the resolved
+// entry point instead (fs.readFileSync bypasses the exports restriction).
+const wdioMajorVersion = (() => {
+  let dir = path.dirname(require.resolve('webdriverio'));
+  while (dir !== path.dirname(dir)) {
+    try {
+      const pkg = JSON.parse(
+        fs.readFileSync(path.join(dir, 'package.json'), 'utf-8')
+      );
+      if (pkg.name === 'webdriverio') return parseInt(pkg.version, 10);
+    } catch {
+      /* continue walking */
+    }
+    dir = path.dirname(dir);
+  }
+  return 0;
+})();
 
 describe('@axe-core/webdriverio', () => {
   let port: number;
   for (const protocol of ['devtools', 'webdriver'] as const) {
     if (protocol === 'webdriver') {
-      port = 9515;
-
       let chromedriverProcess: ChildProcessWithoutNullStreams;
 
       before(async () => {
+        port = await getFreePort();
         assert(
           process.env.CHROME_TEST_PATH,
           'CHROME_TEST_PATH is not set. Run `npx browser-driver-manager install chrome`'
@@ -74,7 +67,6 @@ describe('@axe-core/webdriverio', () => {
         ]);
         chromedriverProcess.stdout.pipe(process.stdout);
         chromedriverProcess.stderr.pipe(process.stderr);
-        await delay(500);
         await connectToChromeDriver(port);
       });
 
@@ -83,7 +75,13 @@ describe('@axe-core/webdriverio', () => {
       });
     }
 
-    describe(`WebdriverIO Async (${protocol} protocol)`, () => {
+    describe(`WebdriverIO Async (${protocol} protocol)`, function () {
+      before(function () {
+        if (protocol === 'devtools' && wdioMajorVersion >= 9) {
+          this.skip();
+        }
+      });
+
       let server: Server;
       let addr: string;
       let client: WebdriverIO.Browser;
@@ -114,7 +112,7 @@ describe('@axe-core/webdriverio', () => {
         // this removes the unnecessary trailing forward slash
         addr = (await listen(server)).toString().replace(/\/$/, '');
 
-        const options: webdriverio.RemoteOptions = {
+        const options: Parameters<typeof webdriverio.remote>[0] = {
           path: '/',
           automationProtocol: protocol,
           capabilities: {
@@ -147,14 +145,14 @@ describe('@axe-core/webdriverio', () => {
       describe('AxeBuilder', () => {
         if (protocol === 'devtools') {
           it('check to make sure that client is running devtools protocol', () => {
-            assert.isTrue(client.isDevTools);
+            assert.isTrue((client as any).isDevTools);
           });
         }
 
         if (protocol === 'webdriver') {
           it('check to make sure that client is running webdriver protocol', () => {
             // there is no `isWebdriver` option
-            assert.isUndefined(client.isDevTools);
+            assert.isUndefined((client as any).isDevTools);
           });
         }
 
@@ -191,10 +189,25 @@ describe('@axe-core/webdriverio', () => {
           );
         });
 
-        it('allows client to be a function (@wdio/globals)', () => {
-          const client = () => {};
-          client.execute = () => {};
-          client.switchToFrame = () => {};
+        it('does not throw when client is valid (v9 API)', () => {
+          assert.doesNotThrow(
+            () =>
+              new AxeBuilder({
+                client: { execute() {}, switchFrame() {} }
+              } as any)
+          );
+        });
+
+        it('allows client to be an object with proxies (@wdio/globals)', () => {
+          const target = {
+            execute() {},
+            switchToFrame() {}
+          };
+          const client = new Proxy(target, {
+            has() {
+              return false;
+            }
+          });
 
           assert.doesNotThrow(() => new AxeBuilder({ client } as any));
         });
@@ -1537,4 +1550,55 @@ describe('@axe-core/webdriverio', () => {
       });
     });
   }
+
+  describe('clientSwitchFrame', () => {
+    it('calls switchFrame with an element and returns the context ID on a v9-style client', async () => {
+      const contextId = 'some-bidi-context-id';
+      const stubClient = { switchFrame: sinon.stub().resolves(contextId) };
+      const element = {} as any;
+      const result = await clientSwitchFrame(stubClient as any, element);
+      assert.isTrue(stubClient.switchFrame.calledOnceWith(element));
+      assert.equal(result, contextId);
+    });
+
+    it('calls switchFrame with null on a v9-style client', async () => {
+      const contextId = 'top-level-context-id';
+      const stubClient = { switchFrame: sinon.stub().resolves(contextId) };
+      const result = await clientSwitchFrame(stubClient as any, null);
+      assert.isTrue(stubClient.switchFrame.calledOnceWith(null));
+      assert.equal(result, contextId);
+    });
+
+    it('calls switchToFrame with an element and returns undefined on a v8-style client', async () => {
+      const stubClient = { switchToFrame: sinon.stub().resolves(undefined) };
+      const element = {} as any;
+      const result = await clientSwitchFrame(stubClient as any, element);
+      assert.isTrue(stubClient.switchToFrame.calledOnceWith(element));
+      assert.isUndefined(result);
+    });
+  });
+
+  describe('clientSwitchWindow', () => {
+    it('calls switchToWindow with a handle on a v8-style client', async () => {
+      const stubClient = { switchToWindow: sinon.stub().resolves() };
+      await clientSwitchWindow(stubClient as any, 'window-handle');
+      assert.isTrue(stubClient.switchToWindow.calledOnceWith('window-handle'));
+    });
+
+    it('calls switchWindow with a handle on a v9-style client', async () => {
+      const stubClient = { switchWindow: sinon.stub().resolves() };
+      await clientSwitchWindow(stubClient as any, 'window-handle');
+      assert.isTrue(stubClient.switchWindow.calledOnceWith('window-handle'));
+    });
+
+    it('prefers switchToWindow over switchWindow when both are present', async () => {
+      const stubClient = {
+        switchToWindow: sinon.stub().resolves(),
+        switchWindow: sinon.stub().resolves()
+      };
+      await clientSwitchWindow(stubClient as any, 'window-handle');
+      assert.isTrue(stubClient.switchToWindow.calledOnceWith('window-handle'));
+      assert.isFalse(stubClient.switchWindow.called);
+    });
+  });
 });
