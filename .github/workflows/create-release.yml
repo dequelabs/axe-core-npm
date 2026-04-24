@@ -20,6 +20,6 @@ jobs:
       - name: Create Release
         uses: dequelabs/axe-api-team-public/.github/actions/create-release-v1@main
         with:
-          base: 'main'
+          base: 'master'
           token: ${{ secrets.GH_PROJECT_TOKEN }}
 
