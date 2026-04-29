@@ -1,0 +1,25 @@
+name: Create release
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read # Needed to clone the repository
+
+concurrency:
+  group: ${{ github.workflow }}
+  # If this is dispatched multiple times, cancel what is queued.
+  cancel-in-progress: true
+
+jobs:
+  create-release:
+    name: Create Release
+    runs-on: ubuntu-24.04
+    timeout-minutes: 2
+    steps:
+      - name: Create Release
+        uses: dequelabs/axe-api-team-public/.github/actions/create-release-v1@main
+        with:
+          base: 'master'
+          token: ${{ secrets.GH_PROJECT_TOKEN }}
+
