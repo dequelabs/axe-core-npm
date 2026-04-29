@@ -52,7 +52,7 @@
     "tsup": "^8.0.1"
   },
   "dependencies": {
-    "axe-core": "~4.11.3"
+    "axe-core": "~4.11.4"
   },
   "peerDependencies": {
     "puppeteer": ">=1.10.0"
