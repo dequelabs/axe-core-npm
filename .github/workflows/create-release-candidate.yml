@@ -15,7 +15,7 @@ jobs:
     steps:
       - uses: dequelabs/axe-api-team-public/.github/actions/create-release-candidate-v1@main
         with:
-          token: ${{ secrets.GITHUB_TOKEN }}
+          token: ${{ secrets.PAT }}
           base: 'master'
           head: 'develop'
           release-script-path: './.github/scripts/prepare_release.sh'
