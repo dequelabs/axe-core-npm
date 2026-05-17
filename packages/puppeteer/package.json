@@ -45,7 +45,7 @@
     "cross-dirname": "^0.1.0",
     "express": "^5.1.0",
     "mocha": "^11.7.1",
-    "nyc": "^17.1.0",
+    "nyc": "^18.0.0",
     "puppeteer": "24.37.5",
     "sinon": "^21.0.0",
     "source-map-support": "^0.5.21",
