@@ -62,7 +62,13 @@ export const config: Options.Testrunner = {
       // capabilities for local browser web tests
       browserName: 'chrome', // or "firefox", "microsoftedge", "safari"
       'goog:chromeOptions': {
-        args: ['--headless'],
+        args: [
+          '--headless',
+          // Required for CI runners using >=Ubuntu 24.04
+          // @see https://github.com/SeleniumHQ/selenium/issues/14609
+          '--no-sandbox',
+          '--disable-dev-shm-usage'
+        ],
         ...(process.env.CHROME_TEST_PATH && {
           binary: process.env.CHROME_TEST_PATH
         })
