@@ -17,13 +17,7 @@ import { ChildProcessWithoutNullStreams } from 'child_process';
 import { fixturesPath } from 'axe-test-fixtures';
 import sinon from 'sinon';
 
-const {
-  getFreePort,
-  connectToChromeDriver,
-  loadBdmEnv
-} = require('./testUtils');
-
-loadBdmEnv();
+const { getFreePort, connectToChromeDriver } = require('./testUtils');
 
 // devtools protocol was removed in WDIO v9.
 // require('webdriverio/package.json') fails when the package uses an exports
@@ -55,11 +49,11 @@ describe('@axe-core/webdriverio', () => {
         port = await getFreePort();
         assert(
           process.env.CHROME_TEST_PATH,
-          'CHROME_TEST_PATH is not set. Run `npx browser-driver-manager install chrome`'
+          'CHROME_TEST_PATH is not set. Install Chrome and export the path (CI uses browser-actions/setup-chrome).'
         );
         assert(
           process.env.CHROMEDRIVER_TEST_PATH,
-          'CHROMEDRIVER_TEST_PATH is not set. Run `npx browser-driver-manager install chrome`'
+          'CHROMEDRIVER_TEST_PATH is not set. Install ChromeDriver and export the path (CI uses browser-actions/setup-chrome).'
         );
         const path = process.env.CHROMEDRIVER_TEST_PATH;
         chromedriverProcess = child_process.spawn(path as string, [

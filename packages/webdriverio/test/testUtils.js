@@ -1,9 +1,6 @@
 'use strict';
 
 const net = require('net');
-const path = require('path');
-const os = require('os');
-const { config } = require('dotenv');
 
 const getFreePort = () => {
   return new Promise((resolve, reject) => {
@@ -47,9 +44,4 @@ const connectToChromeDriver = (port, retries = 10, interval = 200) => {
   return retry(retries);
 };
 
-const loadBdmEnv = () => {
-  const bdmCacheDir = path.resolve(os.homedir(), '.browser-driver-manager');
-  config({ path: path.resolve(bdmCacheDir, '.env') });
-};
-
-module.exports = { getFreePort, connectToChromeDriver, loadBdmEnv };
+module.exports = { getFreePort, connectToChromeDriver };

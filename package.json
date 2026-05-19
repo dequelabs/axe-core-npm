@@ -52,8 +52,5 @@
     "*.{json,css,md,html}": [
       "prettier --write"
     ]
-  },
-  "dependencies": {
-    "browser-driver-manager": "^2.0.0"
   }
 }

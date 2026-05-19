@@ -15,11 +15,11 @@ describe('startDriver', () => {
   before(() => {
     assert(
       process.env.CHROME_TEST_PATH,
-      'CHROME_TEST_PATH is not set. Run `npx browser-driver-manager install chrome`'
+      'CHROME_TEST_PATH is not set. Install Chrome and export the path (CI uses browser-actions/setup-chrome).'
     );
     assert(
       process.env.CHROMEDRIVER_TEST_PATH,
-      'CHROMEDRIVER_TEST_PATH is not set. Run `npx browser-driver-manager install chrome`'
+      'CHROMEDRIVER_TEST_PATH is not set. Install ChromeDriver and export the path (CI uses browser-actions/setup-chrome).'
     );
   });
   beforeEach(() => {

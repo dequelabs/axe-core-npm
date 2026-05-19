@@ -52,7 +52,6 @@
     "chromedriver": "latest",
     "colors": "^1.4.0",
     "commander": "^9.4.1",
-    "dotenv": "^17.2.2",
     "selenium-webdriver": "~4.41.0"
   },
   "devDependencies": {
