@@ -39,7 +39,7 @@ jobs:
       - uses: browser-actions/setup-chrome@v1
         id: setup-chrome
         with:
-          chrome-version: ${{ vars.CHROME_VERSION || 'latest' }}
+          chrome-version: ${{ vars.CHROME_VERSION || 'stable' }}
           install-chromedriver: true
           install-dependencies: true
       - run: |
@@ -64,7 +64,7 @@ jobs:
       - uses: browser-actions/setup-chrome@v1
         id: setup-chrome
         with:
-          chrome-version: ${{ vars.CHROME_VERSION || 'latest' }}
+          chrome-version: ${{ vars.CHROME_VERSION || 'stable' }}
           install-chromedriver: true
           install-dependencies: true
       - run: |
@@ -87,7 +87,7 @@ jobs:
       - uses: browser-actions/setup-chrome@v1
         id: setup-chrome
         with:
-          chrome-version: ${{ vars.CHROME_VERSION || 'latest' }}
+          chrome-version: ${{ vars.CHROME_VERSION || 'stable' }}
           install-chromedriver: true
           install-dependencies: true
       - run: |
@@ -112,7 +112,7 @@ jobs:
       - uses: browser-actions/setup-chrome@v1
         id: setup-chrome
         with:
-          chrome-version: ${{ vars.CHROME_VERSION || 'latest' }}
+          chrome-version: ${{ vars.CHROME_VERSION || 'stable' }}
           install-chromedriver: true
           install-dependencies: true
       - run: |
@@ -172,7 +172,7 @@ jobs:
       - uses: browser-actions/setup-chrome@v1
         id: setup-chrome
         with:
-          chrome-version: ${{ vars.CHROME_VERSION || 'latest' }}
+          chrome-version: ${{ vars.CHROME_VERSION || 'stable' }}
           install-chromedriver: true
           install-dependencies: true
       - run: |
@@ -197,7 +197,7 @@ jobs:
       - uses: browser-actions/setup-chrome@v1
         id: setup-chrome
         with:
-          chrome-version: ${{ vars.CHROME_VERSION || 'latest' }}
+          chrome-version: ${{ vars.CHROME_VERSION || 'stable' }}
           install-chromedriver: true
           install-dependencies: true
       - run: |
