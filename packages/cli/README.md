@@ -14,7 +14,14 @@ Install axe CLI globally: `npm install @axe-core/cli -g`
 
 Lastly, install the webdrivers of the browsers you wish to use. A webdriver is a driver for your web browsers. It allows other programs on your machine to open a browser and operate it.
 
-To install the latest version of Chromedriver globally, install browser-driver-manager: `npm install -g browser-driver-manager`. Then run `npx browser-driver-manager install chrome`.
+To install matched Chrome and ChromeDriver versions, use [`@puppeteer/browsers`](https://pptr.dev/browsers-api):
+
+```
+npx @puppeteer/browsers install chrome@stable
+npx @puppeteer/browsers install chromedriver@stable
+```
+
+Each command prints the resolved binary path. Pass the ChromeDriver path to axe via `--chromedriver-path <path>`.
 
 Current information about other available webdrivers can be found at [selenium-webdriver project](https://www.npmjs.com/package/selenium-webdriver). Alternatively, you could use [Webdriver manager](https://www.npmjs.com/package/webdriver-manager)
 

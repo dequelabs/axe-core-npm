@@ -12,7 +12,12 @@ Install [Node.js](https://docs.npmjs.com/getting-started/installing-node) if you
 
 > Download and install any necessary browser drivers on your machine's PATH. [More on Webdriver setup](https://www.selenium.dev/documentation/en/webdriver/).
 
-To install the latest version of Chromedriver globally, install browser-driver-manager: `npm install -g browser-driver-manager`. Then run `npx browser-driver-manager install chrome`.
+To install matched Chrome and ChromeDriver versions, use [`@puppeteer/browsers`](https://pptr.dev/browsers-api):
+
+```
+npx @puppeteer/browsers install chrome@stable
+npx @puppeteer/browsers install chromedriver@stable
+```
 
 Install Selenium Webdriver: `npm install selenium-webdriver`
 
