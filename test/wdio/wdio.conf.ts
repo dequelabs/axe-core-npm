@@ -69,9 +69,9 @@ export const config: Options.Testrunner = {
           '--no-sandbox',
           '--disable-dev-shm-usage'
         ],
-        ...(process.env.CHROME_TEST_PATH && {
-          binary: process.env.CHROME_TEST_PATH
-        })
+        ...(process.env.CHROME_TEST_PATH
+          ? { binary: process.env.CHROME_TEST_PATH }
+          : {})
       }
     }
   ],

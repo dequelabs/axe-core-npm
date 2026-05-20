@@ -39,7 +39,7 @@ async function integrationTest() {
         browserName: 'chrome',
         'goog:chromeOptions': {
           args: ['--headless', '--no-sandbox'],
-          ...(chromeBinary && { binary: chromeBinary })
+          ...(chromeBinary ? { binary: chromeBinary } : {})
         }
       },
       logLevel: 'error'

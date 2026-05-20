@@ -50,9 +50,9 @@ describe('@axe-core/playwright', () => {
   beforeEach(async () => {
     browser = await chromium.launch({
       args: ['--disable-dev-shm-usage'],
-      ...(process.env.CHROME_TEST_PATH && {
-        executablePath: process.env.CHROME_TEST_PATH
-      })
+      ...(process.env.CHROME_TEST_PATH
+        ? { executablePath: process.env.CHROME_TEST_PATH }
+        : {})
     });
     const context = await browser.newContext();
     page = await context.newPage();
