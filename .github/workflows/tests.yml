@@ -36,7 +36,7 @@ jobs:
           node-version: ${{ matrix.node}}
           cache: 'npm'
       - run: npm ci
-      - uses: browser-actions/setup-chrome@v1
+      - uses: browser-actions/setup-chrome@2e1d749697dd1612b833dba4a722266286fbefcd # v2.1.2
         id: setup-chrome
         with:
           chrome-version: ${{ vars.CHROME_VERSION || 'stable' }}
@@ -61,7 +61,7 @@ jobs:
           node-version: ${{ matrix.node }}
           cache: 'npm'
       - run: npm ci
-      - uses: browser-actions/setup-chrome@v1
+      - uses: browser-actions/setup-chrome@2e1d749697dd1612b833dba4a722266286fbefcd # v2.1.2
         id: setup-chrome
         with:
           chrome-version: ${{ vars.CHROME_VERSION || 'stable' }}
@@ -84,7 +84,7 @@ jobs:
           node-version: ${{ matrix.node }}
           cache: 'npm'
       - run: npm ci
-      - uses: browser-actions/setup-chrome@v1
+      - uses: browser-actions/setup-chrome@2e1d749697dd1612b833dba4a722266286fbefcd # v2.1.2
         id: setup-chrome
         with:
           chrome-version: ${{ vars.CHROME_VERSION || 'stable' }}
@@ -109,7 +109,7 @@ jobs:
           node-version: ${{ matrix.node }}
           cache: 'npm'
       - run: npm ci
-      - uses: browser-actions/setup-chrome@v1
+      - uses: browser-actions/setup-chrome@2e1d749697dd1612b833dba4a722266286fbefcd # v2.1.2
         id: setup-chrome
         with:
           chrome-version: ${{ vars.CHROME_VERSION || 'stable' }}
@@ -169,7 +169,7 @@ jobs:
           node-version: ${{ matrix.node }}
           cache: 'npm'
       - run: npm ci
-      - uses: browser-actions/setup-chrome@v1
+      - uses: browser-actions/setup-chrome@2e1d749697dd1612b833dba4a722266286fbefcd # v2.1.2
         id: setup-chrome
         with:
           chrome-version: ${{ vars.CHROME_VERSION || 'stable' }}
@@ -194,7 +194,7 @@ jobs:
           node-version: ${{ matrix.node }}
           cache: 'npm'
       - run: npm ci
-      - uses: browser-actions/setup-chrome@v1
+      - uses: browser-actions/setup-chrome@2e1d749697dd1612b833dba4a722266286fbefcd # v2.1.2
         id: setup-chrome
         with:
           chrome-version: ${{ vars.CHROME_VERSION || 'stable' }}
