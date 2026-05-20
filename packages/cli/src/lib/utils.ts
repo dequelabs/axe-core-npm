@@ -1,7 +1,18 @@
 import fs from 'fs';
+import os from 'os';
 import path from 'path';
 import colors from 'colors';
+import { config } from 'dotenv';
 import type { AxeResults, UnlabelledFrameSelector } from 'axe-core';
+
+// Legacy compat: previous versions of axe-cli documented `browser-driver-manager`
+// as the install path and auto-loaded the env vars it wrote to
+// `~/.browser-driver-manager/.env`. The recommended install path is now
+// `@puppeteer/browsers` (see README), but we keep this shim so existing BDM
+// users don't silently break. `quiet: true` avoids logging when the file
+// isn't present, and dotenv won't override env vars already in `process.env`.
+const BDM_CACHE_DIR = path.resolve(os.homedir(), '.browser-driver-manager');
+config({ path: path.resolve(BDM_CACHE_DIR, '.env'), quiet: true });
 
 export const { CHROME_TEST_PATH, CHROMEDRIVER_TEST_PATH } = process.env;
 
