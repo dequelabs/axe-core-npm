@@ -12,12 +12,14 @@ Install [Node.js](https://docs.npmjs.com/getting-started/installing-node) if you
 
 > Download and install any necessary browser drivers on your machine's PATH. [More on Webdriver setup](https://www.selenium.dev/documentation/en/webdriver/).
 
-To install matched Chrome and ChromeDriver versions, use [`@puppeteer/browsers`](https://pptr.dev/browsers-api):
+To install matched Chrome and ChromeDriver versions, use [`@puppeteer/browsers`](https://pptr.dev/browsers-api). By default it installs into the current working directory; pass `--path` to keep the binaries in a stable shared location you can reuse across projects (e.g. `~/.cache/puppeteer-browsers`):
 
 ```
-npx @puppeteer/browsers install chrome@stable
-npx @puppeteer/browsers install chromedriver@stable
+npx @puppeteer/browsers install chrome@stable --path ~/.cache/puppeteer-browsers
+npx @puppeteer/browsers install chromedriver@stable --path ~/.cache/puppeteer-browsers
 ```
+
+Each command prints the resolved binary path. Wire **both** into your WebDriver setup — point ChromeDriver via `new chrome.ServiceBuilder(chromedriverPath)` and the Chrome binary via `new chrome.Options().setChromeBinaryPath(chromePath)`. If you only set the ChromeDriver path, ChromeDriver will fall back to your system-installed Chrome, which is almost never the same version and will fail with `session not created`.
 
 Install Selenium Webdriver: `npm install selenium-webdriver`
 

@@ -14,14 +14,18 @@ Install axe CLI globally: `npm install @axe-core/cli -g`
 
 Lastly, install the webdrivers of the browsers you wish to use. A webdriver is a driver for your web browsers. It allows other programs on your machine to open a browser and operate it.
 
-To install matched Chrome and ChromeDriver versions, use [`@puppeteer/browsers`](https://pptr.dev/browsers-api):
+To install matched Chrome and ChromeDriver versions, use [`@puppeteer/browsers`](https://pptr.dev/browsers-api). By default it installs into the current working directory; pass `--path` to keep the binaries in a stable shared location you can reuse across projects (e.g. `~/.cache/puppeteer-browsers`):
 
 ```
-npx @puppeteer/browsers install chrome@stable
-npx @puppeteer/browsers install chromedriver@stable
+npx @puppeteer/browsers install chrome@stable --path ~/.cache/puppeteer-browsers
+npx @puppeteer/browsers install chromedriver@stable --path ~/.cache/puppeteer-browsers
 ```
 
-Each command prints the resolved binary path. Pass the ChromeDriver path to axe via `--chromedriver-path <path>`.
+Each command prints the resolved binary path. Pass **both** to axe so the matched pair is used — if you only pass `--chromedriver-path`, ChromeDriver will fall back to your system-installed Chrome, which is almost never the same version and will fail with `session not created`:
+
+```
+axe www.deque.com --chrome-path <path/to/chrome> --chromedriver-path <path/to/chromedriver>
+```
 
 Current information about other available webdrivers can be found at [selenium-webdriver project](https://www.npmjs.com/package/selenium-webdriver). Alternatively, you could use [Webdriver manager](https://www.npmjs.com/package/webdriver-manager)
 
@@ -183,10 +187,14 @@ To see additional information like test tool name, version and environment detai
 axe www.deque.com --verbose
 ```
 
-## ChromeDriver Path
+## Chrome and ChromeDriver paths
 
-If you need to test your page using an older version of Chrome, you can use `--chromedriver-path` followed by the absolute path to the desired version of the ChromeDriver executable.
+If you need to test against a specific Chrome / ChromeDriver pair (for example, the binaries installed via `@puppeteer/browsers`), pass their absolute paths with `--chrome-path` and `--chromedriver-path`:
 
 ```
-axe www.deque.com --chromedriver-path="absolute/path/to/chromedriver"
+axe www.deque.com \
+  --chrome-path="absolute/path/to/chrome" \
+  --chromedriver-path="absolute/path/to/chromedriver"
 ```
+
+Both flags are required whenever the system-installed Chrome isn't the same version as the ChromeDriver you're pointing at. Without `--chrome-path`, ChromeDriver auto-discovers the system Chrome and fails with `session not created: This version of ChromeDriver only supports Chrome version N`. Passing `--chrome-path` forces the matched binary so the versions agree.
