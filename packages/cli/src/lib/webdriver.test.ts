@@ -17,18 +17,18 @@ describe('startDriver', () => {
       process.env.CHROME_TEST_PATH,
       [
         'CHROME_TEST_PATH is not set.',
-        'Install Chrome: npx @puppeteer/browsers install chrome@stable',
+        'Install Chrome: npx @puppeteer/browsers install chrome@stable --path ~/.cache/puppeteer-browsers',
         'The command prints the resolved binary path; export it as CHROME_TEST_PATH.',
-        'e.g. export CHROME_TEST_PATH="$(npx @puppeteer/browsers install chrome@stable | awk \'{print $2}\')"'
+        'e.g. export CHROME_TEST_PATH="$(npx @puppeteer/browsers install chrome@stable --path ~/.cache/puppeteer-browsers | awk \'{print $2}\')"'
       ].join('\n')
     );
     assert(
       process.env.CHROMEDRIVER_TEST_PATH,
       [
         'CHROMEDRIVER_TEST_PATH is not set.',
-        'Install ChromeDriver: npx @puppeteer/browsers install chromedriver@stable',
+        'Install ChromeDriver: npx @puppeteer/browsers install chromedriver@stable --path ~/.cache/puppeteer-browsers',
         'The command prints the resolved binary path; export it as CHROMEDRIVER_TEST_PATH.',
-        'e.g. export CHROMEDRIVER_TEST_PATH="$(npx @puppeteer/browsers install chromedriver@stable | awk \'{print $2}\')"'
+        'e.g. export CHROMEDRIVER_TEST_PATH="$(npx @puppeteer/browsers install chromedriver@stable --path ~/.cache/puppeteer-browsers | awk \'{print $2}\')"'
       ].join('\n')
     );
   });

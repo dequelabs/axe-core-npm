@@ -131,10 +131,10 @@ const cli = async (
         )
       ) {
         console.error(error('Error: %s'), e.message);
-        console.log(`\nPlease install matched Chrome and ChromeDriver versions with @puppeteer/browsers:
+        console.log(`\nPlease install matched Chrome and ChromeDriver versions with @puppeteer/browsers. Pass --path to keep the binaries in a stable shared location you can reuse across projects:
 
-        $ npx @puppeteer/browsers install chrome@stable
-        $ npx @puppeteer/browsers install chromedriver@stable
+        $ npx @puppeteer/browsers install chrome@stable --path ~/.cache/puppeteer-browsers
+        $ npx @puppeteer/browsers install chromedriver@stable --path ~/.cache/puppeteer-browsers
 
         Pin a specific version with @<version>, e.g. chrome@123.0.6312.86 or chrome@canary.
 
