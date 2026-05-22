@@ -59,6 +59,23 @@ updates:
       - dependency-name: '@types/node'
         update-types: ['version-update:semver-major']
     groups:
+      # Keep the ESLint toolchain moving in lockstep so configs, plugins,
+      # and parsers always land with the eslint major they require.
+      # Covers majors so a future eslint major bump doesn't ship without
+      # its peer/plugin updates.
+      # Enumerate by exact name — glob patterns have been unreliable here.
+      # If you add a new eslint-* dep anywhere in this repo, append it here.
+      eslint:
+        patterns:
+          - 'eslint'
+          - '@eslint/js'
+          - 'eslint-config-prettier'
+          - 'eslint-plugin-prettier'
+          - 'typescript-eslint'
+        update-types:
+          - 'major'
+          - 'minor'
+          - 'patch'
       # Any updates not caught by the group config will get individual PRs
       npm-low-risk:
         update-types:
