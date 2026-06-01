@@ -131,19 +131,16 @@ const cli = async (
         )
       ) {
         console.error(error('Error: %s'), e.message);
-        console.log(`\nPlease use browser-driver-manager to install matching versions of Chrome and ChromeDriver:
-        
-        $ npx browser-driver-manager install chrome
-        
-        This will install the latest synced versions. You may install specific synced versions using 
-        
-        $ npx browser-driver-manager install chrome@<version>
+        console.log(`\nPlease install matched Chrome and ChromeDriver versions with @puppeteer/browsers. Pass --path to keep the binaries in a stable shared location you can reuse across projects:
 
-        where <version> is a specific version, e.g. 123.45.67, or a channel, e.g. canary.
+        $ npx @puppeteer/browsers install chrome@stable --path ~/.cache/puppeteer-browsers
+        $ npx @puppeteer/browsers install chromedriver@stable --path ~/.cache/puppeteer-browsers
 
-        You may also pass the \`--chromedriver-path\` option to axe:
+        Pin a specific version with @<version>, e.g. chrome@123.0.6312.86 or chrome@canary.
 
-        $ axe --chromedriver-path <path/to/chromedriver-executable>`);
+        Each command prints the resolved binary path. Pass them to axe via:
+
+        $ axe --chrome-path <path/to/chrome> --chromedriver-path <path/to/chromedriver>`);
         process.exit(2);
       } else {
         throw e;

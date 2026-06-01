@@ -44,5 +44,9 @@ export function puppeteerOpts(): LaunchOptions {
     options.args.push('--no-sandbox', '--disable-setuid-sandbox');
   }
 
+  if (process.env.CHROME_TEST_PATH) {
+    options.executablePath = process.env.CHROME_TEST_PATH;
+  }
+
   return options;
 }

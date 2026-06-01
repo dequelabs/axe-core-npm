@@ -10,7 +10,14 @@ Version 4.3.0 and above of the axe-core integrations use a new technique when ca
 
 ### Having an Out-of-date Driver
 
-A common problem is having an out-of-date driver. To fix this issue make sure that your local install of [geckodriver](https://github.com/mozilla/geckodriver/releases) or [chromedriver](https://chromedriver.chromium.org/downloads) is up-to-date.
+A common problem is having an out-of-date driver, or — more often — a driver whose version doesn't match the browser it's driving. To fix this, install a matched Chrome / ChromeDriver pair with [`@puppeteer/browsers`](https://pptr.dev/browsers-api) and point your WebDriver setup at **both** binaries:
+
+```
+npx @puppeteer/browsers install chrome@stable --path ~/.cache/puppeteer-browsers
+npx @puppeteer/browsers install chromedriver@stable --path ~/.cache/puppeteer-browsers
+```
+
+Wire the printed ChromeDriver path into `new chrome.ServiceBuilder(...)` and the printed Chrome path into `new chrome.Options().setChromeBinaryPath(...)`. If you only set the ChromeDriver path, it will fall back to your system Chrome — which almost never matches — and fail with `session not created`. For Firefox, make sure your local install of [geckodriver](https://github.com/mozilla/geckodriver/releases) is up-to-date.
 
 An example error message for this problem will include a message about `switchToWindow`.
 

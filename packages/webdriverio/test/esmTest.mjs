@@ -8,7 +8,10 @@ import { fixturesPath } from 'axe-test-fixtures';
 import { spawn } from 'child_process';
 import { getFreePort, connectToChromeDriver } from './testUtils.js';
 
-const { default: { path: chromedriverPath } } = await import('chromedriver');
+const chromedriverPath =
+  process.env.CHROMEDRIVER_TEST_PATH ||
+  (await import('chromedriver')).default.path;
+const chromeBinary = process.env.CHROME_TEST_PATH;
 
 assert(typeof defaultExport === 'function', 'default export is not a function');
 assert(typeof AxeBuilder === 'function', 'named export is not a function');
@@ -35,7 +38,8 @@ async function integrationTest() {
       capabilities: {
         browserName: 'chrome',
         'goog:chromeOptions': {
-          args: ['--headless', '--no-sandbox']
+          args: ['--headless', '--no-sandbox'],
+          ...(chromeBinary ? { binary: chromeBinary } : {})
         }
       },
       logLevel: 'error'

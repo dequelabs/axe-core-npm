@@ -20,7 +20,14 @@ Install [Node.js](https://docs.npmjs.com/getting-started/installing-node) if you
 
 > Download and install any necessary browser drivers on your machine's PATH. [More on WebdriverIO setup](https://v6.webdriver.io/docs/gettingstarted.html#taking-the-first-step).
 
-To install the latest version of Chromedriver globally, install browser-driver-manager: `npm install -g browser-driver-manager`. Then run `npx browser-driver-manager install chrome`.
+To install matched Chrome and ChromeDriver versions, use [`@puppeteer/browsers`](https://pptr.dev/browsers-api). By default it installs into the current working directory; pass `--path` to keep the binaries in a stable shared location you can reuse across projects (e.g. `~/.cache/puppeteer-browsers`):
+
+```
+npx @puppeteer/browsers install chrome@stable --path ~/.cache/puppeteer-browsers
+npx @puppeteer/browsers install chromedriver@stable --path ~/.cache/puppeteer-browsers
+```
+
+Each command prints the resolved binary path. Wire **both** into your WebdriverIO setup — point the Chrome binary via the `goog:chromeOptions.binary` capability, and run/point at the matching ChromeDriver via your chromedriver service (e.g. `@wdio/chromedriver-service` with `chromedriverCustomPath`). If you only point at the new ChromeDriver and let it auto-discover Chrome, it will fall back to your system-installed Chrome — almost never the same version — and fail with `session not created`.
 
 Install WebdriverIO: `npm install webdriverio`
 
