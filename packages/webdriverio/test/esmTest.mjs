@@ -20,6 +20,10 @@ assert(
 async function integrationTest() {
   const port = await getFreePort();
   assert(
+    process.env.CHROME_TEST_PATH,
+    'CHROME_TEST_PATH is not set. Run `npx browser-driver-manager install chrome`'
+  );
+  assert(
     process.env.CHROMEDRIVER_TEST_PATH,
     'CHROMEDRIVER_TEST_PATH is not set. Run `npx browser-driver-manager install chrome`'
   );
@@ -39,7 +43,8 @@ async function integrationTest() {
       capabilities: {
         browserName: 'chrome',
         'goog:chromeOptions': {
-          args: ['--headless', '--no-sandbox']
+          args: ['--headless', '--no-sandbox'],
+          binary: process.env.CHROME_TEST_PATH
         }
       },
       logLevel: 'error'
