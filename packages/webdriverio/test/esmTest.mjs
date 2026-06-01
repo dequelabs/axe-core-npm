@@ -6,9 +6,9 @@ import { pathToFileURL } from 'url';
 import { join } from 'path';
 import { fixturesPath } from 'axe-test-fixtures';
 import { spawn } from 'child_process';
-import { getFreePort, connectToChromeDriver } from './testUtils.js';
+import { getFreePort, connectToChromeDriver, loadBdmEnv } from './testUtils.js';
 
-const { default: { path: chromedriverPath } } = await import('chromedriver');
+loadBdmEnv();
 
 assert(typeof defaultExport === 'function', 'default export is not a function');
 assert(typeof AxeBuilder === 'function', 'named export is not a function');
@@ -19,7 +19,11 @@ assert(
 
 async function integrationTest() {
   const port = await getFreePort();
-
+  assert(
+    process.env.CHROMEDRIVER_TEST_PATH,
+    'CHROMEDRIVER_TEST_PATH is not set. Run `npx browser-driver-manager install chrome`'
+  );
+  const chromedriverPath = process.env.CHROMEDRIVER_TEST_PATH;
   const chromedriverProcess = spawn(chromedriverPath, [
     `--port=${port}`
   ], { stdio: 'inherit' });
