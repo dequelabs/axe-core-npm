@@ -13,7 +13,7 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 5
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v6.0.2
       - uses: actions/setup-node@v6
         with:
           node-version-file: .nvmrc
@@ -26,14 +26,17 @@ jobs:
       fail-fast: false
       matrix:
         node: [18, 20, 22, 24]
+        include:
+          - node: 24
+            version: '24.15.0'
     runs-on: deque-ubuntu-latest-4core
     timeout-minutes: 15
     needs: lint
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v6.0.2
       - uses: actions/setup-node@v6
         with:
-          node-version: ${{ matrix.node}}
+          node-version: ${{ matrix.version || matrix.node }}
           cache: 'npm'
       - run: npm ci
       # HACK: Force a TTY to enable browser-driver-manager to manipulate stdout.
@@ -50,10 +53,10 @@ jobs:
     timeout-minutes: 15
     needs: lint
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v6.0.2
       - uses: actions/setup-node@v6
         with:
-          node-version: ${{ matrix.node }}
+          node-version: ${{ matrix.version || matrix.node }}
           cache: 'npm'
       - run: npm ci
         # HACK: Force a TTY to enable browser-driver-manager to manipulate stdout.
@@ -68,10 +71,10 @@ jobs:
     timeout-minutes: 15
     needs: lint
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v6.0.2
       - uses: actions/setup-node@v6
         with:
-          node-version: ${{ matrix.node }}
+          node-version: ${{ matrix.version || matrix.node }}
           cache: 'npm'
       - run: npm ci
       # HACK: Force a TTY to enable browser-driver-manager to manipulate stdout.
@@ -88,10 +91,10 @@ jobs:
     timeout-minutes: 15
     needs: lint
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v6.0.2
       - uses: actions/setup-node@v6
         with:
-          node-version: ${{ matrix.node }}
+          node-version: ${{ matrix.version || matrix.node }}
           cache: 'npm'
       - run: npm ci
       # HACK: Force a TTY to enable browser-driver-manager to manipulate stdout.
@@ -108,10 +111,10 @@ jobs:
     timeout-minutes: 15
     needs: lint
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v6.0.2
       - uses: actions/setup-node@v6
         with:
-          node-version: ${{ matrix.node }}
+          node-version: ${{ matrix.version || matrix.node }}
           cache: 'npm'
       - run: npm ci
       - run: npm run build --workspace=packages/reporter-earl
@@ -124,10 +127,10 @@ jobs:
     timeout-minutes: 15
     needs: lint
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v6.0.2
       - uses: actions/setup-node@v6
         with:
-          node-version: ${{ matrix.node }}
+          node-version: ${{ matrix.version || matrix.node }}
           cache: 'npm'
       - run: npm ci
       - run: npm run test --workspace=packages/react
@@ -143,10 +146,10 @@ jobs:
     timeout-minutes: 25
     needs: lint
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v6.0.2
       - uses: actions/setup-node@v6
         with:
-          node-version: ${{ matrix.node }}
+          node-version: ${{ matrix.version || matrix.node }}
           cache: 'npm'
       - run: npm ci
       - run: npx playwright install --with-deps
@@ -160,10 +163,10 @@ jobs:
     timeout-minutes: 15
     needs: lint
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v6.0.2
       - uses: actions/setup-node@v6
         with:
-          node-version: ${{ matrix.node }}
+          node-version: ${{ matrix.version || matrix.node }}
           cache: 'npm'
       - run: npm ci
       - run: npm run test --workspace=test/wdio
@@ -174,7 +177,7 @@ jobs:
     timeout-minutes: 5
     needs: lint
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v6.0.2
       - uses: actions/setup-node@v6
         with:
           node-version-file: .nvmrc
