@@ -4,7 +4,8 @@
   "license": "MPL-2.0",
   "workspaces": [
     "packages/*",
-    "test/*"
+    "test/*",
+    "!test/release"
   ],
   "scripts": {
     "fmt": "prettier --write .",
