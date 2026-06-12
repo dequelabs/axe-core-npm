@@ -78,6 +78,70 @@ updates:
           - 'major'
           - 'minor'
           - 'patch'
+      # Keep the Jest toolchain in lockstep so the runner, its environments,
+      # and the TypeScript transform always land with the jest major they
+      # require.
+      # Enumerate by exact name — glob patterns have been unreliable here.
+      # If you add a new jest-* dep anywhere in this repo, append it here.
+      jest:
+        patterns:
+          - 'jest'
+          - 'jest-environment-jsdom'
+          - 'ts-jest'
+        update-types:
+          - 'major'
+          - 'minor'
+          - 'patch'
+      # Browser-driver integrations: keep each framework and its directly
+      # related packages (types, scoped sub-packages, protocol shims) moving
+      # in lockstep, including majors, so a framework major never lands
+      # without its companion packages.
+      # Enumerate by exact name — glob patterns have been unreliable here.
+      # If you add a new package for one of these frameworks, append it here.
+      selenium:
+        patterns:
+          - 'selenium-webdriver'
+          - '@types/selenium-webdriver'
+        update-types:
+          - 'major'
+          - 'minor'
+          - 'patch'
+      webdriverio:
+        patterns:
+          - 'webdriverio'
+          - '@wdio/globals'
+          - 'devtools'
+        update-types:
+          - 'major'
+          - 'minor'
+          - 'patch'
+      playwright:
+        patterns:
+          - 'playwright'
+          - 'playwright-core'
+          - '@playwright/test'
+        update-types:
+          - 'major'
+          - 'minor'
+          - 'patch'
+      puppeteer:
+        patterns:
+          - 'puppeteer'
+          - 'puppeteer-core'
+        update-types:
+          - 'major'
+          - 'minor'
+          - 'patch'
+      # Standalone browser-driver binaries shared across the selenium and
+      # webdriverio integrations, so they belong to neither framework group.
+      browser-drivers:
+        patterns:
+          - 'chromedriver'
+          - 'geckodriver'
+        update-types:
+          - 'major'
+          - 'minor'
+          - 'patch'
       # Any updates not caught by the group config will get individual PRs
       npm-low-risk:
         update-types:
