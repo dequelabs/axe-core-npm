@@ -78,9 +78,11 @@ updates:
           - 'major'
           - 'minor'
           - 'patch'
-      # Keep the Jest toolchain in lockstep so the runner, its environments,
-      # and the TypeScript transform always land with the jest major they
-      # require.
+      # Batch the Jest toolchain into one PR so the runner, its environment,
+      # and the TypeScript transform update together. Covers majors so a
+      # future jest major doesn't ship without the environment/transform
+      # updates it needs. Grouping batches the PRs; it does not by itself
+      # guarantee peer-compatible versions, so sanity-check a jest major bump.
       # Enumerate by exact name — glob patterns have been unreliable here.
       # If you add a new jest-* dep anywhere in this repo, append it here.
       jest:
@@ -117,8 +119,6 @@ updates:
           - 'patch'
       playwright:
         patterns:
-          - 'playwright'
-          - 'playwright-core'
           - '@playwright/test'
         update-types:
           - 'major'
@@ -127,17 +127,17 @@ updates:
       puppeteer:
         patterns:
           - 'puppeteer'
-          - 'puppeteer-core'
         update-types:
           - 'major'
           - 'minor'
           - 'patch'
-      # Standalone browser-driver binaries shared across the selenium and
-      # webdriverio integrations, so they belong to neither framework group.
+      # The chromedriver binary and its types are used by the cli (selenium)
+      # and webdriverio packages, so they belong to neither framework group;
+      # keep the binary and its @types package landing together.
       browser-drivers:
         patterns:
           - 'chromedriver'
-          - 'geckodriver'
+          - '@types/chromedriver'
         update-types:
           - 'major'
           - 'minor'
