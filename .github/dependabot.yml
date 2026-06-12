@@ -78,6 +78,74 @@ updates:
           - 'major'
           - 'minor'
           - 'patch'
+      # Batch the Jest toolchain into one PR so the runner, its environment,
+      # and the TypeScript transform update together. Covers majors so a
+      # future jest major doesn't ship without the environment/transform
+      # updates it needs. Grouping batches the PRs; it does not by itself
+      # guarantee peer-compatible versions, so sanity-check a jest major bump.
+      # Enumerate by exact name — glob patterns have been unreliable here.
+      # If you add a new jest-* dep anywhere in this repo, append it here.
+      jest:
+        patterns:
+          - 'jest'
+          - 'jest-environment-jsdom'
+          - 'ts-jest'
+        update-types:
+          - 'major'
+          - 'minor'
+          - 'patch'
+      # Browser-driver integrations: keep each framework and its directly
+      # related packages (types, scoped sub-packages, protocol shims) moving
+      # in lockstep, including majors, so a framework major never lands
+      # without its companion packages.
+      # Enumerate by exact name — glob patterns have been unreliable here.
+      # If you add a new package for one of these frameworks, append it here.
+      selenium:
+        patterns:
+          - 'selenium-webdriver'
+          - '@types/selenium-webdriver'
+        update-types:
+          - 'major'
+          - 'minor'
+          - 'patch'
+      webdriverio:
+        patterns:
+          - 'webdriverio'
+          - '@wdio/cli'
+          - '@wdio/globals'
+          - '@wdio/local-runner'
+          - '@wdio/mocha-framework'
+          - '@wdio/spec-reporter'
+          - 'devtools'
+        update-types:
+          - 'major'
+          - 'minor'
+          - 'patch'
+      playwright:
+        patterns:
+          - '@playwright/test'
+        update-types:
+          - 'major'
+          - 'minor'
+          - 'patch'
+      puppeteer:
+        patterns:
+          - 'puppeteer'
+        update-types:
+          - 'major'
+          - 'minor'
+          - 'patch'
+      # The chromedriver binary and its types are used by the cli (selenium)
+      # and webdriverio packages, so they belong to neither framework group;
+      # keep the binary and its @types package landing together.
+      browser-drivers:
+        patterns:
+          - 'chromedriver'
+          - '@types/chromedriver'
+        update-types:
+          - 'major'
+          - 'minor'
+          - 'patch'
       # Any updates not caught by the group config will get individual PRs
       npm-low-risk:
         update-types:
