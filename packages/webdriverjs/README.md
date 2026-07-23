@@ -30,9 +30,13 @@ const { Builder } = require('selenium-webdriver');
 const chrome = require('selenium-webdriver/chrome');
 
 (async () => {
+  const options = new chrome.Options();
+
+  options.addArguments('headless');
+
   const driver = new Builder()
     .forBrowser('chrome')
-    .setChromeOptions(new chrome.Options().headless())
+    .setChromeOptions(options)
     .build();
   await driver.get('https://dequeuniversity.com/demo/mars/');
 
