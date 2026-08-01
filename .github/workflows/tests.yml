@@ -14,7 +14,7 @@ jobs:
     timeout-minutes: 5
     steps:
       - uses: actions/checkout@v6.0.3
-      - uses: actions/setup-node@v6
+      - uses: actions/setup-node@v7
         with:
           node-version-file: .nvmrc
           cache: 'npm'
@@ -34,7 +34,7 @@ jobs:
     needs: lint
     steps:
       - uses: actions/checkout@v6.0.3
-      - uses: actions/setup-node@v6
+      - uses: actions/setup-node@v7
         with:
           node-version: ${{ matrix.version || matrix.node }}
           cache: 'npm'
@@ -54,7 +54,7 @@ jobs:
     needs: lint
     steps:
       - uses: actions/checkout@v6.0.3
-      - uses: actions/setup-node@v6
+      - uses: actions/setup-node@v7
         with:
           node-version: ${{ matrix.version || matrix.node }}
           cache: 'npm'
@@ -72,7 +72,7 @@ jobs:
     needs: lint
     steps:
       - uses: actions/checkout@v6.0.3
-      - uses: actions/setup-node@v6
+      - uses: actions/setup-node@v7
         with:
           node-version: ${{ matrix.version || matrix.node }}
           cache: 'npm'
@@ -92,7 +92,7 @@ jobs:
     needs: lint
     steps:
       - uses: actions/checkout@v6.0.3
-      - uses: actions/setup-node@v6
+      - uses: actions/setup-node@v7
         with:
           node-version: ${{ matrix.version || matrix.node }}
           cache: 'npm'
@@ -112,7 +112,7 @@ jobs:
     needs: lint
     steps:
       - uses: actions/checkout@v6.0.3
-      - uses: actions/setup-node@v6
+      - uses: actions/setup-node@v7
         with:
           node-version: ${{ matrix.version || matrix.node }}
           cache: 'npm'
@@ -128,7 +128,7 @@ jobs:
     needs: lint
     steps:
       - uses: actions/checkout@v6.0.3
-      - uses: actions/setup-node@v6
+      - uses: actions/setup-node@v7
         with:
           node-version: ${{ matrix.version || matrix.node }}
           cache: 'npm'
@@ -147,7 +147,7 @@ jobs:
     needs: lint
     steps:
       - uses: actions/checkout@v6.0.3
-      - uses: actions/setup-node@v6
+      - uses: actions/setup-node@v7
         with:
           node-version: ${{ matrix.version || matrix.node }}
           cache: 'npm'
@@ -164,7 +164,7 @@ jobs:
     needs: lint
     steps:
       - uses: actions/checkout@v6.0.3
-      - uses: actions/setup-node@v6
+      - uses: actions/setup-node@v7
         with:
           node-version: ${{ matrix.version || matrix.node }}
           cache: 'npm'
@@ -178,7 +178,7 @@ jobs:
     needs: lint
     steps:
       - uses: actions/checkout@v6.0.3
-      - uses: actions/setup-node@v6
+      - uses: actions/setup-node@v7
         with:
           node-version-file: .nvmrc
           cache: 'npm'
