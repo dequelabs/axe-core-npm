@@ -47,10 +47,10 @@
     "@types/jsonld": "github:types/jsonld",
     "axe-core": "~4.12.1",
     "clone": "^2.1.2",
-    "jest": "^30.0.5",
-    "jest-environment-jsdom": "^30.1.2",
+    "jest": "^30.4.2",
+    "jest-environment-jsdom": "^30.4.1",
     "jsonld": "^9.0.0",
-    "ts-jest": "^29.0.3",
+    "ts-jest": "^29.4.12",
     "tsup": "^8.0.1"
   }
 }
