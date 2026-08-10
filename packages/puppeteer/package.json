@@ -1,6 +1,6 @@
 {
   "name": "@axe-core/puppeteer",
-  "version": "4.12.1",
+  "version": "4.13.0",
   "description": "Provides a chainable axe API for Puppeteer and automatically injects into all frames",
   "repository": {
     "type": "git",
@@ -52,7 +52,7 @@
     "tsup": "^8.0.1"
   },
   "dependencies": {
-    "axe-core": "~4.12.1"
+    "axe-core": "~4.13.0"
   },
   "peerDependencies": {
     "puppeteer": ">=1.10.0"
