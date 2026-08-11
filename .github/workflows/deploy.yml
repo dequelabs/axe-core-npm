@@ -91,7 +91,7 @@ jobs:
     permissions:
       # Required for OIDC
       id-token: write
-      contents: read
+      contents: write # create the release tag
     if: github.ref_name == 'master' && github.repository_owner == 'dequelabs'
     steps:
       - uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
@@ -115,11 +115,14 @@ jobs:
           npx lerna publish from-package \
             --force-publish='*' \
             --yes
-      - run: |
+      # Nothing tags the release commit beforehand, so `gh release create` creates
+      # the tag at --target and the notes come from merged PRs rather than the tag.
+      - name: Create GitHub release
+        run: |
           PKG_VERSION=$(jq -r .version < lerna.json)
-          gh release create v$PKG_VERSION \
+          gh release create "v$PKG_VERSION" \
             --title "Release $PKG_VERSION" \
-            --notes-from-tag \
-            --target master
+            --generate-notes \
+            --target "$GITHUB_SHA"
         env:
           GH_TOKEN: ${{ github.token }}
