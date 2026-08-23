@@ -15,7 +15,7 @@ jobs:
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
       # `standalone` installs `@pnpm/exe`, which bundles its own Node, so pnpm 11
-      # runs on the Node 18 and 20 matrix legs it would otherwise refuse.
+      # runs on the older matrix legs it would otherwise refuse.
       - uses: pnpm/action-setup@0977fd99725f1db4007ccb2928dbb4e90d06cc86 # v6.0.10
         with:
           standalone: true
@@ -30,7 +30,7 @@ jobs:
     strategy: &strategy_matrix
       fail-fast: false
       matrix:
-        node: [18, 20, 22, 24]
+        node: [20, 22, 24]
         include:
           - node: 24
             version: '24.15.0'
