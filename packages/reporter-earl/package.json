@@ -14,14 +14,14 @@
   },
   "scripts": {
     "start": "NODE_OPTIONS=--experimental-vm-modules jest --watch --env=jsdom",
-    "test": "npm run build && npm run test:unit",
-    "test:export": "npm run test:esm && npm run test:commonjs && npm run test:ts",
+    "test": "pnpm run build && pnpm run test:unit",
+    "test:export": "pnpm run test:esm && pnpm run test:commonjs && pnpm run test:ts",
     "test:esm": "node tests/esmTest.mjs",
     "test:commonjs": "node tests/commonjsTest.js",
     "test:ts": "tsc tests/tsTest.ts --noEmit --skipLibCheck --esModuleInterop",
     "test:unit": "NODE_OPTIONS=--experimental-vm-modules jest --collectCoverage",
     "build": "tsup src/axeReporterEarl.ts --dts --format esm,cjs",
-    "prepublishOnly": "npm run build"
+    "prepublishOnly": "pnpm run build"
   },
   "publishConfig": {
     "access": "public"
@@ -43,6 +43,7 @@
   },
   "license": "MPL-2.0",
   "devDependencies": {
+    "@jest/globals": "^30.2.0",
     "@types/clone": "^2.1.1",
     "@types/jsonld": "github:types/jsonld",
     "axe-core": "~4.13.0",

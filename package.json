@@ -2,18 +2,14 @@
   "name": "axe-core-npm",
   "private": true,
   "license": "MPL-2.0",
-  "workspaces": [
-    "packages/*",
-    "test/*",
-    "!test/release"
-  ],
+  "packageManager": "pnpm@11.23.0",
   "scripts": {
     "fmt": "prettier --write .",
     "lint": "eslint .",
     "prepare": "husky install",
     "precommit": "lint-staged",
-    "build": "npm run --workspaces build --if-present",
-    "test": "npm run --workspaces test --if-present"
+    "build": "pnpm -r run build",
+    "test": "pnpm -r run test"
   },
   "devDependencies": {
     "@eslint/js": "^9.2.0",

@@ -18,25 +18,22 @@ jobs:
       contents: read
     if: github.ref_name == 'develop' && github.repository_owner == 'dequelabs'
     steps:
-      - uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
-      - uses: actions/setup-node@2028fbc5c25fe9cf00d9f06a71cc4710d4507903 # v6.0.0
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: pnpm/action-setup@0977fd99725f1db4007ccb2928dbb4e90d06cc86 # v6.0.10
+        with:
+          standalone: true
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
         with:
           registry-url: 'https://registry.npmjs.org/'
           node-version-file: .nvmrc
-          cache: 'npm'
-      - name: Update npm to 11 if needed
-        run: |
-          CURRENT_NPM=$(npm -v | cut -d. -f1)
-          if [ "$CURRENT_NPM" -lt 11 ]; then
-            npm install -g npm@11
-          fi
-      - run: npm ci
+          cache: 'pnpm'
+      - run: pnpm install --frozen-lockfile
       # Ensure packages are built
-      - run: npm run build
+      - run: pnpm run build
       # Make sure the working tree is clean
       - run: git reset --hard HEAD
       - run: |
-          npx lerna publish prepatch \
+          pnpm exec lerna publish prepatch \
             --no-verify-access \
             --no-git-tag-version \
             --no-push \
@@ -56,25 +53,22 @@ jobs:
       contents: read
     if: github.ref_name == 'release' && github.repository_owner == 'dequelabs'
     steps:
-      - uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
-      - uses: actions/setup-node@2028fbc5c25fe9cf00d9f06a71cc4710d4507903 # v6.0.0
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: pnpm/action-setup@0977fd99725f1db4007ccb2928dbb4e90d06cc86 # v6.0.10
+        with:
+          standalone: true
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
         with:
           registry-url: 'https://registry.npmjs.org/'
           node-version-file: .nvmrc
-          cache: 'npm'
-      - name: Update npm to 11 if needed
-        run: |
-          CURRENT_NPM=$(npm -v | cut -d. -f1)
-          if [ "$CURRENT_NPM" -lt 11 ]; then
-            npm install -g npm@11
-          fi
-      - run: npm ci
+          cache: 'pnpm'
+      - run: pnpm install --frozen-lockfile
       # Ensure packages are built
-      - run: npm run build
+      - run: pnpm run build
       # Make sure the working tree is clean
       - run: git reset --hard HEAD
       - run: |
-          npx lerna publish prepatch \
+          pnpm exec lerna publish prepatch \
             --no-verify-access \
             --no-git-tag-version \
             --no-push \
@@ -94,25 +88,22 @@ jobs:
       contents: write # create the release tag
     if: github.ref_name == 'master' && github.repository_owner == 'dequelabs'
     steps:
-      - uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
-      - uses: actions/setup-node@2028fbc5c25fe9cf00d9f06a71cc4710d4507903 # v6.0.0
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: pnpm/action-setup@0977fd99725f1db4007ccb2928dbb4e90d06cc86 # v6.0.10
+        with:
+          standalone: true
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
         with:
           registry-url: 'https://registry.npmjs.org/'
           node-version-file: .nvmrc
-          cache: 'npm'
-      - name: Update npm to 11 if needed
-        run: |
-          CURRENT_NPM=$(npm -v | cut -d. -f1)
-          if [ "$CURRENT_NPM" -lt 11 ]; then
-            npm install -g npm@11
-          fi
-      - run: npm ci
+          cache: 'pnpm'
+      - run: pnpm install --frozen-lockfile
       # Ensure packages are built
-      - run: npm run build
+      - run: pnpm run build
       # Make sure the working tree is clean
       - run: git reset --hard HEAD
       - run: |
-          npx lerna publish from-package \
+          pnpm exec lerna publish from-package \
             --force-publish='*' \
             --yes
       # Nothing tags the release commit beforehand, so `gh release create` creates

@@ -1,0 +1,13 @@
+packages:
+  - 'packages/*'
+  - 'test/*'
+  - '!test/release'
+
+allowBuilds:
+  chromedriver: true
+  edgedriver: true
+  esbuild: true
+  geckodriver: true
+  nx: true
+  puppeteer: true
+  unrs-resolver: true

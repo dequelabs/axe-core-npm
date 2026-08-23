@@ -26,9 +26,9 @@
   ],
   "scripts": {
     "build": "tsup index.ts --dts --format esm,cjs",
-    "prepare": "npm run build",
-    "test": "tsc && npm run test:types && jest",
-    "test:export": "npm run test:esm && npm run test:commonjs && npm run test:ts",
+    "prepare": "pnpm run build",
+    "test": "tsc && pnpm run test:types && jest",
+    "test:export": "pnpm run test:esm && pnpm run test:commonjs && pnpm run test:ts",
     "test:esm": "node test/esmTest.mjs",
     "test:commonjs": "node test/commonjsTest.js",
     "test:ts": "tsc test/tsTest.ts --noEmit --skipLibCheck --esModuleInterop",

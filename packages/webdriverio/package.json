@@ -29,12 +29,12 @@
     "prebuild": "rimraf dist",
     "build": "tsup src/index.ts --dts --format esm,cjs",
     "test": "mocha --timeout 60000 -r ts-node/register 'test/**.spec.ts'",
-    "test:export": "npm run test:esm && npm run test:commonjs && npm run test:ts",
+    "test:export": "pnpm run test:esm && pnpm run test:commonjs && pnpm run test:ts",
     "test:esm": "node test/esmTest.mjs",
     "test:commonjs": "node test/commonjsTest.js",
     "test:ts": "tsc test/tsTest.ts --noEmit --skipLibCheck --esModuleInterop",
-    "coverage": "nyc npm run test",
-    "prepare": "npm run build"
+    "coverage": "nyc pnpm run test",
+    "prepare": "pnpm run build"
   },
   "keywords": [
     "a11y",
@@ -57,6 +57,7 @@
     "@types/cssesc": "^3.0.0",
     "@types/express": "^5.0.3",
     "@types/mocha": "^10.0.6",
+    "@types/sinon": "^21.0.0",
     "@wdio/globals": "^9.17.0",
     "async-listen": "^3.0.1",
     "axe-test-fixtures": "github:dequelabs/axe-test-fixtures#v1",
@@ -65,10 +66,12 @@
     "cross-dirname": "^0.1.0",
     "delay": "^5.0.0",
     "devtools": "^8.27.2",
+    "dotenv": "^17.3.1",
     "express": "^5.1.0",
     "mocha": "^11.7.1",
     "nyc": "^18.0.0",
     "rimraf": "^6.0.1",
+    "sinon": "^22.0.0",
     "source-map-support": "^0.5.21",
     "tsup": "^8.0.1",
     "webdriverio": "^9.27.0"

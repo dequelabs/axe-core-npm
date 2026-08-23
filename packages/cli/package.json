@@ -36,7 +36,7 @@
     "prebuild": "rimraf dist",
     "build": "tsc",
     "test": "mocha --timeout 60000 -r ts-node/register 'src/**/**.test.ts'",
-    "coverage": "nyc npm run test"
+    "coverage": "nyc pnpm run test"
   },
   "keywords": [
     "axe-core",
@@ -47,7 +47,7 @@
     "testing"
   ],
   "dependencies": {
-    "@axe-core/webdriverjs": "^4.13.0",
+    "@axe-core/webdriverjs": "workspace:^",
     "axe-core": "~4.13.0",
     "chromedriver": "latest",
     "colors": "^1.4.0",

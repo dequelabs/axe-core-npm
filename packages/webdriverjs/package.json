@@ -49,12 +49,12 @@
     "prebuild": "rimraf dist",
     "build": "tsup src/index.ts --dts --format esm,cjs",
     "test": "mocha --timeout 60000 -r ts-node/register 'test/**.spec.ts'",
-    "test:export": "npm run test:esm && npm run test:commonjs && npm run test:ts",
+    "test:export": "pnpm run test:esm && pnpm run test:commonjs && pnpm run test:ts",
     "test:esm": "node test/esmTest.mjs",
     "test:commonjs": "node test/commonjsTest.js",
     "test:ts": "tsc test/tsTest.ts --noEmit --skipLibCheck --esModuleInterop",
-    "coverage": "nyc npm run test",
-    "prepare": "npm run build"
+    "coverage": "nyc pnpm run test",
+    "prepare": "pnpm run build"
   },
   "keywords": [
     "a11y",
@@ -76,6 +76,7 @@
     "async-listen": "^3.0.1",
     "axe-test-fixtures": "github:dequelabs/axe-test-fixtures#v1",
     "chai": "^4.3.6",
+    "dotenv": "^17.3.1",
     "express": "^5.1.0",
     "mocha": "^11.7.1",
     "nyc": "^18.0.0",
