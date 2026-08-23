@@ -15,10 +15,10 @@ jobs:
       - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
         with:
           node-version-file: .nvmrc
-      - uses: dequelabs/axe-api-team-public/.github/actions/create-update-axe-core-pull-request-v1@main
+      - uses: dequelabs/axe-api-team-public/.github/actions/create-update-axe-core-pull-request-v1@272a2eb86605251b73995fb158f30c3641e75593 # v1
         with:
           token: ${{ secrets.PAT }}
-          # This workflow does its own checkout and Node setup so that pnpm is on
-          # PATH before the action runs `pnpm add`.
+          # Disable the action's own checkout and Node setup; the steps above
+          # already put pnpm on PATH before it runs `pnpm add`.
           should-checkout: false
           should-setup-node: false

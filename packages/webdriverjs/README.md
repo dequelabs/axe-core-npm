@@ -185,5 +185,5 @@ We have created an example [test suite](https://github.com/dequelabs/axe-core-np
 To run the test:
 
 - Navigate to: `/webdriverjs/tests/example`
-- Install node modules: `npm install`
-- Run tests: `npm test`
+- Install node modules: `pnpm install`
+- Run tests: `pnpm test`

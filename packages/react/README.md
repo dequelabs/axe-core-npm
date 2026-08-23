@@ -85,9 +85,9 @@ Run a build in the example directory and start a server to see React-aXe in acti
 ```sh
 pnpm install
 cd example
-npm install
-npm install -g http-server
-npm start
+pnpm install
+pnpm add -g http-server
+pnpm start
 ```
 
 ## Run the tests

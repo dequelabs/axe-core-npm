@@ -5,12 +5,11 @@ set -e
 
 releaseLevel="$1"
 
-# The calling actions provide no setup-node and no install step, so this script
-# has to provision pnpm itself. `lerna version` shells out to it once
-# `npmClient: pnpm` is set. @pnpm/exe bundles its own Node, so this works
-# regardless of the runner's Node version.
+# The calling actions provide no setup-node and no install step, so pnpm has to
+# be provisioned here. @pnpm/exe bundles its own Node, so the runner's version
+# does not matter.
 if ! command -v pnpm > /dev/null; then
-  npm install -g @pnpm/exe@11
+  npm install -g --ignore-scripts @pnpm/exe@11.23.0
 fi
 
 # Let lerna handle versioning if "releaseLevel" is not provided.
