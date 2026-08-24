@@ -51,9 +51,9 @@ jobs:
       - shell: 'script -q -e -c "bash {0}"'
         run: pnpm exec browser-driver-manager install chrome@145
         working-directory: packages/puppeteer
-      - run: pnpm --filter @axe-core/puppeteer run build
-      - run: pnpm --filter @axe-core/puppeteer run coverage
-      - run: pnpm --filter @axe-core/puppeteer run test:export
+      - run: pnpm --fail-if-no-match --filter @axe-core/puppeteer run build
+      - run: pnpm --fail-if-no-match --filter @axe-core/puppeteer run coverage
+      - run: pnpm --fail-if-no-match --filter @axe-core/puppeteer run test:export
 
   cli:
     strategy: *strategy_matrix
@@ -74,7 +74,7 @@ jobs:
       - shell: 'script -q -e -c "bash {0}"'
         run: pnpm exec browser-driver-manager install chrome@145
         working-directory: packages/cli
-      - run: pnpm --filter @axe-core/cli run coverage
+      - run: pnpm --fail-if-no-match --filter @axe-core/cli run coverage
 
   webdriverjs:
     strategy: *strategy_matrix
@@ -95,9 +95,9 @@ jobs:
       - shell: 'script -q -e -c "bash {0}"'
         run: pnpm exec browser-driver-manager install chrome@145
         working-directory: packages/webdriverjs
-      - run: pnpm --filter @axe-core/webdriverjs run build
-      - run: pnpm --filter @axe-core/webdriverjs run coverage
-      - run: pnpm --filter @axe-core/webdriverjs run test:export
+      - run: pnpm --fail-if-no-match --filter @axe-core/webdriverjs run build
+      - run: pnpm --fail-if-no-match --filter @axe-core/webdriverjs run coverage
+      - run: pnpm --fail-if-no-match --filter @axe-core/webdriverjs run test:export
 
   webdriverio:
     strategy: *strategy_matrix
@@ -118,9 +118,9 @@ jobs:
       - shell: 'script -q -e -c "bash {0}"'
         run: pnpm exec browser-driver-manager install chrome@145
         working-directory: packages/webdriverio
-      - run: pnpm --filter @axe-core/webdriverio run build
-      - run: pnpm --filter @axe-core/webdriverio run coverage
-      - run: pnpm --filter @axe-core/webdriverio run test:export
+      - run: pnpm --fail-if-no-match --filter @axe-core/webdriverio run build
+      - run: pnpm --fail-if-no-match --filter @axe-core/webdriverio run coverage
+      - run: pnpm --fail-if-no-match --filter @axe-core/webdriverio run test:export
 
   reporter_earl:
     strategy: *strategy_matrix
@@ -137,9 +137,9 @@ jobs:
           node-version: ${{ matrix.version || matrix.node }}
           cache: 'pnpm'
       - run: pnpm install --frozen-lockfile
-      - run: pnpm --filter @axe-core/reporter-earl run build
-      - run: pnpm --filter @axe-core/reporter-earl run test
-      - run: pnpm --filter @axe-core/reporter-earl run test:export
+      - run: pnpm --fail-if-no-match --filter @axe-core/reporter-earl run build
+      - run: pnpm --fail-if-no-match --filter @axe-core/reporter-earl run test
+      - run: pnpm --fail-if-no-match --filter @axe-core/reporter-earl run test:export
 
   react:
     strategy: *strategy_matrix
@@ -156,12 +156,12 @@ jobs:
           node-version: ${{ matrix.version || matrix.node }}
           cache: 'pnpm'
       - run: pnpm install --frozen-lockfile
-      - run: pnpm --filter @axe-core/react run test
+      - run: pnpm --fail-if-no-match --filter @axe-core/react run test
       # the tests builds the project using tsc and relies on `cache.ts` to be
       # built and be it's own file. however we don't want that for the export
       # test so we need to rebuild using tsup
-      - run: pnpm --filter @axe-core/react run build
-      - run: pnpm --filter @axe-core/react run test:export
+      - run: pnpm --fail-if-no-match --filter @axe-core/react run build
+      - run: pnpm --fail-if-no-match --filter @axe-core/react run test:export
 
   playwright:
     strategy: *strategy_matrix
@@ -178,10 +178,10 @@ jobs:
           node-version: ${{ matrix.version || matrix.node }}
           cache: 'pnpm'
       - run: pnpm install --frozen-lockfile
-      - run: pnpm --filter @axe-core/playwright exec playwright install --with-deps
-      - run: pnpm --filter @axe-core/playwright run build
-      - run: pnpm --filter @axe-core/playwright run coverage
-      - run: pnpm --filter @axe-core/playwright run test:export
+      - run: pnpm --fail-if-no-match --filter @axe-core/playwright exec playwright install --with-deps
+      - run: pnpm --fail-if-no-match --filter @axe-core/playwright run build
+      - run: pnpm --fail-if-no-match --filter @axe-core/playwright run coverage
+      - run: pnpm --fail-if-no-match --filter @axe-core/playwright run test:export
 
   wdio_globals_test:
     strategy: *strategy_matrix
@@ -198,7 +198,7 @@ jobs:
           node-version: ${{ matrix.version || matrix.node }}
           cache: 'pnpm'
       - run: pnpm install --frozen-lockfile
-      - run: pnpm --filter wdio-tests run test
+      - run: pnpm --fail-if-no-match --filter wdio-tests run test
 
   axe_core_test:
     if: github.ref_name == 'master' || startsWith(github.ref_name, 'release')
@@ -215,4 +215,4 @@ jobs:
           node-version-file: .nvmrc
           cache: 'pnpm'
       - run: pnpm install --frozen-lockfile
-      - run: pnpm --filter axe_core_test run test
+      - run: pnpm --fail-if-no-match --filter axe_core_test run test

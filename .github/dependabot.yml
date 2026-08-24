@@ -88,6 +88,7 @@ updates:
       jest:
         patterns:
           - 'jest'
+          - '@jest/globals'
           - 'jest-environment-jsdom'
           - 'ts-jest'
         update-types:
@@ -116,6 +117,7 @@ updates:
           - '@wdio/local-runner'
           - '@wdio/mocha-framework'
           - '@wdio/spec-reporter'
+          - '@wdio/types'
           - 'devtools'
         update-types:
           - 'major'
