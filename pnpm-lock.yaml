@@ -363,8 +363,8 @@ importers:
         specifier: ^4.3.6
         version: 4.5.0
       chromedriver:
-        specifier: ^146
-        version: 146.0.6(debug@4.4.3(supports-color@8.1.1))(supports-color@8.1.1)
+        specifier: ^152.0.0
+        version: 152.0.0(debug@4.4.3(supports-color@8.1.1))(supports-color@8.1.1)
       cross-dirname:
         specifier: ^0.1.0
         version: 0.1.0
@@ -3294,11 +3294,6 @@ packages:
   chrome-launcher@1.2.1:
     resolution: {integrity: sha512-qmFR5PLMzHyuNJHwOloHPAHhbaNglkfeV/xDtt5b7xiFFyU1I+AZZX0PYseMuhenJSSirgxELYIbswcoc+5H4A==}
     engines: {node: '>=12.13.0'}
-    hasBin: true
-
-  chromedriver@146.0.6:
-    resolution: {integrity: sha512-FIRi3hy0nRiyirK03etVXEpYTIodevFcvTBAM5ZCq+pX3w31jLm6JE8BVW1ypAVLvSp6HJDvboCcdgUroS3miw==}
-    engines: {node: '>=20'}
     hasBin: true
 
   chromedriver@152.0.0:
@@ -8869,7 +8864,7 @@ snapshots:
 
   '@jest/pattern@30.4.0':
     dependencies:
-      '@types/node': 25.9.5
+      '@types/node': 26.2.0
       jest-regex-util: 30.4.0
 
   '@jest/reporters@30.4.1(supports-color@8.1.1)':
@@ -8956,7 +8951,7 @@ snapshots:
       '@jest/schemas': 30.4.1
       '@types/istanbul-lib-coverage': 2.0.6
       '@types/istanbul-reports': 3.0.4
-      '@types/node': 25.9.5
+      '@types/node': 26.2.0
       '@types/yargs': 17.0.35
       chalk: 4.1.2
 
@@ -9661,7 +9656,7 @@ snapshots:
 
   '@types/yauzl@2.10.3':
     dependencies:
-      '@types/node': 25.9.5
+      '@types/node': 26.2.0
     optional: true
 
   '@typescript-eslint/eslint-plugin@8.67.0(@typescript-eslint/parser@8.67.0(eslint@9.39.5(jiti@2.7.0)(supports-color@7.2.0))(supports-color@7.2.0)(typescript@5.9.3))(eslint@9.39.5(jiti@2.7.0)(supports-color@7.2.0))(supports-color@7.2.0)(typescript@5.9.3)':
@@ -10674,19 +10669,6 @@ snapshots:
       is-wsl: 2.2.0
       lighthouse-logger: 2.0.2(supports-color@8.1.1)
     transitivePeerDependencies:
-      - supports-color
-
-  chromedriver@146.0.6(debug@4.4.3(supports-color@8.1.1))(supports-color@8.1.1):
-    dependencies:
-      '@testim/chrome-version': 1.1.4
-      axios: 1.19.0(debug@4.4.3(supports-color@8.1.1))(supports-color@8.1.1)
-      compare-versions: 6.1.1
-      extract-zip: 2.0.1(supports-color@8.1.1)
-      proxy-agent: 6.5.0(supports-color@8.1.1)
-      proxy-from-env: 2.1.0
-      tcp-port-used: 1.0.3(supports-color@8.1.1)
-    transitivePeerDependencies:
-      - debug
       - supports-color
 
   chromedriver@152.0.0(debug@4.4.3(supports-color@8.1.1))(supports-color@8.1.1):
@@ -12823,7 +12805,7 @@ snapshots:
   jest-haste-map@30.4.1:
     dependencies:
       '@jest/types': 30.4.1
-      '@types/node': 25.9.5
+      '@types/node': 26.2.0
       anymatch: 3.1.3
       fb-watchman: 2.0.2
       graceful-fs: 4.2.11
@@ -12973,7 +12955,7 @@ snapshots:
   jest-util@30.4.1:
     dependencies:
       '@jest/types': 30.4.1
-      '@types/node': 25.9.5
+      '@types/node': 26.2.0
       chalk: 4.1.2
       ci-info: 4.4.0
       graceful-fs: 4.2.11
@@ -13001,7 +12983,7 @@ snapshots:
 
   jest-worker@30.4.1:
     dependencies:
-      '@types/node': 25.9.5
+      '@types/node': 26.2.0
       '@ungap/structured-clone': 1.3.3
       jest-util: 30.4.1
       merge-stream: 2.0.0
@@ -14328,7 +14310,7 @@ snapshots:
   proxy-agent@6.3.1(supports-color@8.1.1):
     dependencies:
       agent-base: 7.1.4
-      debug: 4.3.4(supports-color@8.1.1)
+      debug: 4.4.3(supports-color@8.1.1)
       http-proxy-agent: 7.0.2(supports-color@8.1.1)
       https-proxy-agent: 7.0.6(supports-color@8.1.1)
       lru-cache: 7.18.3
