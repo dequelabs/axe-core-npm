@@ -34,7 +34,10 @@ module.exports = [
       '@typescript-eslint/no-unused-vars': 'error',
       '@typescript-eslint/no-explicit-any': 'error',
       '@typescript-eslint/no-non-null-assertion': 'error',
-      '@typescript-eslint/no-require-imports': 'off'
+      '@typescript-eslint/no-require-imports': 'off',
+      // Worth revisiting: attaching `cause` changes the shape of the errors we
+      // throw. Re-enable once every supported Node runtime handles it.
+      'preserve-caught-error': 'off'
     }
   },
   {
