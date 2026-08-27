@@ -30,6 +30,22 @@ updates:
       # Handled separately by its own workflow
       - dependency-name: '@axe-core/*'
       - dependency-name: 'axe-core'
+      # Majors held back by pnpm overrides in pnpm-workspace.yaml. Without
+      # these, Dependabot opens PRs the override silently reverts.
+      - dependency-name: 'chai'
+        update-types: ['version-update:semver-major']
+      - dependency-name: 'typescript'
+        update-types: ['version-update:semver-major']
+      - dependency-name: '@types/node'
+        update-types: ['version-update:semver-major']
+      - dependency-name: 'react'
+        update-types: ['version-update:semver-major']
+      - dependency-name: 'react-dom'
+        update-types: ['version-update:semver-major']
+      - dependency-name: '@types/react'
+        update-types: ['version-update:semver-major']
+      - dependency-name: '@types/react-dom'
+        update-types: ['version-update:semver-major']
     groups:
       # Keep the ESLint toolchain moving in lockstep so configs, plugins,
       # and parsers always land with the eslint major they require.
