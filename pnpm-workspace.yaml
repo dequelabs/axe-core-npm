@@ -1,7 +1,6 @@
 packages:
   - 'packages/*'
   - 'test/*'
-  - '!test/release'
 
 # Five packages drive real browsers in `test`, so bound how many run at once.
 workspaceConcurrency: 2
