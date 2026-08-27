@@ -21,7 +21,7 @@
     "test:export": "pnpm run test:esm && pnpm run test:commonjs && pnpm run test:ts",
     "test:esm": "node tests/esmTest.mjs",
     "test:commonjs": "node tests/commonjsTest.js",
-    "test:ts": "tsc tests/tsTest.ts --noEmit --skipLibCheck --esModuleInterop",
+    "test:ts": "tsc --ignoreConfig tests/tsTest.ts --noEmit --skipLibCheck --esModuleInterop",
     "test:unit": "NODE_OPTIONS=--experimental-vm-modules jest --collectCoverage",
     "build": "tsup src/axeReporterEarl.ts --dts --format esm,cjs",
     "prepublishOnly": "pnpm run build"

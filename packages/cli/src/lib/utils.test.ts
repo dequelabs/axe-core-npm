@@ -2,7 +2,14 @@ import 'mocha';
 import { assert } from 'chai';
 import { tmpdir } from 'os';
 import { join } from 'path';
-import { mkdirSync, mkdtempSync, writeFileSync, rmSync } from 'fs';
+import {
+  mkdirSync,
+  mkdtempSync,
+  readFileSync,
+  realpathSync,
+  writeFileSync,
+  rmSync
+} from 'fs';
 import * as utils from './utils';
 
 describe('utils', () => {
@@ -14,6 +21,54 @@ describe('utils', () => {
     it('given a url with a protocol', () => {
       const url = 'http://foobar.com';
       assert.deepEqual(utils.parseUrl(url), url);
+    });
+  });
+
+  describe('saveOutcome', () => {
+    const outcome = { url: 'http://foobar.com' } as never;
+    let workingDir: string;
+    let originalCwd: string;
+
+    beforeEach(() => {
+      // realpath: on macOS the tmpdir is a symlink, so process.cwd() would
+      // otherwise disagree with the path we joined against.
+      workingDir = realpathSync(
+        mkdtempSync(join(tmpdir(), 'axe-save-outcome-'))
+      );
+      originalCwd = process.cwd();
+      process.chdir(workingDir);
+    });
+
+    afterEach(() => {
+      process.chdir(originalCwd);
+      rmSync(workingDir, { recursive: true, force: true });
+    });
+
+    it('given an absolute dir writes there', () => {
+      const dir = join(workingDir, 'absolute');
+      const filePath = utils.saveOutcome(outcome, 'results.json', dir);
+
+      assert.equal(filePath, join(dir, 'results.json'));
+      assert.deepEqual(
+        JSON.parse(readFileSync(filePath, 'utf-8')),
+        JSON.parse(JSON.stringify(outcome))
+      );
+    });
+
+    it('given a relative dir resolves it against the working directory', () => {
+      const filePath = utils.saveOutcome(outcome, 'results.json', 'relative');
+
+      assert.equal(filePath, join(workingDir, 'relative', 'results.json'));
+      assert.deepEqual(
+        JSON.parse(readFileSync(filePath, 'utf-8')),
+        JSON.parse(JSON.stringify(outcome))
+      );
+    });
+
+    it('given no file name generates one', () => {
+      const filePath = utils.saveOutcome(outcome, undefined, workingDir);
+
+      assert.match(filePath, /axe-results-\d+\.json$/);
     });
   });
 

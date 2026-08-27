@@ -49,7 +49,7 @@
     "test:export": "pnpm run test:esm && pnpm run test:commonjs && pnpm run test:ts",
     "test:esm": "node test/esmTest.mjs",
     "test:commonjs": "node test/commonjsTest.js",
-    "test:ts": "tsc test/tsTest.ts --noEmit --skipLibCheck --esModuleInterop",
+    "test:ts": "tsc --ignoreConfig test/tsTest.ts --noEmit --skipLibCheck --esModuleInterop",
     "coverage": "nyc pnpm run test",
     "prepare": "pnpm exec playwright install && pnpm run build"
   },
