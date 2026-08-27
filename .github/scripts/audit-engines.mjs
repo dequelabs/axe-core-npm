@@ -10,6 +10,7 @@ import { fileURLToPath } from 'node:url';
 import semver from 'semver';
 
 const repoRoot = resolve(dirname(fileURLToPath(import.meta.url)), '../..');
+// Published packages only — a test workspace's engines.node is not a contract.
 const packagesDir = join(repoRoot, 'packages');
 
 const readJson = path => JSON.parse(readFileSync(path, 'utf8'));
@@ -65,13 +66,15 @@ for (const entry of readdirSync(packagesDir, { withFileTypes: true })) {
 
   const ourRange = pkg.engines?.node;
 
-  if (!ourRange) {
+  if (!ourRange || !semver.validRange(ourRange)) {
     results.push({
       status: 'fail',
       pkg: pkg.name,
       dependency: '—',
       range: '—',
-      detail: 'package declares no engines.node'
+      detail: ourRange
+        ? `unparseable engines.node: ${ourRange}`
+        : 'package declares no engines.node'
     });
     continue;
   }
