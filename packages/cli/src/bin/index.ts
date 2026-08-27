@@ -17,10 +17,7 @@ import event from '../lib/events';
 import { startDriver } from '../lib/webdriver';
 import { error as selenium_error } from 'selenium-webdriver';
 
-const cli = async (
-  args: OptionValues,
-  url: { args: string[] }
-): Promise<void> => {
+const cli = async (urlArgs: string[], args: OptionValues): Promise<void> => {
   const {
     save,
     stdout,
@@ -83,7 +80,7 @@ const cli = async (
     );
   }
 
-  const urls = url.args.map(parseUrl);
+  const urls = urlArgs.map(parseUrl);
 
   /* istanbul ignore if */
   if (urls.length === 0) {

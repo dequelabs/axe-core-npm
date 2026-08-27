@@ -30,7 +30,7 @@
     "access": "public"
   },
   "engines": {
-    "node": ">=8"
+    "node": ">=22"
   },
   "scripts": {
     "prebuild": "rimraf dist",
@@ -49,9 +49,9 @@
   "dependencies": {
     "@axe-core/webdriverjs": "workspace:^",
     "axe-core": "~4.13.0",
-    "chromedriver": "latest",
+    "chromedriver": "~152.0.0",
     "colors": "^1.4.0",
-    "commander": "^9.4.1",
+    "commander": "^14.0.3",
     "dotenv": "^17.2.2",
     "selenium-webdriver": "~4.47.0"
   },
