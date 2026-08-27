@@ -98,8 +98,8 @@ importers:
         specifier: ^4.1.5
         version: 4.35.6
       '@types/sinon':
-        specifier: ^21.0.0
-        version: 21.0.1
+        specifier: ^22.0.0
+        version: 22.0.0
       chai:
         specifier: ^4.3.6
         version: 4.5.0
@@ -184,8 +184,8 @@ importers:
         specifier: ^10.0.0
         version: 10.0.10
       '@types/sinon':
-        specifier: ^21.0.0
-        version: 21.0.1
+        specifier: ^22.0.0
+        version: 22.0.0
       async-listen:
         specifier: ^3.0.1
         version: 3.1.0
@@ -348,8 +348,8 @@ importers:
         specifier: ^10.0.6
         version: 10.0.10
       '@types/sinon':
-        specifier: ^21.0.0
-        version: 21.0.1
+        specifier: ^22.0.0
+        version: 22.0.0
       '@wdio/globals':
         specifier: ^9.17.0
         version: 9.31.1(expect-webdriverio@6.0.5)(webdriverio@9.31.1(puppeteer-core@24.37.5(supports-color@8.1.1))(supports-color@8.1.1))
@@ -2477,8 +2477,8 @@ packages:
   '@types/serve-static@2.2.0':
     resolution: {integrity: sha512-8mam4H1NHLtu7nmtalF7eyBH14QyOASmcxHhSfEoRyr0nP/YdoesEtU+uSRvMe96TW/HPTtkoKqQLl53N7UXMQ==}
 
-  '@types/sinon@21.0.1':
-    resolution: {integrity: sha512-5yoJSqLbjH8T9V2bksgRayuhpZy+723/z6wBOR+Soe4ZlXC0eW8Na71TeaZPUWDQvM7LYKa9UGFc6LRqxiR5fQ==}
+  '@types/sinon@22.0.0':
+    resolution: {integrity: sha512-TDbVpbccc2HfiqHR09Argj3mHV1KMW7sCCKj52fsl8lbRLkEn7fB1966EWhOKWUBcqfBueZuPoA7/OK1CKiy3g==}
 
   '@types/sinonjs__fake-timers@15.0.1':
     resolution: {integrity: sha512-Ko2tjWJq8oozHzHV+reuvS5KYIRAokHnGbDwGh/J64LntgpbuylF74ipEL24HCyRjf9FOlBiBHWBR1RlVKsI1w==}
@@ -9694,7 +9694,7 @@ snapshots:
       '@types/http-errors': 2.0.5
       '@types/node': 25.9.5
 
-  '@types/sinon@21.0.1':
+  '@types/sinon@22.0.0':
     dependencies:
       '@types/sinonjs__fake-timers': 15.0.1
 
