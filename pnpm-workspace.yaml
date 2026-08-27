@@ -18,9 +18,6 @@ overrides:
   typescript: ^6
   # chai 5 is ESM-only.
   chai: ^4
-  # commander 15 requires Node >=22.12, past the cli's advertised floor. Keyed
-  # to the cli — unscoped, this cross-major-swaps commander in build tooling.
-  '@axe-core/cli>commander': ^14
   # React 18+ is not supported.
   # @see https://github.com/dequelabs/axe-core-npm/issues/500
   react: ^17
