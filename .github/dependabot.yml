@@ -33,17 +33,14 @@ updates:
       # Prevent updates to ESM-only versions
       - dependency-name: 'execa'
         versions: ['>=6.0.0']
-      - dependency-name: 'node-fetch'
-        versions: ['>=3.0.0']
       - dependency-name: 'delay'
         versions: ['>=6.0.0']
       - dependency-name: 'tempy'
         versions: ['>=2.0.0']
       - dependency-name: 'chai'
         versions: ['>=5.0.0']
-      - dependency-name: 'lerna'
-        versions: ['>=8.1.3']
-      # Breaking change due to node version requirements
+      # Each major raises commander's own Node floor, which would raise the
+      # published cli's real floor past the `engines.node` it advertises.
       - dependency-name: 'commander'
         versions: ['>=10.0.0']
       # Not supported
@@ -88,6 +85,7 @@ updates:
       jest:
         patterns:
           - 'jest'
+          - '@jest/globals'
           - 'jest-environment-jsdom'
           - 'ts-jest'
         update-types:
@@ -116,6 +114,7 @@ updates:
           - '@wdio/local-runner'
           - '@wdio/mocha-framework'
           - '@wdio/spec-reporter'
+          - '@wdio/types'
           - 'devtools'
         update-types:
           - 'major'

@@ -13,19 +13,24 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 5
     steps:
-      - uses: actions/checkout@v6.0.3
-      - uses: actions/setup-node@v6
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      # `standalone` installs `@pnpm/exe`, which bundles its own Node, so pnpm 11
+      # runs on the older matrix legs it would otherwise refuse.
+      - uses: pnpm/action-setup@0977fd99725f1db4007ccb2928dbb4e90d06cc86 # v6.0.10
+        with:
+          standalone: true
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
         with:
           node-version-file: .nvmrc
-          cache: 'npm'
-      - run: npm ci
-      - run: npm run lint
+          cache: 'pnpm'
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm run lint
 
   puppeteer:
     strategy: &strategy_matrix
       fail-fast: false
       matrix:
-        node: [18, 20, 22, 24]
+        node: [20, 22, 24]
         include:
           - node: 24
             version: '24.15.0'
@@ -33,19 +38,22 @@ jobs:
     timeout-minutes: 15
     needs: lint
     steps:
-      - uses: actions/checkout@v6.0.3
-      - uses: actions/setup-node@v6
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: pnpm/action-setup@0977fd99725f1db4007ccb2928dbb4e90d06cc86 # v6.0.10
+        with:
+          standalone: true
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
         with:
           node-version: ${{ matrix.version || matrix.node }}
-          cache: 'npm'
-      - run: npm ci
+          cache: 'pnpm'
+      - run: pnpm install --frozen-lockfile
       # HACK: Force a TTY to enable browser-driver-manager to manipulate stdout.
       - shell: 'script -q -e -c "bash {0}"'
-        run: npx browser-driver-manager install chrome@145
+        run: pnpm exec browser-driver-manager install chrome@145
         working-directory: packages/puppeteer
-      - run: npm run build --workspace=packages/puppeteer
-      - run: npm run coverage --workspace=packages/puppeteer
-      - run: npm run test:export --workspace=packages/puppeteer
+      - run: pnpm --fail-if-no-match --filter @axe-core/puppeteer run build
+      - run: pnpm --fail-if-no-match --filter @axe-core/puppeteer run coverage
+      - run: pnpm --fail-if-no-match --filter @axe-core/puppeteer run test:export
 
   cli:
     strategy: *strategy_matrix
@@ -53,17 +61,20 @@ jobs:
     timeout-minutes: 15
     needs: lint
     steps:
-      - uses: actions/checkout@v6.0.3
-      - uses: actions/setup-node@v6
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: pnpm/action-setup@0977fd99725f1db4007ccb2928dbb4e90d06cc86 # v6.0.10
+        with:
+          standalone: true
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
         with:
           node-version: ${{ matrix.version || matrix.node }}
-          cache: 'npm'
-      - run: npm ci
+          cache: 'pnpm'
+      - run: pnpm install --frozen-lockfile
         # HACK: Force a TTY to enable browser-driver-manager to manipulate stdout.
       - shell: 'script -q -e -c "bash {0}"'
-        run: npx browser-driver-manager install chrome@145
+        run: pnpm exec browser-driver-manager install chrome@145
         working-directory: packages/cli
-      - run: npm run coverage --workspace=packages/cli
+      - run: pnpm --fail-if-no-match --filter @axe-core/cli run coverage
 
   webdriverjs:
     strategy: *strategy_matrix
@@ -71,19 +82,22 @@ jobs:
     timeout-minutes: 15
     needs: lint
     steps:
-      - uses: actions/checkout@v6.0.3
-      - uses: actions/setup-node@v6
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: pnpm/action-setup@0977fd99725f1db4007ccb2928dbb4e90d06cc86 # v6.0.10
+        with:
+          standalone: true
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
         with:
           node-version: ${{ matrix.version || matrix.node }}
-          cache: 'npm'
-      - run: npm ci
+          cache: 'pnpm'
+      - run: pnpm install --frozen-lockfile
       # HACK: Force a TTY to enable browser-driver-manager to manipulate stdout.
       - shell: 'script -q -e -c "bash {0}"'
-        run: npx browser-driver-manager install chrome@145
+        run: pnpm exec browser-driver-manager install chrome@145
         working-directory: packages/webdriverjs
-      - run: npm run build --workspace=packages/webdriverjs
-      - run: npm run coverage --workspace=packages/webdriverjs
-      - run: npm run test:export --workspace=packages/webdriverjs
+      - run: pnpm --fail-if-no-match --filter @axe-core/webdriverjs run build
+      - run: pnpm --fail-if-no-match --filter @axe-core/webdriverjs run coverage
+      - run: pnpm --fail-if-no-match --filter @axe-core/webdriverjs run test:export
 
   webdriverio:
     strategy: *strategy_matrix
@@ -91,19 +105,22 @@ jobs:
     timeout-minutes: 15
     needs: lint
     steps:
-      - uses: actions/checkout@v6.0.3
-      - uses: actions/setup-node@v6
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: pnpm/action-setup@0977fd99725f1db4007ccb2928dbb4e90d06cc86 # v6.0.10
+        with:
+          standalone: true
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
         with:
           node-version: ${{ matrix.version || matrix.node }}
-          cache: 'npm'
-      - run: npm ci
+          cache: 'pnpm'
+      - run: pnpm install --frozen-lockfile
       # HACK: Force a TTY to enable browser-driver-manager to manipulate stdout.
       - shell: 'script -q -e -c "bash {0}"'
-        run: npx browser-driver-manager install chrome@145
+        run: pnpm exec browser-driver-manager install chrome@145
         working-directory: packages/webdriverio
-      - run: npm run build --workspace=packages/webdriverio
-      - run: npm run coverage --workspace=packages/webdriverio
-      - run: npm run test:export --workspace=packages/webdriverio
+      - run: pnpm --fail-if-no-match --filter @axe-core/webdriverio run build
+      - run: pnpm --fail-if-no-match --filter @axe-core/webdriverio run coverage
+      - run: pnpm --fail-if-no-match --filter @axe-core/webdriverio run test:export
 
   reporter_earl:
     strategy: *strategy_matrix
@@ -111,15 +128,18 @@ jobs:
     timeout-minutes: 15
     needs: lint
     steps:
-      - uses: actions/checkout@v6.0.3
-      - uses: actions/setup-node@v6
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: pnpm/action-setup@0977fd99725f1db4007ccb2928dbb4e90d06cc86 # v6.0.10
+        with:
+          standalone: true
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
         with:
           node-version: ${{ matrix.version || matrix.node }}
-          cache: 'npm'
-      - run: npm ci
-      - run: npm run build --workspace=packages/reporter-earl
-      - run: npm run test --workspace=packages/reporter-earl
-      - run: npm run test:export --workspace=packages/reporter-earl
+          cache: 'pnpm'
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm --fail-if-no-match --filter @axe-core/reporter-earl run build
+      - run: pnpm --fail-if-no-match --filter @axe-core/reporter-earl run test
+      - run: pnpm --fail-if-no-match --filter @axe-core/reporter-earl run test:export
 
   react:
     strategy: *strategy_matrix
@@ -127,18 +147,21 @@ jobs:
     timeout-minutes: 15
     needs: lint
     steps:
-      - uses: actions/checkout@v6.0.3
-      - uses: actions/setup-node@v6
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: pnpm/action-setup@0977fd99725f1db4007ccb2928dbb4e90d06cc86 # v6.0.10
+        with:
+          standalone: true
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
         with:
           node-version: ${{ matrix.version || matrix.node }}
-          cache: 'npm'
-      - run: npm ci
-      - run: npm run test --workspace=packages/react
+          cache: 'pnpm'
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm --fail-if-no-match --filter @axe-core/react run test
       # the tests builds the project using tsc and relies on `cache.ts` to be
       # built and be it's own file. however we don't want that for the export
       # test so we need to rebuild using tsup
-      - run: npm run build --workspace=packages/react
-      - run: npm run test:export --workspace=packages/react
+      - run: pnpm --fail-if-no-match --filter @axe-core/react run build
+      - run: pnpm --fail-if-no-match --filter @axe-core/react run test:export
 
   playwright:
     strategy: *strategy_matrix
@@ -146,16 +169,19 @@ jobs:
     timeout-minutes: 25
     needs: lint
     steps:
-      - uses: actions/checkout@v6.0.3
-      - uses: actions/setup-node@v6
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: pnpm/action-setup@0977fd99725f1db4007ccb2928dbb4e90d06cc86 # v6.0.10
+        with:
+          standalone: true
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
         with:
           node-version: ${{ matrix.version || matrix.node }}
-          cache: 'npm'
-      - run: npm ci
-      - run: npx playwright install --with-deps
-      - run: npm run build --workspace=packages/playwright
-      - run: npm run coverage --workspace=packages/playwright
-      - run: npm run test:export --workspace=packages/playwright
+          cache: 'pnpm'
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm --fail-if-no-match --filter @axe-core/playwright exec playwright install --with-deps
+      - run: pnpm --fail-if-no-match --filter @axe-core/playwright run build
+      - run: pnpm --fail-if-no-match --filter @axe-core/playwright run coverage
+      - run: pnpm --fail-if-no-match --filter @axe-core/playwright run test:export
 
   wdio_globals_test:
     strategy: *strategy_matrix
@@ -163,13 +189,16 @@ jobs:
     timeout-minutes: 15
     needs: lint
     steps:
-      - uses: actions/checkout@v6.0.3
-      - uses: actions/setup-node@v6
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: pnpm/action-setup@0977fd99725f1db4007ccb2928dbb4e90d06cc86 # v6.0.10
+        with:
+          standalone: true
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
         with:
           node-version: ${{ matrix.version || matrix.node }}
-          cache: 'npm'
-      - run: npm ci
-      - run: npm run test --workspace=test/wdio
+          cache: 'pnpm'
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm --fail-if-no-match --filter wdio-tests run test
 
   axe_core_test:
     if: github.ref_name == 'master' || startsWith(github.ref_name, 'release')
@@ -177,10 +206,13 @@ jobs:
     timeout-minutes: 5
     needs: lint
     steps:
-      - uses: actions/checkout@v6.0.3
-      - uses: actions/setup-node@v6
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: pnpm/action-setup@0977fd99725f1db4007ccb2928dbb4e90d06cc86 # v6.0.10
+        with:
+          standalone: true
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
         with:
           node-version-file: .nvmrc
-          cache: 'npm'
-      - run: npm ci
-      - run: npm test --workspace=test/axe-core
+          cache: 'pnpm'
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm --fail-if-no-match --filter axe_core_test run test

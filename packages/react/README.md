@@ -83,11 +83,11 @@ axe(React, ReactDOM, 1000, undefined, context);
 Run a build in the example directory and start a server to see React-aXe in action in the Chrome Devtools console (opens on localhost:8888):
 
 ```sh
-npm install
+pnpm install
 cd example
-npm install
-npm install -g http-server
-npm start
+pnpm install
+pnpm add -g http-server
+pnpm start
 ```
 
 ## Run the tests
@@ -95,14 +95,14 @@ npm start
 Install dependencies in the root directory (which also installs them in the example directory) and then run the tests:
 
 ```
-npm install
-npm test
+pnpm install
+pnpm test
 ```
 
 To debug tests in the Cypress application:
 
 ```
-npm run test:debug
+pnpm run test:debug
 ```
 
 ## Compatibility

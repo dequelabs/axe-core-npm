@@ -1,0 +1,25 @@
+packages:
+  - 'packages/*'
+  - 'test/*'
+  - '!test/release'
+
+# Five packages drive real browsers in `test`, so bound how many run at once.
+workspaceConcurrency: 2
+# Supply-chain protection: refuse to install packages newer than ~6d23h,
+# staying just under Dependabot's default 7-day cooldown.
+# Integer in MINUTES. NOT a duration string like "10020m" (silently wrong).
+minimumReleaseAge: 10020
+# cheerio 1.x is ESM and its `browser` export condition — the one
+# jest-environment-jsdom selects — is unloadable from enzyme's CJS require.
+# Keyed to enzyme, but webdriverio's `^1.0.0-rc.12` range accepts this too, so
+# pnpm dedupes both consumers onto it. Pin until unmaintained enzyme is replaced.
+overrides:
+  enzyme>cheerio: 1.0.0-rc.12
+allowBuilds:
+  chromedriver: true
+  edgedriver: true
+  esbuild: true
+  geckodriver: true
+  nx: true
+  puppeteer: true
+  unrs-resolver: true
