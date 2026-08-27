@@ -24,6 +24,9 @@
     "dist/index.d.ts",
     "dist/index.js.map"
   ],
+  "engines": {
+    "node": ">=22.12.0"
+  },
   "scripts": {
     "build": "tsup index.ts --dts --format esm,cjs",
     "prepare": "pnpm run build",

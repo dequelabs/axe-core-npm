@@ -6,6 +6,7 @@
   "scripts": {
     "fmt": "prettier --write .",
     "lint": "eslint .",
+    "audit:engines": "node .github/scripts/audit-engines.mjs",
     "prepare": "husky install",
     "precommit": "lint-staged",
     "build": "pnpm -r run build",
@@ -14,6 +15,7 @@
   "devDependencies": {
     "@eslint/js": "^10.0.1",
     "@types/node": "^24.10.1",
+    "@types/semver": "^7.8.0",
     "axe-test-fixtures": "github:dequelabs/axe-test-fixtures#v1",
     "eslint": "^10.8.1",
     "eslint-config-prettier": "^10.1.8",
@@ -24,6 +26,7 @@
     "lint-staged": "^17.0.7",
     "prettier": "^3.0.3",
     "react": "^17.0.0",
+    "semver": "^7.8.5",
     "ts-node": "^10.9.2",
     "typescript": "^6.0.3",
     "typescript-eslint": "^8.0.0-alpha.12"

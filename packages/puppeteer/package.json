@@ -22,6 +22,9 @@
   "publishConfig": {
     "access": "public"
   },
+  "engines": {
+    "node": ">=22.12.0"
+  },
   "scripts": {
     "build": "tsup src/index.ts --dts --format esm,cjs",
     "test": "mocha --timeout 60000 -r ts-node/register 'test/**.spec.ts'",
@@ -56,9 +59,6 @@
   },
   "peerDependencies": {
     "puppeteer": ">=1.10.0"
-  },
-  "engines": {
-    "node": ">=22.12.0"
   },
   "nyc": {
     "require": [

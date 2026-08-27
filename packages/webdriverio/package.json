@@ -25,6 +25,9 @@
       "require": "./dist/index.js"
     }
   },
+  "engines": {
+    "node": ">=22.12.0"
+  },
   "scripts": {
     "prebuild": "rimraf dist",
     "build": "tsup src/index.ts --dts --format esm,cjs",
