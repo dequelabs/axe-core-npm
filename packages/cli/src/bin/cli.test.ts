@@ -1,8 +1,8 @@
 import 'mocha';
 import { assert } from 'chai';
-import tempy from 'tempy';
 import http from 'http';
 import net from 'net';
+import os from 'os';
 import path from 'path';
 import fs from 'fs';
 import type { ExecaError } from 'execa';
@@ -173,7 +173,7 @@ describe('cli', () => {
   describe('--dir', () => {
     let reportDir: string;
     beforeEach(() => {
-      reportDir = tempy.directory();
+      reportDir = fs.mkdtempSync(path.join(os.tmpdir(), 'axe-cli-'));
     });
 
     it('should save a JSON report to the provided directory', async () => {
@@ -337,7 +337,7 @@ describe('cli', () => {
   describe('--save', () => {
     let reportDir: string;
     beforeEach(() => {
-      reportDir = tempy.directory();
+      reportDir = fs.mkdtempSync(path.join(os.tmpdir(), 'axe-cli-'));
     });
 
     it('should save the output as a JSON file', async () => {

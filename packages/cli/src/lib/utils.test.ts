@@ -1,8 +1,8 @@
 import 'mocha';
 import { assert } from 'chai';
-import tempy from 'tempy';
+import { tmpdir } from 'os';
 import { join } from 'path';
-import { mkdirSync, writeFileSync, rmSync } from 'fs';
+import { mkdirSync, mkdtempSync, writeFileSync, rmSync } from 'fs';
 import * as utils from './utils';
 
 describe('utils', () => {
@@ -118,7 +118,7 @@ describe('utils', () => {
   describe('getAxeSource', () => {
     describe('mock file', () => {
       function setupTree() {
-        const tempDir = tempy.directory();
+        const tempDir = mkdtempSync(join(tmpdir(), 'axe-cli-'));
         const parentDirname = join(tempDir, 'node_modules', 'axe-core');
         mkdirSync(parentDirname, { recursive: true });
         writeFileSync(join(parentDirname, 'axe.js'), 'parent');
