@@ -3,9 +3,11 @@
  * Fails when a package's production or peer dependency declares an
  * `engines.node` range that our own `engines.node` is not fully contained by —
  * i.e. we advertise support for a Node version the dependency does not.
+ * Also reports, without failing, the tightest floor each package's
+ * dependencies actually justify.
  */
 import { readFileSync, readdirSync, existsSync, appendFileSync } from 'node:fs';
-import { dirname, join, resolve } from 'node:path';
+import { dirname, join, resolve, sep } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import semver from 'semver';
 
@@ -15,15 +17,24 @@ const packagesDir = join(repoRoot, 'packages');
 
 const readJson = path => JSON.parse(readFileSync(path, 'utf8'));
 
+const VALID_DEPENDENCY_NAME =
+  /^(@[a-z0-9-*~][a-z0-9-*._~]*\/)?[a-z0-9-~][a-z0-9-._~]*$/i;
+
 /**
  * Walk up node_modules directories the way Node's resolver would, stopping at
  * the repo root so a stray node_modules above the checkout can't be audited.
  */
 const findDependencyManifest = (fromDir, name) => {
+  // A manifest is attacker-authored on a fork PR, so a dependency key could
+  // otherwise traverse out of node_modules and read any package.json on disk.
+  if (!VALID_DEPENDENCY_NAME.test(name)) {
+    return null;
+  }
+
   let dir = fromDir;
   while (true) {
     const manifest = join(dir, 'node_modules', name, 'package.json');
-    if (existsSync(manifest)) {
+    if (existsSync(manifest) && resolve(manifest).startsWith(repoRoot + sep)) {
       return manifest;
     }
     const parent = dirname(dir);
@@ -34,12 +45,17 @@ const findDependencyManifest = (fromDir, name) => {
   }
 };
 
-/** Manifest values are third-party text; keep them inside their table cell. */
-const cell = value =>
+/**
+ * Manifest values are third-party text; keep them to one readable line and
+ * strip control characters so a hostile range can't spoof the log with ANSI.
+ */
+const clean = value =>
   String(value)
-    .replace(/[\r\n]+/g, ' ')
-    .replace(/\|/g, '\\|')
+    .replace(/[\p{Cc}\p{Cf}]+/gu, ' ')
     .slice(0, 120);
+
+/** Table cells additionally need `|` escaped so a range can't split the row. */
+const cell = value => clean(value).replace(/\|/g, '\\|');
 
 const results = [];
 
@@ -87,6 +103,10 @@ for (const entry of readdirSync(packagesDir, { withFileTypes: true })) {
     ])
   ];
 
+  // Tightest floor the dependencies actually justify, for drift in the
+  // too-generous direction as well as the too-strict one.
+  const floors = [];
+
   for (const [name, kind] of dependencies) {
     const record = { pkg: `${pkg.name} (node ${ourRange})`, dependency: name };
     const manifest = findDependencyManifest(pkgDir, name);
@@ -94,9 +114,9 @@ for (const entry of readdirSync(packagesDir, { withFileTypes: true })) {
     if (!manifest) {
       results.push({
         ...record,
-        status: 'skip',
+        status: 'fail',
         range: '—',
-        detail: `${kind} is not installed`
+        detail: `${kind} could not be resolved, so its engines.node went unchecked`
       });
       continue;
     }
@@ -120,9 +140,16 @@ for (const entry of readdirSync(packagesDir, { withFileTypes: true })) {
         ...record,
         status: 'skip',
         range: depRange ?? '—',
-        detail: depRange ? `${kind} range is unparseable` : 'no engines.node'
+        detail: depRange
+          ? `${kind} range is unparseable`
+          : `${kind} declares no engines.node`
       });
       continue;
+    }
+
+    const depFloor = semver.minVersion(depRange);
+    if (depFloor) {
+      floors.push(depFloor);
     }
 
     const supported = semver.subset(ourRange, depRange);
@@ -135,12 +162,23 @@ for (const entry of readdirSync(packagesDir, { withFileTypes: true })) {
         : `${kind} requires a newer Node`
     });
   }
+
+  const tightest = floors.sort(semver.rcompare)[0];
+  results.push({
+    status: 'info',
+    pkg: `${pkg.name} (node ${ourRange})`,
+    dependency: '—',
+    range: tightest ? `>=${tightest.version}` : '—',
+    detail: tightest
+      ? `tightest floor the dependencies justify is >=${tightest.version}`
+      : 'no dependency constrains the floor'
+  });
 }
 
-const icons = { pass: '✔', fail: '✖', skip: '–' };
+const icons = { pass: '✔', fail: '✖', skip: '–', info: 'ℹ' };
 
 for (const result of results) {
-  const line = `${icons[result.status]} ${cell(result.pkg)} → ${cell(result.dependency)} (node ${cell(result.range)}): ${cell(result.detail)}`;
+  const line = `${icons[result.status]} ${clean(result.pkg)} → ${clean(result.dependency)} (node ${clean(result.range)}): ${clean(result.detail)}`;
   if (result.status === 'fail') {
     console.error(line);
   } else {
@@ -148,11 +186,12 @@ for (const result of results) {
   }
 }
 
-const failures = results.filter(result => result.status === 'fail');
-const skipped = results.filter(result => result.status === 'skip');
+const count = status =>
+  results.filter(result => result.status === status).length;
+const failures = count('fail');
 
 console.log(
-  `\n${results.length - failures.length - skipped.length} passed, ${failures.length} failed, ${skipped.length} skipped`
+  `\n${count('pass')} passed, ${failures} failed, ${count('skip')} skipped`
 );
 
 if (process.env.GITHUB_STEP_SUMMARY) {
@@ -165,8 +204,8 @@ if (process.env.GITHUB_STEP_SUMMARY) {
     [
       '## Dependency engine audit',
       '',
-      failures.length
-        ? `**${failures.length} dependencies require a newer Node than the package that ships them.**`
+      failures
+        ? `**${failures} checks failed.**`
         : 'All production and peer dependencies satisfy their package engines.',
       '',
       '| | Package | Dependency | Dependency engines.node | Detail |',
@@ -177,6 +216,6 @@ if (process.env.GITHUB_STEP_SUMMARY) {
   );
 }
 
-if (failures.length) {
+if (failures) {
   process.exitCode = 1;
 }
