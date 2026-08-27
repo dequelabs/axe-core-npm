@@ -31,12 +31,6 @@ updates:
       - dependency-name: '@axe-core/*'
       - dependency-name: 'axe-core'
       # Prevent updates to ESM-only versions
-      - dependency-name: 'execa'
-        versions: ['>=6.0.0']
-      - dependency-name: 'delay'
-        versions: ['>=6.0.0']
-      - dependency-name: 'tempy'
-        versions: ['>=2.0.0']
       - dependency-name: 'chai'
         versions: ['>=5.0.0']
       # Each major raises commander's own Node floor, which would raise the
@@ -56,6 +50,9 @@ updates:
       # Keep @types/node aligned with the Node.js major version being developed on
       # to avoid type incompatibilities and unexpected breaking changes
       - dependency-name: '@types/node'
+        update-types: ['version-update:semver-major']
+      # TypeScript 7 is not something we can move to yet
+      - dependency-name: 'typescript'
         update-types: ['version-update:semver-major']
     groups:
       # Keep the ESLint toolchain moving in lockstep so configs, plugins,
