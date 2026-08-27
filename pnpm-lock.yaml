@@ -365,9 +365,6 @@ importers:
       cross-dirname:
         specifier: ^0.1.0
         version: 0.1.0
-      delay:
-        specifier: ^5.0.0
-        version: 5.0.0
       devtools:
         specifier: ^8.27.2
         version: 8.42.0(encoding@0.1.13)(supports-color@8.1.1)
@@ -3718,10 +3715,6 @@ packages:
     engines: {node: '>= 20'}
     peerDependencies:
       quickjs-wasi: ^2.2.0
-
-  delay@5.0.0:
-    resolution: {integrity: sha512-ReEBKkIfe4ya47wlPYf/gu5ib6yUG0/Aez0JQZQz94kiWtRQvZIQbTiehsnwHvLSWJnQdhVeqYue7Id1dKr0qw==}
-    engines: {node: '>=10'}
 
   delayed-stream@1.0.0:
     resolution: {integrity: sha512-ZySD7Nf91aLB0RxL4KGrKHBXl7Eds1DAmEdcoVawXnLD7SDhpNgtuII2aAkg7a7QS41jxPSZ17p4VdGnMHk3MQ==}
@@ -11044,8 +11037,6 @@ snapshots:
       escodegen: 2.1.0
       esprima: 4.0.1
       quickjs-wasi: 2.2.0
-
-  delay@5.0.0: {}
 
   delayed-stream@1.0.0: {}
 

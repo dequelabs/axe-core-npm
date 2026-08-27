@@ -64,7 +64,6 @@
     "chai": "^4.3.6",
     "chromedriver": "^152.0.0",
     "cross-dirname": "^0.1.0",
-    "delay": "^5.0.0",
     "devtools": "^8.27.2",
     "dotenv": "^17.3.1",
     "express": "^5.1.0",
