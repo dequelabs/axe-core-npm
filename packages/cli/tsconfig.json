@@ -4,6 +4,7 @@
     "lib": ["dom", "ES2015", "esnext.asynciterable"],
     "module": "commonjs",
     "outDir": "./dist/",
+    "rootDir": "./src",
     "target": "ES2015",
     "types": ["node"]
   },

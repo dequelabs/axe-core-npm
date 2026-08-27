@@ -1,6 +1,9 @@
 {
   "compilerOptions": {
     "outDir": "./dist",
+    "ignoreDeprecations": "6.0",
+    "strict": false,
+    "types": ["react"],
     "moduleResolution": "node",
     "declaration": true,
     "sourceMap": true,
