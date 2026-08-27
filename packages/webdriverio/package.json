@@ -52,7 +52,7 @@
     "cssesc": "^3.0.0"
   },
   "devDependencies": {
-    "@types/chai": "^4.3.3",
+    "@types/chai": "^5.2.3",
     "@types/chromedriver": "^81.0.1",
     "@types/cssesc": "^3.0.0",
     "@types/express": "^5.0.3",
