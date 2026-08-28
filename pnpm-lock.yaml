@@ -84,7 +84,7 @@ importers:
         version: 4.13.0
       chromedriver:
         specifier: ~152.0.0
-        version: 152.0.0(debug@4.4.3(supports-color@8.1.1))(supports-color@8.1.1)
+        version: 152.0.1(debug@4.4.3(supports-color@8.1.1))(supports-color@8.1.1)
       colors:
         specifier: ^1.4.0
         version: 1.4.0
@@ -377,7 +377,7 @@ importers:
         version: 4.5.0
       chromedriver:
         specifier: ^152.0.0
-        version: 152.0.0(debug@4.4.3(supports-color@8.1.1))(supports-color@8.1.1)
+        version: 152.0.1(debug@4.4.3(supports-color@8.1.1))(supports-color@8.1.1)
       cross-dirname:
         specifier: ^0.1.0
         version: 0.1.0
@@ -3308,8 +3308,8 @@ packages:
     engines: {node: '>=12.13.0'}
     hasBin: true
 
-  chromedriver@152.0.0:
-    resolution: {integrity: sha512-JBMT88W2bMGSytKcIy6A3F/0DrGJeKTO1ZSThSNICeexSY+xBAEuAvjzlsGkIMaebqNF0KkDUI203CJ+GTA12g==}
+  chromedriver@152.0.1:
+    resolution: {integrity: sha512-8zet2yPAFOSlYxUIcQ/1yOOC1xP4ooPZiKFRdlJhFawBKvlZIHDU6qv4LDOfPEw1yXbyu+tQTzbL0Vfb+vHdQQ==}
     engines: {node: '>=22'}
     hasBin: true
 
@@ -10471,7 +10471,7 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  chromedriver@152.0.0(debug@4.4.3(supports-color@8.1.1))(supports-color@8.1.1):
+  chromedriver@152.0.1(debug@4.4.3(supports-color@8.1.1))(supports-color@8.1.1):
     dependencies:
       '@testim/chrome-version': 1.1.4
       adm-zip: 0.6.0
