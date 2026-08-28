@@ -25,6 +25,9 @@
       "require": "./dist/index.js"
     }
   },
+  "engines": {
+    "node": ">=22.12.0"
+  },
   "scripts": {
     "prebuild": "rimraf dist",
     "build": "tsup src/index.ts --dts --format esm,cjs",
@@ -32,7 +35,7 @@
     "test:export": "pnpm run test:esm && pnpm run test:commonjs && pnpm run test:ts",
     "test:esm": "node test/esmTest.mjs",
     "test:commonjs": "node test/commonjsTest.js",
-    "test:ts": "tsc test/tsTest.ts --noEmit --skipLibCheck --esModuleInterop",
+    "test:ts": "tsc --ignoreConfig test/tsTest.ts --noEmit --skipLibCheck --esModuleInterop",
     "coverage": "nyc pnpm run test",
     "prepare": "pnpm run build"
   },
@@ -52,19 +55,18 @@
     "cssesc": "^3.0.0"
   },
   "devDependencies": {
-    "@types/chai": "^4.3.3",
+    "@types/chai": "^5.2.3",
     "@types/chromedriver": "^81.0.1",
     "@types/cssesc": "^3.0.0",
     "@types/express": "^5.0.3",
     "@types/mocha": "^10.0.6",
-    "@types/sinon": "^21.0.0",
+    "@types/sinon": "^22.0.0",
     "@wdio/globals": "^9.17.0",
     "async-listen": "^3.0.1",
     "axe-test-fixtures": "github:dequelabs/axe-test-fixtures#v1",
     "chai": "^4.3.6",
-    "chromedriver": "^146",
+    "chromedriver": "^152.0.0",
     "cross-dirname": "^0.1.0",
-    "delay": "^5.0.0",
     "devtools": "^8.27.2",
     "dotenv": "^17.3.1",
     "express": "^5.1.0",

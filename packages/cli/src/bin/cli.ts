@@ -9,7 +9,10 @@ const program = new Command();
 
 program
   .version(version)
-  .usage('<url...> [options]')
+  .usage('[url...] [options]')
+  // Optional so a missing url reaches our own message rather than
+  // commander's usage error.
+  .argument('[url...]', 'One or more URLs to test')
   .option(
     '-i, --include <list>',
     'CSS selector of included elements, comma separated',

@@ -304,7 +304,8 @@ export default class AxeBuilder {
       return await this.finishRun(partials);
     } catch (error) {
       throw new Error(
-        `${(error as Error).message}\n Please check out ${this.errorUrl}`
+        `${(error as Error).message}\n Please check out ${this.errorUrl}`,
+        { cause: error }
       );
     }
   }
@@ -407,7 +408,8 @@ export default class AxeBuilder {
       throw new Error(
         `switchToWindow failed. Are you using updated browser drivers? \nDriver reported:\n${
           (error as Error).message
-        }`
+        }`,
+        { cause: error }
       );
     }
 

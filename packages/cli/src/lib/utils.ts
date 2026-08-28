@@ -102,10 +102,6 @@ export const getAxeSource = (
     cwd = process.cwd();
   }
 
-  if (!dirname) {
-    dirname = __dirname;
-  }
-
   // Look for axe in current working directory
   if (!axePath) {
     axePath = path.join(cwd, 'axe.js');

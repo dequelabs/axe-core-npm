@@ -45,6 +45,9 @@
       "require": "./dist/index.js"
     }
   },
+  "engines": {
+    "node": ">=22.12.0"
+  },
   "scripts": {
     "prebuild": "rimraf dist",
     "build": "tsup src/index.ts --dts --format esm,cjs",
@@ -52,7 +55,7 @@
     "test:export": "pnpm run test:esm && pnpm run test:commonjs && pnpm run test:ts",
     "test:esm": "node test/esmTest.mjs",
     "test:commonjs": "node test/commonjsTest.js",
-    "test:ts": "tsc test/tsTest.ts --noEmit --skipLibCheck --esModuleInterop",
+    "test:ts": "tsc --ignoreConfig test/tsTest.ts --noEmit --skipLibCheck --esModuleInterop",
     "coverage": "nyc pnpm run test",
     "prepare": "pnpm run build"
   },
@@ -69,7 +72,7 @@
     "webdriverjs"
   ],
   "devDependencies": {
-    "@types/chai": "^4.3.3",
+    "@types/chai": "^5.2.3",
     "@types/express": "^5.0.3",
     "@types/mocha": "^10.0.0",
     "@types/selenium-webdriver": "^4.35.6",
@@ -81,7 +84,7 @@
     "mocha": "^11.7.1",
     "nyc": "^18.0.0",
     "rimraf": "^6.0.1",
-    "selenium-webdriver": "^4.44.0",
+    "selenium-webdriver": "^4.47.0",
     "tsup": "^8.0.1"
   },
   "dependencies": {

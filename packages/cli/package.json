@@ -30,7 +30,7 @@
     "access": "public"
   },
   "engines": {
-    "node": ">=8"
+    "node": ">=22.12.0"
   },
   "scripts": {
     "prebuild": "rimraf dist",
@@ -49,25 +49,24 @@
   "dependencies": {
     "@axe-core/webdriverjs": "workspace:^",
     "axe-core": "~4.13.0",
-    "chromedriver": "latest",
+    "chromedriver": "~152.0.0",
     "colors": "^1.4.0",
-    "commander": "^9.4.1",
+    "commander": "^15.0.0",
     "dotenv": "^17.2.2",
-    "selenium-webdriver": "~4.44.0"
+    "selenium-webdriver": "~4.47.0"
   },
   "devDependencies": {
-    "@types/chai": "^4.3.3",
+    "@types/chai": "^5.2.3",
     "@types/chromedriver": "^81.0.1",
     "@types/mocha": "^10.0.0",
     "@types/selenium-webdriver": "^4.1.5",
-    "@types/sinon": "^21.0.0",
+    "@types/sinon": "^22.0.0",
     "chai": "^4.3.6",
-    "execa": "5.1.1",
+    "execa": "10.0.1",
     "mocha": "^11.7.1",
     "nyc": "^18.0.0",
     "rimraf": "^6.0.1",
-    "sinon": "^22.0.0",
-    "tempy": "^1.0.0"
+    "sinon": "^22.0.0"
   },
   "nyc": {
     "checkCoverage": true,

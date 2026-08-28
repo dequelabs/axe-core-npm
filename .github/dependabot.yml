@@ -30,32 +30,21 @@ updates:
       # Handled separately by its own workflow
       - dependency-name: '@axe-core/*'
       - dependency-name: 'axe-core'
-      # Prevent updates to ESM-only versions
-      - dependency-name: 'execa'
-        versions: ['>=6.0.0']
-      - dependency-name: 'delay'
-        versions: ['>=6.0.0']
-      - dependency-name: 'tempy'
-        versions: ['>=2.0.0']
+      # Majors held back by pnpm overrides in pnpm-workspace.yaml. Without
+      # these, Dependabot opens PRs the override silently reverts.
       - dependency-name: 'chai'
-        versions: ['>=5.0.0']
-      # Each major raises commander's own Node floor, which would raise the
-      # published cli's real floor past the `engines.node` it advertises.
-      - dependency-name: 'commander'
-        versions: ['>=10.0.0']
-      # Not supported
-      # @see https://github.com/dequelabs/axe-core-npm/issues/500
-      - dependency-name: 'react'
-        versions: ['>=18.0.0']
-      - dependency-name: 'react-dom'
-        versions: ['>=18.0.0']
-      - dependency-name: '@types/react'
-        versions: ['>=18.0.0']
-      - dependency-name: '@types/react-dom'
-        versions: ['>=18.0.0']
-      # Keep @types/node aligned with the Node.js major version being developed on
-      # to avoid type incompatibilities and unexpected breaking changes
+        update-types: ['version-update:semver-major']
+      - dependency-name: 'typescript'
+        update-types: ['version-update:semver-major']
       - dependency-name: '@types/node'
+        update-types: ['version-update:semver-major']
+      - dependency-name: 'react'
+        update-types: ['version-update:semver-major']
+      - dependency-name: 'react-dom'
+        update-types: ['version-update:semver-major']
+      - dependency-name: '@types/react'
+        update-types: ['version-update:semver-major']
+      - dependency-name: '@types/react-dom'
         update-types: ['version-update:semver-major']
     groups:
       # Keep the ESLint toolchain moving in lockstep so configs, plugins,
