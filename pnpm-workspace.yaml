@@ -8,6 +8,12 @@ workspaceConcurrency: 2
 # staying just under Dependabot's default 7-day cooldown.
 # Integer in MINUTES. NOT a duration string like "10020m" (silently wrong).
 minimumReleaseAge: 10020
+# Setting minimumReleaseAge auto-enables strict mode, which blocks a
+# just-published axe-core from the `pnpm add` that
+# .github/workflows/update-axe-core.yml dispatches. Sibling `@axe-core/*`
+# packages resolve as workspace links and never reach this check.
+minimumReleaseAgeExclude:
+  - axe-core
 # cheerio 1.x is ESM and its `browser` export condition — the one
 # jest-environment-jsdom selects — is unloadable from enzyme's CJS require.
 # Keyed to enzyme, but webdriverio's `^1.0.0-rc.12` range accepts this too, so
