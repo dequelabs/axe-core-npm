@@ -77,7 +77,7 @@ importers:
   packages/cli:
     dependencies:
       '@axe-core/webdriverjs':
-        specifier: workspace:^
+        specifier: workspace:*
         version: link:../webdriverjs
       axe-core:
         specifier: ~4.13.0

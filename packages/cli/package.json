@@ -47,7 +47,7 @@
     "testing"
   ],
   "dependencies": {
-    "@axe-core/webdriverjs": "workspace:^",
+    "@axe-core/webdriverjs": "workspace:*",
     "axe-core": "~4.13.0",
     "chromedriver": "~152.0.0",
     "colors": "^1.4.0",
