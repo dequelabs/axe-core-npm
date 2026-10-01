@@ -95,8 +95,8 @@ importers:
         specifier: ^17.2.2
         version: 17.4.2
       selenium-webdriver:
-        specifier: ~4.47.0
-        version: 4.47.0
+        specifier: ~4.49.0
+        version: 4.49.0
     devDependencies:
       '@types/chai':
         specifier: ^5.2.3
@@ -109,7 +109,7 @@ importers:
         version: 10.0.10
       '@types/selenium-webdriver':
         specifier: ^4.1.5
-        version: 4.35.6
+        version: 4.35.7
       '@types/sinon':
         specifier: ^22.0.0
         version: 22.0.0
@@ -429,7 +429,7 @@ importers:
         version: 10.0.10
       '@types/selenium-webdriver':
         specifier: ^4.35.6
-        version: 4.35.6
+        version: 4.35.7
       async-listen:
         specifier: ^3.0.1
         version: 3.1.0
@@ -456,7 +456,7 @@ importers:
         version: 6.1.3
       selenium-webdriver:
         specifier: ^4.47.0
-        version: 4.47.0
+        version: 4.49.0
       tsup:
         specifier: ^8.0.1
         version: 8.5.1(jiti@2.7.0)(supports-color@8.1.1)(tsx@4.23.12)(typescript@6.0.3)(yaml@2.9.0)
@@ -2464,8 +2464,8 @@ packages:
   '@types/requestidlecallback@0.3.7':
     resolution: {integrity: sha512-5/EwNH3H/+M2zxATq9UidyD7rCq3WhK5Te/XhdhqP270QoGInVkoNBj6kK2Ah5slkZewkX8XJb7WDaYhmJu+eg==}
 
-  '@types/selenium-webdriver@4.35.6':
-    resolution: {integrity: sha512-8nfyMRi4VvkY9QrQGyY/zkleAhnjnmE8YtdEeoCrWe3izp1P9vo9f5VTNRYF0up+l+kn+VuZah+je+bLddNV+g==}
+  '@types/selenium-webdriver@4.35.7':
+    resolution: {integrity: sha512-TVduvRhQrIdjPWEC6YJLxwZWegWLD3uDOsqMuWk2U9+TiXw6wAH9RlKEtuHO8kioZkJ5MWGC9pQDY0nXvgi0nA==}
 
   '@types/semver@7.8.0':
     resolution: {integrity: sha512-1mAINjtQCXXeLkJ9ehXkwOcBpqtLxiVtKhpUf83DdRNdQKV0iXZpaHYqRr7nj+wvxuJzoAmAwXI+sCNMv1CzLQ==}
@@ -6361,8 +6361,8 @@ packages:
   secure-compare@3.0.1:
     resolution: {integrity: sha512-AckIIV90rPDcBcglUwXPF3kg0P0qmPsPXAj6BBEENQE1p5yA1xfmDJzfi1Tappj37Pv2mVbKpL3Z1T+Nn7k1Qw==}
 
-  selenium-webdriver@4.47.0:
-    resolution: {integrity: sha512-nxxJnH25tsJxz+pdMxtvH89tbrMnfff6W//uBIVlOWz1KZlADiQ7dyRPehknKdYiC3HwEypTy1l+tozxO0I2Qw==}
+  selenium-webdriver@4.49.0:
+    resolution: {integrity: sha512-16XqeOEMj+4+p+pzLLyvNWmF5jCY05EKIl3e1anZBgv4+zq7PUTtiNjKtQhMpwosZ0wIMKDFAQ2xdyogOHD4DA==}
     engines: {node: '>= 22.0.0'}
 
   semver@6.3.1:
@@ -9414,7 +9414,7 @@ snapshots:
 
   '@types/requestidlecallback@0.3.7': {}
 
-  '@types/selenium-webdriver@4.35.6':
+  '@types/selenium-webdriver@4.35.7':
     dependencies:
       '@types/node': 24.13.3
       '@types/ws': 8.18.1
@@ -14445,7 +14445,7 @@ snapshots:
 
   secure-compare@3.0.1: {}
 
-  selenium-webdriver@4.47.0:
+  selenium-webdriver@4.49.0:
     dependencies:
       '@bazel/runfiles': 6.5.0
       jszip: 3.10.1
