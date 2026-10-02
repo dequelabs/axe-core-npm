@@ -12,4 +12,4 @@ One issue per line. Use `Ref: #123` if this PR should not close the issue.
 Nothing may follow this line; whatever is last becomes the footer.
 -->
 
-Closes: #
+<!-- Closes: #123 -->
