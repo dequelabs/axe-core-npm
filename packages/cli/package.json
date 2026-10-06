@@ -53,7 +53,7 @@
     "colors": "^1.4.0",
     "commander": "^15.0.0",
     "dotenv": "^17.2.2",
-    "selenium-webdriver": "~4.47.0"
+    "selenium-webdriver": "~4.49.0"
   },
   "devDependencies": {
     "@types/chai": "^5.2.3",
