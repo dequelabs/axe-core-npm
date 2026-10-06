@@ -5947,8 +5947,8 @@ packages:
       yaml:
         optional: true
 
-  postcss-selector-parser@7.1.5:
-    resolution: {integrity: sha512-KvvtD7SrlBP7dlgkBghEE3r84CABm5SmV2aNcG4oCA+qDnJ/tvKonFVvwWAyyWUEwxuNawdfEAZKP9zM3oZ2Uw==}
+  postcss-selector-parser@7.1.6:
+    resolution: {integrity: sha512-7qASPzhKF2l2KLboRZux8CCTRMdGiV08vWmyKzPz22qZ7ZjQBOeY7rNzNoCLSUiftJ7HUq0GERHmxw/t0dCdMw==}
     engines: {node: '>=4'}
 
   prelude-ls@1.2.1:
@@ -8936,7 +8936,7 @@ snapshots:
 
   '@npmcli/query@4.0.1':
     dependencies:
-      postcss-selector-parser: 7.1.5
+      postcss-selector-parser: 7.1.6
 
   '@npmcli/redact@3.2.2': {}
 
@@ -13914,7 +13914,7 @@ snapshots:
       tsx: 4.23.12
       yaml: 2.9.0
 
-  postcss-selector-parser@7.1.5:
+  postcss-selector-parser@7.1.6:
     dependencies:
       cssesc: 3.0.0
       util-deprecate: 1.0.2
