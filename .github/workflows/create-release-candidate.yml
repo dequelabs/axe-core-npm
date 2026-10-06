@@ -13,6 +13,13 @@ jobs:
     timeout-minutes: 2
     runs-on: ubuntu-latest
     steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: pnpm/action-setup@0977fd99725f1db4007ccb2928dbb4e90d06cc86 # v6.0.10
+        with:
+          standalone: true
       - uses: dequelabs/axe-api-team-public/.github/actions/create-release-candidate-v1@main
         with:
           token: ${{ secrets.PAT }}
@@ -20,5 +27,6 @@ jobs:
           head: 'develop'
           release-script-path: './.github/scripts/prepare_release.sh'
           version-locked: ${{ inputs.version-locked }}
+          should-checkout: false
         env:
           GH_TOKEN: ${{ secrets.GH_PROJECT_TOKEN }}
