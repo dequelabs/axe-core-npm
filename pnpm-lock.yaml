@@ -80,8 +80,8 @@ importers:
         specifier: workspace:^
         version: link:../webdriverjs
       axe-core:
-        specifier: ~4.13.0
-        version: 4.13.0
+        specifier: ~4.14.0
+        version: 4.14.0
       chromedriver:
         specifier: ~152.0.0
         version: 152.0.1(debug@4.4.3(supports-color@8.1.1))(supports-color@8.1.1)
@@ -135,8 +135,8 @@ importers:
   packages/playwright:
     dependencies:
       axe-core:
-        specifier: ~4.13.0
-        version: 4.13.0
+        specifier: ~4.14.0
+        version: 4.14.0
       playwright-core:
         specifier: '>= 1.0.0'
         version: 1.62.1
@@ -184,8 +184,8 @@ importers:
   packages/puppeteer:
     dependencies:
       axe-core:
-        specifier: ~4.13.0
-        version: 4.13.0
+        specifier: ~4.14.0
+        version: 4.14.0
     devDependencies:
       '@types/chai':
         specifier: ^5.2.3
@@ -236,8 +236,8 @@ importers:
   packages/react:
     dependencies:
       axe-core:
-        specifier: ~4.13.0
-        version: 4.13.0
+        specifier: ~4.14.0
+        version: 4.14.0
       requestidlecallback:
         specifier: ^0.3.0
         version: 0.3.0
@@ -315,8 +315,8 @@ importers:
         specifier: github:types/jsonld
         version: https://codeload.github.com/types/jsonld/tar.gz/c8f53a4493d2cd673443aad96f8f1e4dd3decc11
       axe-core:
-        specifier: ~4.13.0
-        version: 4.13.0
+        specifier: ~4.14.0
+        version: 4.14.0
       clone:
         specifier: ^2.1.2
         version: 2.1.2
@@ -331,7 +331,7 @@ importers:
         version: 9.0.0
       ts-jest:
         specifier: ^29.0.3
-        version: 29.4.12(@babel/core@7.29.7(supports-color@8.1.1))(@jest/transform@30.4.1(supports-color@8.1.1))(@jest/types@30.4.1)(babel-jest@30.4.1(@babel/core@7.29.7(supports-color@8.1.1))(supports-color@8.1.1))(esbuild@0.28.2)(jest-util@30.4.1)(jest@30.4.2(@types/node@24.13.3)(supports-color@8.1.1)(ts-node@10.9.2(@types/node@24.13.3)(typescript@6.0.3)))(typescript@6.0.3)
+        version: 29.4.12(@babel/core@7.29.7(supports-color@8.1.1))(@jest/transform@30.4.1(supports-color@8.1.1))(@jest/types@30.4.1)(babel-jest@30.4.1(@babel/core@7.29.7(supports-color@8.1.1))(supports-color@8.1.1))(esbuild@0.27.7)(jest-util@30.4.1)(jest@30.4.2(@types/node@24.13.3)(supports-color@8.1.1)(ts-node@10.9.2(@types/node@24.13.3)(typescript@6.0.3)))(typescript@6.0.3)
       tsup:
         specifier: ^8.0.1
         version: 8.5.1(jiti@2.7.0)(supports-color@8.1.1)(tsx@4.23.12)(typescript@6.0.3)(yaml@2.9.0)
@@ -339,8 +339,8 @@ importers:
   packages/webdriverio:
     dependencies:
       axe-core:
-        specifier: ~4.13.0
-        version: 4.13.0
+        specifier: ~4.14.0
+        version: 4.14.0
       cssesc:
         specifier: ^3.0.0
         version: 3.0.0
@@ -415,8 +415,8 @@ importers:
   packages/webdriverjs:
     dependencies:
       axe-core:
-        specifier: ~4.13.0
-        version: 4.13.0
+        specifier: ~4.14.0
+        version: 4.14.0
     devDependencies:
       '@types/chai':
         specifier: ^5.2.3
@@ -2983,8 +2983,8 @@ packages:
     resolution: {integrity: sha512-wvUjBtSGN7+7SjNpq/9M2Tg350UZD3q62IFZLbRAR1bSMlCo1ZaeW+BJ+D090e4hIIZLBcTDWe4Mh4jvUDajzQ==}
     engines: {node: '>= 0.4'}
 
-  axe-core@4.13.0:
-    resolution: {integrity: sha512-UzGt8zg7Ny8djbYMhxl2zuEevVa7r2gJjYY5Lwr1xM7+XU2nd6CkIWFTVcCIbAP63vSz71NaVyyuSk9lHKcy0A==}
+  axe-core@4.14.0:
+    resolution: {integrity: sha512-9WTZxEjsZ7b13TH8JPmbV2z8CHbl80/2hm3XPEG4JgNdQLK81IBRXmSxHfMAOkSqQeRxT/0dwNDz2GOm3zzpcQ==}
     engines: {node: '>=4'}
 
   axe-test-fixtures@https://codeload.github.com/dequelabs/axe-test-fixtures/tar.gz/ccad032d28879e370c5e03626d347dbb87c24443:
@@ -10077,7 +10077,7 @@ snapshots:
     dependencies:
       possible-typed-array-names: 1.1.0
 
-  axe-core@4.13.0: {}
+  axe-core@4.14.0: {}
 
   axe-test-fixtures@https://codeload.github.com/dequelabs/axe-test-fixtures/tar.gz/ccad032d28879e370c5e03626d347dbb87c24443: {}
 
@@ -14948,7 +14948,7 @@ snapshots:
 
   ts-interface-checker@0.1.13: {}
 
-  ts-jest@29.4.12(@babel/core@7.29.7(supports-color@8.1.1))(@jest/transform@30.4.1(supports-color@8.1.1))(@jest/types@30.4.1)(babel-jest@30.4.1(@babel/core@7.29.7(supports-color@8.1.1))(supports-color@8.1.1))(esbuild@0.28.2)(jest-util@30.4.1)(jest@30.4.2(@types/node@24.13.3)(supports-color@8.1.1)(ts-node@10.9.2(@types/node@24.13.3)(typescript@6.0.3)))(typescript@6.0.3):
+  ts-jest@29.4.12(@babel/core@7.29.7(supports-color@8.1.1))(@jest/transform@30.4.1(supports-color@8.1.1))(@jest/types@30.4.1)(babel-jest@30.4.1(@babel/core@7.29.7(supports-color@8.1.1))(supports-color@8.1.1))(esbuild@0.27.7)(jest-util@30.4.1)(jest@30.4.2(@types/node@24.13.3)(supports-color@8.1.1)(ts-node@10.9.2(@types/node@24.13.3)(typescript@6.0.3)))(typescript@6.0.3):
     dependencies:
       bs-logger: 0.2.6
       fast-json-stable-stringify: 2.1.0
@@ -14966,7 +14966,7 @@ snapshots:
       '@jest/transform': 30.4.1(supports-color@8.1.1)
       '@jest/types': 30.4.1
       babel-jest: 30.4.1(@babel/core@7.29.7(supports-color@8.1.1))(supports-color@8.1.1)
-      esbuild: 0.28.2
+      esbuild: 0.27.7
       jest-util: 30.4.1
 
   ts-node@10.9.2(@types/node@24.13.3)(typescript@6.0.3):
