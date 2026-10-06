@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [4.14.0](https://github.com/dequelabs/axe-core-npm/compare/v4.13.0...v4.14.0) (2026-10-06)
+
+### Bug Fixes
+
+* exempt axe-core from the pnpm release-age cooldown ([#1441](https://github.com/dequelabs/axe-core-npm/issues/1441)) ([0bcb185](https://github.com/dequelabs/axe-core-npm/commit/0bcb1850683addb69343067263aa3fcd4ddd0561)), closes [#1346](https://github.com/dequelabs/axe-core-npm/issues/1346) [#1346](https://github.com/dequelabs/axe-core-npm/issues/1346) [#1442](https://github.com/dequelabs/axe-core-npm/issues/1442) [#1346](https://github.com/dequelabs/axe-core-npm/issues/1346)
+
+### Features
+
+* Update axe-core to v4.14.0 ([#1456](https://github.com/dequelabs/axe-core-npm/issues/1456)) ([dccfe7a](https://github.com/dequelabs/axe-core-npm/commit/dccfe7adde174fca7010d36f2e77b69be182093b))
+
+
 # [4.13.0](https://github.com/dequelabs/axe-core-npm/compare/v4.11.3...v4.13.0) (2026-08-10)
 
 
