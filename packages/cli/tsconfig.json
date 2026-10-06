@@ -1,10 +1,9 @@
 {
   "extends": "../../tsconfig.json",
   "compilerOptions": {
-    "lib": ["dom", "ES2015", "esnext.asynciterable"],
     "module": "commonjs",
     "outDir": "./dist/",
-    "target": "ES2015",
+    "rootDir": "./src",
     "types": ["node"]
   },
   "include": ["./src/lib", "./src/bin"]

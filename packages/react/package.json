@@ -1,6 +1,6 @@
 {
   "name": "@axe-core/react",
-  "version": "4.13.0",
+  "version": "4.14.0",
   "description": "Dynamic accessibility analysis for React using axe-core",
   "main": "./dist/index.js",
   "module": "./dist/index.mjs",
@@ -24,14 +24,17 @@
     "dist/index.d.ts",
     "dist/index.js.map"
   ],
+  "engines": {
+    "node": ">=22.12.0"
+  },
   "scripts": {
     "build": "tsup index.ts --dts --format esm,cjs",
-    "prepare": "npm run build",
-    "test": "tsc && npm run test:types && jest",
-    "test:export": "npm run test:esm && npm run test:commonjs && npm run test:ts",
+    "prepare": "pnpm run build",
+    "test": "tsc && pnpm run test:types && jest",
+    "test:export": "pnpm run test:esm && pnpm run test:commonjs && pnpm run test:ts",
     "test:esm": "node test/esmTest.mjs",
     "test:commonjs": "node test/commonjsTest.js",
-    "test:ts": "tsc test/tsTest.ts --noEmit --skipLibCheck --esModuleInterop",
+    "test:ts": "tsc --ignoreConfig test/tsTest.ts --noEmit --skipLibCheck --esModuleInterop",
     "test:types": "cd test && tsc"
   },
   "keywords": [
@@ -60,7 +63,7 @@
   "author": "Dylan Barrell (dylan@barrell.com)",
   "license": "MPL-2.0",
   "dependencies": {
-    "axe-core": "~4.13.0",
+    "axe-core": "~4.14.0",
     "requestidlecallback": "^0.3.0"
   },
   "devDependencies": {
@@ -83,7 +86,7 @@
     "sinon": "^22.0.0",
     "ts-node": "^10.9.1",
     "tsup": "^8.0.1",
-    "typescript": "^5.2.2"
+    "typescript": "^6.0.3"
   },
   "repository": {
     "type": "git",

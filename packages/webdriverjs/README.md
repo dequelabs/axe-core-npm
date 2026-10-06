@@ -30,9 +30,13 @@ const { Builder } = require('selenium-webdriver');
 const chrome = require('selenium-webdriver/chrome');
 
 (async () => {
+  const options = new chrome.Options();
+
+  options.addArguments('headless');
+
   const driver = new Builder()
     .forBrowser('chrome')
-    .setChromeOptions(new chrome.Options().headless())
+    .setChromeOptions(options)
     .build();
   await driver.get('https://dequeuniversity.com/demo/mars/');
 
@@ -181,5 +185,5 @@ We have created an example [test suite](https://github.com/dequelabs/axe-core-np
 To run the test:
 
 - Navigate to: `/webdriverjs/tests/example`
-- Install node modules: `npm install`
-- Run tests: `npm test`
+- Install node modules: `pnpm install`
+- Run tests: `pnpm test`

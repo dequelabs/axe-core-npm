@@ -1,4 +1,4 @@
-import execa from 'execa';
+import { execa, type Options, type Result } from 'execa';
 import path from 'path';
 import fs from 'fs';
 
@@ -14,7 +14,13 @@ const PROJECT_FILE = path.join(__dirname, '..', 'tsconfig.json');
  * @param args CLI arguments to pass
  */
 
-const runCLI = (...args: string[]): Promise<execa.ExecaChildProcess<string>> =>
+// `Result<{}>` is execa's result under default options, where `stdout` and
+// `stderr` are strings. Bare `Result` widens them to every encoding execa can
+// produce, which would force a narrowing cast at each assertion in the suite.
+// Narrowing once here holds as long as no caller overrides `encoding`.
+type CLIResult = Result<{}>;
+
+const runCLI = (...args: string[]): Promise<CLIResult> =>
   runCLIWithOptions(args, { reject: false });
 
 export default runCLI;
@@ -30,13 +36,13 @@ export default runCLI;
 
 export const runCLIWithOptions = async (
   args: string[],
-  options: execa.Options
-): Promise<execa.ExecaChildProcess<string>> => {
+  options: Options
+): Promise<CLIResult> => {
   if ('DEBUG_CLI_TESTS' in process.env) {
     console.log('cli', args.join(' '));
   }
 
-  const result = await execa(TS_NODE, [CLI, ...args], options);
+  const result = (await execa(TS_NODE, [CLI, ...args], options)) as CLIResult;
 
   if ('DEBUG_CLI_TESTS' in process.env) {
     fs.writeFileSync('./stdout.txt', result.stdout);
