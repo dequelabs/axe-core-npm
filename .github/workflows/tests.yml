@@ -57,6 +57,8 @@ jobs:
         run: pnpm exec browser-driver-manager install chrome@145
         working-directory: packages/puppeteer
       - run: pnpm --fail-if-no-match --filter @axe-core/puppeteer run build
+      - run: pnpm --fail-if-no-match --filter @axe-core/puppeteer run lint:package
+      - run: pnpm --fail-if-no-match --filter @axe-core/puppeteer run lint:types
       - run: pnpm --fail-if-no-match --filter @axe-core/puppeteer run coverage
       - run: pnpm --fail-if-no-match --filter @axe-core/puppeteer run test:export
 
@@ -81,6 +83,9 @@ jobs:
       - shell: 'script -q -e -c "bash {0}"'
         run: pnpm exec browser-driver-manager install chrome@145
         working-directory: packages/cli
+      - run: pnpm --fail-if-no-match --filter @axe-core/cli run build
+      - run: pnpm --fail-if-no-match --filter @axe-core/cli run lint:package
+      - run: pnpm --fail-if-no-match --filter @axe-core/cli run lint:types
       - run: pnpm --fail-if-no-match --filter @axe-core/cli run coverage
 
   webdriverjs:
@@ -105,6 +110,8 @@ jobs:
         run: pnpm exec browser-driver-manager install chrome@145
         working-directory: packages/webdriverjs
       - run: pnpm --fail-if-no-match --filter @axe-core/webdriverjs run build
+      - run: pnpm --fail-if-no-match --filter @axe-core/webdriverjs run lint:package
+      - run: pnpm --fail-if-no-match --filter @axe-core/webdriverjs run lint:types
       - run: pnpm --fail-if-no-match --filter @axe-core/webdriverjs run coverage
       - run: pnpm --fail-if-no-match --filter @axe-core/webdriverjs run test:export
 
@@ -130,6 +137,8 @@ jobs:
         run: pnpm exec browser-driver-manager install chrome@145
         working-directory: packages/webdriverio
       - run: pnpm --fail-if-no-match --filter @axe-core/webdriverio run build
+      - run: pnpm --fail-if-no-match --filter @axe-core/webdriverio run lint:package
+      - run: pnpm --fail-if-no-match --filter @axe-core/webdriverio run lint:types
       - run: pnpm --fail-if-no-match --filter @axe-core/webdriverio run coverage
       - run: pnpm --fail-if-no-match --filter @axe-core/webdriverio run test:export
 
@@ -151,6 +160,8 @@ jobs:
           cache: 'pnpm'
       - run: pnpm install --frozen-lockfile
       - run: pnpm --fail-if-no-match --filter @axe-core/reporter-earl run build
+      - run: pnpm --fail-if-no-match --filter @axe-core/reporter-earl run lint:package
+      - run: pnpm --fail-if-no-match --filter @axe-core/reporter-earl run lint:types
       - run: pnpm --fail-if-no-match --filter @axe-core/reporter-earl run test
       - run: pnpm --fail-if-no-match --filter @axe-core/reporter-earl run test:export
 
@@ -176,6 +187,8 @@ jobs:
       # built and be it's own file. however we don't want that for the export
       # test so we need to rebuild using tsup
       - run: pnpm --fail-if-no-match --filter @axe-core/react run build
+      - run: pnpm --fail-if-no-match --filter @axe-core/react run lint:package
+      - run: pnpm --fail-if-no-match --filter @axe-core/react run lint:types
       - run: pnpm --fail-if-no-match --filter @axe-core/react run test:export
 
   playwright:
@@ -197,6 +210,8 @@ jobs:
       - run: pnpm install --frozen-lockfile
       - run: pnpm --fail-if-no-match --filter @axe-core/playwright exec playwright install --with-deps
       - run: pnpm --fail-if-no-match --filter @axe-core/playwright run build
+      - run: pnpm --fail-if-no-match --filter @axe-core/playwright run lint:package
+      - run: pnpm --fail-if-no-match --filter @axe-core/playwright run lint:types
       - run: pnpm --fail-if-no-match --filter @axe-core/playwright run coverage
       - run: pnpm --fail-if-no-match --filter @axe-core/playwright run test:export
 

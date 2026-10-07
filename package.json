@@ -13,6 +13,7 @@
     "test": "pnpm -r run test"
   },
   "devDependencies": {
+    "@arethetypeswrong/cli": "^0.18.5",
     "@eslint/js": "^10.0.1",
     "@types/node": "^24.10.1",
     "@types/semver": "^7.8.0",
@@ -25,6 +26,7 @@
     "lerna": "10.0.1",
     "lint-staged": "^17.0.7",
     "prettier": "^3.0.3",
+    "publint": "^0.3.24",
     "react": "^17.0.0",
     "semver": "^7.8.5",
     "ts-node": "^10.9.2",
