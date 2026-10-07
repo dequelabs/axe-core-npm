@@ -36,7 +36,10 @@
     "prebuild": "rimraf dist",
     "build": "tsc",
     "test": "mocha --timeout 60000 -r ts-node/register 'src/**/**.test.ts'",
-    "coverage": "nyc pnpm run test"
+    "coverage": "nyc pnpm run test",
+    "lint:package": "pnpm run pack:lint && publint --strict ../../node_modules/.cache/package-lint/cli.tgz",
+    "lint:types": "pnpm run pack:lint && attw ../../node_modules/.cache/package-lint/cli.tgz --entrypoints .",
+    "pack:lint": "pnpm pack --config.ignore-scripts=true --out ../../node_modules/.cache/package-lint/cli.tgz"
   },
   "keywords": [
     "axe-core",

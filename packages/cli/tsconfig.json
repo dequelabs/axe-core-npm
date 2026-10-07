@@ -3,7 +3,7 @@
   "compilerOptions": {
     "module": "commonjs",
     "outDir": "./dist/",
-    "rootDir": "./src",
+    "rootDir": ".",
     "types": ["node"]
   },
   "include": ["./src/lib", "./src/bin"]
