@@ -7,11 +7,19 @@
   "types": "./dist/axeReporterEarl.d.ts",
   "exports": {
     ".": {
-      "types": "./dist/axeReporterEarl.d.ts",
-      "import": "./dist/axeReporterEarl.mjs",
-      "require": "./dist/axeReporterEarl.js"
+      "import": {
+        "types": "./dist/axeReporterEarl.d.mts",
+        "default": "./dist/axeReporterEarl.mjs"
+      },
+      "require": {
+        "types": "./dist/axeReporterEarl.d.ts",
+        "default": "./dist/axeReporterEarl.js"
+      }
     }
   },
+  "files": [
+    "dist"
+  ],
   "engines": {
     "node": ">=22.12.0"
   },
@@ -24,7 +32,10 @@
     "test:ts": "tsc --ignoreConfig tests/tsTest.ts --noEmit --skipLibCheck --esModuleInterop",
     "test:unit": "NODE_OPTIONS=--experimental-vm-modules jest --collectCoverage",
     "build": "tsup src/axeReporterEarl.ts --dts --format esm,cjs",
-    "prepublishOnly": "pnpm run build"
+    "prepublishOnly": "pnpm run build",
+    "lint:package": "pnpm run pack:lint && publint --strict ../../node_modules/.cache/package-lint/reporter-earl.tgz",
+    "lint:types": "pnpm run pack:lint && attw ../../node_modules/.cache/package-lint/reporter-earl.tgz",
+    "pack:lint": "pnpm pack --config.ignore-scripts=true --out ../../node_modules/.cache/package-lint/reporter-earl.tgz"
   },
   "publishConfig": {
     "access": "public"

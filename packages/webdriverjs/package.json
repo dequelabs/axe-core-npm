@@ -40,9 +40,14 @@
   "types": "./dist/index.d.ts",
   "exports": {
     ".": {
-      "types": "./dist/index.d.ts",
-      "import": "./dist/index.mjs",
-      "require": "./dist/index.js"
+      "import": {
+        "types": "./dist/index.d.mts",
+        "default": "./dist/index.mjs"
+      },
+      "require": {
+        "types": "./dist/index.d.ts",
+        "default": "./dist/index.js"
+      }
     }
   },
   "engines": {
@@ -57,7 +62,10 @@
     "test:commonjs": "node test/commonjsTest.js",
     "test:ts": "tsc --ignoreConfig test/tsTest.ts --noEmit --skipLibCheck --esModuleInterop",
     "coverage": "nyc pnpm run test",
-    "prepare": "pnpm run build"
+    "prepare": "pnpm run build",
+    "lint:package": "pnpm run pack:lint && publint --strict ../../node_modules/.cache/package-lint/webdriverjs.tgz",
+    "lint:types": "pnpm run pack:lint && attw ../../node_modules/.cache/package-lint/webdriverjs.tgz",
+    "pack:lint": "pnpm pack --config.ignore-scripts=true --out ../../node_modules/.cache/package-lint/webdriverjs.tgz"
   },
   "keywords": [
     "a11y",
