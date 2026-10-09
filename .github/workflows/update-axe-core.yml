@@ -15,7 +15,7 @@ jobs:
       - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
         with:
           node-version-file: .nvmrc
-      - uses: dequelabs/axe-api-team-public/.github/actions/create-update-axe-core-pull-request-v1@71facf49128c13839aec7cffafa0d38e2f8c24c5 # v1
+      - uses: dequelabs/axe-api-team-public/.github/actions/create-update-axe-core-pull-request-v1@3dbd971c13348c1c64560484b61cd5e054ac2577 # v1
         with:
           token: ${{ secrets.PAT }}
           # Disable the action's own checkout and Node setup; the steps above
