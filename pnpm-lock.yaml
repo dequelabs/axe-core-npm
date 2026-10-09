@@ -143,9 +143,6 @@ importers:
       axe-core:
         specifier: ~4.14.0
         version: 4.14.0
-      playwright-core:
-        specifier: '>= 1.0.0'
-        version: 1.62.1
     devDependencies:
       '@playwright/test':
         specifier: ^1.60.0
@@ -180,6 +177,9 @@ importers:
       nyc:
         specifier: ^18.0.0
         version: 18.0.0(supports-color@8.1.1)
+      playwright-core:
+        specifier: ^1.63.0
+        version: 1.63.0
       rimraf:
         specifier: ^6.0.1
         version: 6.1.3
@@ -6181,11 +6181,6 @@ packages:
 
   pkg-types@1.3.1:
     resolution: {integrity: sha512-/Jm5M4RvtBFVkKWRu2BLUTNP8/M2a+UwuAX+ae4770q1qVGtfjG+WTCupoZixokjmHiry8uI+dlY8KXYV5HVVQ==}
-
-  playwright-core@1.62.1:
-    resolution: {integrity: sha512-wPYSwEBJY9GHraISXqyqtx0na0LpO3XEX7jNDhntbex7tzUS7kLnZsOlFruFJB4Hi/rhDMjXGqHewDZ68nYZVw==}
-    engines: {node: '>=20'}
-    hasBin: true
 
   playwright-core@1.63.0:
     resolution: {integrity: sha512-rYCsBF/M5HjUch52bbtVONEFjv6Xu8sm8h72dNlR5bzIE1fvC/bxgspzkjSfU+MweEMmPM8KJebG6nnyxo5mCg==}
@@ -14395,8 +14390,6 @@ snapshots:
       confbox: 0.1.8
       mlly: 1.8.2
       pathe: 2.0.3
-
-  playwright-core@1.62.1: {}
 
   playwright-core@1.63.0: {}
 
