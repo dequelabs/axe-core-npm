@@ -8,6 +8,7 @@ import {
   axeSourceInject,
   axeGetFrameContext,
   axeRunPartial,
+  axeWaitForTimer,
   axeFinishRun,
   axeRunLegacy,
   configureAllowedOrigins,
@@ -362,6 +363,7 @@ export default class AxeBuilder {
         assert(frame, `Expect frame of "${frameSelector}" to be defined`);
         await clientSwitchFrame(this.client, frame);
         await axeSourceInject(this.client, this.script);
+        await axeWaitForTimer(this.client);
         partials.push(
           ...(await this.runPartialRecursive(
             frameContext,

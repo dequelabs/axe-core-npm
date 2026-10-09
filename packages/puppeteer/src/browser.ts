@@ -12,8 +12,11 @@ declare global {
   }
 }
 
-export function pageIsLoaded(): boolean {
-  return document.readyState === 'complete';
+// frames that block scripts never fire timers, so axe.runPartial would hang
+export function pageIsLoaded(): Promise<boolean> {
+  return new Promise(resolve =>
+    setTimeout(() => resolve(document.readyState === 'complete'))
+  );
 }
 
 export function axeRunPartialSupport(): boolean {

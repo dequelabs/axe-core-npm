@@ -48,3 +48,7 @@ export function chunkResultString(chunk: string) {
   }
   window.partialResults += chunk;
 }
+
+export const axeWaitForTimer = (): Promise<void> => {
+  return new Promise(resolve => setTimeout(resolve));
+};

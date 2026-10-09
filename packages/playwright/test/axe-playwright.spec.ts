@@ -461,6 +461,30 @@ describe('@axe-core/playwright', () => {
         'input'
       ]);
     });
+
+    it('reports frames that cannot run scripts as frame-tested', async function () {
+      this.timeout(10_000);
+      const res = await page.goto(`${addr}/index.html`);
+      await page.evaluate(
+        () =>
+          new Promise(resolve => {
+            const iframe = document.createElement('iframe');
+            iframe.id = 'no-scripts';
+            iframe.sandbox.add('allow-same-origin');
+            iframe.src = '/index.html';
+            iframe.onload = resolve;
+            document.body.appendChild(iframe);
+          })
+      );
+
+      const results = await new AxeBuilder({ page })
+        .withRules('frame-tested')
+        .analyze();
+
+      assert.equal(res?.status(), 200);
+      assert.equal(results.incomplete[0].id, 'frame-tested');
+      assert.deepEqual(results.incomplete[0].nodes[0].target, ['#no-scripts']);
+    });
   });
 
   describe('include/exclude', () => {

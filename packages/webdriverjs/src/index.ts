@@ -14,6 +14,7 @@ import AxeInjector from './axe-injector';
 import {
   axeGetFrameContext,
   axeRunPartial,
+  axeWaitForTimer,
   axeRunLegacy,
   axeSourceInject,
   axeFinishRun
@@ -227,6 +228,7 @@ export default class AxeBuilder {
   ): Promise<string[]> {
     if (frameStack.length) {
       await axeSourceInject(this.driver, this.axeSource, this.config);
+      await axeWaitForTimer(this.driver);
     }
     // IMPORTANT: axeGetFrameContext MUST be called before axeRunPartial
     const frameContexts = await axeGetFrameContext(this.driver, context);
