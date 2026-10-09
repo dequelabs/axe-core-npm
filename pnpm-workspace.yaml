@@ -33,6 +33,7 @@ overrides:
   # Keep aligned with the Node.js major being developed on; bump deliberately.
   '@types/node': ^24
 allowBuilds:
+  '@parcel/watcher': true
   chromedriver: true
   edgedriver: true
   esbuild: true
