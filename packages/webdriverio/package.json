@@ -73,7 +73,7 @@
     "async-listen": "^3.0.1",
     "axe-test-fixtures": "github:dequelabs/axe-test-fixtures#v1",
     "chai": "^4.3.6",
-    "chromedriver": "^152.0.0",
+    "chromedriver": "^154.0.0",
     "cross-dirname": "^0.1.0",
     "devtools": "^8.27.2",
     "dotenv": "^17.3.1",
