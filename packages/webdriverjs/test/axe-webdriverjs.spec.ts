@@ -418,6 +418,43 @@ describe('@axe-core/webdriverjs', () => {
       const timeout = await driver.manage().getTimeouts();
       assert.equal(timeout.pageLoad, 500);
     });
+
+    describe('with a frame that cannot run scripts', () => {
+      beforeEach(async () => {
+        await driver.get(`${addr}/index.html`);
+        await driver.executeAsyncScript(`
+          var done = arguments[arguments.length - 1];
+          var iframe = document.createElement('iframe');
+          iframe.id = 'no-scripts';
+          iframe.sandbox.add('allow-same-origin');
+          iframe.src = '/index.html';
+          iframe.onload = function () { done(); };
+          document.body.appendChild(iframe);
+        `);
+      });
+
+      it('reports the frame as frame-tested', async function () {
+        this.timeout(10_000);
+        const results = await new AxeBuilder(driver)
+          .withRules('frame-tested')
+          .analyze();
+
+        assert.equal(results.incomplete[0].id, 'frame-tested');
+        assert.deepEqual(results.incomplete[0].nodes[0].target, [
+          '#no-scripts'
+        ]);
+      });
+
+      it('resets script timeout to user setting', async function () {
+        this.timeout(10_000);
+        await driver.manage().setTimeouts({ script: 5000 });
+
+        await new AxeBuilder(driver).withRules('frame-tested').analyze();
+
+        const timeout = await driver.manage().getTimeouts();
+        assert.equal(timeout.script, 5000);
+      });
+    });
   });
 
   describe('withRules', () => {

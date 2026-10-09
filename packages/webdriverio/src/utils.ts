@@ -182,6 +182,32 @@ async function assertFrameReady(client: WdioBrowser): Promise<void> {
   }
 }
 
+// frames that block scripts never fire timers, so axe.runPartial would hang
+export async function axeWaitForTimer(client: WdioBrowser): Promise<void> {
+  const { script } = await client.getTimeouts();
+  await client.setTimeout({ script: FRAME_LOAD_TIMEOUT });
+  let timeoutId: ReturnType<typeof setTimeout> | undefined;
+  try {
+    // BiDi ignores the script timeout, so also give up from Node
+    const timer = promisify(
+      client.executeAsync('setTimeout(arguments[arguments.length - 1]);')
+    );
+    timer.catch(() => {});
+    await Promise.race([
+      timer,
+      new Promise((_, reject) => {
+        timeoutId = setTimeout(
+          () => reject(new Error('Frame cannot run scripts')),
+          FRAME_LOAD_TIMEOUT
+        );
+      })
+    ]);
+  } finally {
+    clearTimeout(timeoutId);
+    await client.setTimeout({ script });
+  }
+}
+
 export const axeRunPartial = (
   client: WdioBrowser,
   context?: SerialContextObject,

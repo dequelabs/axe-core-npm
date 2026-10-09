@@ -38,6 +38,19 @@ export function axeSourceInject(
   );
 }
 
+// frames that block scripts never fire timers, so axe.runPartial would hang
+export async function axeWaitForTimer(driver: WebDriver): Promise<void> {
+  const { script } = await driver.manage().getTimeouts();
+  await driver.manage().setTimeouts({ script: 1000 });
+  try {
+    await promisify(
+      driver.executeAsyncScript('setTimeout(arguments[arguments.length - 1]);')
+    );
+  } finally {
+    await driver.manage().setTimeouts({ script });
+  }
+}
+
 export function axeRunPartial(
   driver: WebDriver,
   context: SerialContextObject,

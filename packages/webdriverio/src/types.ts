@@ -25,8 +25,8 @@ interface WdioBrowserBase {
   ): Promise<any>;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   executeAsync(script: string, ...args: unknown[]): Promise<any>;
-  getTimeouts(): Promise<{ pageLoad?: number }>;
-  setTimeout(options: { pageLoad?: number }): Promise<void>;
+  getTimeouts(): Promise<{ pageLoad?: number; script?: number }>;
+  setTimeout(options: { pageLoad?: number; script?: number }): Promise<void>;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   url(url: string): Promise<any>;
   getWindowHandles(): Promise<string[]>;
