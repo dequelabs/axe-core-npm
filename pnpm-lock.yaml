@@ -98,8 +98,8 @@ importers:
         specifier: ^15.0.0
         version: 15.0.0
       dotenv:
-        specifier: ^17.2.2
-        version: 17.4.2
+        specifier: ^18.0.5
+        version: 18.0.5
       selenium-webdriver:
         specifier: ~4.50.0
         version: 4.50.0
@@ -391,8 +391,8 @@ importers:
         specifier: ^8.27.2
         version: 8.42.0(encoding@0.1.13)(supports-color@8.1.1)
       dotenv:
-        specifier: ^17.3.1
-        version: 17.4.2
+        specifier: ^18.0.5
+        version: 18.0.5
       express:
         specifier: ^5.1.0
         version: 5.2.1(supports-color@8.1.1)
@@ -446,8 +446,8 @@ importers:
         specifier: ^4
         version: 4.5.0
       dotenv:
-        specifier: ^17.3.1
-        version: 17.4.2
+        specifier: ^18.0.5
+        version: 18.0.5
       express:
         specifier: ^5.1.0
         version: 5.2.1(supports-color@8.1.1)
@@ -4042,6 +4042,11 @@ packages:
   dotenv@17.4.2:
     resolution: {integrity: sha512-nI4U3TottKAcAD9LLud4Cb7b2QztQMUEfHbvhTH09bqXTxnSie8WnjPALV/WMCrJZ6UV/qHJ6L03OqO3LcdYZw==}
     engines: {node: '>=12'}
+
+  dotenv@18.0.5:
+    resolution: {integrity: sha512-aBrGvt6KhjxbEnatqMWOMidftwsrCiCvqh1yNIGB9QyF0J+VcWkKDMsvYOEm7ZS82oiV+BT1sTOtIlAmUlTpwQ==}
+    engines: {node: '>=12'}
+    hasBin: true
 
   dunder-proto@1.0.1:
     resolution: {integrity: sha512-KIN/nDJBQRcXw0MLVhZE9iQHmG68qAVIBg9CqmUYjmQIhgij9U5MFvrqkUL5FbtyyzZuOeOt0zdeRe4UY7ct+A==}
@@ -11396,6 +11401,8 @@ snapshots:
   dotenv@16.4.7: {}
 
   dotenv@17.4.2: {}
+
+  dotenv@18.0.5: {}
 
   dunder-proto@1.0.1:
     dependencies:
