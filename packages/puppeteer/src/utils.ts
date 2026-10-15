@@ -14,7 +14,7 @@ export async function frameSourceInject(
 ): Promise<void> {
   await assertFrameReady(frame);
   if (!source) {
-    let axeCorePath = '';
+    let axeCorePath: string;
     if (
       typeof require === 'function' &&
       typeof require.resolve === 'function'

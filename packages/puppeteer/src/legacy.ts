@@ -55,7 +55,7 @@ export async function injectJS(
 }
 
 async function injectJSModule(frame: Frame): Promise<void> {
-  let axeCorePath = '';
+  let axeCorePath: string;
   if (typeof require === 'function' && typeof require.resolve === 'function') {
     axeCorePath = require.resolve('axe-core');
   } else {

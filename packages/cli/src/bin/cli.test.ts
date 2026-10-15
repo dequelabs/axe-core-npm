@@ -1,11 +1,11 @@
 import 'mocha';
 import { assert } from 'chai';
-import tempy from 'tempy';
 import http from 'http';
 import net from 'net';
+import os from 'os';
 import path from 'path';
 import fs from 'fs';
-import execa from 'execa';
+import type { ExecaError } from 'execa';
 import { version } from '../../package.json';
 import runCLI from '../testutils/';
 
@@ -147,7 +147,7 @@ describe('cli', () => {
       try {
         await runCLI(`file://${SIMPLE_HTML_FILE}`, '--exit');
       } catch (error) {
-        const err = error as execa.ExecaReturnBase<string>;
+        const err = error as ExecaError;
         assert.equal(err.exitCode, 1);
         assert.include(
           err.stdout,
@@ -160,7 +160,7 @@ describe('cli', () => {
       try {
         await runCLI(`file://${SIMPLE_CLEAN_HTML_FILE}`, '--exit');
       } catch (error) {
-        const err = error as execa.ExecaReturnBase<string>;
+        const err = error as ExecaError;
         assert.equal(err.exitCode, 0);
         assert.include(
           err.stdout,
@@ -173,7 +173,7 @@ describe('cli', () => {
   describe('--dir', () => {
     let reportDir: string;
     beforeEach(() => {
-      reportDir = tempy.directory();
+      reportDir = fs.mkdtempSync(path.join(os.tmpdir(), 'axe-cli-'));
     });
 
     it('should save a JSON report to the provided directory', async () => {
@@ -337,7 +337,7 @@ describe('cli', () => {
   describe('--save', () => {
     let reportDir: string;
     beforeEach(() => {
-      reportDir = tempy.directory();
+      reportDir = fs.mkdtempSync(path.join(os.tmpdir(), 'axe-cli-'));
     });
 
     it('should save the output as a JSON file', async () => {
@@ -385,7 +385,7 @@ describe('cli', () => {
       try {
         await runCLI(`file://${SIMPLE_HTML_FILE}`, '--timeout', '0');
       } catch (error) {
-        const err = error as execa.ExecaReturnBase<string>;
+        const err = error as ExecaError;
         assert.notEqual(err.exitCode, 0);
         assert.include(
           err.stderr,

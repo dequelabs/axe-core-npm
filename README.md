@@ -16,22 +16,25 @@ The packages are listed below:
 
 ## Development
 
+This repository uses [pnpm](https://pnpm.io/installation) as its package manager.
+The version you install locally does not need to match the one in `packageManager` — pnpm reads that field and switches itself.
+
 Fetch dependencies and link packages together:
 
 ```console
-npm install
+pnpm install
 ```
 
 Run the linter:
 
 ```console
-npm run lint
+pnpm run lint
 ```
 
 Run the code formatter:
 
 ```console
-npm run fmt
+pnpm run fmt
 ```
 
 Please refer to respective README for installation, usage, and configuration notes.

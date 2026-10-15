@@ -3,6 +3,7 @@
     "allowJs": true,
     "declaration": true,
     "esModuleInterop": true,
+    "ignoreDeprecations": "6.0",
     "lib": ["dom", "esnext"],
     "module": "esnext",
     "moduleResolution": "node",
@@ -17,7 +18,8 @@
     "sourceMap": true,
     "strict": true,
     "strictNullChecks": true,
-    "target": "esnext"
+    "target": "esnext",
+    "types": ["node"]
   },
   "exclude": ["**/*.test.ts", "**/test/**/*.ts"],
   "ts-node": {

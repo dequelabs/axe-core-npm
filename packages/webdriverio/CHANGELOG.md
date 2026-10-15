@@ -3,6 +3,13 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [4.14.0](https://github.com/dequelabs/axe-core-npm/compare/v4.13.0...v4.14.0) (2026-10-06)
+
+### Features
+
+* Update axe-core to v4.14.0 ([#1456](https://github.com/dequelabs/axe-core-npm/issues/1456)) ([dccfe7a](https://github.com/dequelabs/axe-core-npm/commit/dccfe7adde174fca7010d36f2e77b69be182093b))
+
+
 # [4.13.0](https://github.com/dequelabs/axe-core-npm/compare/v4.11.3...v4.13.0) (2026-08-10)
 
 
