@@ -9,7 +9,7 @@ on:
 
 jobs:
   canary:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-26.04
     timeout-minutes: 10
     environment: registry.npmjs.org
     permissions:
@@ -45,7 +45,7 @@ jobs:
             --yes
 
   release-candidate:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-26.04
     environment: registry.npmjs.org
     permissions:
       # Required for OIDC
@@ -80,7 +80,7 @@ jobs:
             --yes
 
   production:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-26.04
     environment: registry.npmjs.org
     permissions:
       # Required for OIDC
