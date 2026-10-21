@@ -241,10 +241,14 @@ export class AxePuppeteer {
     context: SerialContextObject
   ): Promise<AxePartialRunner> {
     // IMPORTANT: axeGetFrameContext MUST be called before axeRunPartial
-    const frameContexts = await frame.evaluate(axeGetFrameContext, context);
+    const options = this.axeOptions;
+    const frameContexts = await frame.evaluate(
+      axeGetFrameContext,
+      context,
+      options
+    );
 
     // Start testing the parent frame - don't await, so runs are in parallel
-    const options = this.axeOptions;
     const partialPromise = frame.evaluate(axeRunPartial, context, options);
     const initiator = frame === this.frame;
     const axePartialRunner = new AxePartialRunner(partialPromise, initiator);

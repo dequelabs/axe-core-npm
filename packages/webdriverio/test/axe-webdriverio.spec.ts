@@ -806,6 +806,18 @@ describe('@axe-core/webdriverio', () => {
             assert.deepEqual(nodes[3].target, ['#ifr-baz', 'input']);
           });
 
+          it('does not test iframes when iframes is false', async () => {
+            await client.url(`${addr}/nested-iframes.html`);
+            const title = await client.getTitle();
+
+            const { violations } = await new AxeBuilder({ client })
+              .options({ runOnly: 'label', iframes: false })
+              .analyze();
+
+            assert.notEqual(title, 'Error');
+            assert.lengthOf(violations, 0);
+          });
+
           it('injects into nested frameset', async () => {
             await client.url(`${addr}/nested-frameset.html`);
             const title = await client.getTitle();

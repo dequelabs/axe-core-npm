@@ -251,7 +251,8 @@ export default class AxeBuilder {
     context: SerialContextObject
   ): Promise<AxePartialRunner> {
     const frameContexts = await frame.evaluate(axeGetFrameContexts, {
-      context
+      context,
+      options: this.option
     });
     const partialPromise = frame.evaluate(axeRunPartial, {
       context,

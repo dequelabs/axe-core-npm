@@ -351,7 +351,11 @@ export default class AxeBuilder {
     if (topWindow === undefined) {
       topWindow = await this.client.getWindowHandle();
     }
-    const frameContexts = await axeGetFrameContext(this.client, context);
+    const frameContexts = await axeGetFrameContext(
+      this.client,
+      context,
+      this.option
+    );
     const partials: PartialResults = [
       await axeRunPartial(this.client, context, this.option)
     ];

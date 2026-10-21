@@ -30,9 +30,10 @@ export function axeConfigure(config?: Axe.Spec): void {
 }
 
 export function axeGetFrameContext(
-  context: Axe.ElementContext
+  context: Axe.ElementContext,
+  options: Axe.RunOptions
 ): Axe.FrameContext[] {
-  return window.axe.utils.getFrameContexts(context);
+  return window.axe.utils.getFrameContexts(context, options);
 }
 
 export function axeShadowSelect(

@@ -229,7 +229,11 @@ export default class AxeBuilder {
       await axeSourceInject(this.driver, this.axeSource, this.config);
     }
     // IMPORTANT: axeGetFrameContext MUST be called before axeRunPartial
-    const frameContexts = await axeGetFrameContext(this.driver, context);
+    const frameContexts = await axeGetFrameContext(
+      this.driver,
+      context,
+      this.option
+    );
     const partials: string[] = [
       await axeRunPartial(this.driver, context, this.option)
     ];

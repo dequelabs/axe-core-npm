@@ -113,12 +113,14 @@ export function axeFinishRun(
 
 export function axeGetFrameContext(
   driver: WebDriver,
-  context: SerialContextObject
+  context: SerialContextObject,
+  options: RunOptions
 ): Promise<FrameContextWeb[]> {
   return promisify(
     driver.executeScript<FrameContextWeb[]>(`
       var context = ${JSON.stringify(context)}
-      var frameContexts = window.axe.utils.getFrameContexts(context);
+      var options = ${JSON.stringify(options)}
+      var frameContexts = window.axe.utils.getFrameContexts(context, options);
       return frameContexts.map(function (frameContext) {
         return Object.assign(frameContext, {
           href: window.location.href, // For debugging
