@@ -986,6 +986,18 @@ describe('@axe-core/webdriverio', () => {
               const timeout = await client.getTimeouts();
               assert.equal(timeout.script, 5000);
             });
+
+            it('resets script timeout when the user set no limit', async function () {
+              this.timeout(10_000);
+              await client.setTimeouts(undefined, undefined, null);
+
+              await new AxeBuilder({ client })
+                .withRules('frame-tested')
+                .analyze();
+
+              const timeout = await client.getTimeouts();
+              assert.isNull(timeout.script);
+            });
           });
         });
 

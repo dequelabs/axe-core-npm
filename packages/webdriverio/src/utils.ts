@@ -204,7 +204,7 @@ export async function axeWaitForTimer(client: WdioBrowser): Promise<void> {
     ]);
   } finally {
     clearTimeout(timeoutId);
-    await client.setTimeout({ script });
+    await client.setTimeouts(undefined, undefined, script);
   }
 }
 
