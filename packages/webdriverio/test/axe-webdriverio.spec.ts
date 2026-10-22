@@ -806,6 +806,61 @@ describe('@axe-core/webdriverio', () => {
             assert.deepEqual(nodes[3].target, ['#ifr-baz', 'input']);
           });
 
+          it('does not test iframes when iframes is false', async () => {
+            await client.url(`${addr}/nested-iframes.html`);
+            const title = await client.getTitle();
+
+            const { violations } = await new AxeBuilder({ client })
+              .options({ runOnly: 'label', iframes: false })
+              .analyze();
+
+            assert.notEqual(title, 'Error');
+            assert.lengthOf(violations, 0);
+            const frames: string[] = await client.execute(`
+              return (function walk(win) {
+                var found = [];
+                for (var i = 0; i < win.frames.length; i++) {
+                  found.push(typeof win.frames[i].axe);
+                  found = found.concat(walk(win.frames[i]));
+                }
+                return found;
+              })(window);
+            `);
+            assert.isNotEmpty(frames);
+            assert.deepEqual(
+              frames,
+              frames.map(() => 'undefined')
+            );
+          });
+
+          it('does not test iframes when iframes is false in legacy mode', async () => {
+            await client.url(`${addr}/nested-iframes.html`);
+            const title = await client.getTitle();
+
+            const { violations } = await new AxeBuilder({ client })
+              .options({ runOnly: 'label', iframes: false })
+              .setLegacyMode()
+              .analyze();
+
+            assert.notEqual(title, 'Error');
+            assert.lengthOf(violations, 0);
+            const frames: string[] = await client.execute(`
+              return (function walk(win) {
+                var found = [];
+                for (var i = 0; i < win.frames.length; i++) {
+                  found.push(typeof win.frames[i].axe);
+                  found = found.concat(walk(win.frames[i]));
+                }
+                return found;
+              })(window);
+            `);
+            assert.isNotEmpty(frames);
+            assert.deepEqual(
+              frames,
+              frames.map(() => 'undefined')
+            );
+          });
+
           it('injects into nested frameset', async () => {
             await client.url(`${addr}/nested-frameset.html`);
             const title = await client.getTitle();

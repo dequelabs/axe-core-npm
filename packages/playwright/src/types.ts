@@ -27,6 +27,7 @@ export interface AnalyzePageResponse {
 
 export interface GetFrameContextsParams {
   context: ContextObject;
+  options: RunOptions;
 }
 
 export interface ShadowSelectParams {

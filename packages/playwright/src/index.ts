@@ -218,7 +218,10 @@ export default class AxeBuilder {
     // in playwright all frames are available in `.frames()`, even nested and
     // shadowDOM iframes. also navigating to a url causes it to be put into
     // an iframe so we don't need to inject into the page object itself
-    const frames = this.page.frames();
+    const frames =
+      this.option.iframes === false
+        ? [this.page.mainFrame()]
+        : this.page.frames();
     await this.inject(frames);
     const axeResults = await this.page.evaluate(analyzePage, {
       context,
@@ -251,7 +254,8 @@ export default class AxeBuilder {
     context: SerialContextObject
   ): Promise<AxePartialRunner> {
     const frameContexts = await frame.evaluate(axeGetFrameContexts, {
-      context
+      context,
+      options: this.option
     });
     const partialPromise = frame.evaluate(axeRunPartial, {
       context,

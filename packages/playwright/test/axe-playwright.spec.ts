@@ -377,6 +377,33 @@ describe('@axe-core/playwright', () => {
       assert.deepEqual(nodes[3].target, ['#ifr-baz', 'input']);
     });
 
+    it('does not inject into iframes when iframes is false', async () => {
+      const res = await page.goto(`${addr}/nested-iframes.html`);
+      const { violations } = await new AxeBuilder({ page })
+        .options({ runOnly: 'label', iframes: false })
+        .analyze();
+
+      assert.equal(res?.status(), 200);
+      assert.lengthOf(violations, 0);
+      for (const frame of page.frames().slice(1)) {
+        assert.equal(await frame.evaluate('typeof window.axe'), 'undefined');
+      }
+    });
+
+    it('does not inject into iframes when iframes is false in legacy mode', async () => {
+      const res = await page.goto(`${addr}/nested-iframes.html`);
+      const { violations } = await new AxeBuilder({ page })
+        .options({ runOnly: 'label', iframes: false })
+        .setLegacyMode()
+        .analyze();
+
+      assert.equal(res?.status(), 200);
+      assert.lengthOf(violations, 0);
+      for (const frame of page.frames().slice(1)) {
+        assert.equal(await frame.evaluate('typeof window.axe'), 'undefined');
+      }
+    });
+
     it('injects into nested frameset', async () => {
       const res = await page.goto(`${addr}/nested-frameset.html`);
       const { violations } = await new AxeBuilder({ page })

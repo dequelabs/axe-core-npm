@@ -232,6 +232,10 @@ export default class AxeBuilder {
       await configureAllowedOrigins(this.client);
     }
 
+    if (this.option.iframes === false) {
+      return;
+    }
+
     const frames = (await this.client.$$(this.frameSelector())) || [];
     const iframes =
       frames.concat(await this.client.$$(this.iframeSelector())) || [];
@@ -351,7 +355,11 @@ export default class AxeBuilder {
     if (topWindow === undefined) {
       topWindow = await this.client.getWindowHandle();
     }
-    const frameContexts = await axeGetFrameContext(this.client, context);
+    const frameContexts = await axeGetFrameContext(
+      this.client,
+      context,
+      this.option
+    );
     const partials: PartialResults = [
       await axeRunPartial(this.client, context, this.option)
     ];
