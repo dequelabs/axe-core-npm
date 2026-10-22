@@ -10,6 +10,6 @@ on:
 
 jobs:
   semantic-pr-footer:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-26.04
     steps:
       - uses: dequelabs/axe-api-team-public/.github/actions/semantic-pr-footer-v1@main
