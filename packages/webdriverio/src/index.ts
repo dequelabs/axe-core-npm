@@ -232,6 +232,10 @@ export default class AxeBuilder {
       await configureAllowedOrigins(this.client);
     }
 
+    if (this.option.iframes === false) {
+      return;
+    }
+
     const frames = (await this.client.$$(this.frameSelector())) || [];
     const iframes =
       frames.concat(await this.client.$$(this.iframeSelector())) || [];

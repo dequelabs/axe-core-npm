@@ -214,7 +214,9 @@ export default class AxeBuilder {
       config,
       builderOptions
     });
-    await injector.injectIntoAllFrames();
+    if (this.option.iframes !== false) {
+      await injector.injectIntoAllFrames();
+    }
     return axeRunLegacy(this.driver, context, this.option, this.config);
   }
 

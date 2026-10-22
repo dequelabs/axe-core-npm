@@ -312,7 +312,10 @@ export class AxePuppeteer {
 
   private async runLegacy(context: SerialContextObject): Promise<AxeResults> {
     const options = this.axeOptions;
-    const selector = iframeSelector(this.disabledFrameSelectors);
+    const selector =
+      options.iframes === false
+        ? undefined
+        : iframeSelector(this.disabledFrameSelectors);
     const source = this.axeSource;
     let config = this.config;
 
