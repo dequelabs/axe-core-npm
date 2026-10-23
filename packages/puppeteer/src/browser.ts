@@ -39,7 +39,7 @@ export function axeGetFrameContext(
     return Object.assign({}, frameContext, {
       scriptsBlocked:
         typeof sandbox === 'string' &&
-        !/(^|\s)allow-scripts(\s|$)/i.test(sandbox)
+        !/(^|[\t\n\f\r ])allow-scripts([\t\n\f\r ]|$)/i.test(sandbox)
     });
   });
 }

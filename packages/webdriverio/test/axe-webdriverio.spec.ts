@@ -990,6 +990,32 @@ describe('@axe-core/webdriverio', () => {
                 .analyze();
 
               assert.isEmpty(results.incomplete);
+              assert.deepEqual(
+                results.passes
+                  .find(rule => rule.id === 'frame-tested')
+                  ?.nodes.map(node => node.target),
+                [['#no-scripts']]
+              );
+            });
+
+            it('reports a frame whose allow-scripts token is joined by a non-breaking space', async function () {
+              this.timeout(10_000);
+              await client.executeAsync(`
+                var done = arguments[arguments.length - 1];
+                var iframe = document.getElementById('no-scripts');
+                iframe.setAttribute('sandbox', 'allow-same-origin allow-scripts\\u00a0allow-forms');
+                iframe.onload = function () { done(); };
+                iframe.src = '/index.html?nbsp';
+              `);
+
+              const results = await new AxeBuilder({ client })
+                .withRules('frame-tested')
+                .analyze();
+
+              assert.deepEqual(
+                results.incomplete[0]?.nodes.map(node => node.target),
+                [['#no-scripts']]
+              );
             });
           });
         });
