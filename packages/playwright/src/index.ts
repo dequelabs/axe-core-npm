@@ -260,8 +260,16 @@ export default class AxeBuilder {
     const initiator = frame === this.page.mainFrame();
     const axePartialRunner = new AxePartialRunner(partialPromise, initiator);
 
-    for (const { frameSelector, frameContext } of frameContexts) {
+    for (const {
+      frameSelector,
+      frameContext,
+      scriptsBlocked
+    } of frameContexts) {
       let childResults: AxePartialRunner | null = null;
+      if (scriptsBlocked) {
+        axePartialRunner.addChildResults(childResults);
+        continue;
+      }
       try {
         const iframeHandle = await frame.evaluateHandle(axeShadowSelect, {
           frameSelector

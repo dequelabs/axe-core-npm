@@ -215,6 +215,13 @@ export const axeGetFrameContext = (
       var callback = arguments[arguments.length - 1];
       var context = ${JSON.stringify(context)};
       var frameContexts = window.axe.utils.getFrameContexts(context);
+      frameContexts.forEach(function (frameContext) {
+        var frame = window.axe.utils.shadowSelect(frameContext.frameSelector);
+        var sandbox = frame && frame.getAttribute('sandbox');
+        frameContext.scriptsBlocked =
+          typeof sandbox === 'string' &&
+          !/(^|[\\t\\n\\f\\r ])allow-scripts([\\t\\n\\f\\r ]|$)/i.test(sandbox);
+      });
       callback(frameContexts)
     `)
   );

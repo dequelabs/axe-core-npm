@@ -234,7 +234,16 @@ export default class AxeBuilder {
       await axeRunPartial(this.driver, context, this.option)
     ];
 
-    for (const { frameContext, frameSelector, frame } of frameContexts) {
+    for (const {
+      frameContext,
+      frameSelector,
+      frame,
+      scriptsBlocked
+    } of frameContexts) {
+      if (scriptsBlocked) {
+        partials.push('null');
+        continue;
+      }
       try {
         assert(frame, `Expect frame of "${frameSelector}" to be defined`);
         await this.driver.switchTo().frame(frame);

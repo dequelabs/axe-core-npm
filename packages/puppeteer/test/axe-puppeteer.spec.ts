@@ -904,6 +904,84 @@ describe('AxePuppeteer', function () {
         'input'
       ]);
     });
+
+    it('reports frames that cannot run scripts as frame-tested', async () => {
+      const res = await page.goto(`${addr}/index.html`);
+      await page.evaluate(
+        () =>
+          new Promise(resolve => {
+            const iframe = document.createElement('iframe');
+            iframe.id = 'no-scripts';
+            iframe.sandbox.add('allow-same-origin');
+            iframe.src = '/index.html';
+            iframe.onload = resolve;
+            document.body.appendChild(iframe);
+          })
+      );
+
+      const results = await new AxePuppeteer(page)
+        .withRules('frame-tested')
+        .analyze();
+
+      assert.equal(res?.status(), 200);
+      assert.equal(results.incomplete[0].id, 'frame-tested');
+      assert.deepEqual(results.incomplete[0].nodes[0].target, ['#no-scripts']);
+    });
+
+    it('scans a sandboxed frame that allows scripts', async () => {
+      await page.goto(`${addr}/index.html`);
+      await page.evaluate(
+        () =>
+          new Promise(resolve => {
+            const iframe = document.createElement('iframe');
+            iframe.id = 'scripts-allowed';
+            iframe.sandbox.add('allow-same-origin', 'allow-scripts');
+            iframe.src = '/index.html';
+            iframe.onload = resolve;
+            document.body.appendChild(iframe);
+          })
+      );
+
+      const results = await new AxePuppeteer(page)
+        .withRules('frame-tested')
+        .analyze();
+
+      assert.isEmpty(results.incomplete);
+      assert.deepEqual(
+        results.passes
+          .find(rule => rule.id === 'frame-tested')
+          ?.nodes.map(node => node.target),
+        [['#scripts-allowed']]
+      );
+    });
+
+    it('reports a frame whose allow-scripts token is joined by a non-breaking space', async function () {
+      this.timeout(10_000);
+      await page.goto(`${addr}/index.html`);
+      await page.evaluate(
+        () =>
+          new Promise(resolve => {
+            const iframe = document.createElement('iframe');
+            iframe.id = 'nbsp-token';
+            iframe.setAttribute(
+              'sandbox',
+              'allow-same-origin allow-scripts\u00a0allow-forms'
+            );
+            iframe.src = '/index.html';
+            iframe.onload = resolve;
+            document.body.appendChild(iframe);
+          })
+      );
+
+      const results = await new AxePuppeteer(page)
+        .withRules('frame-tested')
+        .analyze();
+
+      assert.deepEqual(
+        results.incomplete[0]?.nodes.map(node => node.target),
+        [['#nbsp-token']]
+      );
+    });
   });
 
   describe('axe.finishRun errors', () => {

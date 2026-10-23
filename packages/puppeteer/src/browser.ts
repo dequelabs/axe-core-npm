@@ -31,8 +31,17 @@ export function axeConfigure(config?: Axe.Spec): void {
 
 export function axeGetFrameContext(
   context: Axe.ElementContext
-): Axe.FrameContext[] {
-  return window.axe.utils.getFrameContexts(context);
+): (Axe.FrameContext & { scriptsBlocked: boolean })[] {
+  return window.axe.utils.getFrameContexts(context).map(frameContext => {
+    const sandbox = window.axe.utils
+      .shadowSelect(frameContext.frameSelector)
+      ?.getAttribute('sandbox');
+    return Object.assign({}, frameContext, {
+      scriptsBlocked:
+        typeof sandbox === 'string' &&
+        !/(^|[\t\n\f\r ])allow-scripts([\t\n\f\r ]|$)/i.test(sandbox)
+    });
+  });
 }
 
 export function axeShadowSelect(

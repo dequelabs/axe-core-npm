@@ -418,6 +418,76 @@ describe('@axe-core/webdriverjs', () => {
       const timeout = await driver.manage().getTimeouts();
       assert.equal(timeout.pageLoad, 500);
     });
+
+    describe('with a frame that cannot run scripts', () => {
+      beforeEach(async () => {
+        await driver.get(`${addr}/index.html`);
+        await driver.executeAsyncScript(`
+          var done = arguments[arguments.length - 1];
+          var iframe = document.createElement('iframe');
+          iframe.id = 'no-scripts';
+          iframe.sandbox.add('allow-same-origin');
+          iframe.src = '/index.html';
+          iframe.onload = function () { done(); };
+          document.body.appendChild(iframe);
+        `);
+      });
+
+      it('reports the frame as frame-tested', async function () {
+        this.timeout(10_000);
+        const results = await new AxeBuilder(driver)
+          .withRules('frame-tested')
+          .analyze();
+
+        assert.equal(results.incomplete[0].id, 'frame-tested');
+        assert.deepEqual(results.incomplete[0].nodes[0].target, [
+          '#no-scripts'
+        ]);
+      });
+
+      it('scans a sandboxed frame that allows scripts', async function () {
+        this.timeout(10_000);
+        await driver.executeAsyncScript(`
+          var done = arguments[arguments.length - 1];
+          var iframe = document.getElementById('no-scripts');
+          iframe.sandbox.add('allow-scripts');
+          iframe.onload = function () { done(); };
+          iframe.src = '/index.html?scripts';
+        `);
+
+        const results = await new AxeBuilder(driver)
+          .withRules('frame-tested')
+          .analyze();
+
+        assert.isEmpty(results.incomplete);
+        assert.deepEqual(
+          results.passes
+            .find(rule => rule.id === 'frame-tested')
+            ?.nodes.map(node => node.target),
+          [['#no-scripts']]
+        );
+      });
+
+      it('reports a frame whose allow-scripts token is joined by a non-breaking space', async function () {
+        this.timeout(10_000);
+        await driver.executeAsyncScript(`
+          var done = arguments[arguments.length - 1];
+          var iframe = document.getElementById('no-scripts');
+          iframe.setAttribute('sandbox', 'allow-same-origin allow-scripts\\u00a0allow-forms');
+          iframe.onload = function () { done(); };
+          iframe.src = '/index.html?nbsp';
+        `);
+
+        const results = await new AxeBuilder(driver)
+          .withRules('frame-tested')
+          .analyze();
+
+        assert.deepEqual(
+          results.incomplete[0]?.nodes.map(node => node.target),
+          [['#no-scripts']]
+        );
+      });
+    });
   });
 
   describe('withRules', () => {
