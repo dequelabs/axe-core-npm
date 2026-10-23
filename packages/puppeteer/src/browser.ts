@@ -12,11 +12,8 @@ declare global {
   }
 }
 
-// frames that block scripts never fire timers, so axe.runPartial would hang
-export function pageIsLoaded(): Promise<boolean> {
-  return new Promise(resolve =>
-    setTimeout(() => resolve(document.readyState === 'complete'))
-  );
+export function pageIsLoaded(): boolean {
+  return document.readyState === 'complete';
 }
 
 export function axeRunPartialSupport(): boolean {
@@ -34,8 +31,17 @@ export function axeConfigure(config?: Axe.Spec): void {
 
 export function axeGetFrameContext(
   context: Axe.ElementContext
-): Axe.FrameContext[] {
-  return window.axe.utils.getFrameContexts(context);
+): (Axe.FrameContext & { scriptsBlocked: boolean })[] {
+  return window.axe.utils.getFrameContexts(context).map(frameContext => {
+    const sandbox = window.axe.utils
+      .shadowSelect(frameContext.frameSelector)
+      ?.getAttribute('sandbox');
+    return Object.assign({}, frameContext, {
+      scriptsBlocked:
+        typeof sandbox === 'string' &&
+        !/(^|\s)allow-scripts(\s|$)/i.test(sandbox)
+    });
+  });
 }
 
 export function axeShadowSelect(

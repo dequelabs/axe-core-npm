@@ -445,14 +445,21 @@ describe('@axe-core/webdriverjs', () => {
         ]);
       });
 
-      it('resets script timeout to user setting', async function () {
+      it('scans a sandboxed frame that allows scripts', async function () {
         this.timeout(10_000);
-        await driver.manage().setTimeouts({ script: 5000 });
+        await driver.executeAsyncScript(`
+          var done = arguments[arguments.length - 1];
+          var iframe = document.getElementById('no-scripts');
+          iframe.sandbox.add('allow-scripts');
+          iframe.onload = function () { done(); };
+          iframe.src = '/index.html?scripts';
+        `);
 
-        await new AxeBuilder(driver).withRules('frame-tested').analyze();
+        const results = await new AxeBuilder(driver)
+          .withRules('frame-tested')
+          .analyze();
 
-        const timeout = await driver.manage().getTimeouts();
-        assert.equal(timeout.script, 5000);
+        assert.isEmpty(results.incomplete);
       });
     });
   });

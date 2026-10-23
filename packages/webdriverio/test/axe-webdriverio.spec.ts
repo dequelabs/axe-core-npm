@@ -975,28 +975,21 @@ describe('@axe-core/webdriverio', () => {
               ]);
             });
 
-            it('resets script timeout to user setting', async function () {
+            it('scans a sandboxed frame that allows scripts', async function () {
               this.timeout(10_000);
-              await client.setTimeout({ script: 5000 });
+              await client.executeAsync(`
+                var done = arguments[arguments.length - 1];
+                var iframe = document.getElementById('no-scripts');
+                iframe.sandbox.add('allow-scripts');
+                iframe.onload = function () { done(); };
+                iframe.src = '/index.html?scripts';
+              `);
 
-              await new AxeBuilder({ client })
+              const results = await new AxeBuilder({ client })
                 .withRules('frame-tested')
                 .analyze();
 
-              const timeout = await client.getTimeouts();
-              assert.equal(timeout.script, 5000);
-            });
-
-            it('resets script timeout when the user set no limit', async function () {
-              this.timeout(10_000);
-              await client.setTimeouts(undefined, undefined, null);
-
-              await new AxeBuilder({ client })
-                .withRules('frame-tested')
-                .analyze();
-
-              const timeout = await client.getTimeouts();
-              assert.isNull(timeout.script);
+              assert.isEmpty(results.incomplete);
             });
           });
         });

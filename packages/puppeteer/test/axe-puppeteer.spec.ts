@@ -927,6 +927,26 @@ describe('AxePuppeteer', function () {
       assert.equal(results.incomplete[0].id, 'frame-tested');
       assert.deepEqual(results.incomplete[0].nodes[0].target, ['#no-scripts']);
     });
+
+    it('scans a sandboxed frame that allows scripts', async () => {
+      await page.goto(`${addr}/index.html`);
+      await page.evaluate(
+        () =>
+          new Promise(resolve => {
+            const iframe = document.createElement('iframe');
+            iframe.sandbox.add('allow-same-origin', 'allow-scripts');
+            iframe.src = '/index.html';
+            iframe.onload = resolve;
+            document.body.appendChild(iframe);
+          })
+      );
+
+      const results = await new AxePuppeteer(page)
+        .withRules('frame-tested')
+        .analyze();
+
+      assert.isEmpty(results.incomplete);
+    });
   });
 
   describe('axe.finishRun errors', () => {

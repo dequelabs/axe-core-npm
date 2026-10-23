@@ -14,7 +14,6 @@ import AxeInjector from './axe-injector';
 import {
   axeGetFrameContext,
   axeRunPartial,
-  axeWaitForTimer,
   axeRunLegacy,
   axeSourceInject,
   axeFinishRun
@@ -228,7 +227,6 @@ export default class AxeBuilder {
   ): Promise<string[]> {
     if (frameStack.length) {
       await axeSourceInject(this.driver, this.axeSource, this.config);
-      await axeWaitForTimer(this.driver);
     }
     // IMPORTANT: axeGetFrameContext MUST be called before axeRunPartial
     const frameContexts = await axeGetFrameContext(this.driver, context);
@@ -236,7 +234,16 @@ export default class AxeBuilder {
       await axeRunPartial(this.driver, context, this.option)
     ];
 
-    for (const { frameContext, frameSelector, frame } of frameContexts) {
+    for (const {
+      frameContext,
+      frameSelector,
+      frame,
+      scriptsBlocked
+    } of frameContexts) {
+      if (scriptsBlocked) {
+        partials.push('null');
+        continue;
+      }
       try {
         assert(frame, `Expect frame of "${frameSelector}" to be defined`);
         await this.driver.switchTo().frame(frame);

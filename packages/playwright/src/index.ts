@@ -17,7 +17,6 @@ import {
   axeGetFrameContexts,
   axeRunPartial,
   axeShadowSelect,
-  axeWaitForTimer,
   chunkResultString
 } from './browser';
 import AxePartialRunner from './AxePartialRunner';
@@ -192,10 +191,7 @@ export default class AxeBuilder {
           reject(new Error('Script Timeout'));
         }, 1000);
       });
-      // frames that block scripts never fire timers, so axe.runPartial would hang
-      const evaluate = iframe
-        .evaluate(this.script())
-        .then(() => iframe.evaluate(axeWaitForTimer));
+      const evaluate = iframe.evaluate(this.script());
 
       try {
         await Promise.race([evaluate, race]);
@@ -264,8 +260,16 @@ export default class AxeBuilder {
     const initiator = frame === this.page.mainFrame();
     const axePartialRunner = new AxePartialRunner(partialPromise, initiator);
 
-    for (const { frameSelector, frameContext } of frameContexts) {
+    for (const {
+      frameSelector,
+      frameContext,
+      scriptsBlocked
+    } of frameContexts) {
       let childResults: AxePartialRunner | null = null;
+      if (scriptsBlocked) {
+        axePartialRunner.addChildResults(childResults);
+        continue;
+      }
       try {
         const iframeHandle = await frame.evaluateHandle(axeShadowSelect, {
           frameSelector

@@ -10,6 +10,7 @@ import { WebDriver, WebElement } from 'selenium-webdriver';
 type FrameContextWeb = FrameContext & {
   frame: WebElement;
   href: string;
+  scriptsBlocked: boolean;
 };
 
 // https://github.com/vercel/pkg/issues/676
@@ -36,19 +37,6 @@ export function axeSourceInject(
       return { runPartialSupported: runPartial };
     `)
   );
-}
-
-// frames that block scripts never fire timers, so axe.runPartial would hang
-export async function axeWaitForTimer(driver: WebDriver): Promise<void> {
-  const { script } = await driver.manage().getTimeouts();
-  await driver.manage().setTimeouts({ script: 1000 });
-  try {
-    await promisify(
-      driver.executeAsyncScript('setTimeout(arguments[arguments.length - 1]);')
-    );
-  } finally {
-    await driver.manage().setTimeouts({ script });
-  }
 }
 
 export function axeRunPartial(
@@ -132,6 +120,13 @@ export function axeGetFrameContext(
     driver.executeScript<FrameContextWeb[]>(`
       var context = ${JSON.stringify(context)}
       var frameContexts = window.axe.utils.getFrameContexts(context);
+      frameContexts.forEach(function (frameContext) {
+        var frame = window.axe.utils.shadowSelect(frameContext.frameSelector);
+        var sandbox = frame && frame.getAttribute('sandbox');
+        frameContext.scriptsBlocked =
+          typeof sandbox === 'string' &&
+          !/(^|\\s)allow-scripts(\\s|$)/i.test(sandbox);
+      });
       return frameContexts.map(function (frameContext) {
         return Object.assign(frameContext, {
           href: window.location.href, // For debugging

@@ -250,7 +250,15 @@ export class AxePuppeteer {
     const axePartialRunner = new AxePartialRunner(partialPromise, initiator);
 
     // Recursively start testing child frames
-    for (const { frameSelector, frameContext } of frameContexts) {
+    for (const {
+      frameSelector,
+      frameContext,
+      scriptsBlocked
+    } of frameContexts) {
+      if (scriptsBlocked) {
+        axePartialRunner.addChildResults(null);
+        continue;
+      }
       try {
         let childResults: AxePartialRunner | null = null;
         const childFrame = await getChildFrame(frame, frameSelector);

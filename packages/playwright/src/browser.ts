@@ -19,8 +19,17 @@ declare global {
 }
 export const axeGetFrameContexts = ({
   context
-}: GetFrameContextsParams): FrameContext[] => {
-  return window.axe.utils.getFrameContexts(context);
+}: GetFrameContextsParams): (FrameContext & { scriptsBlocked: boolean })[] => {
+  return window.axe.utils.getFrameContexts(context).map(frameContext => {
+    const sandbox = window.axe.utils
+      .shadowSelect(frameContext.frameSelector)
+      ?.getAttribute('sandbox');
+    return Object.assign({}, frameContext, {
+      scriptsBlocked:
+        typeof sandbox === 'string' &&
+        !/(^|\s)allow-scripts(\s|$)/i.test(sandbox)
+    });
+  });
 };
 
 export const axeShadowSelect = ({
@@ -48,7 +57,3 @@ export function chunkResultString(chunk: string) {
   }
   window.partialResults += chunk;
 }
-
-export const axeWaitForTimer = (): Promise<void> => {
-  return new Promise(resolve => setTimeout(resolve));
-};
