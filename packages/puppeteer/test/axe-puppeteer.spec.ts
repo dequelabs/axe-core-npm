@@ -982,6 +982,74 @@ describe('AxePuppeteer', function () {
         [['#nbsp-token']]
       );
     });
+
+    it('reports a frame sandboxed by a CSP header as frame-tested', async function () {
+      this.timeout(10_000);
+      await page.goto(`${addr}/index.html`);
+      await page.evaluate(
+        () =>
+          new Promise(resolve => {
+            const iframe = document.createElement('iframe');
+            iframe.id = 'csp-sandbox';
+            iframe.src = '/csp-sandbox/index.html';
+            iframe.onload = resolve;
+            document.body.appendChild(iframe);
+          })
+      );
+
+      const results = await new AxePuppeteer(page)
+        .withRules('frame-tested')
+        .analyze();
+
+      assert.deepEqual(
+        results.incomplete[0]?.nodes.map(node => node.target),
+        [['#csp-sandbox']]
+      );
+    });
+
+    it('uses the sandbox a frame loaded with, not its current attribute', async function () {
+      this.timeout(10_000);
+      await page.goto(`${addr}/index.html`);
+      await page.evaluate(() => {
+        const addFrame = (id: string, sandbox: string | null) =>
+          new Promise(resolve => {
+            const iframe = document.createElement('iframe');
+            iframe.id = id;
+            if (sandbox !== null) {
+              iframe.setAttribute('sandbox', sandbox);
+            }
+            iframe.src = '/index.html';
+            iframe.onload = resolve;
+            document.body.appendChild(iframe);
+          });
+        return Promise.all([
+          addFrame('sandboxed-later', null),
+          addFrame('unsandboxed-later', 'allow-same-origin')
+        ]).then(() => {
+          document
+            .getElementById('sandboxed-later')
+            ?.setAttribute('sandbox', 'allow-same-origin');
+          document
+            .getElementById('unsandboxed-later')
+            ?.removeAttribute('sandbox');
+        });
+      });
+
+      const results = await new AxePuppeteer(page)
+        .withRules('frame-tested')
+        .analyze();
+
+      assert.deepEqual(
+        results.passes
+          .find(rule => rule.id === 'frame-tested')
+          ?.nodes.map(node => node.target),
+        [['#sandboxed-later']]
+      );
+      assert.deepEqual(
+        results.incomplete[0]?.nodes.map(node => node.target),
+        [['#unsandboxed-later']]
+      );
+    });
   });
 
   describe('axe.finishRun errors', () => {

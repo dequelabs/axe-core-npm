@@ -356,15 +356,7 @@ export default class AxeBuilder {
       await axeRunPartial(this.client, context, this.option)
     ];
 
-    for (const {
-      frameSelector,
-      frameContext,
-      scriptsBlocked
-    } of frameContexts) {
-      if (scriptsBlocked) {
-        partials.push(null);
-        continue;
-      }
+    for (const { frameSelector, frameContext } of frameContexts) {
       try {
         const frame = await this.client.$(frameSelector);
         assert(frame, `Expect frame of "${frameSelector}" to be defined`);

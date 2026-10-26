@@ -17,7 +17,8 @@ import {
   axeGetFrameContexts,
   axeRunPartial,
   axeShadowSelect,
-  chunkResultString
+  chunkResultString,
+  assertScriptsRun
 } from './browser';
 import AxePartialRunner from './AxePartialRunner';
 
@@ -211,7 +212,7 @@ export default class AxeBuilder {
    */
 
   private script(): string {
-    return this.axeSource || source;
+    return assertScriptsRun + (this.axeSource || source);
   }
 
   private async runLegacy(context: SerialContextObject): Promise<AxeResults> {
@@ -260,16 +261,8 @@ export default class AxeBuilder {
     const initiator = frame === this.page.mainFrame();
     const axePartialRunner = new AxePartialRunner(partialPromise, initiator);
 
-    for (const {
-      frameSelector,
-      frameContext,
-      scriptsBlocked
-    } of frameContexts) {
+    for (const { frameSelector, frameContext } of frameContexts) {
       let childResults: AxePartialRunner | null = null;
-      if (scriptsBlocked) {
-        axePartialRunner.addChildResults(childResults);
-        continue;
-      }
       try {
         const iframeHandle = await frame.evaluateHandle(axeShadowSelect, {
           frameSelector

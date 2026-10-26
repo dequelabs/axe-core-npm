@@ -43,6 +43,14 @@ describe('@axe-core/webdriverjs', () => {
     );
 
     const app = express();
+    app.use(
+      '/csp-sandbox',
+      (req, res, next) => {
+        res.set('Content-Security-Policy', 'sandbox allow-same-origin');
+        next();
+      },
+      express.static(fixturesPath)
+    );
     app.use(express.static(fixturesPath));
     server = createServer(app);
     // async-listen adds trailing forward slash,
@@ -482,6 +490,57 @@ describe('@axe-core/webdriverjs', () => {
           .withRules('frame-tested')
           .analyze();
 
+        assert.deepEqual(
+          results.incomplete[0]?.nodes.map(node => node.target),
+          [['#no-scripts']]
+        );
+      });
+
+      it('reports a frame sandboxed by a CSP header as frame-tested', async function () {
+        this.timeout(10_000);
+        await driver.executeAsyncScript(`
+          var done = arguments[arguments.length - 1];
+          var iframe = document.getElementById('no-scripts');
+          iframe.removeAttribute('sandbox');
+          iframe.onload = function () { done(); };
+          iframe.src = '/csp-sandbox/index.html';
+        `);
+
+        const results = await new AxeBuilder(driver)
+          .withRules('frame-tested')
+          .analyze();
+
+        assert.deepEqual(
+          results.incomplete[0]?.nodes.map(node => node.target),
+          [['#no-scripts']]
+        );
+      });
+
+      it('uses the sandbox a frame loaded with, not its current attribute', async function () {
+        this.timeout(10_000);
+        await driver.executeAsyncScript(`
+          var done = arguments[arguments.length - 1];
+          var iframe = document.createElement('iframe');
+          iframe.id = 'sandboxed-later';
+          iframe.src = '/index.html';
+          iframe.onload = function () {
+            iframe.setAttribute('sandbox', 'allow-same-origin');
+            document.getElementById('no-scripts').removeAttribute('sandbox');
+            done();
+          };
+          document.body.appendChild(iframe);
+        `);
+
+        const results = await new AxeBuilder(driver)
+          .withRules('frame-tested')
+          .analyze();
+
+        assert.deepEqual(
+          results.passes
+            .find(rule => rule.id === 'frame-tested')
+            ?.nodes.map(node => node.target),
+          [['#sandboxed-later']]
+        );
         assert.deepEqual(
           results.incomplete[0]?.nodes.map(node => node.target),
           [['#no-scripts']]

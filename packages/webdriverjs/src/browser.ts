@@ -10,13 +10,24 @@ import { WebDriver, WebElement } from 'selenium-webdriver';
 type FrameContextWeb = FrameContext & {
   frame: WebElement;
   href: string;
-  scriptsBlocked: boolean;
 };
 
 // https://github.com/vercel/pkg/issues/676
 // we need to pass a string vs a function so we manually stringified the function
 // There are no try/catch blocks needed in these scripts. If an error occurs
 // Selenium pass them onto the catch block.
+
+// a frame that blocks scripts skips event listeners and never fires timers,
+// so axe.runPartial would hang in it
+const assertScriptsRun = `(function () {
+  var ran = false;
+  var target = new EventTarget();
+  target.addEventListener('axe', function () { ran = true; });
+  target.dispatchEvent(new Event('axe'));
+  if (!ran) {
+    throw new Error('Frame cannot run scripts');
+  }
+})();`;
 
 export function axeSourceInject(
   driver: WebDriver,
@@ -25,6 +36,7 @@ export function axeSourceInject(
 ): Promise<{ runPartialSupported: boolean }> {
   return promisify(
     driver.executeScript<{ runPartialSupported: boolean }>(`
+      ${assertScriptsRun}
       ${axeSource};
       window.axe.configure({
         branding: { application: 'webdriverjs' }
@@ -120,13 +132,6 @@ export function axeGetFrameContext(
     driver.executeScript<FrameContextWeb[]>(`
       var context = ${JSON.stringify(context)}
       var frameContexts = window.axe.utils.getFrameContexts(context);
-      frameContexts.forEach(function (frameContext) {
-        var frame = window.axe.utils.shadowSelect(frameContext.frameSelector);
-        var sandbox = frame && frame.getAttribute('sandbox');
-        frameContext.scriptsBlocked =
-          typeof sandbox === 'string' &&
-          !/(^|[\\t\\n\\f\\r ])allow-scripts([\\t\\n\\f\\r ]|$)/i.test(sandbox);
-      });
       return frameContexts.map(function (frameContext) {
         return Object.assign(frameContext, {
           href: window.location.href, // For debugging
