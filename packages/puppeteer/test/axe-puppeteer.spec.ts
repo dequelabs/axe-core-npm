@@ -983,6 +983,37 @@ describe('AxePuppeteer', function () {
       );
     });
 
+    it('scans pages and frames that replace window.Event', async function () {
+      this.timeout(10_000);
+      await page.goto(`${addr}/index.html`);
+      await page.evaluate(
+        () =>
+          new Promise(resolve => {
+            (window as any).Event = function () {};
+            const iframe = document.createElement('iframe');
+            iframe.id = 'replaced-event';
+            iframe.src = '/index.html';
+            iframe.onload = () => {
+              (iframe.contentWindow as any).Event = function () {};
+              resolve(undefined);
+            };
+            document.body.appendChild(iframe);
+          })
+      );
+
+      const results = await new AxePuppeteer(page)
+        .withRules('frame-tested')
+        .analyze();
+
+      assert.isEmpty(results.incomplete);
+      assert.deepEqual(
+        results.passes
+          .find(rule => rule.id === 'frame-tested')
+          ?.nodes.map(node => node.target),
+        [['#replaced-event']]
+      );
+    });
+
     it('reports a frame sandboxed by a CSP header as frame-tested', async function () {
       this.timeout(10_000);
       await page.goto(`${addr}/index.html`);

@@ -1039,6 +1039,33 @@ describe('@axe-core/webdriverio', () => {
               );
             });
 
+            it('scans pages and frames that replace window.Event', async function () {
+              this.timeout(20_000);
+              await client.executeAsync(`
+                var done = arguments[arguments.length - 1];
+                window.Event = function () {};
+                var iframe = document.createElement('iframe');
+                iframe.id = 'replaced-event';
+                iframe.src = '/index.html';
+                iframe.onload = function () {
+                  iframe.contentWindow.Event = function () {};
+                  done();
+                };
+                document.body.appendChild(iframe);
+              `);
+
+              const results = await new AxeBuilder({ client })
+                .withRules('frame-tested')
+                .analyze();
+
+              assert.deepEqual(
+                results.passes
+                  .find(rule => rule.id === 'frame-tested')
+                  ?.nodes.map(node => node.target),
+                [['#replaced-event']]
+              );
+            });
+
             it('reports a frame sandboxed by a CSP header as frame-tested', async function () {
               this.timeout(10_000);
               await client.executeAsync(`
