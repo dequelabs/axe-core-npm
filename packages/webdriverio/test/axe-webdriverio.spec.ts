@@ -983,6 +983,19 @@ describe('@axe-core/webdriverio', () => {
               ]);
             });
 
+            it('reports the frame as frame-tested in legacy mode', async function () {
+              this.timeout(20_000);
+              const results = await new AxeBuilder({ client })
+                .withRules('frame-tested')
+                .setLegacyMode()
+                .analyze();
+
+              assert.deepEqual(
+                results.incomplete[0]?.nodes.map(node => node.target),
+                [['#no-scripts']]
+              );
+            });
+
             it('scans a sandboxed frame that allows scripts', async function () {
               this.timeout(10_000);
               await client.executeAsync(`
@@ -1051,7 +1064,7 @@ describe('@axe-core/webdriverio', () => {
               await client.executeAsync(`
                 var done = arguments[arguments.length - 1];
                 var iframe = document.createElement('iframe');
-                iframe.id = 'sandboxed-later';
+                iframe.id = 'sandbox-added-after-load';
                 iframe.src = '/index.html';
                 iframe.onload = function () {
                   iframe.setAttribute('sandbox', 'allow-same-origin');
@@ -1069,7 +1082,7 @@ describe('@axe-core/webdriverio', () => {
                 results.passes
                   .find(rule => rule.id === 'frame-tested')
                   ?.nodes.map(node => node.target),
-                [['#sandboxed-later']]
+                [['#sandbox-added-after-load']]
               );
               assert.deepEqual(
                 results.incomplete[0]?.nodes.map(node => node.target),

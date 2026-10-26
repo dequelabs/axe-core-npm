@@ -521,7 +521,7 @@ describe('@axe-core/webdriverjs', () => {
         await driver.executeAsyncScript(`
           var done = arguments[arguments.length - 1];
           var iframe = document.createElement('iframe');
-          iframe.id = 'sandboxed-later';
+          iframe.id = 'sandbox-added-after-load';
           iframe.src = '/index.html';
           iframe.onload = function () {
             iframe.setAttribute('sandbox', 'allow-same-origin');
@@ -539,7 +539,7 @@ describe('@axe-core/webdriverjs', () => {
           results.passes
             .find(rule => rule.id === 'frame-tested')
             ?.nodes.map(node => node.target),
-          [['#sandboxed-later']]
+          [['#sandbox-added-after-load']]
         );
         assert.deepEqual(
           results.incomplete[0]?.nodes.map(node => node.target),

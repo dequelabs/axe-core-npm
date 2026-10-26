@@ -73,7 +73,7 @@ export const logOrRethrowError = (error: unknown): void => {
     console.error(
       'Tried to inject into a removed iframe. This will not affect the analysis of the rest of the page but you might want to ensure the page has finished updating before starting the analysis.'
     );
-  } else {
+  } else if (!error.message.includes('Frame cannot run scripts')) {
     throw new Error(error.message);
   }
 };

@@ -589,14 +589,14 @@ describe('@axe-core/playwright', () => {
             document.body.appendChild(iframe);
           });
         return Promise.all([
-          addFrame('sandboxed-later', null),
-          addFrame('unsandboxed-later', 'allow-same-origin')
+          addFrame('sandbox-added-after-load', null),
+          addFrame('sandbox-removed-after-load', 'allow-same-origin')
         ]).then(() => {
           document
-            .getElementById('sandboxed-later')
+            .getElementById('sandbox-added-after-load')
             ?.setAttribute('sandbox', 'allow-same-origin');
           document
-            .getElementById('unsandboxed-later')
+            .getElementById('sandbox-removed-after-load')
             ?.removeAttribute('sandbox');
         });
       });
@@ -609,11 +609,11 @@ describe('@axe-core/playwright', () => {
         results.passes
           .find(rule => rule.id === 'frame-tested')
           ?.nodes.map(node => node.target),
-        [['#sandboxed-later']]
+        [['#sandbox-added-after-load']]
       );
       assert.deepEqual(
         results.incomplete[0]?.nodes.map(node => node.target),
-        [['#unsandboxed-later']]
+        [['#sandbox-removed-after-load']]
       );
     });
   });
