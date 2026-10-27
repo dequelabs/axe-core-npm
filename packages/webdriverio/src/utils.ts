@@ -204,7 +204,8 @@ export const axeRunPartial = (
 
 export const axeGetFrameContext = (
   client: WdioBrowser,
-  context: SerialContextObject
+  context: SerialContextObject,
+  options: RunOptions
   // TODO: add proper types
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
 ): Promise<any[]> => {
@@ -214,7 +215,8 @@ export const axeGetFrameContext = (
     client.executeAsync(`
       var callback = arguments[arguments.length - 1];
       var context = ${JSON.stringify(context)};
-      var frameContexts = window.axe.utils.getFrameContexts(context);
+      var options = ${JSON.stringify(options)};
+      var frameContexts = window.axe.utils.getFrameContexts(context, options);
       callback(frameContexts)
     `)
   );

@@ -293,6 +293,41 @@ describe('@axe-core/webdriverjs', () => {
       assert.deepEqual(nodes[3].target, ['#ifr-baz', 'input']);
     });
 
+    it('does not inject into iframes when iframes is false', async () => {
+      await driver.get(`${addr}/nested-iframes.html`);
+      const title = await driver.getTitle();
+
+      const { violations } = await new AxeBuilder(driver)
+        .options({ runOnly: 'label', iframes: false })
+        .analyze();
+
+      assert.notEqual(title, 'Error');
+      assert.lengthOf(violations, 0);
+      await driver.switchTo().frame(0);
+      assert.equal(
+        await driver.executeScript('return typeof window.axe'),
+        'undefined'
+      );
+    });
+
+    it('does not inject into iframes when iframes is false in legacy mode', async () => {
+      await driver.get(`${addr}/nested-iframes.html`);
+      const title = await driver.getTitle();
+
+      const { violations } = await new AxeBuilder(driver)
+        .options({ runOnly: 'label', iframes: false })
+        .setLegacyMode()
+        .analyze();
+
+      assert.notEqual(title, 'Error');
+      assert.lengthOf(violations, 0);
+      await driver.switchTo().frame(0);
+      assert.equal(
+        await driver.executeScript('return typeof window.axe'),
+        'undefined'
+      );
+    });
+
     it('injects into nested frameset', async () => {
       await driver.get(`${addr}/nested-frameset.html`);
       const title = await driver.getTitle();

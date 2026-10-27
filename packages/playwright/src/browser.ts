@@ -18,9 +18,10 @@ declare global {
   }
 }
 export const axeGetFrameContexts = ({
-  context
+  context,
+  options
 }: GetFrameContextsParams): FrameContext[] => {
-  return window.axe.utils.getFrameContexts(context);
+  return window.axe.utils.getFrameContexts(context, options);
 };
 
 export const axeShadowSelect = ({
