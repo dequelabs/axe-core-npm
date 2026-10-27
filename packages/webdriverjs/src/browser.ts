@@ -17,6 +17,24 @@ type FrameContextWeb = FrameContext & {
 // There are no try/catch blocks needed in these scripts. If an error occurs
 // Selenium pass them onto the catch block.
 
+// a frame that blocks scripts skips event listeners and never fires timers,
+// so axe.runPartial would hang in it
+const assertScriptsRun = `(function () {
+  var ran = false;
+  try {
+    var target = document.createElement('div');
+    target.addEventListener('axe', function () { ran = true; });
+    var event = document.createEvent('Event');
+    event.initEvent('axe', false, false);
+    target.dispatchEvent(event);
+  } catch (e) {
+    return;
+  }
+  if (!ran) {
+    throw new Error('Frame cannot run scripts');
+  }
+})();`;
+
 export function axeSourceInject(
   driver: WebDriver,
   axeSource: string,
@@ -24,6 +42,7 @@ export function axeSourceInject(
 ): Promise<{ runPartialSupported: boolean }> {
   return promisify(
     driver.executeScript<{ runPartialSupported: boolean }>(`
+      ${assertScriptsRun}
       ${axeSource};
       window.axe.configure({
         branding: { application: 'webdriverjs' }

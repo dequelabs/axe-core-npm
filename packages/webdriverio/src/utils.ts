@@ -73,7 +73,7 @@ export const logOrRethrowError = (error: unknown): void => {
     console.error(
       'Tried to inject into a removed iframe. This will not affect the analysis of the rest of the page but you might want to ensure the page has finished updating before starting the analysis.'
     );
-  } else {
+  } else if (!error.message.includes('Frame cannot run scripts')) {
     throw new Error(error.message);
   }
 };
@@ -120,11 +120,30 @@ export async function clientSwitchWindow(
   }
 }
 
+// a frame that blocks scripts skips event listeners and never fires timers,
+// so axe.runPartial would hang in it
+const assertScriptsRun = `(function () {
+  var ran = false;
+  try {
+    var target = document.createElement('div');
+    target.addEventListener('axe', function () { ran = true; });
+    var event = document.createEvent('Event');
+    event.initEvent('axe', false, false);
+    target.dispatchEvent(event);
+  } catch (e) {
+    return;
+  }
+  if (!ran) {
+    throw new Error('Frame cannot run scripts');
+  }
+})();`;
+
 export const axeSourceInject = async (
   client: WdioBrowser,
   axeSource: string
 ): Promise<{ runPartialSupported: boolean }> => {
   await assertFrameReady(client);
+  await client.execute(assertScriptsRun);
   return promisify(
     // Had to use executeAsync() because we could not use multiline statements in client.execute()
     // we were able to return a single boolean in a line but not when assigned to a variable.

@@ -250,27 +250,27 @@ export default class AxeBuilder {
           continue;
         }
         await this.inject(iframe);
-        // After injecting into iframe (and its descendants), navigate back to
-        // this level. switchFrame(null) reliably resets to the top-level context.
-        // Then re-enter this frame using its BiDi context ID (WDIO v9 BiDi) or
-        // its element reference (Classic WebDriver).
-        //
-        // We use the context ID rather than the element reference because in WDIO
-        // v9 BiDi mode, Chrome may assign new document IDs to intermediate frame
-        // contexts after a deep switchFrame(null). An element's SharedId encodes
-        // the document ID at query time; if the document ID has since changed, the
-        // SharedId is stale and Chrome rejects it with "no such node". Passing a
-        // context ID string instead causes WDIO to re-query fresh element
-        // references via browsingContextLocateNodes, bypassing the stale-ID issue.
-        await clientSwitchFrame(this.client, null);
-        if (browsingContextId !== null && 'switchFrame' in this.client) {
-          // browsingContextId is only set on v9 BiDi clients, so switchFrame is available.
-          await this.client.switchFrame(browsingContextId);
-        } else if (browsingContext !== null) {
-          await clientSwitchFrame(this.client, browsingContext);
-        }
       } catch (error) {
         logOrRethrowError(error);
+      }
+      // After injecting into iframe (and its descendants), navigate back to
+      // this level. switchFrame(null) reliably resets to the top-level context.
+      // Then re-enter this frame using its BiDi context ID (WDIO v9 BiDi) or
+      // its element reference (Classic WebDriver).
+      //
+      // We use the context ID rather than the element reference because in WDIO
+      // v9 BiDi mode, Chrome may assign new document IDs to intermediate frame
+      // contexts after a deep switchFrame(null). An element's SharedId encodes
+      // the document ID at query time; if the document ID has since changed, the
+      // SharedId is stale and Chrome rejects it with "no such node". Passing a
+      // context ID string instead causes WDIO to re-query fresh element
+      // references via browsingContextLocateNodes, bypassing the stale-ID issue.
+      await clientSwitchFrame(this.client, null);
+      if (browsingContextId !== null && 'switchFrame' in this.client) {
+        // browsingContextId is only set on v9 BiDi clients, so switchFrame is available.
+        await this.client.switchFrame(browsingContextId);
+      } else if (browsingContext !== null) {
+        await clientSwitchFrame(this.client, browsingContext);
       }
     }
   }

@@ -17,7 +17,8 @@ import {
   axeGetFrameContexts,
   axeRunPartial,
   axeShadowSelect,
-  chunkResultString
+  chunkResultString,
+  assertScriptsRun
 } from './browser';
 import AxePartialRunner from './AxePartialRunner';
 
@@ -211,7 +212,7 @@ export default class AxeBuilder {
    */
 
   private script(): string {
-    return this.axeSource || source;
+    return assertScriptsRun + (this.axeSource || source);
   }
 
   private async runLegacy(context: SerialContextObject): Promise<AxeResults> {
