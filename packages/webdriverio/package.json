@@ -69,7 +69,7 @@
     "@types/express": "^5.0.3",
     "@types/mocha": "^10.0.6",
     "@types/sinon": "^22.0.0",
-    "@wdio/globals": "^9.17.0",
+    "@wdio/globals": "^10.1.0",
     "async-listen": "^3.0.1",
     "axe-test-fixtures": "github:dequelabs/axe-test-fixtures#v1",
     "chai": "^4.3.6",
@@ -84,7 +84,7 @@
     "sinon": "^22.0.0",
     "source-map-support": "^0.5.21",
     "tsup": "^8.0.1",
-    "webdriverio": "^9.27.0"
+    "webdriverio": "^10.1.0"
   },
   "peerDependencies": {
     "webdriverio": "^5 || ^6 || ^7 || ^8 || ^9"
