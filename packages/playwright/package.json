@@ -62,7 +62,7 @@
     "pack:lint": "pnpm pack --config.ignore-scripts=true --out ../../node_modules/.cache/package-lint/playwright.tgz"
   },
   "dependencies": {
-    "axe-core": "~4.14.0"
+    "axe-core": "~4.14.1"
   },
   "devDependencies": {
     "@playwright/test": "^1.60.0",
