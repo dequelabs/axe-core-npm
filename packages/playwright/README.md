@@ -39,6 +39,8 @@ const playwright = require('playwright');
 })();
 ```
 
+`analyze()` finishes the run in a blank page that it opens in the page's browser context, so the page must come from a context created with `browser.newContext()`, as in the example above. With a page from `browser.newPage()`, `analyze()` fails with `Please use browser.newContext()`. If the page can't be created that way, see [`setLegacyMode()`](#axebuildersetlegacymodelegacymode-boolean--true).
+
 ## AxeBuilder({ page: Playwright.Page })
 
 Constructor for the AxeBuilder helper. You must pass an instance of Playwright as the first argument.
