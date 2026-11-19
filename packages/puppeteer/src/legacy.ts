@@ -6,7 +6,7 @@ import type { Spec } from 'axe-core';
 
 interface IInjectAxeArgs {
   source?: string | (() => undefined) | ((config?: Spec | undefined) => void);
-  selector: string;
+  selector?: string;
   logOnError?: boolean;
   args?: any[];
 }
@@ -18,7 +18,7 @@ export async function injectJS(
   if (!frame) {
     return;
   }
-  const frames = await frame.$$(selector);
+  const frames = selector ? await frame.$$(selector) : [];
   const injections = [];
   for (const frameElement of frames) {
     const subFrame = await frameElement.contentFrame();

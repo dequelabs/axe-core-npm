@@ -3,6 +3,16 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [4.14.1](https://github.com/dequelabs/axe-core-npm/compare/v4.14.0...v4.14.1) (2026-11-19)
+
+### Bug Fixes
+
+* **cli:** restore bin paths and lint published package tarballs ([#1467](https://github.com/dequelabs/axe-core-npm/issues/1467)) ([839553f](https://github.com/dequelabs/axe-core-npm/commit/839553f276f251051509229146d6339a2a232214)), closes [#1430](https://github.com/dequelabs/axe-core-npm/issues/1430) [#1430](https://github.com/dequelabs/axe-core-npm/issues/1430) [#1465](https://github.com/dequelabs/axe-core-npm/issues/1465)
+* respect iframes: false when finding frames to test ([#1485](https://github.com/dequelabs/axe-core-npm/issues/1485)) ([910faef](https://github.com/dequelabs/axe-core-npm/commit/910faef981c8be117137fe866d756091da85c85f)), closes [#1483](https://github.com/dequelabs/axe-core-npm/issues/1483)
+* skip frames that cannot run scripts instead of hanging ([#1478](https://github.com/dequelabs/axe-core-npm/issues/1478)) ([794589b](https://github.com/dequelabs/axe-core-npm/commit/794589bda678dcc8d7d9d4246240f5d816e5613c)), closes [#1469](https://github.com/dequelabs/axe-core-npm/issues/1469)
+* update axe-core to v4.14.1 ([#1509](https://github.com/dequelabs/axe-core-npm/issues/1509)) ([826915a](https://github.com/dequelabs/axe-core-npm/commit/826915ad803d569f51fb754bb0597a00b23ac8ea)), closes [#1508](https://github.com/dequelabs/axe-core-npm/issues/1508)
+
+
 # [4.14.0](https://github.com/dequelabs/axe-core-npm/compare/v4.13.0...v4.14.0) (2026-10-06)
 
 ### Features

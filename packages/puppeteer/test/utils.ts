@@ -27,6 +27,14 @@ export async function expectAsyncToNotThrow(
 
 export async function startServer(): Promise<{ server: Server; addr: string }> {
   const app: express.Application = express();
+  app.use(
+    '/csp-sandbox',
+    (req, res, next) => {
+      res.set('Content-Security-Policy', 'sandbox allow-same-origin');
+      next();
+    },
+    express.static(fixturesPath)
+  );
   app.use(express.static(fixturesPath));
   const server: Server = createServer(app);
   // async-listen adds trailing forward slash,
