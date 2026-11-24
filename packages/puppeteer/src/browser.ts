@@ -30,9 +30,10 @@ export function axeConfigure(config?: Axe.Spec): void {
 }
 
 export function axeGetFrameContext(
-  context: Axe.ElementContext
+  context: Axe.ElementContext,
+  options: Axe.RunOptions
 ): Axe.FrameContext[] {
-  return window.axe.utils.getFrameContexts(context);
+  return window.axe.utils.getFrameContexts(context, options);
 }
 
 export function axeShadowSelect(
@@ -64,3 +65,22 @@ export function chunkResultString(chunk: string) {
   window.partialResults ??= '';
   window.partialResults += chunk;
 }
+
+// a frame that blocks scripts skips event listeners and never fires timers,
+// so axe.runPartial would hang in it
+export const assertScriptsRun = `(function () {
+  var ran = false;
+  try {
+    var target = document.createElement('div');
+    target.addEventListener('axe', function () { ran = true; });
+    var event = document.createEvent('Event');
+    event.initEvent('axe', false, false);
+    target.dispatchEvent(event);
+  } catch (e) {
+    return;
+  }
+  if (!ran) {
+    throw new Error('Frame cannot run scripts');
+  }
+})();
+`;

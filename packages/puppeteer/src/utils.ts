@@ -2,7 +2,7 @@ import assert from 'assert';
 import * as fs from 'fs';
 import * as Axe from 'axe-core';
 import { Frame } from 'puppeteer';
-import { axeConfigure, axeShadowSelect } from './browser';
+import { assertScriptsRun, axeConfigure, axeShadowSelect } from './browser';
 import { getFilename } from 'cross-dirname';
 import { pathToFileURL } from 'url';
 import { pageIsLoaded } from './browser';
@@ -31,7 +31,7 @@ export async function frameSourceInject(
 
     source = fs.readFileSync(axeCorePath, 'utf8');
   }
-  await frame.evaluate(source);
+  await frame.evaluate(assertScriptsRun + source);
   await frame.evaluate(axeConfigure, config as Axe.Spec);
 }
 

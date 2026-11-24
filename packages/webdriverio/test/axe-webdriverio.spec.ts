@@ -106,6 +106,14 @@ describe('@axe-core/webdriverio', () => {
 
       beforeEach(async () => {
         const app = express();
+        app.use(
+          '/csp-sandbox',
+          (req, res, next) => {
+            res.set('Content-Security-Policy', 'sandbox allow-same-origin');
+            next();
+          },
+          express.static(fixturesPath)
+        );
         app.use(express.static(fixturesPath));
         server = createServer(app);
         // async-listen adds trailing forward slash,
@@ -555,7 +563,7 @@ describe('@axe-core/webdriverio', () => {
 
           it('handles large results', async function () {
             /* this test handles a large amount of partial results a timeout may be required */
-            this.timeout(100_000);
+            this.timeout(200_000);
             await client.url(`${addr}/external/index.html`);
 
             const results = await new AxeBuilder({
@@ -806,6 +814,61 @@ describe('@axe-core/webdriverio', () => {
             assert.deepEqual(nodes[3].target, ['#ifr-baz', 'input']);
           });
 
+          it('does not test iframes when iframes is false', async () => {
+            await client.url(`${addr}/nested-iframes.html`);
+            const title = await client.getTitle();
+
+            const { violations } = await new AxeBuilder({ client })
+              .options({ runOnly: 'label', iframes: false })
+              .analyze();
+
+            assert.notEqual(title, 'Error');
+            assert.lengthOf(violations, 0);
+            const frames: string[] = await client.execute(`
+              return (function walk(win) {
+                var found = [];
+                for (var i = 0; i < win.frames.length; i++) {
+                  found.push(typeof win.frames[i].axe);
+                  found = found.concat(walk(win.frames[i]));
+                }
+                return found;
+              })(window);
+            `);
+            assert.isNotEmpty(frames);
+            assert.deepEqual(
+              frames,
+              frames.map(() => 'undefined')
+            );
+          });
+
+          it('does not test iframes when iframes is false in legacy mode', async () => {
+            await client.url(`${addr}/nested-iframes.html`);
+            const title = await client.getTitle();
+
+            const { violations } = await new AxeBuilder({ client })
+              .options({ runOnly: 'label', iframes: false })
+              .setLegacyMode()
+              .analyze();
+
+            assert.notEqual(title, 'Error');
+            assert.lengthOf(violations, 0);
+            const frames: string[] = await client.execute(`
+              return (function walk(win) {
+                var found = [];
+                for (var i = 0; i < win.frames.length; i++) {
+                  found.push(typeof win.frames[i].axe);
+                  found = found.concat(walk(win.frames[i]));
+                }
+                return found;
+              })(window);
+            `);
+            assert.isNotEmpty(frames);
+            assert.deepEqual(
+              frames,
+              frames.map(() => 'undefined')
+            );
+          });
+
           it('injects into nested frameset', async () => {
             await client.url(`${addr}/nested-frameset.html`);
             const title = await client.getTitle();
@@ -947,6 +1010,167 @@ describe('@axe-core/webdriverio', () => {
 
             const timeout = await client.getTimeouts();
             assert.equal(timeout.pageLoad, 500);
+          });
+
+          describe('with a frame that cannot run scripts', () => {
+            beforeEach(async () => {
+              await client.url(`${addr}/index.html`);
+              await client.executeAsync(`
+                var done = arguments[arguments.length - 1];
+                var iframe = document.createElement('iframe');
+                iframe.id = 'no-scripts';
+                iframe.sandbox.add('allow-same-origin');
+                iframe.src = '/index.html';
+                iframe.onload = function () { done(); };
+                document.body.appendChild(iframe);
+              `);
+            });
+
+            it('reports the frame as frame-tested', async function () {
+              this.timeout(10_000);
+              const results = await new AxeBuilder({ client })
+                .withRules('frame-tested')
+                .analyze();
+
+              assert.equal(results.incomplete[0].id, 'frame-tested');
+              assert.deepEqual(results.incomplete[0].nodes[0].target, [
+                '#no-scripts'
+              ]);
+            });
+
+            it('reports the frame as frame-tested in legacy mode', async function () {
+              this.timeout(20_000);
+              const results = await new AxeBuilder({ client })
+                .withRules('frame-tested')
+                .setLegacyMode()
+                .analyze();
+
+              assert.deepEqual(
+                results.incomplete[0]?.nodes.map(node => node.target),
+                [['#no-scripts']]
+              );
+            });
+
+            it('scans a sandboxed frame that allows scripts', async function () {
+              this.timeout(10_000);
+              await client.executeAsync(`
+                var done = arguments[arguments.length - 1];
+                var iframe = document.getElementById('no-scripts');
+                iframe.sandbox.add('allow-scripts');
+                iframe.onload = function () { done(); };
+                iframe.src = '/index.html?scripts';
+              `);
+
+              const results = await new AxeBuilder({ client })
+                .withRules('frame-tested')
+                .analyze();
+
+              assert.isEmpty(results.incomplete);
+              assert.deepEqual(
+                results.passes
+                  .find(rule => rule.id === 'frame-tested')
+                  ?.nodes.map(node => node.target),
+                [['#no-scripts']]
+              );
+            });
+
+            it('reports a frame whose allow-scripts token is joined by a non-breaking space', async function () {
+              this.timeout(10_000);
+              await client.executeAsync(`
+                var done = arguments[arguments.length - 1];
+                var iframe = document.getElementById('no-scripts');
+                iframe.setAttribute('sandbox', 'allow-same-origin allow-scripts\\u00a0allow-forms');
+                iframe.onload = function () { done(); };
+                iframe.src = '/index.html?nbsp';
+              `);
+
+              const results = await new AxeBuilder({ client })
+                .withRules('frame-tested')
+                .analyze();
+
+              assert.deepEqual(
+                results.incomplete[0]?.nodes.map(node => node.target),
+                [['#no-scripts']]
+              );
+            });
+
+            it('scans pages and frames that replace window.Event', async function () {
+              this.timeout(20_000);
+              await client.executeAsync(`
+                var done = arguments[arguments.length - 1];
+                window.Event = function () {};
+                var iframe = document.createElement('iframe');
+                iframe.id = 'replaced-event';
+                iframe.src = '/index.html';
+                iframe.onload = function () {
+                  iframe.contentWindow.Event = function () {};
+                  done();
+                };
+                document.body.appendChild(iframe);
+              `);
+
+              const results = await new AxeBuilder({ client })
+                .withRules('frame-tested')
+                .analyze();
+
+              assert.deepEqual(
+                results.passes
+                  .find(rule => rule.id === 'frame-tested')
+                  ?.nodes.map(node => node.target),
+                [['#replaced-event']]
+              );
+            });
+
+            it('reports a frame sandboxed by a CSP header as frame-tested', async function () {
+              this.timeout(10_000);
+              await client.executeAsync(`
+                var done = arguments[arguments.length - 1];
+                var iframe = document.getElementById('no-scripts');
+                iframe.removeAttribute('sandbox');
+                iframe.onload = function () { done(); };
+                iframe.src = '/csp-sandbox/index.html';
+              `);
+
+              const results = await new AxeBuilder({ client })
+                .withRules('frame-tested')
+                .analyze();
+
+              assert.deepEqual(
+                results.incomplete[0]?.nodes.map(node => node.target),
+                [['#no-scripts']]
+              );
+            });
+
+            it('uses the sandbox a frame loaded with, not its current attribute', async function () {
+              this.timeout(20_000);
+              await client.executeAsync(`
+                var done = arguments[arguments.length - 1];
+                var iframe = document.createElement('iframe');
+                iframe.id = 'sandbox-added-after-load';
+                iframe.src = '/index.html';
+                iframe.onload = function () {
+                  iframe.setAttribute('sandbox', 'allow-same-origin');
+                  document.getElementById('no-scripts').removeAttribute('sandbox');
+                  done();
+                };
+                document.body.appendChild(iframe);
+              `);
+
+              const results = await new AxeBuilder({ client })
+                .withRules('frame-tested')
+                .analyze();
+
+              assert.deepEqual(
+                results.passes
+                  .find(rule => rule.id === 'frame-tested')
+                  ?.nodes.map(node => node.target),
+                [['#sandbox-added-after-load']]
+              );
+              assert.deepEqual(
+                results.incomplete[0]?.nodes.map(node => node.target),
+                [['#no-scripts']]
+              );
+            });
           });
         });
 

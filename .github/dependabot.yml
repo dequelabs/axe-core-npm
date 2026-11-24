@@ -112,6 +112,7 @@ updates:
       playwright:
         patterns:
           - '@playwright/test'
+          - 'playwright-core'
         update-types:
           - 'major'
           - 'minor'
@@ -136,6 +137,31 @@ updates:
           - 'patch'
       # Any updates not caught by the group config will get individual PRs
       npm-low-risk:
+        exclude-patterns:
+          - 'eslint'
+          - '@eslint/js'
+          - 'eslint-config-prettier'
+          - 'eslint-plugin-prettier'
+          - 'typescript-eslint'
+          - 'jest'
+          - '@jest/globals'
+          - 'jest-environment-jsdom'
+          - 'ts-jest'
+          - 'selenium-webdriver'
+          - '@types/selenium-webdriver'
+          - 'webdriverio'
+          - '@wdio/cli'
+          - '@wdio/globals'
+          - '@wdio/local-runner'
+          - '@wdio/mocha-framework'
+          - '@wdio/spec-reporter'
+          - '@wdio/types'
+          - 'devtools'
+          - '@playwright/test'
+          - 'playwright-core'
+          - 'puppeteer'
+          - 'chromedriver'
+          - '@types/chromedriver'
         update-types:
           - 'minor'
           - 'patch'

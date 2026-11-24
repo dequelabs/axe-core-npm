@@ -1,0 +1,1 @@
+The last line of a pull request description is its footer: write it exactly as `Closes: #123`, one issue per line with nothing below it and no word between the keyword and the number (`Closes issue #123` renders as a working link but never closes the issue) — or `Ref: #123` to reference without closing, `No QA required` when there is no issue.
